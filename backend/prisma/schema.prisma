@@ -8,9 +8,9 @@ generator client {
   provider = "prisma-client-js"
 }
 
-/*
-  Enums
-*/
+/**
+ * Enums
+ */
 enum Role {
   USER
   INSTRUCTOR
@@ -50,124 +50,131 @@ enum RecommendationAlgorithm {
   HYBRID
 }
 
-/*
-  Models
-*/
+/**
+ * Models
+ */
 model User {
-  id             String           @id @default(uuid())
-  supabaseId     String?          @unique            // store Supabase auth uid if used
-  email          String?          @unique
-  name           String?
-  headline       String?
-  bio            String?
-  regionId       String? 
-  region         Region?          @relation(fields: [regionId], references: [id])
-  role           Role             @default(USER)
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
+  id         String   @id @default(uuid())
+  supabaseId String?  @unique // store Supabase auth uid if used
+  email      String?  @unique
+  name       String?
+  headline   String?
+  bio        String?
+  regionId   String?
+  region     Region?  @relation(fields: [regionId], references: [id])
+  role       Role     @default(USER)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  skills         UserSkill[]
-  testAttempts   TestAttempt[]
-  bookmarks      Bookmark[]
+  skills          UserSkill[]
+  testAttempts    TestAttempt[]
+  bookmarks       Bookmark[]
   recommendations Recommendation[]
+  Test            Test[]
 
   @@index([regionId])
 }
 
 model Skill {
-  id          String       @id @default(uuid())
-  name        String       @unique
-  slug        String       @unique
-  description String?
-  parentId    String?
-  parent      Skill?       @relation("SkillParent", fields: [parentId], references: [id])
-  children    Skill[]      @relation("SkillParent")
-  courses     CourseSkill[]
-  tests       Test[]
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  id              String            @id @default(uuid())
+  name            String            @unique
+  slug            String            @unique
+  description     String?
+  parentId        String?
+  parent          Skill?            @relation("SkillParent", fields: [parentId], references: [id])
+  children        Skill[]           @relation("SkillParent")
+  courses         CourseSkill[]
+  tests           Test[]
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  UserSkill       UserSkill[]
+  Recommendation  Recommendation[]
+  SkillMarketStat SkillMarketStat[]
 }
 
 model UserSkill {
-  id           String           @id @default(uuid())
-  userId       String
-  user         User             @relation(fields: [userId], references: [id])
-  skillId      String
-  skill        Skill            @relation(fields: [skillId], references: [id])
-  proficiency  ProficiencyLevel @default(BASIC)
-  targetLevel  ProficiencyLevel?
-  progress     Int              @default(0) // 0-100
+  id            String            @id @default(uuid())
+  userId        String
+  user          User              @relation(fields: [userId], references: [id])
+  skillId       String
+  skill         Skill             @relation(fields: [skillId], references: [id])
+  proficiency   ProficiencyLevel  @default(BASIC)
+  targetLevel   ProficiencyLevel?
+  progress      Int               @default(0) // 0-100
   lastPracticed DateTime?
-  createdAt    DateTime         @default(now())
-  updatedAt    DateTime         @updatedAt
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
 
   @@unique([userId, skillId])
   @@index([skillId])
 }
 
 model Course {
-  id             String        @id @default(uuid())
-  title          String
-  description    String?
-  provider       String?       // e.g. "Udemy", "YouTube channel", "internal"
-  source         CourseSource  @default(INTERNAL)
-  externalId     String?       // provider-specific id (YouTube video id, Udemy course id)
-  url            String?
-  language       String?       @default("en")
-  difficulty     CourseDifficulty @default(BEGINNER)
+  id              String           @id @default(uuid())
+  title           String
+  description     String?
+  provider        String? // e.g. "Udemy", "YouTube channel", "internal"
+  source          CourseSource     @default(INTERNAL)
+  externalId      String? // provider-specific id (YouTube video id, Udemy course id)
+  url             String?
+  language        String?          @default("en")
+  difficulty      CourseDifficulty @default(BEGINNER)
   durationMinutes Int?
-  rating         Float?
-  isPaid         Boolean       @default(false)
-  priceCents     Int?          // store prices as cents
-  tags           CourseTag[]
-  skills         CourseSkill[]
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+  rating          Float?
+  isPaid          Boolean          @default(false)
+  priceCents      Int? // store prices as cents
+  tags            CourseTag[]
+  skills          CourseSkill[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  Bookmark        Bookmark[]
+  Recommendation  Recommendation[]
 
   @@index([provider, source])
 }
 
 model CourseSkill {
-  id        String  @id @default(uuid())
-  course    Course  @relation(fields: [courseId], references: [id])
+  id        String @id @default(uuid())
+  course    Course @relation(fields: [courseId], references: [id])
   courseId  String
-  skill     Skill   @relation(fields: [skillId], references: [id])
+  skill     Skill  @relation(fields: [skillId], references: [id])
   skillId   String
-  relevance Int     @default(50) // 0-100 relevance score
+  relevance Int    @default(50) // 0-100 relevance score
 
   @@unique([courseId, skillId])
   @@index([skillId])
 }
 
 model Tag {
-  id       String      @id @default(uuid())
-  name     String      @unique
-  courses  CourseTag[]
+  id      String      @id @default(uuid())
+  name    String      @unique
+  courses CourseTag[]
 }
 
 model CourseTag {
-  id       String   @id @default(uuid())
-  course   Course   @relation(fields: [courseId], references: [id])
+  id       String @id @default(uuid())
+  course   Course @relation(fields: [courseId], references: [id])
   courseId String
-  tag      Tag      @relation(fields: [tagId], references: [id])
+  tag      Tag    @relation(fields: [tagId], references: [id])
   tagId    String
 
   @@unique([courseId, tagId])
 }
 
 model Test {
-  id           String        @id @default(uuid())
-  title        String
-  skillId      String?
-  skill        Skill?        @relation(fields: [skillId], references: [id])
-  difficulty   CourseDifficulty?
+  id             String            @id @default(uuid())
+  title          String
+  skillId        String?
+  skill          Skill?            @relation(fields: [skillId], references: [id])
+  difficulty     CourseDifficulty?
   totalQuestions Int?
-  published    Boolean       @default(true)
-  questions    TestQuestion[]
-  createdById  String? 
-  createdBy    User?         @relation(fields: [createdById], references: [id])
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  published      Boolean           @default(true)
+  questions      TestQuestion[]
+  createdById    String?
+  createdBy      User?             @relation(fields: [createdById], references: [id])
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  TestAttempt    TestAttempt[]
 }
 
 model TestQuestion {
@@ -184,26 +191,26 @@ model TestQuestion {
 }
 
 model TestChoice {
-  id         String      @id @default(uuid())
+  id         String       @id @default(uuid())
   questionId String
   question   TestQuestion @relation(fields: [questionId], references: [id])
   text       String
-  isCorrect  Boolean     @default(false)
-  order      Int         @default(0)
+  isCorrect  Boolean      @default(false)
+  order      Int          @default(0)
 }
 
 model TestAttempt {
-  id         String    @id @default(uuid())
-  userId     String
-  user       User      @relation(fields: [userId], references: [id])
-  testId     String
-  test       Test      @relation(fields: [testId], references: [id])
-  startedAt  DateTime  @default(now())
+  id          String    @id @default(uuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  testId      String
+  test        Test      @relation(fields: [testId], references: [id])
+  startedAt   DateTime  @default(now())
   completedAt DateTime?
-  score      Float?
-  answers    Json?     // structured answers for analytics
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  score       Float?
+  answers     Json? // structured answers for analytics
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   @@index([userId])
   @@index([testId])
@@ -221,42 +228,42 @@ model Bookmark {
 }
 
 model Recommendation {
-  id         String                 @id @default(uuid())
-  userId     String
-  user       User                   @relation(fields: [userId], references: [id])
-  skillId    String? 
-  skill      Skill?                 @relation(fields: [skillId], references: [id])
-  courseId   String?
-  course     Course?                @relation(fields: [courseId], references: [id])
-  algorithm  RecommendationAlgorithm @default(RULES)
-  score      Float                  @default(0)
-  meta       Json?                  // explanation, rationale, features used
-  createdAt  DateTime               @default(now())
+  id        String                  @id @default(uuid())
+  userId    String
+  user      User                    @relation(fields: [userId], references: [id])
+  skillId   String?
+  skill     Skill?                  @relation(fields: [skillId], references: [id])
+  courseId  String?
+  course    Course?                 @relation(fields: [courseId], references: [id])
+  algorithm RecommendationAlgorithm @default(RULES)
+  score     Float                   @default(0)
+  meta      Json? // explanation, rationale, features used
+  createdAt DateTime                @default(now())
 
   @@index([userId])
 }
 
 model Region {
-  id         String           @id @default(uuid())
+  id         String            @id @default(uuid())
   name       String
   code       String?
   users      User[]
   skillStats SkillMarketStat[]
-  createdAt  DateTime         @default(now())
+  createdAt  DateTime          @default(now())
 
   @@unique([name])
 }
 
 model SkillMarketStat {
-  id           String   @id @default(uuid())
-  skillId      String
-  skill        Skill    @relation(fields: [skillId], references: [id])
-  regionId     String
-  region       Region   @relation(fields: [regionId], references: [id])
-  usersCount   Int      @default(0)
+  id             String   @id @default(uuid())
+  skillId        String
+  skill          Skill    @relation(fields: [skillId], references: [id])
+  regionId       String
+  region         Region   @relation(fields: [regionId], references: [id])
+  usersCount     Int      @default(0)
   avgProficiency Float?
-  demandScore  Float?
-  updatedAt    DateTime @updatedAt
+  demandScore    Float?
+  updatedAt      DateTime @updatedAt
 
   @@unique([skillId, regionId])
 }
