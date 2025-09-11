@@ -1,0 +1,17 @@
+{
+	"name": "skillhub",
+	"private": true,
+	"packageManager": "yarn@4.9.4",
+	"workspaces": [
+		"backend",
+		"frontend"
+	],
+	"scripts": {
+		"dev": "yarn workspaces foreach -pi run dev",
+		"build": "yarn workspaces foreach -t run build",
+		"backend:dev": "yarn workspace backend run dev",
+		"frontend:dev": "yarn workspace frontend run dev",
+		"backend:build": "yarn workspace backend run build",
+		"frontend:build": "yarn workspace frontend run build"
+	}
+}

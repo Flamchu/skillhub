@@ -1,4 +1,4 @@
-import { Router, Response } from "express";
+import { Router, Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import { AuthenticatedRequest, authenticateToken } from "../middleware/auth";
 
@@ -6,7 +6,7 @@ const router = Router();
 const prisma = new PrismaClient();
 
 // get all regions (public)
-router.get("/", async (_req, res: Response) => {
+router.get("/", async (_req: Request, res: Response) => {
 	try {
 		const regions = await prisma.region.findMany({
 			select: {
@@ -32,7 +32,7 @@ router.get("/", async (_req, res: Response) => {
 });
 
 // get region by id with details (public)
-router.get("/:id", async (req, res: Response) => {
+router.get("/:id", async (req: Request, res: Response) => {
 	try {
 		const { id } = req.params;
 
@@ -73,7 +73,7 @@ router.get("/:id", async (req, res: Response) => {
 });
 
 // get competition stats for a region and skill
-router.get("/:id/competition", async (req, res: Response) => {
+router.get("/:id/competition", async (req: Request, res: Response) => {
 	try {
 		const { id } = req.params;
 		const { skillId } = req.query;
@@ -131,13 +131,13 @@ router.get("/:id/competition", async (req, res: Response) => {
 		});
 
 		// calculate percentile distributions
-		const proficiencyDistribution = userRankings.reduce((acc, userSkill) => {
+		const proficiencyDistribution = userRankings.reduce((acc: Record<string, number>, userSkill: any) => {
 			acc[userSkill.proficiency] = (acc[userSkill.proficiency] || 0) + 1;
 			return acc;
 		}, {} as Record<string, number>);
 
 		// calculate average progress by proficiency level
-		const progressByLevel = userRankings.reduce((acc, userSkill) => {
+		const progressByLevel = userRankings.reduce((acc: Record<string, { total: number; count: number }>, userSkill: any) => {
 			if (!acc[userSkill.proficiency]) {
 				acc[userSkill.proficiency] = { total: 0, count: 0 };
 			}
@@ -146,8 +146,9 @@ router.get("/:id/competition", async (req, res: Response) => {
 			return acc;
 		}, {} as Record<string, { total: number; count: number }>);
 
-		const averageProgressByLevel = Object.entries(progressByLevel).reduce((acc, [level, data]) => {
-			acc[level] = Math.round(data.total / data.count);
+		const averageProgressByLevel = Object.entries(progressByLevel).reduce((acc: Record<string, number>, [level, data]) => {
+			const levelData = data as { total: number; count: number };
+			acc[level] = Math.round(levelData.total / levelData.count);
 			return acc;
 		}, {} as Record<string, number>);
 
@@ -167,7 +168,7 @@ router.get("/:id/competition", async (req, res: Response) => {
 				marketStats: skillStats,
 				proficiencyDistribution,
 				averageProgressByLevel,
-				topUsers: userRankings.slice(0, 10).map((userSkill, index) => ({
+				topUsers: userRankings.slice(0, 10).map((userSkill: any, index: number) => ({
 					rank: index + 1,
 					user: userSkill.user,
 					proficiency: userSkill.proficiency,
@@ -185,8 +186,8 @@ router.get("/:id/competition", async (req, res: Response) => {
 // get user's ranking in region for a skill (protected)
 router.get("/:id/ranking/:userId", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
 	try {
-		const { id: regionId, userId } = req.params;
-		const { skillId } = req.query;
+		const { id: regionId, userId } = (req as any).params;
+		const { skillId } = (req as any).query;
 		const currentUser = req.user!;
 
 		// users can only check their own ranking unless they're admin
@@ -282,7 +283,7 @@ router.post("/", authenticateToken, async (req: AuthenticatedRequest, res: Respo
 			return res.status(403).json({ error: "Admin access required" });
 		}
 
-		const { name, code } = req.body;
+		const { name, code } = (req as any).body;
 
 		if (!name || !code) {
 			return res.status(400).json({ error: "Name and code are required" });
@@ -326,8 +327,8 @@ router.patch("/:id", authenticateToken, async (req: AuthenticatedRequest, res: R
 			return res.status(403).json({ error: "Admin access required" });
 		}
 
-		const { id } = req.params;
-		const { name, code } = req.body;
+		const { id } = (req as any).params;
+		const { name, code } = (req as any).body;
 
 		const updateData: any = {};
 		if (name !== undefined) {
@@ -374,7 +375,7 @@ router.delete("/:id", authenticateToken, async (req: AuthenticatedRequest, res: 
 			return res.status(403).json({ error: "Admin access required" });
 		}
 
-		const { id } = req.params;
+		const { id } = (req as any).params;
 
 		// check if region has users
 		const usersCount = await prisma.user.count({

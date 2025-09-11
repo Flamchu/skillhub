@@ -5,6 +5,15 @@
 		"rootDir": "src",
 		"outDir": "dist",
 		"esModuleInterop": true,
-		"strict": true
+		"allowSyntheticDefaultImports": true,
+		"strict": true,
+		"moduleResolution": "node",
+		"resolveJsonModule": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true
+	},
+	"ts-node": {
+		"esm": false,
+		"experimentalSpecifierResolution": "node"
 	}
 }
