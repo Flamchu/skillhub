@@ -2,20 +2,26 @@
 	"name": "backend",
 	"version": "1.0.0",
 	"scripts": {
-		"dev": "ts-node-dev src/index.ts",
+		"dev": "ts-node-dev src/express.ts",
 		"build": "tsc",
 		"start": "node dist/express.js"
 	},
 	"dependencies": {
 		"@prisma/client": "^6.16.0",
+		"bcryptjs": "^3.0.2",
 		"cors": "^2.8.5",
 		"dotenv": "^17.2.2",
-		"express": "^5.1.0"
+		"express": "^5.1.0",
+		"express-rate-limit": "^8.1.0",
+		"jsonwebtoken": "^9.0.2"
 	},
 	"devDependencies": {
+		"@types/bcryptjs": "^2.4.6",
 		"@types/cors": "^2.8.19",
 		"@types/express": "^5.0.3",
+		"@types/jsonwebtoken": "^9.0.10",
 		"@types/node": "^24.3.1",
+		"artillery": "^2.0.18",
 		"prisma": "^6.16.0",
 		"ts-node-dev": "^2.0.0",
 		"typescript": "^5.9.2"

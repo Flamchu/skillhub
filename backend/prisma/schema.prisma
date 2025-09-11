@@ -55,8 +55,8 @@ enum RecommendationAlgorithm {
  */
 model User {
   id         String   @id @default(uuid())
-  supabaseId String?  @unique // store Supabase auth uid if used
-  email      String?  @unique
+  email      String   @unique
+  password   String   // hashed password
   name       String?
   headline   String?
   bio        String?
