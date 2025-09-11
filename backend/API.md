@@ -45,11 +45,6 @@ All protected routes require: `Authorization: Bearer <JWT_TOKEN>`
   }
   ```
 
-### GET /auth/me
-
-- **Description**: Get current user profile
-- **Auth**: Required
-
 ### PATCH /auth/change-password
 
 - **Description**: Change user password

@@ -158,42 +158,6 @@ router.post("/login", authLimiter, async (req, res: Response) => {
 	}
 });
 
-// get current user profile (protected route)
-router.get("/me", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
-	try {
-		const user = await prisma.user.findUnique({
-			where: { id: req.user!.id },
-			select: {
-				id: true,
-				email: true,
-				name: true,
-				headline: true,
-				bio: true,
-				role: true,
-				regionId: true,
-				createdAt: true,
-				updatedAt: true,
-				region: {
-					select: {
-						id: true,
-						name: true,
-						code: true,
-					},
-				},
-			},
-		});
-
-		if (!user) {
-			return res.status(404).json({ error: "User not found" });
-		}
-
-		res.json({ user });
-	} catch (error) {
-		console.error("Get profile error:", error);
-		res.status(500).json({ error: "Internal server error" });
-	}
-});
-
 // change password (protected route)
 router.patch("/change-password", authLimiter, authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
 	try {
