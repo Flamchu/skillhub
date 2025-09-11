@@ -124,8 +124,9 @@ router.post("/:userId/skills", authenticateToken, async (req: AuthenticatedReque
 			return res.status(400).json({ error: "Invalid target level" });
 		}
 
-		// validate progress
-		if (typeof progress !== "number" || progress < 0 || progress > 100) {
+		// validate and convert progress to number if needed
+		const progressNum = typeof progress === "string" ? parseFloat(progress) : progress;
+		if (isNaN(progressNum) || progressNum < 0 || progressNum > 100) {
 			return res.status(400).json({ error: "Progress must be a number between 0 and 100" });
 		}
 
@@ -158,7 +159,7 @@ router.post("/:userId/skills", authenticateToken, async (req: AuthenticatedReque
 				skillId,
 				proficiency,
 				targetLevel,
-				progress,
+				progress: progressNum,
 				lastPracticed: new Date(),
 			},
 			include: {
@@ -206,8 +207,14 @@ router.patch("/:userId/skills/:skillId", authenticateToken, async (req: Authenti
 			return res.status(400).json({ error: "Invalid target level" });
 		}
 
-		if (progress !== undefined && (typeof progress !== "number" || progress < 0 || progress > 100)) {
-			return res.status(400).json({ error: "Progress must be a number between 0 and 100" });
+		// validate and convert progress to number if needed
+		let validatedProgress = progress;
+		if (progress !== undefined) {
+			const progressNum = typeof progress === "string" ? parseFloat(progress) : progress;
+			if (isNaN(progressNum) || progressNum < 0 || progressNum > 100) {
+				return res.status(400).json({ error: "Progress must be a number between 0 and 100" });
+			}
+			validatedProgress = progressNum;
 		}
 
 		// check if user skill exists
@@ -227,7 +234,7 @@ router.patch("/:userId/skills/:skillId", authenticateToken, async (req: Authenti
 		const updateData: any = {};
 		if (proficiency !== undefined) updateData.proficiency = proficiency;
 		if (targetLevel !== undefined) updateData.targetLevel = targetLevel;
-		if (progress !== undefined) updateData.progress = progress;
+		if (validatedProgress !== undefined) updateData.progress = validatedProgress;
 		if (lastPracticed !== undefined) updateData.lastPracticed = new Date(lastPracticed);
 
 		const updatedUserSkill = await prisma.userSkill.update({
@@ -480,8 +487,12 @@ router.patch("/:userId/skills", authenticateToken, async (req: AuthenticatedRequ
 				return res.status(400).json({ error: `Invalid target level: ${skill.targetLevel}` });
 			}
 
-			if (skill.progress !== undefined && (typeof skill.progress !== "number" || skill.progress < 0 || skill.progress > 100)) {
-				return res.status(400).json({ error: "Progress must be a number between 0 and 100" });
+			if (skill.progress !== undefined) {
+				const progressNum = typeof skill.progress === "string" ? parseFloat(skill.progress) : skill.progress;
+				if (isNaN(progressNum) || progressNum < 0 || progressNum > 100) {
+					return res.status(400).json({ error: "Progress must be a number between 0 and 100" });
+				}
+				skill.progress = progressNum; // normalize to number
 			}
 		}
 
