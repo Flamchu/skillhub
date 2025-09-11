@@ -1,6 +1,6 @@
 import { Router, Response } from "express";
 import bcrypt from "bcryptjs";
-import jwt, { SignOptions } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import rateLimit from "express-rate-limit";
 import { PrismaClient } from "@prisma/client";
 import { AuthenticatedRequest, authenticateToken } from "../middleware/auth";
@@ -190,42 +190,6 @@ router.get("/me", authenticateToken, async (req: AuthenticatedRequest, res: Resp
 		res.json({ user });
 	} catch (error) {
 		console.error("Get profile error:", error);
-		res.status(500).json({ error: "Internal server error" });
-	}
-});
-
-// update user profile (protected route)
-router.patch("/me", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
-	try {
-		const { name, headline, bio, regionId } = req.body;
-
-		const updateData: any = {};
-		if (name !== undefined) updateData.name = name;
-		if (headline !== undefined) updateData.headline = headline;
-		if (bio !== undefined) updateData.bio = bio;
-		if (regionId !== undefined) updateData.regionId = regionId;
-
-		const updatedUser = await prisma.user.update({
-			where: { id: req.user!.id },
-			data: updateData,
-			select: {
-				id: true,
-				email: true,
-				name: true,
-				headline: true,
-				bio: true,
-				role: true,
-				regionId: true,
-				updatedAt: true,
-			},
-		});
-
-		res.json({
-			message: "Profile updated successfully",
-			user: updatedUser,
-		});
-	} catch (error) {
-		console.error("Update profile error:", error);
 		res.status(500).json({ error: "Internal server error" });
 	}
 });
