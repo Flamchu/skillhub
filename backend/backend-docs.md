@@ -1,4 +1,4 @@
-Got it. You want a **properly formatted `documentation.md`** with fenced code blocks, clear sections, and markdown best practices. I’ll rewrite the file so it renders cleanly in any Markdown viewer.
+it. You want a **properly formatted `documentation.md`** with fenced code blocks, clear sections, and markdown best practices. I’ll rewrite the file so it renders cleanly in any Markdown viewer.
 
 Here’s the corrected version:
 
