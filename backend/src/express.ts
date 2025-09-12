@@ -6,6 +6,7 @@ import userRoutes from "./routes/users";
 import userSkillRoutes from "./routes/userSkills";
 import regionRoutes from "./routes/regions";
 import skillRoutes from "./routes/skills";
+import courseRoutes from "./routes/courses";
 
 dotenv.config();
 const app = express();
@@ -31,6 +32,9 @@ app.use("/api/regions", regionRoutes);
 
 // skills routes (mixed public/protected)
 app.use("/api/skills", skillRoutes);
+
+// course routes (mixed public/protected)
+app.use("/api/courses", courseRoutes);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
