@@ -1,12 +1,13 @@
 import { Router, Response } from "express";
-import { PrismaClient } from "@prisma/client";
 import { AuthenticatedRequest, authenticateSupabaseToken } from "../middleware/supabaseAuth";
+import { cache, cacheConfigs, invalidateCacheMiddleware } from "../middleware/cache";
+import { CACHE_KEYS } from "../config/redis";
+import { prisma } from "../config/database";
 
 const router = Router();
-const prisma = new PrismaClient();
 
 // get all skills with optional filtering and hierarchy
-router.get("/", async (req, res: Response) => {
+router.get("/", cache(cacheConfigs.skillsList), async (req, res: Response) => {
 	try {
 		const { includeChildren = "false", parentId, search, sortBy = "name", sortOrder = "asc" } = req.query;
 
@@ -188,7 +189,7 @@ router.get("/:id", async (req, res: Response) => {
 });
 
 // get skills hierarchy (root skills with nested children)
-router.get("/hierarchy/tree", async (_req, res: Response) => {
+router.get("/hierarchy/tree", cache(cacheConfigs.skillsHierarchy), async (_req, res: Response) => {
 	try {
 		const rootSkills = await prisma.skill.findMany({
 			where: {
@@ -316,7 +317,7 @@ router.get("/search/advanced", async (req, res: Response) => {
 });
 
 // create skill (admin only)
-router.post("/", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
+router.post("/", authenticateSupabaseToken, invalidateCacheMiddleware([`${CACHE_KEYS.SKILLS_HIERARCHY}:*`, `${CACHE_KEYS.SKILLS_LIST}:*`]), async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		const currentUser = req.user!;
 
@@ -387,7 +388,7 @@ router.post("/", authenticateSupabaseToken, async (req: AuthenticatedRequest, re
 });
 
 // update skill (admin only)
-router.patch("/:id", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
+router.patch("/:id", authenticateSupabaseToken, invalidateCacheMiddleware([`${CACHE_KEYS.SKILLS_HIERARCHY}:*`, `${CACHE_KEYS.SKILLS_LIST}:*`]), async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		const currentUser = req.user!;
 

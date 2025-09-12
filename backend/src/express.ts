@@ -10,16 +10,23 @@ import courseRoutes from "./routes/courses";
 import bookmarkRoutes from "./routes/bookmarks";
 import testRoutes from "./routes/tests";
 import recommendationRoutes from "./routes/recommendations";
+import { performanceMonitoring, performanceEndpoint, healthCheck } from "./middleware/performance";
+import { connectDatabase } from "./config/database";
+import "./config/redis"; // Initialize Redis connection
 
 dotenv.config();
 const app = express();
 
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Performance monitoring
+app.use(performanceMonitoring);
 
-// health check
-app.get("/api/health", (_req, res) => res.json({ status: "ok" }));
+app.use(cors());
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+
+// Health and monitoring endpoints
+app.get("/api/health", healthCheck);
+app.get("/api/performance", performanceEndpoint);
 
 // auth routes (public)
 app.use("/api/auth", supabaseAuthRoutes); // Supabase auth (now primary)
@@ -54,4 +61,17 @@ app.use(notFoundHandler);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+// Initialize database connection
+connectDatabase()
+	.then(() => {
+		app.listen(PORT, () => {
+			console.log(`🚀 Server running on port ${PORT}`);
+			console.log(`📊 Performance monitoring: http://localhost:${PORT}/api/performance`);
+			console.log(`❤️  Health check: http://localhost:${PORT}/api/health`);
+		});
+	})
+	.catch((error) => {
+		console.error("Failed to start server:", error);
+		process.exit(1);
+	});

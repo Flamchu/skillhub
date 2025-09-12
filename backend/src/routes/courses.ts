@@ -1,12 +1,14 @@
 import { Router, Response } from "express";
-import { PrismaClient, CourseSource, CourseDifficulty } from "@prisma/client";
+import { CourseSource, CourseDifficulty } from "@prisma/client";
 import { AuthenticatedRequest, authenticateSupabaseToken } from "../middleware/supabaseAuth";
+import { cache, cacheConfigs, invalidateCacheMiddleware } from "../middleware/cache";
+import { CACHE_KEYS } from "../config/redis";
+import { prisma } from "../config/database";
 
 const router = Router();
-const prisma = new PrismaClient();
 
 // get courses
-router.get("/", async (req, res: Response) => {
+router.get("/", cache(cacheConfigs.coursesList), async (req, res: Response) => {
 	try {
 		const { skillId, tag, difficulty, freeOnly = "false", provider, source, language = "en", minRating, maxDuration, search, page = "1", limit = "20", sortBy = "createdAt", sortOrder = "desc" } = req.query;
 
@@ -213,7 +215,7 @@ router.get("/:id", async (req, res: Response) => {
 });
 
 // create course (admin)
-router.post("/", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
+router.post("/", authenticateSupabaseToken, invalidateCacheMiddleware([`${CACHE_KEYS.COURSES_LIST}:*`]), async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		if (req.user?.role !== "ADMIN") {
 			return res.status(403).json({ error: "Admin access required" });
@@ -306,7 +308,7 @@ router.post("/", authenticateSupabaseToken, async (req: AuthenticatedRequest, re
 });
 
 // update course (admin)
-router.patch("/:id", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
+router.patch("/:id", authenticateSupabaseToken, invalidateCacheMiddleware([`${CACHE_KEYS.COURSES_LIST}:*`, `${CACHE_KEYS.COURSE_DETAIL}:*`]), async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		if (req.user?.role !== "ADMIN") {
 			return res.status(403).json({ error: "Admin access required" });

@@ -22,54 +22,106 @@ async function main() {
 		console.log("   Email:", existingAdmin.email);
 		console.log("   Name:", existingAdmin.name);
 		console.log("   Role:", existingAdmin.role);
-		return;
-	}
-
-	try {
-		// Create admin user in Supabase Auth
-		const { data: supabaseUser, error } = await supabase.auth.admin.createUser({
-			email: adminEmail,
-			password: adminPassword,
-			email_confirm: true,
-			user_metadata: {
-				name: "System Administrator",
-				role: "ADMIN",
-				created_via: "seed_script",
-			},
-		});
-
-		if (error || !supabaseUser.user) {
-			throw new Error(`Failed to create admin in Supabase: ${error?.message}`);
-		}
-
-		// Create admin profile in our database
-		const adminUser = await prisma.user.create({
-			data: {
-				supabaseId: supabaseUser.user.id,
+	} else {
+		try {
+			// Create admin user in Supabase Auth
+			const { data: supabaseUser, error } = await supabase.auth.admin.createUser({
 				email: adminEmail,
-				name: "System Administrator",
-				headline: "SkillHub Administrator",
-				bio: "System administrator account for managing SkillHub platform",
-				role: Role.ADMIN,
-			},
-		});
+				password: adminPassword,
+				email_confirm: true,
+				user_metadata: {
+					name: "System Administrator",
+					role: "ADMIN",
+					created_via: "seed_script",
+				},
+			});
 
-		console.log("✅ Admin user created successfully:");
-		console.log("   Email:", adminUser.email);
-		console.log("   Name:", adminUser.name);
-		console.log("   Role:", adminUser.role);
-		console.log("   Database ID:", adminUser.id);
-		console.log("   Supabase ID:", adminUser.supabaseId);
-		console.log("");
-		console.log("🔑 Login credentials:");
-		console.log("   Email:", adminEmail);
-		console.log("   Password:", adminPassword);
-		console.log("");
-		console.log("⚠️  IMPORTANT: Change the default password after first login!");
-		console.log("💡 Use the /api/auth/change-password endpoint or Supabase dashboard");
-	} catch (error: any) {
-		console.error("❌ Failed to create admin user:", error.message);
-		throw error;
+			if (error) {
+				// Check if user already exists in Supabase
+				if (error.message.includes("already registered") || error.message.includes("already been registered")) {
+					console.log("👤 Admin user already exists in Supabase");
+					console.log("   Email:", adminEmail);
+
+					// Check if local profile exists
+					const existingProfile = await prisma.user.findUnique({
+						where: { email: adminEmail },
+					});
+
+					if (!existingProfile) {
+						console.log("🔍 Local admin profile not found, creating it...");
+
+						// Get the existing Supabase user
+						const {
+							data: { users },
+							error: getUserError,
+						} = await supabase.auth.admin.listUsers();
+						const existingSupabaseUser = users.find((user) => user.email === adminEmail);
+
+						if (getUserError || !existingSupabaseUser) {
+							console.log("⚠️  Could not retrieve existing Supabase user");
+						} else {
+							// Create local profile for existing Supabase user
+							const adminUser = await prisma.user.create({
+								data: {
+									supabaseId: existingSupabaseUser.id,
+									email: adminEmail,
+									name: "System Administrator",
+									headline: "SkillHub Administrator",
+									bio: "System administrator account for managing SkillHub platform",
+									role: Role.ADMIN,
+								},
+							});
+
+							console.log("✅ Local admin profile created:");
+							console.log("   Email:", adminUser.email);
+							console.log("   Name:", adminUser.name);
+							console.log("   Role:", adminUser.role);
+							console.log("   Database ID:", adminUser.id);
+							console.log("   Supabase ID:", adminUser.supabaseId);
+						}
+					} else {
+						console.log("✅ Local admin profile already exists");
+						console.log("   Email:", existingProfile.email);
+						console.log("   Name:", existingProfile.name);
+						console.log("   Role:", existingProfile.role);
+					}
+				} else {
+					throw new Error(`Failed to create admin in Supabase: ${error.message}`);
+				}
+			} else if (supabaseUser.user) {
+				// Create admin profile in our database
+				const adminUser = await prisma.user.create({
+					data: {
+						supabaseId: supabaseUser.user.id,
+						email: adminEmail,
+						name: "System Administrator",
+						headline: "SkillHub Administrator",
+						bio: "System administrator account for managing SkillHub platform",
+						role: Role.ADMIN,
+					},
+				});
+
+				console.log("✅ Admin user created successfully:");
+				console.log("   Email:", adminUser.email);
+				console.log("   Name:", adminUser.name);
+				console.log("   Role:", adminUser.role);
+				console.log("   Database ID:", adminUser.id);
+				console.log("   Supabase ID:", adminUser.supabaseId);
+				console.log("");
+				console.log("🔑 Login credentials:");
+				console.log("   Email:", adminEmail);
+				console.log("   Password:", adminPassword);
+				console.log("");
+				console.log("⚠️  IMPORTANT: Change the default password after first login!");
+				console.log("💡 Use the /api/auth/change-password endpoint or Supabase dashboard");
+			} else {
+				console.log("⚠️  Admin user creation returned no data");
+			}
+		} catch (error: any) {
+			console.error("❌ Failed to create admin user:", error.message);
+			// Don't throw - continue with seeding
+			console.log("   Continuing with data seeding...");
+		}
 	}
 
 	// Create some sample regions
@@ -132,6 +184,21 @@ async function main() {
 					slug: "nodejs",
 					description: "Node.js runtime environment",
 				},
+				{
+					name: "Java",
+					slug: "java",
+					description: "Java programming language",
+				},
+				{
+					name: "C#",
+					slug: "csharp",
+					description: "C# programming language",
+				},
+				{
+					name: "PHP",
+					slug: "php",
+					description: "PHP server-side scripting language",
+				},
 			],
 		},
 		// Design
@@ -155,6 +222,16 @@ async function main() {
 					slug: "figma",
 					description: "Figma design tool",
 				},
+				{
+					name: "Adobe Photoshop",
+					slug: "photoshop",
+					description: "Adobe Photoshop image editing software",
+				},
+				{
+					name: "Adobe Illustrator",
+					slug: "illustrator",
+					description: "Adobe Illustrator vector graphics software",
+				},
 			],
 		},
 		// Data Science
@@ -177,6 +254,67 @@ async function main() {
 					name: "SQL",
 					slug: "sql",
 					description: "Structured Query Language",
+				},
+				{
+					name: "Python (Data Science)",
+					slug: "python-data-science",
+					description: "Python for data science and analytics",
+				},
+				{
+					name: "R Programming",
+					slug: "r-programming",
+					description: "R statistical programming language",
+				},
+			],
+		},
+		// Marketing
+		{
+			name: "Marketing",
+			slug: "marketing",
+			description: "Digital marketing and growth skills",
+			children: [
+				{
+					name: "SEO",
+					slug: "seo",
+					description: "Search Engine Optimization",
+				},
+				{
+					name: "Social Media Marketing",
+					slug: "social-media-marketing",
+					description: "Social media strategy and marketing",
+				},
+				{
+					name: "Content Marketing",
+					slug: "content-marketing",
+					description: "Content creation and marketing strategies",
+				},
+				{
+					name: "Google Analytics",
+					slug: "google-analytics",
+					description: "Web analytics and data analysis",
+				},
+			],
+		},
+		// Project Management
+		{
+			name: "Project Management",
+			slug: "project-management",
+			description: "Project management and organizational skills",
+			children: [
+				{
+					name: "Agile/Scrum",
+					slug: "agile-scrum",
+					description: "Agile project management methodologies",
+				},
+				{
+					name: "Jira",
+					slug: "jira",
+					description: "Atlassian Jira project management tool",
+				},
+				{
+					name: "Leadership",
+					slug: "leadership",
+					description: "Team leadership and management skills",
 				},
 			],
 		},

@@ -1,17 +1,19 @@
 import { Router, Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
 import { AuthenticatedRequest, authenticateSupabaseToken, requireAdmin } from "../middleware/supabaseAuth";
 import { validate, extractSchemas } from "../middleware/validation";
 import { catchAsync, createError } from "../middleware/errorHandler";
 import { schemas } from "../schemas";
+import { cache, cacheConfigs, invalidateCacheMiddleware } from "../middleware/cache";
+import { CACHE_KEYS } from "../config/redis";
+import { prisma } from "../config/database";
 
 const router = Router();
-const prisma = new PrismaClient();
 
 // get user by id (public route for basic profile info)
 router.get(
 	"/:id",
 	validate(extractSchemas(schemas.getUser)),
+	cache(cacheConfigs.userProfile),
 	catchAsync(async (req: Request, res: Response) => {
 		const { id } = req.params;
 

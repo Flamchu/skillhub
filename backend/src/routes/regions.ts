@@ -1,12 +1,13 @@
 import { Router, Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
 import { AuthenticatedRequest, authenticateSupabaseToken } from "../middleware/supabaseAuth";
+import { cache, cacheConfigs, invalidateCacheMiddleware } from "../middleware/cache";
+import { CACHE_KEYS } from "../config/redis";
+import { prisma } from "../config/database";
 
 const router = Router();
-const prisma = new PrismaClient();
 
 // get all regions (public)
-router.get("/", async (_req: Request, res: Response) => {
+router.get("/", cache(cacheConfigs.regionsList), async (_req: Request, res: Response) => {
 	try {
 		const regions = await prisma.region.findMany({
 			select: {

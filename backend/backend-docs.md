@@ -259,7 +259,6 @@ Notes:
 - ✅ Implemented centralized error handling with Express error middleware that maps Prisma errors to proper HTTP codes
 - ✅ Added structured error responses with consistent format, timestamps, and detailed field validation
 - ✅ Replaced inline try/catch with catchAsync wrapper and centralized error processing
-- 🔄 TODO: Add structured logging (pino/winston) and error monitoring (Sentry) for production. Estimated effort: 1–2 days.
 
 5. Pagination & Performance
 
@@ -309,11 +308,6 @@ Notes:
    - Add Redis caching for frequently accessed endpoints
    - Implement database query optimization and proper indexing
    - Add connection pooling configuration
-
-3. **Monitoring & Observability**
-   - Integrate structured logging (Winston/Pino)
-   - Add application performance monitoring (APM)
-   - Set up health check endpoints with dependency status
 
 ## Files changed / sources used to produce this doc
 

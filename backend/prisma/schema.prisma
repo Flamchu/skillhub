@@ -91,6 +91,10 @@ model Skill {
   UserSkill       UserSkill[]
   Recommendation  Recommendation[]
   SkillMarketStat SkillMarketStat[]
+
+  @@index([parentId])
+  @@index([name])
+  @@index([slug])
 }
 
 model UserSkill {
@@ -108,6 +112,9 @@ model UserSkill {
 
   @@unique([userId, skillId])
   @@index([skillId])
+  @@index([proficiency])
+  @@index([progress])
+  @@index([lastPracticed])
 }
 
 model Course {
@@ -132,6 +139,11 @@ model Course {
   Recommendation  Recommendation[]
 
   @@index([provider, source])
+  @@index([difficulty])
+  @@index([isPaid])
+  @@index([rating])
+  @@index([language])
+  @@index([createdAt])
 }
 
 model CourseSkill {
