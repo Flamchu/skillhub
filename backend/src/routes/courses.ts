@@ -466,9 +466,8 @@ router.delete("/:id", authenticateToken, async (req: AuthenticatedRequest, res: 
 			});
 		}
 
-		await prisma.course.delete({
-			where: { id },
-		});
+		// remove related associations then delete course in a transaction
+		await prisma.$transaction([prisma.courseTag.deleteMany({ where: { courseId: id } }), prisma.courseSkill.deleteMany({ where: { courseId: id } }), prisma.course.delete({ where: { id } })]);
 
 		res.json({ message: "Course deleted successfully" });
 	} catch (error) {
