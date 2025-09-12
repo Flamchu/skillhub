@@ -48,5 +48,10 @@ app.use("/api/tests", testRoutes);
 // recommendation routes (protected)
 app.use("/api/recommendations", recommendationRoutes);
 
+// Error handling middleware (must be last)
+import { errorHandler, notFoundHandler } from "./middleware/errorHandler";
+app.use(notFoundHandler);
+app.use(errorHandler);
+
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

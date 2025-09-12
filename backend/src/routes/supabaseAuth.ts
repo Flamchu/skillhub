@@ -1,8 +1,11 @@
-import { Router, Response } from "express";
+import { Router, Request, Response } from "express";
 import rateLimit from "express-rate-limit";
 import { PrismaClient } from "@prisma/client";
 import { AuthenticatedRequest, authenticateSupabaseToken, createUserProfile } from "../middleware/supabaseAuth";
 import { supabase, supabaseAuth } from "../config/supabase";
+import { validate, extractSchemas } from "../middleware/validation";
+import { catchAsync, AppError, createError } from "../middleware/errorHandler";
+import { schemas } from "../schemas";
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -16,25 +19,13 @@ const authLimiter = rateLimit({
 	legacyHeaders: false,
 });
 
-// Validation helpers
-const validateEmail = (email: string): boolean => {
-	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-	return emailRegex.test(email);
-};
-
 // Register endpoint - creates Supabase user and profile
-router.post("/register", authLimiter, async (req, res: Response) => {
-	try {
+router.post(
+	"/register",
+	authLimiter,
+	validate(extractSchemas(schemas.register)),
+	catchAsync(async (req: Request, res: Response) => {
 		const { email, password, name } = req.body;
-
-		// Validation
-		if (!email || !password) {
-			return res.status(400).json({ error: "Email and password are required" });
-		}
-
-		if (!validateEmail(email)) {
-			return res.status(400).json({ error: "Invalid email format" });
-		}
 
 		// Create user in Supabase Auth
 		const { data, error } = await supabase.auth.admin.createUser({
@@ -46,13 +37,13 @@ router.post("/register", authLimiter, async (req, res: Response) => {
 		if (error) {
 			console.error("Supabase registration error:", error);
 			if (error.message.includes("already registered")) {
-				return res.status(409).json({ error: "User with this email already exists" });
+				throw createError.conflict("User with this email already exists");
 			}
-			return res.status(400).json({ error: error.message });
+			throw createError.badRequest(error.message);
 		}
 
 		if (!data.user) {
-			return res.status(500).json({ error: "Failed to create user account" });
+			throw createError.internalServerError("Failed to create user account");
 		}
 
 		// Create user profile in our database
@@ -67,28 +58,18 @@ router.post("/register", authLimiter, async (req, res: Response) => {
 			// If profile creation fails, clean up Supabase user
 			await supabase.auth.admin.deleteUser(data.user.id);
 			console.error("Profile creation error:", dbError);
-
-			if (dbError.code === "P2002" && dbError.meta?.target?.includes("email")) {
-				return res.status(409).json({ error: "User with this email already exists" });
-			}
-
-			return res.status(500).json({ error: "Failed to create user profile" });
+			throw dbError; // Let the error handler deal with Prisma errors
 		}
-	} catch (error) {
-		console.error("Registration error:", error);
-		res.status(500).json({ error: "Internal server error" });
-	}
-});
+	})
+);
 
 // Login endpoint - uses Supabase Auth
-router.post("/login", authLimiter, async (req, res: Response) => {
-	try {
+router.post(
+	"/login",
+	authLimiter,
+	validate(extractSchemas(schemas.login)),
+	catchAsync(async (req: Request, res: Response) => {
 		const { email, password } = req.body;
-
-		// Validation
-		if (!email || !password) {
-			return res.status(400).json({ error: "Email and password are required" });
-		}
 
 		// Sign in with Supabase
 		const { data, error } = await supabaseAuth.auth.signInWithPassword({
@@ -98,11 +79,11 @@ router.post("/login", authLimiter, async (req, res: Response) => {
 
 		if (error) {
 			console.error("Supabase login error:", error);
-			return res.status(401).json({ error: "Invalid credentials" });
+			throw createError.unauthorized("Invalid credentials");
 		}
 
 		if (!data.user || !data.session) {
-			return res.status(401).json({ error: "Login failed" });
+			throw createError.unauthorized("Login failed");
 		}
 
 		// Get user profile from our database
@@ -120,13 +101,7 @@ router.post("/login", authLimiter, async (req, res: Response) => {
 		});
 
 		if (!userProfile) {
-			return res.status(404).json({
-				error: "User profile not found",
-				supabaseUser: {
-					id: data.user.id,
-					email: data.user.email,
-				},
-			});
+			throw createError.notFound("User profile not found");
 		}
 
 		res.json({
@@ -138,20 +113,16 @@ router.post("/login", authLimiter, async (req, res: Response) => {
 				expires_at: data.session.expires_at,
 			},
 		});
-	} catch (error) {
-		console.error("Login error:", error);
-		res.status(500).json({ error: "Internal server error" });
-	}
-});
+	})
+);
 
 // Refresh token endpoint
-router.post("/refresh", authLimiter, async (req, res: Response) => {
-	try {
+router.post(
+	"/refresh",
+	authLimiter,
+	validate(extractSchemas(schemas.refreshToken)),
+	catchAsync(async (req: Request, res: Response) => {
 		const { refresh_token } = req.body;
-
-		if (!refresh_token) {
-			return res.status(400).json({ error: "Refresh token is required" });
-		}
 
 		const { data, error } = await supabaseAuth.auth.refreshSession({
 			refresh_token,
@@ -159,11 +130,11 @@ router.post("/refresh", authLimiter, async (req, res: Response) => {
 
 		if (error) {
 			console.error("Token refresh error:", error);
-			return res.status(401).json({ error: "Invalid refresh token" });
+			throw createError.unauthorized("Invalid refresh token");
 		}
 
 		if (!data.session) {
-			return res.status(401).json({ error: "Token refresh failed" });
+			throw createError.unauthorized("Token refresh failed");
 		}
 
 		res.json({
@@ -174,15 +145,14 @@ router.post("/refresh", authLimiter, async (req, res: Response) => {
 				expires_at: data.session.expires_at,
 			},
 		});
-	} catch (error) {
-		console.error("Refresh error:", error);
-		res.status(500).json({ error: "Internal server error" });
-	}
-});
+	})
+);
 
 // Logout endpoint
-router.post("/logout", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
-	try {
+router.post(
+	"/logout",
+	authenticateSupabaseToken,
+	catchAsync(async (req: AuthenticatedRequest, res: Response) => {
 		const authHeader = req.headers["authorization"];
 		const token = authHeader && authHeader.split(" ")[1];
 
@@ -192,12 +162,8 @@ router.post("/logout", authenticateSupabaseToken, async (req: AuthenticatedReque
 		}
 
 		res.json({ message: "Logged out successfully" });
-	} catch (error) {
-		console.error("Logout error:", error);
-		// Still return success even if logout fails
-		res.json({ message: "Logged out successfully" });
-	}
-});
+	})
+);
 
 // Change password endpoint
 router.patch("/change-password", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {

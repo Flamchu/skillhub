@@ -1,13 +1,18 @@
-import { Router, Response } from "express";
+import { Router, Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import { AuthenticatedRequest, authenticateSupabaseToken, requireAdmin } from "../middleware/supabaseAuth";
+import { validate, extractSchemas } from "../middleware/validation";
+import { catchAsync, createError } from "../middleware/errorHandler";
+import { schemas } from "../schemas";
 
 const router = Router();
 const prisma = new PrismaClient();
 
 // get user by id (public route for basic profile info)
-router.get("/:id", async (req, res: Response) => {
-	try {
+router.get(
+	"/:id",
+	validate(extractSchemas(schemas.getUser)),
+	catchAsync(async (req: Request, res: Response) => {
 		const { id } = req.params;
 
 		const user = await prisma.user.findUnique({
@@ -44,15 +49,12 @@ router.get("/:id", async (req, res: Response) => {
 		});
 
 		if (!user) {
-			return res.status(404).json({ error: "User not found" });
+			throw createError.notFound("User not found");
 		}
 
 		res.json({ user });
-	} catch (error) {
-		console.error("Get user error:", error);
-		res.status(500).json({ error: "Internal server error" });
-	}
-});
+	})
+);
 
 // get user's full profile (protected, only own profile or admin)
 router.get("/:id/profile", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
