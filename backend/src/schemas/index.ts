@@ -2,8 +2,8 @@ import { z } from "zod";
 import { Role, ProficiencyLevel, CourseSource, CourseDifficulty, RecommendationAlgorithm } from "@prisma/client";
 
 // common schemas
-export const uuidSchema = z.string().uuid({ message: "Invalid UUID format" });
-export const emailSchema = z.string().email({ message: "Invalid email format" });
+export const uuidSchema = z.uuid({ message: "Invalid UUID format" });
+export const emailSchema = z.email({ message: "Invalid email format" });
 export const passwordSchema = z
 	.string()
 	.min(8, { message: "Password must be at least 8 characters" })
@@ -12,8 +12,8 @@ export const passwordSchema = z
 	});
 
 export const paginationSchema = z.object({
-	page: z.string().default("1").transform(Number).pipe(z.number().int().min(1)),
-	limit: z.string().default("20").transform(Number).pipe(z.number().int().min(1).max(100)),
+	page: z.coerce.number().int().min(1).default(1),
+	limit: z.coerce.number().int().min(1).max(100).default(20),
 	sortBy: z.string().optional(),
 	sortOrder: z.enum(["asc", "desc"]).default("desc"),
 });
@@ -69,7 +69,7 @@ export const updateUserSchema = z.object({
 export const getUsersSchema = z.object({
 	query: paginationSchema.extend({
 		search: z.string().optional(),
-		role: z.nativeEnum(Role).optional(),
+		role: z.enum(Role).optional(),
 		regionId: uuidSchema.optional(),
 	}),
 });
@@ -90,8 +90,8 @@ export const addUserSkillSchema = z.object({
 	}),
 	body: z.object({
 		skillId: uuidSchema,
-		proficiency: z.nativeEnum(ProficiencyLevel).optional(),
-		targetLevel: z.nativeEnum(ProficiencyLevel).optional(),
+		proficiency: z.enum(ProficiencyLevel).optional(),
+		targetLevel: z.enum(ProficiencyLevel).optional(),
 	}),
 });
 
@@ -101,8 +101,8 @@ export const updateUserSkillSchema = z.object({
 		skillId: uuidSchema,
 	}),
 	body: z.object({
-		proficiency: z.nativeEnum(ProficiencyLevel).optional(),
-		targetLevel: z.nativeEnum(ProficiencyLevel).optional(),
+		proficiency: z.enum(ProficiencyLevel).optional(),
+		targetLevel: z.enum(ProficiencyLevel).optional(),
 		progress: z.number().int().min(0).max(100).optional(),
 	}),
 });
@@ -127,8 +127,8 @@ export const getSkillsSchema = z.object({
 		parentId: uuidSchema.optional(),
 		search: z.string().optional(),
 		includeChildren: z.enum(["true", "false"]).default("false"),
-		page: z.string().default("1").transform(Number).pipe(z.number().int().min(1)),
-		limit: z.string().default("20").transform(Number).pipe(z.number().int().min(1).max(100)),
+		page: z.coerce.number().int().min(1).default(1),
+		limit: z.coerce.number().int().min(1).max(100).default(20),
 	}),
 });
 
@@ -180,16 +180,8 @@ export const advancedSkillSearchSchema = z.object({
 			parentIds: z.string().optional(), // comma-separated UUIDs
 			excludeParentIds: z.string().optional(), // comma-separated UUIDs
 			hasChildren: z.enum(["true", "false"]).optional(),
-			minUserCount: z
-				.string()
-				.optional()
-				.transform((val) => (val ? Number(val) : undefined))
-				.pipe(z.number().int().min(0).optional()),
-			maxDepth: z
-				.string()
-				.optional()
-				.transform((val) => (val ? Number(val) : undefined))
-				.pipe(z.number().int().min(0).optional()),
+			minUserCount: z.coerce.number().int().min(0).optional(),
+			maxDepth: z.coerce.number().int().min(0).optional(),
 		})
 		.extend(paginationSchema.shape),
 });
@@ -200,21 +192,13 @@ export const getCoursesSchema = z.object({
 		.object({
 			skillId: uuidSchema.optional(),
 			tag: z.string().optional(),
-			difficulty: z.nativeEnum(CourseDifficulty).optional(),
+			difficulty: z.enum(CourseDifficulty).optional(),
 			freeOnly: z.enum(["true", "false"]).default("false"),
 			provider: z.string().optional(),
-			source: z.nativeEnum(CourseSource).optional(),
+			source: z.enum(CourseSource).optional(),
 			language: z.string().default("en"),
-			minRating: z
-				.string()
-				.optional()
-				.transform((val) => (val ? Number(val) : undefined))
-				.pipe(z.number().min(0).max(5).optional()),
-			maxDuration: z
-				.string()
-				.optional()
-				.transform((val) => (val ? Number(val) : undefined))
-				.pipe(z.number().int().min(0).optional()),
+			minRating: z.coerce.number().min(0).max(5).optional(),
+			maxDuration: z.coerce.number().int().min(0).optional(),
 			search: z.string().optional(),
 		})
 		.extend(paginationSchema.shape),
@@ -230,11 +214,11 @@ export const createCourseSchema = z.object({
 	body: z.object({
 		title: z.string().min(1).max(200),
 		description: z.string().max(2000).optional(),
-		url: z.string().url(),
+		url: z.url(),
 		provider: z.string().min(1).max(100),
-		source: z.nativeEnum(CourseSource),
+		source: z.enum(CourseSource),
 		externalId: z.string().optional(),
-		difficulty: z.nativeEnum(CourseDifficulty),
+		difficulty: z.enum(CourseDifficulty),
 		durationMinutes: z.number().int().min(0).optional(),
 		rating: z.number().min(0).max(5).optional(),
 		ratingCount: z.number().int().min(0).optional(),
@@ -261,9 +245,9 @@ export const updateCourseSchema = z.object({
 	body: z.object({
 		title: z.string().min(1).max(200).optional(),
 		description: z.string().max(2000).optional(),
-		url: z.string().url().optional(),
+		url: z.url().optional(),
 		provider: z.string().min(1).max(100).optional(),
-		difficulty: z.nativeEnum(CourseDifficulty).optional(),
+		difficulty: z.enum(CourseDifficulty).optional(),
 		durationMinutes: z.number().int().min(0).optional(),
 		rating: z.number().min(0).max(5).optional(),
 		ratingCount: z.number().int().min(0).optional(),
@@ -312,7 +296,7 @@ export const getTestsSchema = z.object({
 	query: z
 		.object({
 			skillId: uuidSchema.optional(),
-			difficulty: z.nativeEnum(CourseDifficulty).optional(),
+			difficulty: z.enum(CourseDifficulty).optional(),
 			isPublished: z.enum(["true", "false"]).default("true"),
 		})
 		.extend(paginationSchema.shape),
@@ -350,7 +334,7 @@ export const getUserTestAttemptsSchema = z.object({
 export const getRecommendationsSchema = z.object({
 	query: z
 		.object({
-			algorithm: z.nativeEnum(RecommendationAlgorithm).optional(),
+			algorithm: z.enum(RecommendationAlgorithm).optional(),
 			type: z.enum(["course", "skill", "test"]).optional(),
 		})
 		.extend(paginationSchema.shape),
@@ -358,7 +342,7 @@ export const getRecommendationsSchema = z.object({
 
 export const generateRecommendationsSchema = z.object({
 	body: z.object({
-		algorithm: z.nativeEnum(RecommendationAlgorithm).optional(),
+		algorithm: z.enum(RecommendationAlgorithm).optional(),
 		maxResults: z.number().int().min(1).max(50).default(10),
 		includeBookmarked: z.boolean().default(false),
 	}),
