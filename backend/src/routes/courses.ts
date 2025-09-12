@@ -5,12 +5,12 @@ import { AuthenticatedRequest, authenticateToken } from "../middleware/auth";
 const router = Router();
 const prisma = new PrismaClient();
 
-// GET /courses - Get courses with filtering
+// get courses
 router.get("/", async (req, res: Response) => {
 	try {
 		const { skillId, tag, difficulty, freeOnly = "false", provider, source, language = "en", minRating, maxDuration, search, page = "1", limit = "20", sortBy = "createdAt", sortOrder = "desc" } = req.query;
 
-		// Build where clause
+		// where clause
 		const where: any = {};
 
 		if (skillId) {
@@ -92,11 +92,11 @@ router.get("/", async (req, res: Response) => {
 			];
 		}
 
-		// Build order by
+		// order
 		const orderBy: any = {};
 		orderBy[sortBy as string] = sortOrder;
 
-		// Pagination
+		// pagination
 		const pageNum = parseInt(page as string);
 		const limitNum = parseInt(limit as string);
 		const skip = (pageNum - 1) * limitNum;
@@ -159,7 +159,7 @@ router.get("/", async (req, res: Response) => {
 	}
 });
 
-// GET /courses/:id - Get course by ID with details
+// get course by id
 router.get("/:id", async (req, res: Response) => {
 	try {
 		const { id } = req.params;
@@ -212,7 +212,7 @@ router.get("/:id", async (req, res: Response) => {
 	}
 });
 
-// POST /courses - Create new course (admin only)
+// create course (admin)
 router.post("/", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		if (req.user?.role !== "ADMIN") {
@@ -221,7 +221,7 @@ router.post("/", authenticateToken, async (req: AuthenticatedRequest, res: Respo
 
 		const { title, description, provider, source = "INTERNAL", externalId, url, language = "en", difficulty = "BEGINNER", durationMinutes, rating, isPaid = false, priceCents, tags = [], skills = [] } = req.body;
 
-		// Validation
+		// validate
 		if (!title) {
 			return res.status(400).json({ error: "Title is required" });
 		}
@@ -246,7 +246,7 @@ router.post("/", authenticateToken, async (req: AuthenticatedRequest, res: Respo
 			return res.status(400).json({ error: "Price must be positive" });
 		}
 
-		// Create course with related data
+		// create with relations
 		const course = await prisma.course.create({
 			data: {
 				title,
@@ -305,7 +305,7 @@ router.post("/", authenticateToken, async (req: AuthenticatedRequest, res: Respo
 	}
 });
 
-// PATCH /courses/:id - Update course (admin only)
+// update course (admin)
 router.patch("/:id", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		if (req.user?.role !== "ADMIN") {
@@ -315,7 +315,7 @@ router.patch("/:id", authenticateToken, async (req: AuthenticatedRequest, res: R
 		const { id } = req.params;
 		const { title, description, provider, source, externalId, url, language, difficulty, durationMinutes, rating, isPaid, priceCents, tags, skills } = req.body;
 
-		// Check if course exists
+		// ensure exists
 		const existingCourse = await prisma.course.findUnique({
 			where: { id },
 		});
@@ -324,7 +324,7 @@ router.patch("/:id", authenticateToken, async (req: AuthenticatedRequest, res: R
 			return res.status(404).json({ error: "Course not found" });
 		}
 
-		// Validation
+		// validate
 		if (source && !Object.values(CourseSource).includes(source)) {
 			return res.status(400).json({ error: "Invalid course source" });
 		}
@@ -345,7 +345,7 @@ router.patch("/:id", authenticateToken, async (req: AuthenticatedRequest, res: R
 			return res.status(400).json({ error: "Price must be positive" });
 		}
 
-		// Build update data
+		// update payload
 		const updateData: any = {};
 
 		if (title !== undefined) updateData.title = title;
@@ -361,9 +361,9 @@ router.patch("/:id", authenticateToken, async (req: AuthenticatedRequest, res: R
 		if (isPaid !== undefined) updateData.isPaid = isPaid;
 		if (priceCents !== undefined) updateData.priceCents = priceCents;
 
-		// Handle tags update
+		// tags update
 		if (tags !== undefined) {
-			// Delete existing tags and create new ones
+			// reset tags
 			await prisma.courseTag.deleteMany({
 				where: { courseId: id },
 			});
@@ -380,9 +380,9 @@ router.patch("/:id", authenticateToken, async (req: AuthenticatedRequest, res: R
 			};
 		}
 
-		// Handle skills update
+		// skills update
 		if (skills !== undefined) {
-			// Delete existing skill associations and create new ones
+			// reset skills
 			await prisma.courseSkill.deleteMany({
 				where: { courseId: id },
 			});
@@ -425,7 +425,7 @@ router.patch("/:id", authenticateToken, async (req: AuthenticatedRequest, res: R
 	}
 });
 
-// DELETE /courses/:id - Delete course (admin only)
+// delete course (admin)
 router.delete("/:id", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		if (req.user?.role !== "ADMIN") {
@@ -434,7 +434,7 @@ router.delete("/:id", authenticateToken, async (req: AuthenticatedRequest, res: 
 
 		const { id } = req.params;
 
-		// Check if course exists
+		// ensure exists
 		const course = await prisma.course.findUnique({
 			where: { id },
 			include: {
@@ -451,7 +451,7 @@ router.delete("/:id", authenticateToken, async (req: AuthenticatedRequest, res: 
 			return res.status(404).json({ error: "Course not found" });
 		}
 
-		// Check for dependencies
+		// check dependencies
 		const dependencies = [];
 		if (course._count.Bookmark > 0) {
 			dependencies.push(`${course._count.Bookmark} user bookmarks`);
