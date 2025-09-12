@@ -1,6 +1,6 @@
 import { Router, Response } from "express";
 import { PrismaClient } from "@prisma/client";
-import { AuthenticatedRequest, authenticateToken } from "../middleware/auth";
+import { AuthenticatedRequest, authenticateSupabaseToken, requireAdmin } from "../middleware/supabaseAuth";
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -55,7 +55,7 @@ router.get("/:id", async (req, res: Response) => {
 });
 
 // get user's full profile (protected, only own profile or admin)
-router.get("/:id/profile", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
+router.get("/:id/profile", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		const { id } = req.params;
 		const currentUser = req.user!;
@@ -164,7 +164,7 @@ router.get("/:id/profile", authenticateToken, async (req: AuthenticatedRequest, 
 });
 
 // update user profile (protected, only own profile or admin)
-router.patch("/:id", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
+router.patch("/:id", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		const { id } = req.params;
 		const currentUser = req.user!;
@@ -239,7 +239,7 @@ router.patch("/:id", authenticateToken, async (req: AuthenticatedRequest, res: R
 });
 
 // delete user account (protected, only own account or admin)
-router.delete("/:id", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
+router.delete("/:id", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		const { id } = req.params;
 		const currentUser = req.user!;
@@ -272,7 +272,7 @@ router.delete("/:id", authenticateToken, async (req: AuthenticatedRequest, res: 
 });
 
 // get user statistics (protected, only own stats or admin)
-router.get("/:id/stats", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
+router.get("/:id/stats", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		const { id } = req.params;
 		const currentUser = req.user!;
@@ -377,7 +377,7 @@ router.get("/:id/stats", authenticateToken, async (req: AuthenticatedRequest, re
 });
 
 // get users list (admin only, with pagination and filtering)
-router.get("/", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
+router.get("/", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		const currentUser = req.user!;
 

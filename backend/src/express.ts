@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import authRoutes from "./routes/auth";
+import supabaseAuthRoutes from "./routes/supabaseAuth";
 import userRoutes from "./routes/users";
 import userSkillRoutes from "./routes/userSkills";
 import regionRoutes from "./routes/regions";
@@ -22,7 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 app.get("/api/health", (_req, res) => res.json({ status: "ok" }));
 
 // auth routes (public)
-app.use("/api/auth", authRoutes);
+app.use("/api/auth", supabaseAuthRoutes); // Supabase auth (now primary)
 
 // user routes (mixed public/protected)
 app.use("/api/users", userRoutes);

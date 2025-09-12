@@ -1,6 +1,6 @@
 import { Router, Response } from "express";
 import { PrismaClient, CourseSource, CourseDifficulty } from "@prisma/client";
-import { AuthenticatedRequest, authenticateToken } from "../middleware/auth";
+import { AuthenticatedRequest, authenticateSupabaseToken } from "../middleware/supabaseAuth";
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -213,7 +213,7 @@ router.get("/:id", async (req, res: Response) => {
 });
 
 // create course (admin)
-router.post("/", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
+router.post("/", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		if (req.user?.role !== "ADMIN") {
 			return res.status(403).json({ error: "Admin access required" });
@@ -306,7 +306,7 @@ router.post("/", authenticateToken, async (req: AuthenticatedRequest, res: Respo
 });
 
 // update course (admin)
-router.patch("/:id", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
+router.patch("/:id", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		if (req.user?.role !== "ADMIN") {
 			return res.status(403).json({ error: "Admin access required" });
@@ -426,7 +426,7 @@ router.patch("/:id", authenticateToken, async (req: AuthenticatedRequest, res: R
 });
 
 // delete course (admin)
-router.delete("/:id", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
+router.delete("/:id", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		if (req.user?.role !== "ADMIN") {
 			return res.status(403).json({ error: "Admin access required" });

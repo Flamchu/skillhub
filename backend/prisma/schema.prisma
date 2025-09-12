@@ -55,8 +55,8 @@ enum RecommendationAlgorithm {
  */
 model User {
   id         String   @id @default(uuid())
-  email      String   @unique
-  password   String   // hashed password
+  supabaseId String   @unique // Links to Supabase Auth user
+  email      String?  @unique // Optional since Supabase handles email verification
   name       String?
   headline   String?
   bio        String?
@@ -73,6 +73,7 @@ model User {
   Test            Test[]
 
   @@index([regionId])
+  @@index([supabaseId])
 }
 
 model Skill {

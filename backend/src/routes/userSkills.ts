@@ -1,6 +1,6 @@
 import { Router, Response } from "express";
 import { PrismaClient, ProficiencyLevel } from "@prisma/client";
-import { AuthenticatedRequest, authenticateToken } from "../middleware/auth";
+import { AuthenticatedRequest, authenticateSupabaseToken } from "../middleware/supabaseAuth";
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -98,7 +98,7 @@ router.get("/:userId/skills", async (req, res: Response) => {
 });
 
 // add skill to user profile (protected)
-router.post("/:userId/skills", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
+router.post("/:userId/skills", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		const { userId } = req.params;
 		const currentUser = req.user!;
@@ -185,7 +185,7 @@ router.post("/:userId/skills", authenticateToken, async (req: AuthenticatedReque
 });
 
 // update user skill (protected)
-router.patch("/:userId/skills/:skillId", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
+router.patch("/:userId/skills/:skillId", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		const { userId, skillId } = req.params;
 		const currentUser = req.user!;
@@ -268,7 +268,7 @@ router.patch("/:userId/skills/:skillId", authenticateToken, async (req: Authenti
 });
 
 // remove skill from user profile (protected)
-router.delete("/:userId/skills/:skillId", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
+router.delete("/:userId/skills/:skillId", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		const { userId, skillId } = req.params;
 		const currentUser = req.user!;
@@ -309,7 +309,7 @@ router.delete("/:userId/skills/:skillId", authenticateToken, async (req: Authent
 });
 
 // get skill progression recommendations for user (protected)
-router.get("/:userId/skills/:skillId/progression", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
+router.get("/:userId/skills/:skillId/progression", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		const { userId, skillId } = req.params;
 		const currentUser = req.user!;
@@ -456,7 +456,7 @@ router.get("/:userId/skills/:skillId/progression", authenticateToken, async (req
 });
 
 // bulk update multiple user skills (protected)
-router.patch("/:userId/skills", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
+router.patch("/:userId/skills", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		const { userId } = req.params;
 		const currentUser = req.user!;

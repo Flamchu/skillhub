@@ -1,12 +1,12 @@
 import { Router, Response } from "express";
 import { PrismaClient, RecommendationAlgorithm, ProficiencyLevel } from "@prisma/client";
-import { AuthenticatedRequest, authenticateToken } from "../middleware/auth";
+import { AuthenticatedRequest, authenticateSupabaseToken } from "../middleware/supabaseAuth";
 
 const router = Router();
 const prisma = new PrismaClient();
 
 // get recommendations for a user
-router.get("/", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
+router.get("/", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		const { userId, skillId, algorithm, page = "1", limit = "20", sortBy = "score", sortOrder = "desc" } = req.query;
 
@@ -108,7 +108,7 @@ router.get("/", authenticateToken, async (req: AuthenticatedRequest, res: Respon
 });
 
 // generate new recommendations for a user
-router.post("/generate", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
+router.post("/generate", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		const { userId, algorithm = "RULES", maxRecommendations = 10 } = req.body;
 		const targetUserId = userId || req.user!.id;

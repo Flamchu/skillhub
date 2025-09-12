@@ -1,6 +1,6 @@
 import { Router, Response } from "express";
 import { PrismaClient } from "@prisma/client";
-import { AuthenticatedRequest, authenticateToken } from "../middleware/auth";
+import { AuthenticatedRequest, authenticateSupabaseToken } from "../middleware/supabaseAuth";
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -316,7 +316,7 @@ router.get("/search/advanced", async (req, res: Response) => {
 });
 
 // create skill (admin only)
-router.post("/", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
+router.post("/", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		const currentUser = req.user!;
 
@@ -387,7 +387,7 @@ router.post("/", authenticateToken, async (req: AuthenticatedRequest, res: Respo
 });
 
 // update skill (admin only)
-router.patch("/:id", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
+router.patch("/:id", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		const currentUser = req.user!;
 
@@ -503,7 +503,7 @@ router.patch("/:id", authenticateToken, async (req: AuthenticatedRequest, res: R
 });
 
 // delete skill (admin only)
-router.delete("/:id", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
+router.delete("/:id", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		const currentUser = req.user!;
 

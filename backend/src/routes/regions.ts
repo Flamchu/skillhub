@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
-import { AuthenticatedRequest, authenticateToken } from "../middleware/auth";
+import { AuthenticatedRequest, authenticateSupabaseToken } from "../middleware/supabaseAuth";
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -184,7 +184,7 @@ router.get("/:id/competition", async (req: Request, res: Response) => {
 });
 
 // get user's ranking in region for a skill (protected)
-router.get("/:id/ranking/:userId", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
+router.get("/:id/ranking/:userId", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		const { id: regionId, userId } = (req as any).params;
 		const { skillId } = (req as any).query;
@@ -275,7 +275,7 @@ router.get("/:id/ranking/:userId", authenticateToken, async (req: AuthenticatedR
 });
 
 // create region (admin only)
-router.post("/", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
+router.post("/", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		const currentUser = req.user!;
 
@@ -319,7 +319,7 @@ router.post("/", authenticateToken, async (req: AuthenticatedRequest, res: Respo
 });
 
 // update region (admin only)
-router.patch("/:id", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
+router.patch("/:id", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		const currentUser = req.user!;
 
@@ -367,7 +367,7 @@ router.patch("/:id", authenticateToken, async (req: AuthenticatedRequest, res: R
 });
 
 // delete region (admin only)
-router.delete("/:id", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
+router.delete("/:id", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		const currentUser = req.user!;
 

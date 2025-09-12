@@ -1,12 +1,12 @@
 import { Router, Response } from "express";
 import { PrismaClient } from "@prisma/client";
-import { AuthenticatedRequest, authenticateToken } from "../middleware/auth";
+import { AuthenticatedRequest, authenticateSupabaseToken } from "../middleware/supabaseAuth";
 
 const router = Router();
 const prisma = new PrismaClient();
 
 // get user's bookmarked courses
-router.get("/:id/bookmarks", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
+router.get("/:id/bookmarks", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		const { id: userId } = req.params;
 		const { page = "1", limit = "20", sortBy = "createdAt", sortOrder = "desc" } = req.query;
@@ -103,7 +103,7 @@ router.get("/:id/bookmarks", authenticateToken, async (req: AuthenticatedRequest
 });
 
 // bookmark a course
-router.post("/:id/bookmarks", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
+router.post("/:id/bookmarks", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		const { id: userId } = req.params;
 		const { courseId } = req.body;
@@ -199,7 +199,7 @@ router.post("/:id/bookmarks", authenticateToken, async (req: AuthenticatedReques
 });
 
 // remove bookmark
-router.delete("/:id/bookmarks/:courseId", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
+router.delete("/:id/bookmarks/:courseId", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		const { id: userId, courseId } = req.params;
 

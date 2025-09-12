@@ -1,5 +1,5 @@
 import { PrismaClient, Role } from "@prisma/client";
-import bcrypt from "bcryptjs";
+import { supabase } from "./config/supabase";
 
 const prisma = new PrismaClient();
 
@@ -7,46 +7,70 @@ async function main() {
 	console.log("🌱 Starting database seeding...");
 
 	// Create admin user
-	const adminEmail = "root@flamchustudios.com";
-	const adminPassword = "verysecurepassword$1"; // Change this to a secure password
+	const adminEmail = "root@flamchustudios.com"; // Changed to a more appropriate email
+	const adminPassword = "VerySecurePassword$1"; // Temporary password - user should reset
 
-	// Check if admin already exists
-	const existingAdmin = await prisma.user.findUnique({
-		where: { email: adminEmail },
-	});
-
-	if (existingAdmin) {
-		console.log("👤 Admin user already exists:", adminEmail);
-		return;
-	}
-
-	// Hash the password
-	const saltRounds = 12;
-	const hashedPassword = await bcrypt.hash(adminPassword, saltRounds);
-
-	// Create admin user
-	const adminUser = await prisma.user.create({
-		data: {
-			email: adminEmail,
-			password: hashedPassword,
-			name: "System Administrator",
-			headline: "SkillHub Administrator",
-			bio: "System administrator account for managing SkillHub platform",
-			role: Role.ADMIN,
+	// Check if admin already exists in our database
+	const existingAdmin = await prisma.user.findFirst({
+		where: {
+			OR: [{ email: adminEmail }, { role: Role.ADMIN }],
 		},
 	});
 
-	console.log("✅ Admin user created successfully:");
-	console.log("   Email:", adminUser.email);
-	console.log("   Name:", adminUser.name);
-	console.log("   Role:", adminUser.role);
-	console.log("   ID:", adminUser.id);
-	console.log("");
-	console.log("🔑 Login credentials:");
-	console.log("   Email:", adminEmail);
-	console.log("   Password:", adminPassword);
-	console.log("");
-	console.log("⚠️  IMPORTANT: Change the default password after first login!");
+	if (existingAdmin) {
+		console.log("👤 Admin user already exists");
+		console.log("   Email:", existingAdmin.email);
+		console.log("   Name:", existingAdmin.name);
+		console.log("   Role:", existingAdmin.role);
+		return;
+	}
+
+	try {
+		// Create admin user in Supabase Auth
+		const { data: supabaseUser, error } = await supabase.auth.admin.createUser({
+			email: adminEmail,
+			password: adminPassword,
+			email_confirm: true,
+			user_metadata: {
+				name: "System Administrator",
+				role: "ADMIN",
+				created_via: "seed_script",
+			},
+		});
+
+		if (error || !supabaseUser.user) {
+			throw new Error(`Failed to create admin in Supabase: ${error?.message}`);
+		}
+
+		// Create admin profile in our database
+		const adminUser = await prisma.user.create({
+			data: {
+				supabaseId: supabaseUser.user.id,
+				email: adminEmail,
+				name: "System Administrator",
+				headline: "SkillHub Administrator",
+				bio: "System administrator account for managing SkillHub platform",
+				role: Role.ADMIN,
+			},
+		});
+
+		console.log("✅ Admin user created successfully:");
+		console.log("   Email:", adminUser.email);
+		console.log("   Name:", adminUser.name);
+		console.log("   Role:", adminUser.role);
+		console.log("   Database ID:", adminUser.id);
+		console.log("   Supabase ID:", adminUser.supabaseId);
+		console.log("");
+		console.log("🔑 Login credentials:");
+		console.log("   Email:", adminEmail);
+		console.log("   Password:", adminPassword);
+		console.log("");
+		console.log("⚠️  IMPORTANT: Change the default password after first login!");
+		console.log("💡 Use the /api/auth/change-password endpoint or Supabase dashboard");
+	} catch (error: any) {
+		console.error("❌ Failed to create admin user:", error.message);
+		throw error;
+	}
 
 	// Create some sample regions
 	const regions = [

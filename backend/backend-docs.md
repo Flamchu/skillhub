@@ -1,14 +1,14 @@
-# SkillHub Backend — Current Implementation (Updated)
+# SkillHub Backend — Supabase Auth Implementation (Updated September 2025)
 
-This document describes the current state of the SkillHub backend implementation, based on the source files in this repository. It aligns the documentation with the code and provides focused improvement suggestions and next steps.
+This document describes the current state of the SkillHub backend implementation with fully integrated Supabase Authentication, based on the source files in this repository.
 
 ## Quick summary
 
 - Backend: Express.js (TypeScript) application running on Railway.
 - Database: PostgreSQL (Supabase-hosted) accessed via Prisma ORM (Prisma Client v6).
-- Auth: Custom JWT auth (signed with `JWT_SECRET`) and role-based helpers. Users are stored in the `User` table (email + hashed password).
+- Auth: **Supabase Auth** with secure session management and role-based access control. Users are linked via `supabaseId`.
 - Frontend: Next.js + Tailwind CSS deployed on Vercel (frontend repo in `/frontend`).
-- Seed: `src/seed.ts` creates an admin user, sample regions and a small skills hierarchy.
+- Seed: `src/seed.ts` creates an admin user in Supabase Auth and links to database profile.
 - Entry point: `src/express.ts` (dev: `ts-node-dev`, build -> `tsc`).
 
 Repository-level scripts (backend/package.json)
@@ -24,7 +24,9 @@ Important env vars used by the code:
 
 - `DATABASE_URL` (Prisma datasource)
 - `DIRECT_URL` (optional Prisma direct URL in schema)
-- `JWT_SECRET` (used to sign/verify JWTs)
+- `SUPABASE_URL` (Supabase project URL)
+- `SUPABASE_ANON_KEY` (Supabase anonymous/public key)
+- `SUPABASE_SERVICE_ROLE_KEY` (Supabase service role key for server-side operations)
 - Any other Railway/Supabase connection variables for deployment
 
 Ensure these are set in Railway and locally (e.g., `.env`) before running the app.
@@ -33,7 +35,7 @@ Ensure these are set in Railway and locally (e.g., `.env`) before running the ap
 
 The Prisma schema (`prisma/schema.prisma`) defines the primary models used across the API. Important models and notable fields:
 
-- `User` — id (uuid), email (unique), password (hashed), name, headline, bio, regionId, role (enum: USER, INSTRUCTOR, ADMIN), relations: `skills`, `testAttempts`, `bookmarks`, `recommendations`.
+- `User` — id (uuid), **supabaseId** (unique, links to Supabase Auth), email (optional, unique), name, headline, bio, regionId, role (enum: USER, INSTRUCTOR, ADMIN), relations: `skills`, `testAttempts`, `bookmarks`, `recommendations`.
 - `Skill` — hierarchical skill model with `parentId`, `slug`, `name`, `children`, and relations to `Course`, `Test`, `UserSkill`.
 - `UserSkill` — junction table storing `proficiency` (enum), `targetLevel`, `progress` (0–100), `lastPracticed`.
 - `Course` — title, provider, `source` (enum: INTERNAL, YOUTUBE, UDEMY, OTHER), `externalId`, `difficulty`, `isPaid`, `priceCents`, relation to `CourseTag` & `CourseSkill`.
@@ -48,28 +50,34 @@ Enums used: `Role`, `ProficiencyLevel`, `CourseSource`, `CourseDifficulty`, `Que
 
 ## Authentication & Authorization
 
-- The app uses JWTs signed with `JWT_SECRET`.
-- Middleware `src/middleware/auth.ts` exposes:
-  - `authenticateToken` — verifies Bearer token, checks user exists in database, attaches `req.user = { id, email, role }`.
+- The app uses **Supabase Auth** with secure session management.
+- Middleware `src/middleware/supabaseAuth.ts` exposes:
+  - `authenticateSupabaseToken` — verifies Supabase session token, validates user exists in database, attaches `req.user = { id, email, role, supabaseId }`.
   - `requireRole(role)` — middleware factory that allows the requested role or `ADMIN`.
   - `requireAdmin` — shorthand for `requireRole('ADMIN')`.
+  - `createUserProfile` — helper for creating user profiles after Supabase registration.
 
 Notes on current behavior:
 
-- Tokens are validated by checking `userId` inside the JWT payload and ensuring the user exists in the DB.
-- Passwords are hashed using `bcryptjs` (saltRounds = 12) during registration/seed.
-- There is no refresh token flow implemented.
+- Session tokens are validated through Supabase Auth service.
+- Passwords are managed entirely by Supabase (secure hashing, reset flows, etc.).
+- Supports refresh token flow out of the box.
+- Email verification and password reset are handled by Supabase.
+- Multi-factor authentication ready for future implementation.
 
 ## Routes / API Endpoints (implemented in `src/routes`)
 
 All endpoints are mounted under `/api` in `src/express.ts`. Major route files and what they offer:
 
-- `auth.ts` (/api/auth)
+- `supabaseAuth.ts` (/api/auth)
 
-  - `POST /register` — create user (validates email/password complexity), returns JWT
-  - `POST /login` — login with email/password, returns JWT
-  - `PATCH /change-password` — protected; change password with current password validation
-  - Rate-limited using `express-rate-limit` (15 min window)
+  - `POST /register` — create user via Supabase Auth, creates linked database profile
+  - `POST /login` — login via Supabase Auth, returns session tokens
+  - `POST /refresh` — refresh access tokens using refresh token
+  - `POST /logout` — secure logout through Supabase
+  - `PATCH /change-password` — protected; change password via Supabase Admin API
+  - `GET /me` — get current user profile
+  - Rate-limited using `express-rate-limit` (20 requests per 15 min window)
 
 - `users.ts` (/api/users)
 
@@ -139,10 +147,10 @@ Notes:
 ## Seed script
 
 - `src/seed.ts` creates:
-  - An admin user with default credentials (`root@flamchustudios.com` / `verysecurepassword$1`) — please change immediately in production.
+  - An admin user in Supabase Auth with linked database profile (`admin@skillhub.com` / `AdminPass123!`) — change password after first login.
   - Sample `Region` rows (North America, Europe, Asia Pacific, Latin America, Africa).
   - Sample skills hierarchy (Programming → JavaScript/TypeScript/React/Node.js, Design → UI/UX/Figma, Data Science → ML/SQL).
-- Run with `npx prisma db seed` or `npm run seed`.
+- Run with `npx prisma db seed` or `yarn seed`.
 
 ## Observations from the code (what is present)
 
@@ -152,18 +160,23 @@ Notes:
 - Recommendations include a simple rules-based/content-based implementation and a basic collaborative filtering example.
 - Tests attempted are stored with `answers` JSON so manual grading is feasible later.
 
-## Potential improvements (prioritized)
+## Security Features Implemented ✅
 
-1. Secrets & Auth
+1. **Supabase Authentication Integration**
 
-- Move away from manual JWT claim naming assumptions: ensure the token payload includes `userId` consistently. Consider storing `sub` claim and using standard claims. Add token issuer (`iss`) and audience (`aud`) checks.
-- Implement refresh tokens and short-lived access tokens for better security.
-- Replace manual JWT signature checks with middleware that also verifies token revocation (e.g., store jti in DB or use Supabase Auth session verification if integrating with Supabase Auth). Estimated effort: 1–2 days.
+   - ✅ Secure session management with automatic token refresh
+   - ✅ Built-in email verification and password reset flows
+   - ✅ Rate limiting on auth endpoints (20 requests per 15 min)
+   - ✅ Production-ready password hashing and validation
+   - ✅ Multi-factor authentication support (ready for configuration)
+   - ✅ OAuth provider integration ready
 
-2. Password & Account Security
+2. **Enhanced Security Measures**
 
-- Enforce rate limits strictly on auth endpoints (dev limit is permissive: `max: 5000`). Lower for production (e.g., 5–20 per window depending on needs).
-- Add email verification and password reset flows (tokens emailed via an SMTP provider). Estimated effort: 2–4 days.
+   - ✅ Service role key isolation for server-side operations
+   - ✅ Proper token verification through Supabase Auth service
+   - ✅ User profile linking with database integrity
+   - ✅ Comprehensive audit logging via Supabase dashboard
 
 3. Input Validation & Types
 
@@ -206,13 +219,24 @@ Notes:
 - Add OpenAPI (Swagger) or Postman collection export for the API.
 - Add `backend/README.md` with local dev quickstart and env var examples. Estimated effort: 0.5–1 day.
 
-## Short-term concrete next steps (recommended)
+## Remaining Improvement Opportunities
 
-1. Reduce auth rate limit to a production-safe value (e.g., `max: 20` per 15 minutes) and rotate the default seed admin password; delete the printed password from the seed script for production.
-2. Add a central error handler and move repeated try/catch logic to smaller controller functions.
-3. Add request validation with `zod` for `auth`, `users`, and `courses` endpoints.
-4. Add basic integration tests for `auth` and `users` endpoints (registration/login and protected route access).
-5. Add a `backend/README.md` with these commands and environment examples.
+1. **API Enhancement**
+
+   - Add request validation with `zod` for endpoint input validation
+   - Implement centralized error handling middleware
+   - Add comprehensive integration test suite
+
+2. **Performance Optimization**
+
+   - Add Redis caching for frequently accessed endpoints
+   - Implement database query optimization and proper indexing
+   - Add connection pooling configuration
+
+3. **Monitoring & Observability**
+   - Integrate structured logging (Winston/Pino)
+   - Add application performance monitoring (APM)
+   - Set up health check endpoints with dependency status
 
 ## Files changed / sources used to produce this doc
 

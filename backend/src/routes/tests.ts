@@ -1,6 +1,6 @@
 import { Router, Response } from "express";
 import { PrismaClient, CourseDifficulty } from "@prisma/client";
-import { AuthenticatedRequest, authenticateToken, requireAdmin } from "../middleware/auth";
+import { AuthenticatedRequest, authenticateSupabaseToken, requireAdmin } from "../middleware/supabaseAuth";
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -151,7 +151,7 @@ router.get("/:id", async (req, res: Response) => {
 });
 
 // start a new test attempt
-router.post("/:id/attempts", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
+router.post("/:id/attempts", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		const { id: testId } = req.params;
 		const userId = req.user!.id;
@@ -214,7 +214,7 @@ router.post("/:id/attempts", authenticateToken, async (req: AuthenticatedRequest
 });
 
 // submit test answers and complete attempt
-router.patch("/attempts/:attemptId", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
+router.patch("/attempts/:attemptId", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		const { attemptId } = req.params;
 		const { answers } = req.body;
@@ -325,7 +325,7 @@ router.patch("/attempts/:attemptId", authenticateToken, async (req: Authenticate
 });
 
 // get user's test attempts
-router.get("/users/:id/attempts", authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
+router.get("/users/:id/attempts", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		const { id: userId } = req.params;
 		const { testId, completed, page = "1", limit = "20", sortBy = "startedAt", sortOrder = "desc" } = req.query;
@@ -408,7 +408,7 @@ router.get("/users/:id/attempts", authenticateToken, async (req: AuthenticatedRe
 });
 
 // create a new test (admin only)
-router.post("/", authenticateToken, requireAdmin, async (req: AuthenticatedRequest, res: Response) => {
+router.post("/", authenticateSupabaseToken, requireAdmin, async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		const { title, skillId, difficulty, questions = [] } = req.body;
 		const createdById = req.user!.id;
