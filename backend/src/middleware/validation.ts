@@ -1,14 +1,14 @@
 import { Request, Response, NextFunction } from "express";
 import { z, ZodError, ZodSchema } from "zod";
 
-// Interface for validation schema
+// interface for validation schema
 interface ValidationSchema {
 	params?: ZodSchema<any>;
 	query?: ZodSchema<any>;
 	body?: ZodSchema<any>;
 }
 
-// Custom error class for validation errors
+// custom error class for validation errors
 export class ValidationError extends Error {
 	public statusCode: number = 400;
 	public issues: z.ZodIssue[];
@@ -20,15 +20,11 @@ export class ValidationError extends Error {
 	}
 }
 
-/**
- * Middleware factory that validates request parameters, query, and body using Zod schemas
- * @param schema Object containing optional params, query, and body schemas
- * @returns Express middleware function
- */
+// middleware factory that validates request parameters, query, and body using zod schemas
 export const validate = (schema: ValidationSchema) => {
 	return (req: Request, res: Response, next: NextFunction) => {
 		try {
-			// Validate params if schema provided
+			// validate params if schema provided
 			if (schema.params) {
 				const result = schema.params.safeParse(req.params);
 				if (!result.success) {
@@ -37,7 +33,7 @@ export const validate = (schema: ValidationSchema) => {
 				req.params = result.data;
 			}
 
-			// Validate query if schema provided
+			// validate query if schema provided
 			if (schema.query) {
 				const result = schema.query.safeParse(req.query);
 				if (!result.success) {
@@ -46,7 +42,7 @@ export const validate = (schema: ValidationSchema) => {
 				req.query = result.data;
 			}
 
-			// Validate body if schema provided
+			// validate body if schema provided
 			if (schema.body) {
 				const result = schema.body.safeParse(req.body);
 				if (!result.success) {
@@ -62,11 +58,7 @@ export const validate = (schema: ValidationSchema) => {
 	};
 };
 
-/**
- * Helper function to extract specific parts of a validation schema
- * @param fullSchema The complete validation schema
- * @returns Object with individual schemas
- */
+// helper function to extract specific parts of a validation schema
 export const extractSchemas = (fullSchema: z.ZodObject<any>) => {
 	const shape = fullSchema.shape;
 	return {
@@ -76,29 +68,17 @@ export const extractSchemas = (fullSchema: z.ZodObject<any>) => {
 	};
 };
 
-/**
- * Convenience function to validate just the request body
- * @param bodySchema Zod schema for request body
- * @returns Express middleware function
- */
+// convenience function to validate just the request body
 export const validateBody = (bodySchema: ZodSchema<any>) => {
 	return validate({ body: bodySchema });
 };
 
-/**
- * Convenience function to validate just the query parameters
- * @param querySchema Zod schema for query parameters
- * @returns Express middleware function
- */
+// convenience function to validate just the query parameters
 export const validateQuery = (querySchema: ZodSchema<any>) => {
 	return validate({ query: querySchema });
 };
 
-/**
- * Convenience function to validate just the route parameters
- * @param paramsSchema Zod schema for route parameters
- * @returns Express middleware function
- */
+// convenience function to validate just the route parameters
 export const validateParams = (paramsSchema: ZodSchema<any>) => {
 	return validate({ params: paramsSchema });
 };

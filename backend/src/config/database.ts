@@ -1,11 +1,11 @@
 import { PrismaClient } from "@prisma/client";
 
-// Create Prisma client with optimized settings
+// create prisma client with optimized settings
 export const prisma = new PrismaClient({
 	log: process.env.NODE_ENV === "development" ? ["query", "info", "warn", "error"] : ["warn", "error"],
 });
 
-// Query performance monitoring
+// query performance monitoring
 if (process.env.NODE_ENV === "development") {
 	prisma.$on("query", (e: any) => {
 		if (e.duration > 1000) {
@@ -16,7 +16,7 @@ if (process.env.NODE_ENV === "development") {
 	});
 }
 
-// Connection management
+// connection management
 export const connectDatabase = async () => {
 	try {
 		await prisma.$connect();
@@ -36,7 +36,7 @@ export const disconnectDatabase = async () => {
 	}
 };
 
-// Graceful shutdown
+// graceful shutdown
 process.on("SIGINT", async () => {
 	console.log("🔄 Graceful shutdown initiated...");
 	await disconnectDatabase();

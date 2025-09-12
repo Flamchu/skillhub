@@ -8,9 +8,7 @@ generator client {
   provider = "prisma-client-js"
 }
 
-/**
- * Enums
- */
+// enums
 enum Role {
   USER
   INSTRUCTOR
@@ -50,13 +48,11 @@ enum RecommendationAlgorithm {
   HYBRID
 }
 
-/**
- * Models
- */
+// models
 model User {
   id         String   @id @default(uuid())
-  supabaseId String   @unique // Links to Supabase Auth user
-  email      String?  @unique // Optional since Supabase handles email verification
+  supabaseId String   @unique // links to supabase auth user
+  email      String?  @unique // optional since supabase handles email verification
   name       String?
   headline   String?
   bio        String?
@@ -105,7 +101,7 @@ model UserSkill {
   skill         Skill             @relation(fields: [skillId], references: [id])
   proficiency   ProficiencyLevel  @default(BASIC)
   targetLevel   ProficiencyLevel?
-  progress      Int               @default(0) // 0-100
+  progress      Int               @default(0) // 0-100 completion
   lastPracticed DateTime?
   createdAt     DateTime          @default(now())
   updatedAt     DateTime          @updatedAt
@@ -121,16 +117,16 @@ model Course {
   id              String           @id @default(uuid())
   title           String
   description     String?
-  provider        String? // e.g. "Udemy", "YouTube channel", "internal"
+  provider        String? // e.g. "udemy", "youtube channel", "internal"
   source          CourseSource     @default(INTERNAL)
-  externalId      String? // provider-specific id (YouTube video id, Udemy course id)
+  externalId      String? // provider-specific id (youtube video id, udemy course id)
   url             String?
   language        String?          @default("en")
   difficulty      CourseDifficulty @default(BEGINNER)
   durationMinutes Int?
   rating          Float?
   isPaid          Boolean          @default(false)
-  priceCents      Int? // store prices as cents
+  priceCents      Int? // prices stored as cents
   tags            CourseTag[]
   skills          CourseSkill[]
   createdAt       DateTime         @default(now())
@@ -152,7 +148,7 @@ model CourseSkill {
   courseId  String
   skill     Skill  @relation(fields: [skillId], references: [id])
   skillId   String
-  relevance Int    @default(50) // 0-100 relevance score
+  relevance Int    @default(50) // 0-100 relevance
 
   @@unique([courseId, skillId])
   @@index([skillId])
@@ -250,7 +246,7 @@ model Recommendation {
   course    Course?                 @relation(fields: [courseId], references: [id])
   algorithm RecommendationAlgorithm @default(RULES)
   score     Float                   @default(0)
-  meta      Json? // explanation, rationale, features used
+  meta      Json? // explanation, rationale, features
   createdAt DateTime                @default(now())
 
   @@index([userId])

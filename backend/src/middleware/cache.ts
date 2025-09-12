@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { redis, generateCacheKey, CACHE_TTL, isRedisAvailable } from "../config/redis";
 
-// Interface for cache options
+// interface for cache options
 interface CacheOptions {
 	ttl?: number;
 	keyGenerator?: (req: Request) => string;
@@ -10,40 +10,36 @@ interface CacheOptions {
 	onMiss?: (key: string) => void;
 }
 
-// Default key generator
+// default key generator
 const defaultKeyGenerator = (req: Request): string => {
 	const { method, originalUrl, query } = req;
 	const queryString = Object.keys(query).length > 0 ? JSON.stringify(query) : "";
 	return generateCacheKey("api", method, originalUrl, queryString);
 };
 
-/**
- * Cache middleware factory
- * @param options Cache configuration options
- * @returns Express middleware function
- */
+// cache middleware factory
 export const cache = (options: CacheOptions = {}) => {
 	const { ttl = CACHE_TTL.SHORT, keyGenerator = defaultKeyGenerator, skipCache = () => false, onHit, onMiss } = options;
 
 	return async (req: Request, res: Response, next: NextFunction) => {
 		try {
-			// Skip cache for non-GET requests, when skipCache returns true, or when Redis is not available
+			// skip cache for non-get requests or when redis unavailable
 			if (req.method !== "GET" || skipCache(req) || !redis || !isRedisAvailable) {
 				return next();
 			}
 
 			const cacheKey = keyGenerator(req);
 
-			// Try to get cached response
+			// try to get cached response
 			const cachedData = await redis.get(cacheKey);
 
 			if (cachedData) {
-				// Cache hit
+				// cache hit
 				onHit?.(cacheKey);
 
 				const parsedData = JSON.parse(cachedData);
 
-				// Set cache headers
+				// set cache headers
 				res.set({
 					"X-Cache": "HIT",
 					"X-Cache-Key": cacheKey,
@@ -53,7 +49,7 @@ export const cache = (options: CacheOptions = {}) => {
 				return res.json(parsedData);
 			}
 
-			// Cache miss - intercept response to cache it
+			// cache miss - intercept response to cache it
 			onMiss?.(cacheKey);
 
 			const originalSend = res.json;
@@ -64,14 +60,14 @@ export const cache = (options: CacheOptions = {}) => {
 				return originalSend.call(this, data);
 			};
 
-			// Continue with request processing
+			// continue with request processing
 			res.on("finish", async () => {
 				try {
-					// Only cache successful responses (2xx status codes) and if Redis is available
+					// only cache successful responses (2xx status codes) and if redis is available
 					if (res.statusCode >= 200 && res.statusCode < 300 && responseData && redis && isRedisAvailable) {
 						await redis.setex(cacheKey, ttl, JSON.stringify(responseData));
 
-						// Set cache headers for next time
+						// set cache headers for next time
 						res.set({
 							"X-Cache": "MISS",
 							"X-Cache-Key": cacheKey,
@@ -80,26 +76,23 @@ export const cache = (options: CacheOptions = {}) => {
 					}
 				} catch (error) {
 					console.error("Cache storage error:", error);
-					// Don't fail the request if caching fails
+					// don't fail the request if caching fails
 				}
 			});
 
 			next();
 		} catch (error) {
 			console.error("Cache middleware error:", error);
-			// Continue without caching if Redis is down
+			// continue without caching if redis is down
 			next();
 		}
 	};
 };
 
-/**
- * Cache invalidation helper
- * @param pattern Redis key pattern to invalidate
- */
+// cache invalidation helper
 export const invalidateCache = async (pattern: string): Promise<void> => {
 	try {
-		// Skip invalidation if Redis is not available
+		// skip invalidation if redis not available
 		if (!redis || !isRedisAvailable) {
 			return;
 		}
@@ -114,10 +107,7 @@ export const invalidateCache = async (pattern: string): Promise<void> => {
 	}
 };
 
-/**
- * Cache invalidation middleware for write operations
- * @param patterns Array of cache patterns to invalidate
- */
+// cache invalidation middleware for write operations
 export const invalidateCacheMiddleware = (patterns: string[]) => {
 	return async (req: Request, res: Response, next: NextFunction) => {
 		const originalSend = res.json;
@@ -125,7 +115,7 @@ export const invalidateCacheMiddleware = (patterns: string[]) => {
 		res.json = function (data: any) {
 			const result = originalSend.call(this, data);
 
-			// Invalidate cache after successful write operations
+			// invalidate cache after successful write operations
 			if (res.statusCode >= 200 && res.statusCode < 300) {
 				patterns.forEach((pattern) => {
 					invalidateCache(pattern).catch((error) => {
@@ -141,11 +131,9 @@ export const invalidateCacheMiddleware = (patterns: string[]) => {
 	};
 };
 
-/**
- * Predefined cache configurations for common use cases
- */
+// predefined cache configurations for common use cases
 export const cacheConfigs = {
-	// Long-term cache for relatively static data
+	// long-term cache for relatively static data
 	skillsHierarchy: {
 		ttl: CACHE_TTL.LONG,
 		keyGenerator: () => generateCacheKey("skills", "hierarchy", "tree"),
@@ -153,7 +141,7 @@ export const cacheConfigs = {
 		onMiss: () => console.log("💥 Cache MISS: Skills hierarchy"),
 	},
 
-	// Medium-term cache for skill lists
+	// medium-term cache for skill lists
 	skillsList: {
 		ttl: CACHE_TTL.MEDIUM,
 		keyGenerator: (req: Request) => {
@@ -164,7 +152,7 @@ export const cacheConfigs = {
 		onMiss: (key: string) => console.log("💥 Cache MISS: Skills list", key.split(":").slice(-3).join(":")),
 	},
 
-	// Short-term cache for course listings (frequently updated)
+	// short-term cache for course listings (frequently updated)
 	coursesList: {
 		ttl: CACHE_TTL.SHORT,
 		keyGenerator: (req: Request) => {
@@ -175,7 +163,7 @@ export const cacheConfigs = {
 		onMiss: () => console.log("💥 Cache MISS: Courses list"),
 	},
 
-	// Long-term cache for regions (rarely change)
+	// long-term cache for regions (rarely change)
 	regionsList: {
 		ttl: CACHE_TTL.VERY_LONG,
 		keyGenerator: (req: Request) => {
@@ -186,12 +174,12 @@ export const cacheConfigs = {
 		onMiss: () => console.log("💥 Cache MISS: Regions list"),
 	},
 
-	// Medium-term cache for user profiles
+	// medium-term cache for user profiles
 	userProfile: {
 		ttl: CACHE_TTL.MEDIUM,
 		keyGenerator: (req: Request) => generateCacheKey("user", "profile", req.params.id),
 		skipCache: (req: Request) => {
-			// Skip cache for authenticated requests to own profile
+			// skip cache for authenticated requests to own profile
 			const authHeader = req.headers["authorization"];
 			return !!authHeader;
 		},

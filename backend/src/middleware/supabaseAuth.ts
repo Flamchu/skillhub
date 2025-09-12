@@ -17,7 +17,7 @@ export interface AuthenticatedRequest extends Request {
 
 export const authenticateSupabaseToken = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
 	const authHeader = req.headers["authorization"];
-	const token = authHeader && authHeader.split(" ")[1]; // Bearer token
+	const token = authHeader && authHeader.split(" ")[1]; // bearer token
 
 	if (!token) {
 		res.status(401).json({ error: "Access token required" });
@@ -25,7 +25,7 @@ export const authenticateSupabaseToken = async (req: AuthenticatedRequest, res: 
 	}
 
 	try {
-		// Verify the token with Supabase using JWT verification
+		// verify the token with supabase using jwt verification
 		const { data, error } = await supabase.auth.getUser(token);
 
 		if (error || !data.user) {
@@ -37,7 +37,7 @@ export const authenticateSupabaseToken = async (req: AuthenticatedRequest, res: 
 
 		const user = data.user;
 
-		// Find the user in our database using supabaseId
+		// find the user in database using supabase id
 		const dbUser = await prisma.user.findUnique({
 			where: { supabaseId: user.id },
 			select: {
@@ -50,8 +50,8 @@ export const authenticateSupabaseToken = async (req: AuthenticatedRequest, res: 
 		});
 
 		if (!dbUser) {
-			// User exists in Supabase but not in our database
-			// This could happen for new users - we might want to create them automatically
+			// user exists in supabase but not in database
+			// could happen for new users - might want to create them automatically
 			res.status(401).json({
 				error: "User profile not found. Please complete registration.",
 				supabaseUser: {
@@ -77,7 +77,7 @@ export const authenticateSupabaseToken = async (req: AuthenticatedRequest, res: 
 	}
 };
 
-// Helper function to create user profile after Supabase registration
+// helper function to create user profile after supabase registration
 export const createUserProfile = async (supabaseId: string, email: string, name?: string) => {
 	try {
 		const user = await prisma.user.create({
@@ -104,7 +104,7 @@ export const createUserProfile = async (supabaseId: string, email: string, name?
 	}
 };
 
-// Role-based authorization middleware (unchanged)
+// role-based authorization middleware
 export const requireRole = (role: string) => {
 	return (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
 		if (!req.user) {
@@ -122,43 +122,3 @@ export const requireRole = (role: string) => {
 };
 
 export const requireAdmin = requireRole("ADMIN");
-
-// Legacy JWT middleware - keep for backward compatibility during migration
-export const authenticateToken = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
-	// Implementation moved from original auth.ts for backward compatibility
-	const jwt = require("jsonwebtoken");
-	const authHeader = req.headers["authorization"];
-	const token = authHeader && authHeader.split(" ")[1]; // bearer token
-
-	if (!token) {
-		res.status(401).json({ error: "Access token required" });
-		return;
-	}
-
-	try {
-		const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
-
-		// verify user exists in db
-		const user = await prisma.user.findUnique({
-			where: { id: decoded.userId },
-			select: { id: true, email: true, role: true },
-		});
-
-		if (!user || !user.email) {
-			res.status(401).json({ error: "User not found" });
-			return;
-		}
-
-		req.user = {
-			id: user.id,
-			email: user.email,
-			role: user.role,
-			supabaseId: "", // Empty for legacy users
-		};
-		next();
-	} catch (error) {
-		console.error("Token verification error:", error);
-		res.status(403).json({ error: "Invalid or expired token" });
-		return;
-	}
-};

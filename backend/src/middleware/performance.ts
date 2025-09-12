@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import responseTime from "response-time";
 
-// Interface for performance metrics
+// interface for performance metrics
 interface PerformanceMetrics {
 	timestamp: Date;
 	method: string;
@@ -13,20 +13,18 @@ interface PerformanceMetrics {
 	queryCount?: number;
 }
 
-// Store for recent performance metrics (in production, send to monitoring service)
+// store for recent performance metrics (in production, send to monitoring service)
 const recentMetrics: PerformanceMetrics[] = [];
 const MAX_STORED_METRICS = 1000;
 
-// Performance thresholds
+// performance thresholds
 const PERFORMANCE_THRESHOLDS = {
 	SLOW_QUERY: 1000, // 1 second
 	VERY_SLOW_QUERY: 3000, // 3 seconds
 	WARNING_THRESHOLD: 500, // 500ms
 } as const;
 
-/**
- * Performance monitoring middleware
- */
+// performance monitoring middleware
 export const performanceMonitoring = responseTime((req: Request, res: Response, time: number) => {
 	const metrics: PerformanceMetrics = {
 		timestamp: new Date(),
@@ -38,13 +36,13 @@ export const performanceMonitoring = responseTime((req: Request, res: Response, 
 		cacheHit: res.get("X-Cache") === "HIT",
 	};
 
-	// Add to recent metrics
+	// add to recent metrics
 	recentMetrics.push(metrics);
 	if (recentMetrics.length > MAX_STORED_METRICS) {
 		recentMetrics.shift();
 	}
 
-	// Log slow queries
+	// log slow queries
 	if (time > PERFORMANCE_THRESHOLDS.VERY_SLOW_QUERY) {
 		console.error(`🐌 VERY SLOW REQUEST: ${req.method} ${req.path} - ${time.toFixed(2)}ms`);
 	} else if (time > PERFORMANCE_THRESHOLDS.SLOW_QUERY) {
@@ -53,25 +51,20 @@ export const performanceMonitoring = responseTime((req: Request, res: Response, 
 		console.log(`⏱️  REQUEST: ${req.method} ${req.path} - ${time.toFixed(2)}ms`);
 	}
 
-	// Log cache performance
+	// log cache performance
 	if (metrics.cacheHit) {
 		console.log(`💨 FAST (cached): ${req.method} ${req.path} - ${time.toFixed(2)}ms`);
 	}
 });
 
-/**
- * Prisma query counting middleware
- */
+// prisma query counting middleware
 export const queryCounter = (req: Request, res: Response, next: NextFunction) => {
-	// This would require Prisma middleware to track query count
-	// For now, we'll add it as a placeholder
+	// requires prisma middleware to track query count - placeholder for now
 	(req as any).queryCount = 0;
 	next();
 };
 
-/**
- * Get performance metrics
- */
+// get performance metrics
 export const getPerformanceMetrics = () => {
 	const now = Date.now();
 	const oneHourAgo = now - 60 * 60 * 1000;
@@ -105,9 +98,7 @@ export const getPerformanceMetrics = () => {
 	};
 };
 
-/**
- * Performance endpoint for monitoring
- */
+// performance endpoint for monitoring
 export const performanceEndpoint = (req: Request, res: Response) => {
 	const metrics = getPerformanceMetrics();
 
@@ -118,13 +109,11 @@ export const performanceEndpoint = (req: Request, res: Response) => {
 	});
 };
 
-/**
- * Health check with performance info
- */
+// health check with performance info
 export const healthCheck = async (req: Request, res: Response) => {
 	const startTime = Date.now();
 
-	// Basic health checks
+	// basic health checks
 	const health = {
 		status: "healthy",
 		timestamp: new Date().toISOString(),

@@ -1,30 +1,30 @@
 import Redis from "ioredis";
 
-// Check if Redis should be enabled
+// check if redis should be enabled
 const REDIS_ENABLED = process.env.REDIS_ENABLED !== "false" && process.env.NODE_ENV !== "test";
 
-// Redis configuration
+// redis configuration
 const redisConfig = {
 	host: process.env.REDIS_HOST || "localhost",
 	port: parseInt(process.env.REDIS_PORT || "6379"),
 	password: process.env.REDIS_PASSWORD,
 	db: parseInt(process.env.REDIS_DB || "0"),
 	retryDelayOnFailover: 100,
-	maxRetriesPerRequest: 1, // Fail fast if Redis is not available
+	maxRetriesPerRequest: 1, // fail fast if redis not available
 	lazyConnect: true,
 	keepAlive: 30000,
-	family: 4, // Use IPv4
+	family: 4, // use ipv4
 	commandTimeout: 3000,
 	connectTimeout: 3000,
 };
 
-// Create Redis client only if enabled
+// create redis client only if enabled
 export const redis = REDIS_ENABLED ? new Redis(redisConfig) : null;
 
-// Track Redis availability
+// track redis availability
 export let isRedisAvailable = false;
 
-// Redis connection event handlers (only if Redis is enabled)
+// redis connection event handlers (only if redis enabled)
 if (redis) {
 	redis.on("connect", () => {
 		console.log("📡 Redis connected");
@@ -54,7 +54,7 @@ if (redis) {
 	console.log("⚠️  Redis disabled - caching will be skipped");
 }
 
-// Graceful shutdown
+// graceful shutdown
 process.on("SIGINT", async () => {
 	if (redis) await redis.quit();
 });
@@ -63,12 +63,12 @@ process.on("SIGTERM", async () => {
 	if (redis) await redis.quit();
 });
 
-// Cache key generators
+// cache key generators
 export const generateCacheKey = (prefix: string, ...params: string[]): string => {
 	return `${prefix}:${params.join(":")}`;
 };
 
-// Cache TTL constants (in seconds)
+// cache ttl constants (in seconds)
 export const CACHE_TTL = {
 	SHORT: 5 * 60, // 5 minutes
 	MEDIUM: 30 * 60, // 30 minutes
@@ -76,7 +76,7 @@ export const CACHE_TTL = {
 	VERY_LONG: 24 * 60 * 60, // 24 hours
 } as const;
 
-// Cache prefixes
+// cache prefixes
 export const CACHE_KEYS = {
 	SKILLS_HIERARCHY: "skills:hierarchy",
 	SKILLS_LIST: "skills:list",

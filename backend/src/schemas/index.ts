@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { Role, ProficiencyLevel, CourseSource, CourseDifficulty, QuestionType, RecommendationAlgorithm } from "@prisma/client";
 
-// Common schemas
+// common schemas
 export const uuidSchema = z.string().uuid({ message: "Invalid UUID format" });
 export const emailSchema = z.string().email({ message: "Invalid email format" });
 export const passwordSchema = z
@@ -18,7 +18,7 @@ export const paginationSchema = z.object({
 	sortOrder: z.enum(["asc", "desc"]).default("desc"),
 });
 
-// Auth schemas
+// auth schemas
 export const registerSchema = z.object({
 	body: z.object({
 		email: emailSchema,
@@ -47,7 +47,7 @@ export const changePasswordSchema = z.object({
 	}),
 });
 
-// User schemas
+// user schemas
 export const getUserSchema = z.object({
 	params: z.object({
 		id: uuidSchema,
@@ -74,7 +74,7 @@ export const getUsersSchema = z.object({
 	}),
 });
 
-// User Skills schemas
+// user skills schemas
 export const userSkillsSchema = z.object({
 	params: z.object({
 		userId: uuidSchema,
@@ -121,7 +121,7 @@ export const userSkillProgressionSchema = z.object({
 	}),
 });
 
-// Skills schemas
+// skills schemas
 export const getSkillsSchema = z.object({
 	query: z.object({
 		parentId: uuidSchema.optional(),
@@ -194,7 +194,7 @@ export const advancedSkillSearchSchema = z.object({
 		.extend(paginationSchema.shape),
 });
 
-// Courses schemas
+// courses schemas
 export const getCoursesSchema = z.object({
 	query: z
 		.object({
@@ -283,7 +283,7 @@ export const updateCourseSchema = z.object({
 	}),
 });
 
-// Bookmarks schemas
+// bookmarks schemas
 export const getUserBookmarksSchema = z.object({
 	params: z.object({
 		id: uuidSchema,
@@ -307,7 +307,7 @@ export const deleteBookmarkSchema = z.object({
 	}),
 });
 
-// Tests schemas
+// tests schemas
 export const getTestsSchema = z.object({
 	query: z
 		.object({
@@ -346,7 +346,7 @@ export const getUserTestAttemptsSchema = z.object({
 	query: paginationSchema,
 });
 
-// Recommendations schemas
+// recommendations schemas
 export const getRecommendationsSchema = z.object({
 	query: z
 		.object({
@@ -364,7 +364,7 @@ export const generateRecommendationsSchema = z.object({
 	}),
 });
 
-// Regions schemas
+// regions schemas
 export const getRegionsSchema = z.object({
 	query: paginationSchema,
 });
@@ -419,7 +419,7 @@ export const deleteRegionSchema = z.object({
 	}),
 });
 
-// Export all schemas for easy import
+// export all schemas for easy import
 export const schemas = {
 	// Auth
 	register: registerSchema,

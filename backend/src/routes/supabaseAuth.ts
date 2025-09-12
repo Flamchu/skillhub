@@ -10,7 +10,7 @@ import { schemas } from "../schemas";
 const router = Router();
 const prisma = new PrismaClient();
 
-// Rate limiting for auth endpoints
+// rate limiting for auth endpoints
 const authLimiter = rateLimit({
 	windowMs: 15 * 60 * 1000, // 15 minutes
 	max: 2000, // Reduced from 5000 for better security
@@ -19,7 +19,7 @@ const authLimiter = rateLimit({
 	legacyHeaders: false,
 });
 
-// Register endpoint - creates Supabase user and profile
+// register endpoint - creates supabase user and profile
 router.post(
 	"/register",
 	authLimiter,
@@ -27,7 +27,7 @@ router.post(
 	catchAsync(async (req: Request, res: Response) => {
 		const { email, password, name } = req.body;
 
-		// Create user in Supabase Auth
+		// create user in supabase auth
 		const { data, error } = await supabase.auth.admin.createUser({
 			email: email.toLowerCase(),
 			password,
@@ -46,7 +46,7 @@ router.post(
 			throw createError.internalServerError("Failed to create user account");
 		}
 
-		// Create user profile in our database
+		// create user profile in database
 		try {
 			const userProfile = await createUserProfile(data.user.id, email.toLowerCase(), name);
 
@@ -55,7 +55,7 @@ router.post(
 				user: userProfile,
 			});
 		} catch (dbError: any) {
-			// If profile creation fails, clean up Supabase user
+			// if profile creation fails, clean up supabase user
 			await supabase.auth.admin.deleteUser(data.user.id);
 			console.error("Profile creation error:", dbError);
 			throw dbError; // Let the error handler deal with Prisma errors
@@ -63,7 +63,7 @@ router.post(
 	})
 );
 
-// Login endpoint - uses Supabase Auth
+// login endpoint - uses supabase auth
 router.post(
 	"/login",
 	authLimiter,
@@ -71,7 +71,7 @@ router.post(
 	catchAsync(async (req: Request, res: Response) => {
 		const { email, password } = req.body;
 
-		// Sign in with Supabase
+		// sign in with supabase
 		const { data, error } = await supabaseAuth.auth.signInWithPassword({
 			email: email.toLowerCase(),
 			password,
@@ -86,7 +86,7 @@ router.post(
 			throw createError.unauthorized("Login failed");
 		}
 
-		// Get user profile from our database
+		// get user profile from database
 		const userProfile = await prisma.user.findUnique({
 			where: { supabaseId: data.user.id },
 			select: {

@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { Prisma } from "@prisma/client";
 import { ValidationError } from "./validation";
 
-// Custom application error class
+// custom application error class
 export class AppError extends Error {
 	public statusCode: number;
 	public isOperational: boolean;
@@ -13,12 +13,12 @@ export class AppError extends Error {
 		this.statusCode = statusCode;
 		this.isOperational = isOperational;
 
-		// Maintains proper stack trace
+		// maintains proper stack trace
 		Error.captureStackTrace(this, this.constructor);
 	}
 }
 
-// Interface for error response
+// interface for error response
 interface ErrorResponse {
 	error: string;
 	details?: any;
@@ -27,9 +27,7 @@ interface ErrorResponse {
 	method: string;
 }
 
-/**
- * Formats validation error details for user-friendly response
- */
+// formats validation error details for user-friendly response
 const formatValidationErrors = (issues: any[]) => {
 	return issues.map((issue) => ({
 		field: issue.path.join("."),
@@ -38,13 +36,11 @@ const formatValidationErrors = (issues: any[]) => {
 	}));
 };
 
-/**
- * Maps Prisma error codes to HTTP status codes and user-friendly messages
- */
+// maps prisma error codes to http status codes and user-friendly messages
 const handlePrismaError = (error: Prisma.PrismaClientKnownRequestError): AppError => {
 	switch (error.code) {
 		case "P2002":
-			// Unique constraint violation
+			// unique constraint violation
 			const field = error.meta?.target as string[] | undefined;
 			const fieldName = field ? field[0] : "field";
 			return new AppError(`A record with this ${fieldName} already exists`, 409);
@@ -54,59 +50,59 @@ const handlePrismaError = (error: Prisma.PrismaClientKnownRequestError): AppErro
 			return new AppError("Record not found", 404);
 
 		case "P2003":
-			// Foreign key constraint violation
+			// foreign key constraint violation
 			return new AppError("Referenced record does not exist", 400);
 
 		case "P2014":
-			// Relation violation
+			// relation violation
 			return new AppError("The change violates a required relation", 400);
 
 		case "P2021":
-			// Table does not exist
+			// table does not exist
 			return new AppError("Database table not found", 500);
 
 		case "P2022":
-			// Column does not exist
+			// column does not exist
 			return new AppError("Database column not found", 500);
 
 		case "P2000":
-			// Value too long for column
+			// value too long for column
 			return new AppError("Input value is too long", 400);
 
 		case "P2001":
-			// Record does not exist
+			// record does not exist
 			return new AppError("Record not found", 404);
 
 		case "P2004":
-			// Constraint failed
+			// constraint failed
 			return new AppError("A database constraint was violated", 400);
 
 		case "P2015":
-			// Related record not found
+			// related record not found
 			return new AppError("Related record not found", 404);
 
 		case "P2016":
-			// Query interpretation error
+			// query interpretation error
 			return new AppError("Query interpretation error", 400);
 
 		case "P2017":
-			// Records for relation not connected
+			// records for relation not connected
 			return new AppError("Records are not properly connected", 400);
 
 		case "P2018":
-			// Required connected records not found
+			// required connected records not found
 			return new AppError("Required connected records not found", 400);
 
 		case "P2019":
-			// Input error
+			// input error
 			return new AppError("Input error", 400);
 
 		case "P2020":
-			// Value out of range
+			// value out of range
 			return new AppError("Value out of range", 400);
 
 		case "P2023":
-			// Inconsistent column data
+			// inconsistent column data
 			return new AppError("Inconsistent column data", 400);
 
 		default:
@@ -115,14 +111,11 @@ const handlePrismaError = (error: Prisma.PrismaClientKnownRequestError): AppErro
 	}
 };
 
-/**
- * Central error handling middleware
- * This should be the last middleware in the chain
- */
+// central error handling middleware - should be the last middleware in the chain
 export const errorHandler = (error: Error, req: Request, res: Response, next: NextFunction) => {
 	let appError: AppError;
 
-	// Handle different types of errors
+	// handle different types of errors
 	if (error instanceof AppError) {
 		appError = error;
 	} else if (error instanceof ValidationError) {
@@ -150,12 +143,12 @@ export const errorHandler = (error: Error, req: Request, res: Response, next: Ne
 		console.error("Prisma validation error:", error.message);
 		appError = new AppError("Invalid database query", 400);
 	} else {
-		// Handle other types of errors (syntax errors, etc.)
+		// handle other types of errors (syntax errors, etc.)
 		console.error("Unexpected error:", error);
 		appError = new AppError("Internal server error", 500, false);
 	}
 
-	// Create error response
+	// create error response
 	const errorResponse: ErrorResponse = {
 		error: appError.message,
 		timestamp: new Date().toISOString(),
@@ -163,7 +156,7 @@ export const errorHandler = (error: Error, req: Request, res: Response, next: Ne
 		method: req.method,
 	};
 
-	// Add error details in development mode
+	// add error details in development mode
 	if (process.env.NODE_ENV === "development" && !appError.isOperational) {
 		errorResponse.details = {
 			stack: error.stack,
@@ -171,7 +164,7 @@ export const errorHandler = (error: Error, req: Request, res: Response, next: Ne
 		};
 	}
 
-	// Log error for monitoring
+	// log error for monitoring
 	if (appError.statusCode >= 500) {
 		console.error("Server Error:", {
 			message: appError.message,
@@ -185,25 +178,20 @@ export const errorHandler = (error: Error, req: Request, res: Response, next: Ne
 	res.status(appError.statusCode).json(errorResponse);
 };
 
-/**
- * 404 handler for routes that don't exist
- */
+// 404 handler for routes that don't exist
 export const notFoundHandler = (req: Request, res: Response, next: NextFunction) => {
 	const error = new AppError(`Route ${req.originalUrl} not found`, 404);
 	next(error);
 };
 
-/**
- * Async wrapper to catch errors in async route handlers
- * Usage: router.get('/path', catchAsync(asyncHandler))
- */
+// async wrapper to catch errors in async route handlers
 export const catchAsync = (fn: Function) => {
 	return (req: Request, res: Response, next: NextFunction) => {
 		Promise.resolve(fn(req, res, next)).catch(next);
 	};
 };
 
-// Export commonly used error constructors
+// export commonly used error constructors
 export const createError = {
 	badRequest: (message: string = "Bad request") => new AppError(message, 400),
 	unauthorized: (message: string = "Unauthorized") => new AppError(message, 401),

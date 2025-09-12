@@ -7,10 +7,10 @@ async function main() {
 	console.log("🌱 Starting database seeding...");
 
 	// Create admin user
-	const adminEmail = "root@flamchustudios.com"; // Changed to a more appropriate email
-	const adminPassword = "VerySecurePassword$1"; // Temporary password - user should reset
+	const adminEmail = "root@flamchustudios.com"; // admin email for platform
+	const adminPassword = "VerySecurePassword$1"; // temporary password - reset after first login
 
-	// Check if admin already exists in our database
+	// check if admin already exists in database
 	const existingAdmin = await prisma.user.findFirst({
 		where: {
 			OR: [{ email: adminEmail }, { role: Role.ADMIN }],
@@ -24,7 +24,7 @@ async function main() {
 		console.log("   Role:", existingAdmin.role);
 	} else {
 		try {
-			// Create admin user in Supabase Auth
+			// create admin user in supabase auth
 			const { data: supabaseUser, error } = await supabase.auth.admin.createUser({
 				email: adminEmail,
 				password: adminPassword,
@@ -37,12 +37,12 @@ async function main() {
 			});
 
 			if (error) {
-				// Check if user already exists in Supabase
+				// check if user already exists in supabase
 				if (error.message.includes("already registered") || error.message.includes("already been registered")) {
 					console.log("👤 Admin user already exists in Supabase");
 					console.log("   Email:", adminEmail);
 
-					// Check if local profile exists
+					// check if local profile exists
 					const existingProfile = await prisma.user.findUnique({
 						where: { email: adminEmail },
 					});
@@ -50,7 +50,7 @@ async function main() {
 					if (!existingProfile) {
 						console.log("🔍 Local admin profile not found, creating it...");
 
-						// Get the existing Supabase user
+						// get existing supabase user
 						const {
 							data: { users },
 							error: getUserError,
@@ -60,7 +60,7 @@ async function main() {
 						if (getUserError || !existingSupabaseUser) {
 							console.log("⚠️  Could not retrieve existing Supabase user");
 						} else {
-							// Create local profile for existing Supabase user
+							// create local profile for existing supabase user
 							const adminUser = await prisma.user.create({
 								data: {
 									supabaseId: existingSupabaseUser.id,
@@ -89,7 +89,7 @@ async function main() {
 					throw new Error(`Failed to create admin in Supabase: ${error.message}`);
 				}
 			} else if (supabaseUser.user) {
-				// Create admin profile in our database
+				// create admin profile in database
 				const adminUser = await prisma.user.create({
 					data: {
 						supabaseId: supabaseUser.user.id,
@@ -119,12 +119,12 @@ async function main() {
 			}
 		} catch (error: any) {
 			console.error("❌ Failed to create admin user:", error.message);
-			// Don't throw - continue with seeding
+			// don't throw - continue with seeding
 			console.log("   Continuing with data seeding...");
 		}
 	}
 
-	// Create some sample regions
+	// create sample regions
 	const regions = [
 		{ name: "North America", code: "NA" },
 		{ name: "Europe", code: "EU" },
@@ -149,11 +149,11 @@ async function main() {
 		}
 	}
 
-	// Create sample skills hierarchy
+	// create sample skills hierarchy
 	console.log("🎯 Creating sample skills...");
 
 	const skillsData = [
-		// Programming
+		// programming
 		{
 			name: "Programming",
 			slug: "programming",
@@ -201,7 +201,7 @@ async function main() {
 				},
 			],
 		},
-		// Design
+		// design
 		{
 			name: "Design",
 			slug: "design",
@@ -234,7 +234,7 @@ async function main() {
 				},
 			],
 		},
-		// Data Science
+		// data science
 		{
 			name: "Data Science",
 			slug: "data-science",
@@ -267,7 +267,7 @@ async function main() {
 				},
 			],
 		},
-		// Marketing
+		// marketing
 		{
 			name: "Marketing",
 			slug: "marketing",
@@ -295,7 +295,7 @@ async function main() {
 				},
 			],
 		},
-		// Project Management
+		// project management
 		{
 			name: "Project Management",
 			slug: "project-management",
@@ -340,7 +340,7 @@ async function main() {
 			console.log(`   ⏭️  Parent skill already exists: ${skillData.name}`);
 		}
 
-		// Create child skills
+		// create child skills
 		for (const childData of skillData.children) {
 			const existingChild = await prisma.skill.findUnique({
 				where: { slug: childData.slug },
