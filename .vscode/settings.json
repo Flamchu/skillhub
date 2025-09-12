@@ -7,5 +7,6 @@
 	"typescript.suggest.autoImports": true,
 	"eslint.nodePath": ".yarn/sdks",
 	"typescript.enablePromptUseWorkspaceTsdk": true,
-	"typescript.preferences.implicitProjectConfig.checkJs": true
+	"typescript.preferences.implicitProjectConfig.checkJs": true,
+	"markdown.validate.enabled": true
 }

@@ -1,270 +1,237 @@
-it. You want a **properly formatted `documentation.md`** with fenced code blocks, clear sections, and markdown best practices. I’ll rewrite the file so it renders cleanly in any Markdown viewer.
+# SkillHub Backend — Current Implementation (Updated)
 
-Here’s the corrected version:
+This document describes the current state of the SkillHub backend implementation, based on the source files in this repository. It aligns the documentation with the code and provides focused improvement suggestions and next steps.
 
-# SkillHub Backend Documentation
+## Quick summary
 
-## Overview
+- Backend: Express.js (TypeScript) application running on Railway.
+- Database: PostgreSQL (Supabase-hosted) accessed via Prisma ORM (Prisma Client v6).
+- Auth: Custom JWT auth (signed with `JWT_SECRET`) and role-based helpers. Users are stored in the `User` table (email + hashed password).
+- Frontend: Next.js + Tailwind CSS deployed on Vercel (frontend repo in `/frontend`).
+- Seed: `src/seed.ts` creates an admin user, sample regions and a small skills hierarchy.
+- Entry point: `src/express.ts` (dev: `ts-node-dev`, build -> `tsc`).
 
-The SkillHub backend provides a RESTful API for managing user profiles, skills, courses, tests, recommendations, and competition statistics. It is built with **Express (TypeScript)**, **Prisma ORM**, and **PostgreSQL (Supabase on Railway)**.
+Repository-level scripts (backend/package.json)
 
-This document covers:
+- `yarn dev` or `npm run dev` → `ts-node-dev ./src/express.ts` (development server)
+- `yarn build` → `tsc` (compile to `dist`)
+- `yarn start` → `node ./dist/express.js` (run compiled app)
+- `yarn seed` → `ts-node ./src/seed.ts` (seed DB)
 
-- Project requirements and objectives (from the original assignment)
-- Database schema (Prisma models)
-- API design (endpoints, request/response formats)
-- Authentication and security
-- Data seeding and integrations
-- Development workflow
-- Testing and monitoring
+## Environment
 
----
+Important env vars used by the code:
 
-## Project Requirements Recap
+- `DATABASE_URL` (Prisma datasource)
+- `DIRECT_URL` (optional Prisma direct URL in schema)
+- `JWT_SECRET` (used to sign/verify JWTs)
+- Any other Railway/Supabase connection variables for deployment
 
-- Web application for planning and developing professional skills.
-- Users can:
-  - Create and manage a personal skill profile.
-  - Select target areas of development.
-  - Receive course recommendations.
-  - Take tests to validate knowledge.
-  - Compare progress with other users in their region.
-- Course sources:
-  - Internal curated database (30–50 entries).
-  - External APIs (YouTube, Udemy) optional.
+Ensure these are set in Railway and locally (e.g., `.env`) before running the app.
 
----
+## Prisma schema (high level)
 
-## Technology Stack
+The Prisma schema (`prisma/schema.prisma`) defines the primary models used across the API. Important models and notable fields:
 
-- **Backend:** Express.js (TypeScript)
-- **Database:** PostgreSQL (Supabase, hosted on Railway)
-- **ORM:** Prisma
-- **Auth:** Supabase Auth (JWT tokens, OAuth providers optional)
-- **Testing:** Postman collections + Jest (optional)
-- **Deployment:** Railway
+- `User` — id (uuid), email (unique), password (hashed), name, headline, bio, regionId, role (enum: USER, INSTRUCTOR, ADMIN), relations: `skills`, `testAttempts`, `bookmarks`, `recommendations`.
+- `Skill` — hierarchical skill model with `parentId`, `slug`, `name`, `children`, and relations to `Course`, `Test`, `UserSkill`.
+- `UserSkill` — junction table storing `proficiency` (enum), `targetLevel`, `progress` (0–100), `lastPracticed`.
+- `Course` — title, provider, `source` (enum: INTERNAL, YOUTUBE, UDEMY, OTHER), `externalId`, `difficulty`, `isPaid`, `priceCents`, relation to `CourseTag` & `CourseSkill`.
+- `CourseSkill` — links course to skill with `relevance` (0–100).
+- `Tag` / `CourseTag` — course tagging system.
+- `Test`, `TestQuestion`, `TestChoice`, `TestAttempt` — testing engine; `TestAttempt.answers` stored as `Json`.
+- `Bookmark` — user bookmarks.
+- `Recommendation` — user recommendations with `algorithm` enum and `meta` JSON.
+- `Region` and `SkillMarketStat` — region metadata and market statistics.
 
----
+Enums used: `Role`, `ProficiencyLevel`, `CourseSource`, `CourseDifficulty`, `QuestionType`, `RecommendationAlgorithm`.
 
-## Database Schema (Prisma)
+## Authentication & Authorization
 
-The backend schema is defined in `prisma/schema.prisma`.
+- The app uses JWTs signed with `JWT_SECRET`.
+- Middleware `src/middleware/auth.ts` exposes:
+  - `authenticateToken` — verifies Bearer token, checks user exists in database, attaches `req.user = { id, email, role }`.
+  - `requireRole(role)` — middleware factory that allows the requested role or `ADMIN`.
+  - `requireAdmin` — shorthand for `requireRole('ADMIN')`.
 
-### Core Models
+Notes on current behavior:
 
-- **User**: Represents an individual user. Links to skills, tests, bookmarks, recommendations, and region.
-- **Skill**: Hierarchical model of professional skills (supports parent-child relations).
-- **UserSkill**: Junction storing proficiency levels and progress per user.
-- **Course**: Educational material entry (internal or external).
-- **CourseSkill**: Links courses to skills with relevance.
-- **Tag** / **CourseTag**: Tagging system for courses.
-- **Test**, **TestQuestion**, **TestChoice**, **TestAttempt**: Testing engine.
-- **Bookmark**: Saved courses by users.
-- **Recommendation**: Generated suggestions with metadata.
-- **Region** / **SkillMarketStat**: Regional statistics for competition analysis.
+- Tokens are validated by checking `userId` inside the JWT payload and ensuring the user exists in the DB.
+- Passwords are hashed using `bcryptjs` (saltRounds = 12) during registration/seed.
+- There is no refresh token flow implemented.
 
-Example snippet:
+## Routes / API Endpoints (implemented in `src/routes`)
 
-```prisma
-model User {
-  id             String   @id @default(uuid())
-  supabaseId     String?  @unique
-  email          String?  @unique
-  name           String?
-  regionId       String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-}
-```
+All endpoints are mounted under `/api` in `src/express.ts`. Major route files and what they offer:
 
----
+- `auth.ts` (/api/auth)
 
-## API Design
+  - `POST /register` — create user (validates email/password complexity), returns JWT
+  - `POST /login` — login with email/password, returns JWT
+  - `PATCH /change-password` — protected; change password with current password validation
+  - Rate-limited using `express-rate-limit` (15 min window)
 
-**Base URL:**
+- `users.ts` (/api/users)
 
-```
-https://<your-domain>/api
-```
+  - `GET /:id` — public basic profile info (public fields + public skills list)
+  - `GET /:id/profile` — protected full profile (only own profile or admin)
+  - `PATCH /:id` — protected update (name, headline, bio, regionId) (only own or admin)
+  - `DELETE /:id` — protected delete (hard delete) (only own or admin)
+  - `GET /:id/stats` — protected stats (skills, tests, bookmarks, recommendations) (only own or admin)
+  - `GET /` — admin-only list users with pagination/filtering
 
-### Authentication
+- `userSkills.ts` (mounted under `/api/users`)
 
-- All endpoints require authentication unless specified.
-- Supabase JWT tokens are validated in middleware.
-- `req.user` is populated with the decoded user payload.
+  - `GET /:userId/skills` — list user's skills, optional progress
+  - `POST /:userId/skills` — protected add skill to user (only own or admin)
+  - `PATCH /:userId/skills/:skillId` — protected update user skill
+  - `DELETE /:userId/skills/:skillId` — protected remove user skill
+  - `GET /:userId/skills/:skillId/progression` — protected, provides recommended courses/tests for progression
 
-### Endpoints
+- `skills.ts` (/api/skills)
 
-#### Users
+  - `GET /` — list skills with optional filters (parent, search, include children)
+  - `GET /:id` — get skill details; `includeStats=true` returns distribution/top users/recent courses
+  - `GET /hierarchy/tree` — returns root skills with nested children
+  - `GET /search/advanced` — advanced filtering
+  - `POST /` — admin-only create skill
+  - `PATCH /:id` — admin-only update skill
+  - (additional admin endpoints exist down the file)
 
-```http
-GET    /users/:id
-PATCH  /users/:id
-DELETE /users/:id
-```
+- `courses.ts` (/api/courses)
 
-#### Skills
+  - `GET /` — list courses with many filters (skill, tag, difficulty, freeOnly, provider, source, language, minRating, maxDuration, search), plus pagination
+  - `GET /:id` — get course with tags & skills
+  - `POST /` — admin-only create course (supports connectOrCreate for tags and creation of course-skill links)
+  - `PATCH /:id` — admin-only update course (resets tags/skills when provided)
 
-```http
-GET    /skills
-GET    /skills/:id
-POST   /skills       (admin)
-PATCH  /skills/:id   (admin)
-DELETE /skills/:id   (admin)
-```
+- `bookmarks.ts` (mounted under `/api/users`)
 
-#### User Skills
+  - `GET /:id/bookmarks` — protected, list user's bookmarks (pagination)
+  - `POST /:id/bookmarks` — protected, create bookmark for user (own only)
+  - `DELETE /:id/bookmarks/:courseId` — protected, remove bookmark
 
-```http
-GET    /users/:id/skills
-POST   /users/:id/skills
-PATCH  /users/:id/skills/:skillId
-DELETE /users/:id/skills/:skillId
-```
+- `tests.ts` (/api/tests)
 
-#### Courses
+  - `GET /` — list published tests with filters
+  - `GET /:id` — test details with questions & non-sensitive choice info
+  - `POST /:id/attempts` — protected, create new attempt (prevents multiple incomplete attempts)
+  - `PATCH /attempts/:attemptId` — protected, submit answers and complete attempt (auto-grades multiple-choice)
+  - `GET /users/:id/attempts` — protected, list attempts for a user
 
-```http
-GET    /courses?skillId=&tag=&difficulty=&freeOnly=
-GET    /courses/:id
-POST   /courses       (admin)
-PATCH  /courses/:id   (admin)
-DELETE /courses/:id   (admin)
-```
+- `recommendations.ts` (/api/recommendations)
 
-#### Bookmarks
+  - `GET /` — list recommendations (protected) with optional algorithm/type filters
+  - `POST /generate` — protected; generates recommendations using simple rules-based, content-based, or collaborative-filtering implementations included in the code (creates `Recommendation` records)
 
-```http
-GET    /users/:id/bookmarks
-POST   /users/:id/bookmarks
-DELETE /users/:id/bookmarks/:courseId
-```
+- `regions.ts` (/api/regions)
+  - `GET /` — list regions (public)
+  - `GET /:id` — region details with `skillStats`
+  - `GET /:id/competition?skillId=` — public endpoint that returns competition stats for a region and skill
+  - `GET /:id/ranking/:userId?skillId=` — protected ranking endpoint (own or admin)
+  - Admin endpoints: create/update/delete region
 
-#### Tests
+Notes:
 
-```http
-GET    /tests
-GET    /tests/:id
-POST   /tests              (admin)
-POST   /tests/:id/attempts
-PATCH  /tests/attempts/:attemptId
-GET    /users/:id/attempts
-```
+- Most write operations are restricted to the resource owner or `ADMIN` (enforced by checks on `req.user`).
+- Many endpoints return `include` or `_count` fields to provide related data in a single request.
 
-#### Recommendations
+## Seed script
 
-```http
-GET    /recommendations?userId=
-POST   /recommendations/generate
-```
+- `src/seed.ts` creates:
+  - An admin user with default credentials (`root@flamchustudios.com` / `verysecurepassword$1`) — please change immediately in production.
+  - Sample `Region` rows (North America, Europe, Asia Pacific, Latin America, Africa).
+  - Sample skills hierarchy (Programming → JavaScript/TypeScript/React/Node.js, Design → UI/UX/Figma, Data Science → ML/SQL).
+- Run with `npx prisma db seed` or `npm run seed`.
 
-#### Regions and Competition
+## Observations from the code (what is present)
 
-```http
-GET /regions
-GET /regions/:id/competition?skillId=
-```
+- Full stack implementation for managing users, skills, courses, bookmarks, tests, recommendations, and regions.
+- Role-based access control with `ADMIN` checks sprinkled across admin-only endpoints.
+- Reasonable validation on inputs in the route handlers.
+- Recommendations include a simple rules-based/content-based implementation and a basic collaborative filtering example.
+- Tests attempted are stored with `answers` JSON so manual grading is feasible later.
 
----
+## Potential improvements (prioritized)
 
-## Authentication & Security
+1. Secrets & Auth
 
-- **Supabase Auth** handles registration, login, and token issuance.
-- Each API request must include:
+- Move away from manual JWT claim naming assumptions: ensure the token payload includes `userId` consistently. Consider storing `sub` claim and using standard claims. Add token issuer (`iss`) and audience (`aud`) checks.
+- Implement refresh tokens and short-lived access tokens for better security.
+- Replace manual JWT signature checks with middleware that also verifies token revocation (e.g., store jti in DB or use Supabase Auth session verification if integrating with Supabase Auth). Estimated effort: 1–2 days.
 
-  ```
-  Authorization: Bearer <JWT>
-  ```
+2. Password & Account Security
 
-- Middleware verifies the token and ensures valid `supabaseId` exists in the User table.
+- Enforce rate limits strictly on auth endpoints (dev limit is permissive: `max: 5000`). Lower for production (e.g., 5–20 per window depending on needs).
+- Add email verification and password reset flows (tokens emailed via an SMTP provider). Estimated effort: 2–4 days.
 
----
+3. Input Validation & Types
 
-## Data Seeding
+- Replace ad-hoc runtime validation with a schema validator (e.g., `zod` or `joi`) and centralize validation logic in middleware.
+- Add TypeScript types for request/response DTOs to reduce runtime errors. Estimated effort: 1–2 days.
 
-- `prisma/seed.ts` populates:
+4. Error handling & logging
 
-  - \~50 curated courses (with source, tags, difficulty).
-  - Skills hierarchy (e.g., HTML → CSS → JavaScript → React).
-  - Example users with `UserSkill` relations.
-  - Test sets with questions.
+- Centralize error handling with an Express error middleware (map Prisma errors to proper HTTP codes). Right now many handlers use inline try/catch.
+- Add structured logging (pino/winston) and send errors to a centralized platform (Sentry) in Production. Estimated effort: 1–2 days.
 
-Run seeding:
+5. Pagination & Performance
 
-```bash
-npx prisma db seed
-```
+- Add proper limit caps and default maximums to prevent heavy queries (max page size e.g., 100).
+- Add DB indexes where missing for common filters (search fields already indexed in Prisma for some columns; review slow queries in production logs).
+- Consider full-text search using Postgres GIN indexes (for `courses`, `skills`) for better search performance. Estimated effort: 1–3 days.
 
----
+6. Data safety and soft deletes
 
-## Integrations
+- Use `deletedAt` soft-delete pattern on critical models (User, Course) instead of hard deletes to support recovery and analytics.
+- Update admin delete endpoints to soft delete and provide reassign/cleanup flows. Estimated effort: 1–2 days + migration.
 
-- **Internal mode (default):** Uses only seeded course database.
-- **External mode:** Optionally fetches courses via YouTube API / Udemy API.
+7. Tests & CI
 
-  - Store external references in `Course.externalId` and `Course.source`.
-  - Sync jobs can be scheduled (e.g., daily) to update courses.
+- Add unit tests for core business logic (recommendation algorithms), route tests (supertest), and integration tests using a test database (Docker or in-memory Postgres).
+- Add GitHub Actions CI: install deps, run `npx prisma generate`, `npm run build`, run tests. Estimated effort: 2–4 days.
 
----
+8. Recommendation improvements
 
-## Development Workflow
+- Persist feature vectors for content-based recommendations and precompute candidate lists (to avoid repeated heavy queries).
+- Add scheduled jobs (cron) to refresh recommendations and market stats asynchronously (use Railway scheduled jobs or a worker container). Estimated effort: 2–5 days.
 
-```bash
-# Install dependencies
-npm install
+9. Scalability & infra
 
-# Generate Prisma client
-npx prisma generate
+- Use connection pooling and ensure Prisma connection limits are tuned for Railway + Supabase.
+- Add caching for expensive read endpoints (Redis or in-memory LRU) to reduce DB load for high-read endpoints like `/skills/hierarchy/tree` and `/courses`. Estimated effort: 2–4 days.
 
-# Apply migrations
-npx prisma migrate dev
+10. Developer experience
 
-# Seed the database
-npx prisma db seed
+- Add OpenAPI (Swagger) or Postman collection export for the API.
+- Add `backend/README.md` with local dev quickstart and env var examples. Estimated effort: 0.5–1 day.
 
-# Start dev server
-npm run dev
-```
+## Short-term concrete next steps (recommended)
 
----
+1. Reduce auth rate limit to a production-safe value (e.g., `max: 20` per 15 minutes) and rotate the default seed admin password; delete the printed password from the seed script for production.
+2. Add a central error handler and move repeated try/catch logic to smaller controller functions.
+3. Add request validation with `zod` for `auth`, `users`, and `courses` endpoints.
+4. Add basic integration tests for `auth` and `users` endpoints (registration/login and protected route access).
+5. Add a `backend/README.md` with these commands and environment examples.
 
-## Testing
+## Files changed / sources used to produce this doc
 
-- API testing via **Postman collection** (`/docs/postman_collection.json`).
-- Suggested flow:
+- `prisma/schema.prisma`
+- `src/express.ts`
+- `src/seed.ts`
+- `src/middleware/auth.ts`
+- `src/routes/*` — all route implementations for auth, users, skills, courses, bookmarks, tests, recommendations, regions, userSkills
+- `package.json`, `tsconfig.json`
 
-  1. Register/login user.
-  2. Add skills.
-  3. Fetch courses and bookmark one.
-  4. Generate recommendations.
-  5. Take a test and submit answers.
-  6. Check competition stats.
+## Requirement mapping (what's implemented vs. noted gaps)
 
-Optional: Jest unit tests for service logic.
+- User registration/login: DONE (JWTs) — Gap: no refresh tokens, no email verification
+- User profile & skills: DONE — Gap: soft-delete missing
+- Courses: DONE (internal + external id support) — Gap: external syncing jobs not implemented
+- Tests engine: DONE (MCQ auto-grading) — Gap: open questions require manual grading flow
+- Recommendations: DONE (rules/content/collab prototypes) — Gap: offline precomputation & scalability
+- Regions & competition: DONE — Gap: more robust market data ingestion
 
----
+## Final notes
 
-## Monitoring & Logging
-
-- Use **Railway logs** for live request/error tracking.
-- Integrate **Prometheus + Grafana** (optional).
-- Prisma query logging enabled in development.
-
----
-
-## Roadmap for Extension
-
-- Add collaborative filtering recommendations.
-- Enable full-text search with PostgreSQL GIN indexes.
-- Implement soft-deletes (`deletedAt` field) for Users and Courses.
-- Introduce GraphQL API gateway in addition to REST.
-
----
-
-## Conclusion
-
-This backend provides all functionality required for SkillHub: user profiles, skill tracking, curated/external courses, testing, recommendations, and competition analysis. It is modular, extensible, and ready for integration with the Next.js frontend.
-
-```
-
-```
+The project is functionally complete for an MVP with many high-value features implemented end-to-end. Short-term priorities should be security (auth/token lifecycle), data safety (soft deletes), and testing/CI. After that, focus on performance (indexes, caching) and recommendation scalability.
