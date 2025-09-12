@@ -33,3 +33,5 @@ export const supabaseAuth = createClient(supabaseUrl, supabaseAnonKey, {
 		persistSession: false,
 	},
 });
+
+export default supabase;

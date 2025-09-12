@@ -1,4 +1,4 @@
-import { Router, Response } from "express";
+import { Router, Request, Response } from "express";
 import { CourseSource, CourseDifficulty } from "@prisma/client";
 import { AuthenticatedRequest, authenticateSupabaseToken } from "../middleware/supabaseAuth";
 import { cache, cacheConfigs, invalidateCacheMiddleware } from "../middleware/cache";
@@ -8,7 +8,7 @@ import { prisma } from "../config/database";
 const router = Router();
 
 // get courses
-router.get("/", cache(cacheConfigs.coursesList), async (req, res: Response) => {
+router.get("/", cache(cacheConfigs.coursesList), async (req: Request, res: Response) => {
 	try {
 		const { skillId, tag, difficulty, freeOnly = "false", provider, source, language = "en", minRating, maxDuration, search, page = "1", limit = "20", sortBy = "createdAt", sortOrder = "desc" } = req.query;
 
@@ -162,7 +162,7 @@ router.get("/", cache(cacheConfigs.coursesList), async (req, res: Response) => {
 });
 
 // get course by id
-router.get("/:id", async (req, res: Response) => {
+router.get("/:id", async (req: Request, res: Response) => {
 	try {
 		const { id } = req.params;
 

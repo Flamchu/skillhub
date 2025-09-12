@@ -1,12 +1,13 @@
-import { Router, Response } from "express";
-import { PrismaClient, CourseDifficulty } from "@prisma/client";
+import { Router, Request, Response } from "express";
+import { CourseDifficulty } from "@prisma/client";
 import { AuthenticatedRequest, authenticateSupabaseToken, requireAdmin } from "../middleware/supabaseAuth";
+import { catchAsync, createError } from "../middleware/errorHandler";
+import { prisma } from "../config/database";
 
 const router = Router();
-const prisma = new PrismaClient();
 
 // get all published tests with filtering
-router.get("/", async (req, res: Response) => {
+router.get("/", async (req: Request, res: Response) => {
 	try {
 		const { skillId, difficulty, page = "1", limit = "20", sortBy = "createdAt", sortOrder = "desc" } = req.query;
 
@@ -94,7 +95,7 @@ router.get("/", async (req, res: Response) => {
 });
 
 // get test details with questions
-router.get("/:id", async (req, res: Response) => {
+router.get("/:id", async (req: Request, res: Response) => {
 	try {
 		const { id } = req.params;
 

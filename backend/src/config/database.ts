@@ -49,7 +49,7 @@ process.on("SIGTERM", async () => {
 	process.exit(0);
 });
 
-// Health check query
+// health check query
 export const databaseHealthCheck = async (): Promise<boolean> => {
 	try {
 		await prisma.$queryRaw`SELECT 1`;

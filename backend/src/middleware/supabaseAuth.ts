@@ -1,8 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { PrismaClient } from "@prisma/client";
 import { supabase, supabaseAuth } from "../config/supabase";
-
-const prisma = new PrismaClient();
+import { prisma } from "../config/database";
 
 export interface AuthenticatedUser {
 	id: string;

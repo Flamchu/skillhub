@@ -1,9 +1,10 @@
 import { Router, Response } from "express";
-import { PrismaClient, RecommendationAlgorithm, ProficiencyLevel } from "@prisma/client";
+import { RecommendationAlgorithm, ProficiencyLevel } from "@prisma/client";
 import { AuthenticatedRequest, authenticateSupabaseToken } from "../middleware/supabaseAuth";
+import { catchAsync, createError } from "../middleware/errorHandler";
+import { prisma } from "../config/database";
 
 const router = Router();
-const prisma = new PrismaClient();
 
 // get recommendations for a user
 router.get("/", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {

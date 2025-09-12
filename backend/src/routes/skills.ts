@@ -1,4 +1,4 @@
-import { Router, Response } from "express";
+import { Router, Request, Response } from "express";
 import { AuthenticatedRequest, authenticateSupabaseToken } from "../middleware/supabaseAuth";
 import { cache, cacheConfigs, invalidateCacheMiddleware } from "../middleware/cache";
 import { CACHE_KEYS } from "../config/redis";
@@ -7,7 +7,7 @@ import { prisma } from "../config/database";
 const router = Router();
 
 // get all skills with optional filtering and hierarchy
-router.get("/", cache(cacheConfigs.skillsList), async (req, res: Response) => {
+router.get("/", cache(cacheConfigs.skillsList), async (req: Request, res: Response) => {
 	try {
 		const { includeChildren = "false", parentId, search, sortBy = "name", sortOrder = "asc" } = req.query;
 
@@ -66,7 +66,7 @@ router.get("/", cache(cacheConfigs.skillsList), async (req, res: Response) => {
 });
 
 // get skill by id with full details
-router.get("/:id", async (req, res: Response) => {
+router.get("/:id", async (req: Request, res: Response) => {
 	try {
 		const { id } = req.params;
 		const { includeStats = "false" } = req.query;
@@ -224,7 +224,7 @@ router.get("/hierarchy/tree", cache(cacheConfigs.skillsHierarchy), async (_req, 
 });
 
 // search skills with advanced filtering
-router.get("/search/advanced", async (req, res: Response) => {
+router.get("/search/advanced", async (req: Request, res: Response) => {
 	try {
 		const {
 			q, // search query

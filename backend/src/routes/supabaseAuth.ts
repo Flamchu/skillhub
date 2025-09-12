@@ -1,14 +1,13 @@
 import { Router, Request, Response } from "express";
 import rateLimit from "express-rate-limit";
-import { PrismaClient } from "@prisma/client";
 import { AuthenticatedRequest, authenticateSupabaseToken, createUserProfile } from "../middleware/supabaseAuth";
 import { supabase, supabaseAuth } from "../config/supabase";
 import { validate, extractSchemas } from "../middleware/validation";
 import { catchAsync, AppError, createError } from "../middleware/errorHandler";
 import { schemas } from "../schemas";
+import { prisma } from "../config/database";
 
 const router = Router();
-const prisma = new PrismaClient();
 
 // rate limiting for auth endpoints
 const authLimiter = rateLimit({

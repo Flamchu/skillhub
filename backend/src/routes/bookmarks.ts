@@ -1,9 +1,9 @@
 import { Router, Response } from "express";
-import { PrismaClient } from "@prisma/client";
 import { AuthenticatedRequest, authenticateSupabaseToken } from "../middleware/supabaseAuth";
+import { catchAsync, createError } from "../middleware/errorHandler";
+import { prisma } from "../config/database";
 
 const router = Router();
-const prisma = new PrismaClient();
 
 // get user's bookmarked courses
 router.get("/:id/bookmarks", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {

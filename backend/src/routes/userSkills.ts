@@ -1,12 +1,13 @@
-import { Router, Response } from "express";
-import { PrismaClient, ProficiencyLevel } from "@prisma/client";
+import { Router, Request, Response } from "express";
+import { ProficiencyLevel } from "@prisma/client";
 import { AuthenticatedRequest, authenticateSupabaseToken } from "../middleware/supabaseAuth";
+import { catchAsync, createError } from "../middleware/errorHandler";
+import { prisma } from "../config/database";
 
 const router = Router();
-const prisma = new PrismaClient();
 
 // get user's skills
-router.get("/:userId/skills", async (req, res: Response) => {
+router.get("/:userId/skills", async (req: Request, res: Response) => {
 	try {
 		const { userId } = req.params;
 		const { includeProgress = "false", skillId } = req.query;
