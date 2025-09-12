@@ -3,7 +3,7 @@ import rateLimit from "express-rate-limit";
 import { AuthenticatedRequest, authenticateSupabaseToken, createUserProfile } from "../middleware/supabaseAuth";
 import { supabase, supabaseAuth } from "../config/supabase";
 import { validate, extractSchemas } from "../middleware/validation";
-import { catchAsync, AppError, createError } from "../middleware/errorHandler";
+import { catchAsync, createError } from "../middleware/errorHandler";
 import { schemas } from "../schemas";
 import { prisma } from "../config/database";
 

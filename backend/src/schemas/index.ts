@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Role, ProficiencyLevel, CourseSource, CourseDifficulty, QuestionType, RecommendationAlgorithm } from "@prisma/client";
+import { Role, ProficiencyLevel, CourseSource, CourseDifficulty, RecommendationAlgorithm } from "@prisma/client";
 
 // common schemas
 export const uuidSchema = z.string().uuid({ message: "Invalid UUID format" });

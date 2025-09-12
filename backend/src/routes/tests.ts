@@ -1,7 +1,6 @@
 import { Router, Request, Response } from "express";
 import { CourseDifficulty } from "@prisma/client";
 import { AuthenticatedRequest, authenticateSupabaseToken, requireAdmin } from "../middleware/supabaseAuth";
-import { catchAsync, createError } from "../middleware/errorHandler";
 import { prisma } from "../config/database";
 
 const router = Router();

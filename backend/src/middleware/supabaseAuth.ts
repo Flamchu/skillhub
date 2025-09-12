@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { supabase, supabaseAuth } from "../config/supabase";
+import { supabase } from "../config/supabase";
 import { prisma } from "../config/database";
 
 export interface AuthenticatedUser {

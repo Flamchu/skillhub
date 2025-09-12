@@ -1,6 +1,5 @@
 import { Router, Response } from "express";
 import { AuthenticatedRequest, authenticateSupabaseToken } from "../middleware/supabaseAuth";
-import { catchAsync, createError } from "../middleware/errorHandler";
 import { prisma } from "../config/database";
 
 const router = Router();

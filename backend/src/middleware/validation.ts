@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { z, ZodError, ZodSchema } from "zod";
+import { z, ZodSchema } from "zod";
 
 // interface for validation schema
 interface ValidationSchema {

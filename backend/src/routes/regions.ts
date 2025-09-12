@@ -1,7 +1,6 @@
 import { Router, Request, Response } from "express";
 import { AuthenticatedRequest, authenticateSupabaseToken } from "../middleware/supabaseAuth";
-import { cache, cacheConfigs, invalidateCacheMiddleware } from "../middleware/cache";
-import { CACHE_KEYS } from "../config/redis";
+import { cache, cacheConfigs } from "../middleware/cache";
 import { prisma } from "../config/database";
 
 const router = Router();
