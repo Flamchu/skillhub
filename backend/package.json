@@ -5,11 +5,14 @@
 		"dev": "ts-node-dev ./src/express.ts",
 		"build": "tsc",
 		"start": "node ./dist/express.js",
-		"seed": "ts-node ./src/seed.ts"
+		"seed": "ts-node ./src/seed.ts",
+		"prisma:migrate:deploy": "prisma migrate deploy",
+		"prisma:generate": "prisma generate"
 	},
 	"prisma": {
 		"seed": "ts-node src/seed.ts"
 	},
+	"postinstall": "prisma generate",
 	"dependencies": {
 		"@prisma/client": "6.16.1",
 		"@supabase/supabase-js": "^2.57.4",
