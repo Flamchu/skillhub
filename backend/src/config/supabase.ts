@@ -1,37 +1,62 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
+import dotenv from "dotenv";
 
-// validate environment variables
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+// load .env (idempotent)
+dotenv.config();
 
-if (!supabaseUrl) {
-	throw new Error("SUPABASE_URL environment variable is required");
+// supabase client container
+interface SupabaseClients {
+	admin?: SupabaseClient;
+	auth?: SupabaseClient;
+	configured: boolean;
+	reason?: string;
 }
 
-if (!supabaseServiceKey) {
-	throw new Error("SUPABASE_SERVICE_ROLE_KEY environment variable is required");
+const clients: SupabaseClients = { configured: false };
+
+const required = ["SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY", "SUPABASE_ANON_KEY"] as const;
+
+const missing = required.filter((k) => !process.env[k]);
+
+// allow disabling supabase for local/dev
+const SUPABASE_DISABLED = process.env.SUPABASE_DISABLED === "true";
+
+if (missing.length === 0 && !SUPABASE_DISABLED) {
+	const supabaseUrl = process.env.SUPABASE_URL!;
+	const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+	const supabaseAnonKey = process.env.SUPABASE_ANON_KEY!;
+
+	clients.admin = createClient(supabaseUrl, supabaseServiceKey, {
+		auth: {
+			autoRefreshToken: false,
+			persistSession: false,
+		},
+	});
+
+	clients.auth = createClient(supabaseUrl, supabaseAnonKey, {
+		auth: {
+			autoRefreshToken: false,
+			persistSession: false,
+		},
+	});
+
+	clients.configured = true;
+} else {
+	if (SUPABASE_DISABLED) {
+		clients.reason = "supabase disabled via SUPABASE_DISABLED=true";
+	} else {
+		clients.reason = `missing supabase env vars: ${missing.join(", ")}`;
+	}
+	if (process.env.NODE_ENV !== "test" && !SUPABASE_DISABLED) {
+		// throw in non-test when misconfigured
+		throw new Error(clients.reason);
+	} else {
+		console.warn(`supabase not configured: ${clients.reason}`);
+	}
 }
 
-// create supabase client with service role key for server-side operations
-export const supabase = createClient(supabaseUrl, supabaseServiceKey, {
-	auth: {
-		autoRefreshToken: false,
-		persistSession: false,
-	},
-});
-
-// create client for user session verification (without service role)
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
-
-if (!supabaseAnonKey) {
-	throw new Error("SUPABASE_ANON_KEY environment variable is required");
-}
-
-export const supabaseAuth = createClient(supabaseUrl, supabaseAnonKey, {
-	auth: {
-		autoRefreshToken: false,
-		persistSession: false,
-	},
-});
+// exports (backwards compatible)
+export const supabase = clients.admin as SupabaseClient;
+export const supabaseAuth = clients.auth as SupabaseClient;
 
 export default supabase;
