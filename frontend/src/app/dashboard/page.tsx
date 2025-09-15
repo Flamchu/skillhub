@@ -82,7 +82,9 @@ export default function DashboardPage() {
 						</div>
 						<h2 className="text-xl font-bold text-gray-900 mb-4">Your Skills</h2>
 						<p className="text-gray-700 mb-6 leading-relaxed">Track and improve your current skill levels</p>
-						<button className="text-blue-600 hover:text-blue-800 font-semibold hover:underline transition-colors">View All Skills →</button>
+						<Link href="/skills" className="text-blue-600 hover:text-blue-800 font-semibold hover:underline transition-colors">
+							View All Skills →
+						</Link>
 					</div>
 
 					<div className="bg-white rounded-xl shadow-lg border border-gray-200 p-8 hover:shadow-xl transition-shadow duration-200">
@@ -93,7 +95,9 @@ export default function DashboardPage() {
 						</div>
 						<h2 className="text-xl font-bold text-gray-900 mb-4">Recommended Courses</h2>
 						<p className="text-gray-700 mb-6 leading-relaxed">Personalized course recommendations for you</p>
-						<button className="text-green-600 hover:text-green-800 font-semibold hover:underline transition-colors">Explore Courses →</button>
+						<Link href="/courses" className="text-green-600 hover:text-green-800 font-semibold hover:underline transition-colors">
+							Explore Courses →
+						</Link>
 					</div>
 
 					<div className="bg-white rounded-xl shadow-lg border border-gray-200 p-8 hover:shadow-xl transition-shadow duration-200">

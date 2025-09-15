@@ -3483,6 +3483,7 @@ __metadata:
     react-hook-form: "npm:^7.62.0"
     react-hot-toast: "npm:^2.6.0"
     recharts: "npm:^3.2.0"
+    tailwind-merge: "npm:^3.3.1"
     tailwindcss: "npm:^4"
     typescript: "npm:^5"
     zod: "npm:^4.1.8"
@@ -6271,6 +6272,13 @@ __metadata:
   version: 1.0.0
   resolution: "supports-preserve-symlinks-flag@npm:1.0.0"
   checksum: 10/a9dc19ae2220c952bd2231d08ddeecb1b0328b61e72071ff4000c8384e145cc07c1c0bdb3b5a1cb06e186a7b2790f1dee793418b332f6ddf320de25d9125be7e
+  languageName: node
+  linkType: hard
+
+"tailwind-merge@npm:^3.3.1":
+  version: 3.3.1
+  resolution: "tailwind-merge@npm:3.3.1"
+  checksum: 10/ad97f0763afdfdce785b8de50bc546951bb3cc803ab4f809cb10d654d9b7e28b0d19dead70ab9070edf479af68622a5f6ba16a21584fa8c21236855709dc648f
   languageName: node
   linkType: hard
 
