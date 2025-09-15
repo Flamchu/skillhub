@@ -9,6 +9,7 @@ interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
 }
 
 export function Badge({ children, variant = "default", size = "md", className, ...props }: BadgeProps) {
+	// badge variant styles
 	const variants = {
 		default: "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300",
 		primary: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
@@ -18,6 +19,7 @@ export function Badge({ children, variant = "default", size = "md", className, .
 		info: "bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-300",
 	};
 
+	// badge size styles
 	const sizes = {
 		sm: "px-2 py-0.5 text-xs",
 		md: "px-2.5 py-1 text-sm",
@@ -37,11 +39,12 @@ interface ProficiencyBadgeProps {
 }
 
 export function ProficiencyBadge({ level, className }: ProficiencyBadgeProps) {
+	// proficiency level configuration
 	const levelConfig = {
-		BEGINNER: { variant: "info" as const, label: "Beginner" },
-		INTERMEDIATE: { variant: "warning" as const, label: "Intermediate" },
-		ADVANCED: { variant: "primary" as const, label: "Advanced" },
-		EXPERT: { variant: "success" as const, label: "Expert" },
+		BEGINNER: { variant: "info" as const, label: "beginner" },
+		INTERMEDIATE: { variant: "warning" as const, label: "intermediate" },
+		ADVANCED: { variant: "primary" as const, label: "advanced" },
+		EXPERT: { variant: "success" as const, label: "expert" },
 	};
 
 	const config = levelConfig[level];

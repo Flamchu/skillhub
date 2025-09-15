@@ -1,21 +1,21 @@
 import { z } from "zod";
 
 // shared validation schemas matching backend
-export const skillIdParam = z.string().uuid("Invalid skill id");
-export const userIdParam = z.string().uuid("Invalid user id");
-export const courseIdParam = z.string().uuid("Invalid course id");
-export const testIdParam = z.string().uuid("Invalid test id");
+export const skillIdParam = z.string().uuid("invalid skill id");
+export const userIdParam = z.string().uuid("invalid user id");
+export const courseIdParam = z.string().uuid("invalid course id");
+export const testIdParam = z.string().uuid("invalid test id");
 
 // auth schemas
 export const loginSchema = z.object({
-	email: z.string().email("Invalid email address"),
-	password: z.string().min(6, "Password must be at least 6 characters"),
+	email: z.string().email("invalid email address"),
+	password: z.string().min(6, "password must be at least 6 characters"),
 });
 
 export const registerSchema = z.object({
-	name: z.string().min(2, "Name must be at least 2 characters").max(100, "Name too long"),
-	email: z.string().email("Invalid email address"),
-	password: z.string().min(6, "Password must be at least 6 characters"),
+	name: z.string().min(2, "name must be at least 2 characters").max(100, "name too long"),
+	email: z.string().email("invalid email address"),
+	password: z.string().min(6, "password must be at least 6 characters"),
 });
 
 // user profile schemas
@@ -28,7 +28,7 @@ export const updateUserProfileSchema = z.object({
 
 // user skill schemas
 export const addUserSkillSchema = z.object({
-	skillId: z.string().uuid("Invalid skill id"),
+	skillId: z.string().uuid("invalid skill id"),
 	proficiencyLevel: z.enum(["BEGINNER", "INTERMEDIATE", "ADVANCED", "EXPERT"]),
 	yearsOfExperience: z.number().min(0).max(50).optional(),
 	notes: z.string().max(500).optional(),

@@ -12,7 +12,7 @@ export default function SkillsPage() {
 	const { user } = useAuth();
 	const [searchQuery, setSearchQuery] = useState("");
 
-	// Mock data - replace with actual API calls
+	// mock data - replace with actual api calls
 	const skills = [
 		{ id: "1", name: "JavaScript", category: "Programming Languages", proficiency: "ADVANCED" as const },
 		{ id: "2", name: "React", category: "Frontend Frameworks", proficiency: "EXPERT" as const },
@@ -27,7 +27,7 @@ export default function SkillsPage() {
 		return (
 			<div className="min-h-screen bg-gray-50 flex items-center justify-center">
 				<div className="text-center">
-					<p className="text-gray-600">Please sign in to view your skills.</p>
+					<p className="text-gray-600">please sign in to view your skills.</p>
 				</div>
 			</div>
 		);
@@ -35,31 +35,31 @@ export default function SkillsPage() {
 
 	return (
 		<div className="min-h-screen bg-gray-50">
-			{/* Navigation */}
+			{/* navigation */}
 			<nav className="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
 				<div className="max-w-7xl mx-auto flex justify-between items-center">
-					<h1 className="text-2xl font-bold text-gray-900">My Skills</h1>
+					<h1 className="text-2xl font-bold text-gray-900">my skills</h1>
 					<Button>
 						<Plus className="w-4 h-4 mr-2" />
-						Add Skill
+						add skill
 					</Button>
 				</div>
 			</nav>
 
-			{/* Content */}
+			{/* content */}
 			<main className="max-w-7xl mx-auto px-6 py-8">
-				{/* Header */}
+				{/* header */}
 				<div className="mb-8">
-					<h2 className="text-3xl font-bold text-gray-900 mb-4">Track Your Professional Skills</h2>
+					<h2 className="text-3xl font-bold text-gray-900 mb-4">track your professional skills</h2>
 					<p className="text-lg text-gray-600">Monitor your progress and identify areas for improvement across different skill categories.</p>
 				</div>
 
-				{/* Search */}
+				{/* search */}
 				<div className="mb-8">
 					<Input placeholder="Search skills or categories..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} leftIcon={<Search className="w-4 h-4" />} className="max-w-md" />
 				</div>
 
-				{/* Skills Grid */}
+				{/* skills grid */}
 				<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
 					{filteredSkills.map((skill) => (
 						<Card key={skill.id} variant="default" className="hover:shadow-lg transition-shadow">

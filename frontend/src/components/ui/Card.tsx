@@ -8,6 +8,7 @@ interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export function Card({ children, variant = "default", className, ...props }: CardProps) {
+	// card variant styles
 	const variants = {
 		default: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700",
 		outlined: "border-2 border-gray-200 dark:border-gray-700 bg-transparent",

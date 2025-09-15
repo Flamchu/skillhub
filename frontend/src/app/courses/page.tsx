@@ -9,16 +9,16 @@ import { Badge } from "@/components/ui/Badge";
 import { Search, Star, Clock, Users, Bookmark, ExternalLink } from "lucide-react";
 
 export default function CoursesPage() {
-	const {} = useAuth(); // Authentication context available if needed
+	const {} = useAuth(); // authentication context available if needed
 	const [searchQuery, setSearchQuery] = useState("");
 	const [selectedCategory, setSelectedCategory] = useState("all");
 
-	// Mock data - replace with actual API calls
+	// mock data - replace with actual api calls
 	const courses = [
 		{
 			id: "1",
 			title: "Advanced React Patterns",
-			description: "Learn advanced React patterns including render props, higher-order components, and hooks.",
+			description: "learn advanced react patterns including render props, higher-order components, and hooks.",
 			category: "Frontend Development",
 			rating: 4.8,
 			duration: "6 hours",
@@ -31,7 +31,7 @@ export default function CoursesPage() {
 		{
 			id: "2",
 			title: "Node.js Microservices Architecture",
-			description: "Build scalable microservices with Node.js, Docker, and Kubernetes.",
+			description: "build scalable microservices with node.js, docker, and kubernetes.",
 			category: "Backend Development",
 			rating: 4.6,
 			duration: "8 hours",
@@ -44,7 +44,7 @@ export default function CoursesPage() {
 		{
 			id: "3",
 			title: "Machine Learning Fundamentals",
-			description: "Introduction to machine learning concepts and practical implementations with Python.",
+			description: "introduction to machine learning concepts and practical implementations with python.",
 			category: "Data Science",
 			rating: 4.9,
 			duration: "12 hours",
@@ -67,7 +67,7 @@ export default function CoursesPage() {
 	});
 
 	const toggleBookmark = (courseId: string) => {
-		// Implementation would make API call to toggle bookmark
+		// implementation would make api call to toggle bookmark
 		console.log("Toggle bookmark for course:", courseId);
 	};
 

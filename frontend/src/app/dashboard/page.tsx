@@ -10,12 +10,12 @@ export default function DashboardPage() {
 	const router = useRouter();
 
 	useEffect(() => {
-		console.log("Dashboard auth check:", { loading, user: !!user, profile: !!profile });
+		console.log("dashboard auth check:", { loading, user: !!user, profile: !!profile });
 
-		// add a small delay to let AuthProvider settle after login redirect
+		// add a small delay to let authprovider settle after login redirect
 		const timer = setTimeout(() => {
 			if (!loading && !user) {
-				console.log("Redirecting to login because user is null after delay");
+				console.log("redirecting to login because user is null after delay");
 				router.push("/login");
 			}
 		}, 200);
@@ -33,7 +33,7 @@ export default function DashboardPage() {
 			<div className="min-h-screen bg-gray-50 flex items-center justify-center">
 				<div className="text-center">
 					<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-					<p className="text-gray-600 mt-4">Loading your dashboard...</p>
+					<p className="text-gray-600 mt-4">loading your dashboard...</p>
 				</div>
 			</div>
 		);

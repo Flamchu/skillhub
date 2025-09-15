@@ -12,6 +12,7 @@ interface AvatarProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export function Avatar({ src, alt, name, size = "md", fallbackBg, className, ...props }: AvatarProps) {
+	// size options for avatar
 	const sizes = {
 		sm: "h-8 w-8 text-xs",
 		md: "h-10 w-10 text-sm",
@@ -19,9 +20,10 @@ export function Avatar({ src, alt, name, size = "md", fallbackBg, className, ...
 		xl: "h-16 w-16 text-lg",
 	};
 
+	// background colors for fallback
 	const backgroundColors = ["bg-red-500", "bg-orange-500", "bg-yellow-500", "bg-green-500", "bg-blue-500", "bg-indigo-500", "bg-purple-500", "bg-pink-500"];
 
-	// Generate a consistent background color based on name
+	// generate a consistent background color based on name
 	const getBackgroundColor = () => {
 		if (fallbackBg) return fallbackBg;
 		if (!name) return "bg-gray-500";

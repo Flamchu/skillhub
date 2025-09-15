@@ -11,6 +11,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(({ label, error, helperText, leftIcon, rightIcon, className, id, ...props }, ref) => {
+	// generate a unique id for the input
 	const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`;
 
 	return (
