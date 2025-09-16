@@ -10,6 +10,7 @@ import courseRoutes from "./routes/courses";
 import bookmarkRoutes from "./routes/bookmarks";
 import testRoutes from "./routes/tests";
 import recommendationRoutes from "./routes/recommendations";
+import dashboardRoutes from "./routes/dashboard";
 import { performanceMonitoring, performanceEndpoint, healthCheck } from "./middleware/performance";
 import { connectDatabase } from "./config/database";
 import "./config/redis"; // initialize redis connection
@@ -54,6 +55,9 @@ app.use("/api/tests", testRoutes);
 
 // recommendation routes (protected)
 app.use("/api/recommendations", recommendationRoutes);
+
+// dashboard routes (admin only)
+app.use("/api/dashboard", dashboardRoutes);
 
 // error handling middleware (must be last)
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler";
