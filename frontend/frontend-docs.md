@@ -1,18 +1,71 @@
-# SkillHub Frontend Documentation (Revised – Standalone Client, September 2025)
+# SkillHub Frontend Documentation (Revised – Standalone Client, Updated: 16 September 2025)
 
 This document defines the architecture, information architecture (IA), component system, data flows, and implementation guidelines for the SkillHub frontend as a **pure standalone client**. It consumes a separately hosted backend (Railway) + Supabase Auth and does **not** expose its own API routes (no Next.js route handlers). All interactions occur over HTTP to the backend REST API.
 
-> Status: The current frontend is a landing page scaffold. This document describes the intended full build-out.
+> Status: Core auth context, minimal layout, and initial pages (`/login`, `/register`, `/dashboard`, `/skills`, `/courses`) plus primitive ui components (button, input, card, badge, avatar, theme toggle) are implemented. Remaining sections describe target future build-out.
 
 ## 1. High-Level Overview
 
 - **Framework**: Next.js 15 (App Router, React 19, Turbopack dev/build)
 - **Styling**: Tailwind CSS 4 + design tokens (extended config) + utility-first composition
-- **Auth**: Supabase Auth (client session + server components validation + RLS-friendly patterns if future Supabase DB features added)
+- **Auth**: backend-issued access + refresh tokens (backend integrates with supabase internally). frontend never calls supabase directly; it only uses backend routes (`/api/auth/login`, `/api/auth/me`, `/api/auth/refresh`, `/api/auth/logout`). future: optional re-introduction of limited direct supabase usage if realtime features are required.
 - **Data Layer**: External REST API calls to backend (`/api/*` base path) via centralized axios client with interceptors (auth token injection, error normalization, retry/backoff for idempotent GET)
 - **State Management**: TanStack Query + React Context (auth) + local UI state; forms via React Hook Form + Zod
 - **Rendering Strategy**: Server Components for public/static & SEO surfaces (skills list, courses listing); Client Components for authenticated & interactive flows (dashboards, test runner, forms). No custom Next.js API routes.
 - **Internationalization (Future)**: Next.js i18n routing (phase 2)
+
+### 1.1 Current Implemented Directory Structure
+
+```
+frontend/
+	package.json
+	src/
+		app/
+			layout.tsx
+			providers.tsx
+			page.tsx                  # landing / placeholder
+			login/page.tsx
+			register/page.tsx
+			dashboard/page.tsx
+			skills/page.tsx
+			courses/page.tsx
+			globals.css
+		components/
+			ui/
+				Avatar.tsx
+				Badge.tsx
+				Button.tsx
+				Card.tsx
+				Input.tsx
+				ThemeToggle.tsx
+				index.ts
+		context/
+			AuthProvider.tsx
+		lib/
+			analytics.ts
+			auth.ts
+			http.ts
+			queryKeys.ts
+			theme.ts
+			tokens.ts
+			utils.ts
+			validation.ts
+		types/
+			index.ts
+```
+
+### 1.2 Implemented vs Planned
+
+| Area          | Implemented                                      | Planned (future)                                     |
+| ------------- | ------------------------------------------------ | ---------------------------------------------------- |
+| auth          | backend token auth context                       | role guard hooks, edge gating                        |
+| data          | axios client, query keys                         | full query hooks per feature, optimistic flows       |
+| ui primitives | button, input, card, badge, avatar, theme toggle | full component library (forms, navigation, feedback) |
+| pages public  | landing placeholder                              | marketing, public skills/courses detail              |
+| pages private | dashboard, skills, courses                       | tests, recommendations, admin, instructor consoles   |
+| theming       | light/dark toggle                                | design tokens + extended palette                     |
+| analytics     | basic analytics module scaffold                  | event taxonomy + providers                           |
+| validation    | shared zod schemas                               | codegen from backend/openapi                         |
 
 ## 2. Key User Personas & UX Goals
 
@@ -25,7 +78,9 @@ This document defines the architecture, information architecture (IA), component
 
 ## 3. Information Architecture & Routing Structure
 
-App Router layout under `src/app` (proposed):
+Current implemented routes (subset): `/(root)`, `/login`, `/register`, `/dashboard`, `/skills`, `/courses`.
+
+The following is the planned expanded architecture (future):
 
 ```
 src/app/
@@ -79,7 +134,7 @@ src/app/
       tests/[testId]/edit/page.tsx
 ```
 
-Route Grouping Strategy:
+Route Grouping Strategy (future):
 
 - `(public)` – Marketing & browse
 - `(auth)` – Public auth forms (no main app chrome)
@@ -100,21 +155,23 @@ Responsive breakpoints ensure mobile drawer nav for authenticated sections.
 
 ## 5. Authentication & Session Handling
 
-Supabase client initialized in a shared module (`lib/supabaseClient.ts`). Patterns:
+Frontend uses only backend auth endpoints; backend internally integrates with supabase (opaque to client):
 
-- Use `@supabase/auth-helpers-nextjs` (or raw client) for session & token lifecycle
-- After login/register → rely on backend to have created profile; call `/api/auth/me` for enriched profile (role, region, counts)
-- Axios request interceptor injects `Authorization: Bearer <access_token>`
-- Optional future: Edge middleware for early route gating (no API proxying)
+- Login: `POST /auth/login` returns `{ accessToken, refreshToken, user }`
+- Me: `GET /auth/me` returns `{ user }` for profile refresh
+- Refresh: `POST /auth/refresh` returns new tokens
+- Logout: `POST /auth/logout` (best-effort on server; client also clears tokens)
+- Tokens stored in `localStorage` (`auth_token`, `refresh_token`) and injected by axios interceptor.
 
-Session Refresh:
+Session Refresh Strategy:
 
-- Supabase auto-refreshes tokens; on `onAuthStateChange` event, force invalidate user-related query keys
+- Attempt request; on 401 once, call refresh endpoint, retry original request.
+- Scheduled silent refresh optional (future) based on token exp embedded claim if exposed by backend.
 
 Role Guarding:
 
-- Hook: `useRequireRole(['ADMIN'])` uses auth context; returns loading state while resolving
-- Layout-level synchronous gating (skeleton fallback) inside `admin/layout.tsx`, `instructor/layout.tsx`
+- `useRequireRole` (future) reads `user.role` from auth context.
+- Protected layouts render skeleton/fallback while user state resolving.
 
 ## 6. Data Fetching & Caching
 
@@ -267,13 +324,12 @@ export interface Recommendation {
 - ARIA roles/labels for complex composites (SkillTree, Test Runner choices, Progress charts).
 - Instructor creation tools conditionally rendered if role in `INSTRUCTOR` or `ADMIN`
 
-## 17. Dependencies To Add (Updated)
+## 17. Dependencies
 
 ```
 @tanstack/react-query
 @tanstack/react-query-devtools
-@supabase/supabase-js
-@supabase/auth-helpers-nextjs
+(@supabase/* packages not required in current frontend model; backend owns integration)
 axios
 axios-retry
 react-hook-form
@@ -289,13 +345,16 @@ dayjs
 pluralize
 ```
 
-Immediate: http.ts
+Notes:
 
-- Route segment-level caching for public pages (skills/courses) via Next.js `revalidate` metadata
-- Lazy load heavy components (test runner, chart libs)
-- Avoid client hydration where static works (marketing site purely server rendered)
+- All listed dependencies already installed unless marked (future).
+- `recharts` and advanced analytics usage are planned but not yet integrated in UI.
 
-Future: theme.ts
+Performance considerations (planned):
+
+- segment-level caching for future public server components via `revalidate`
+- lazy loading for heavy modules (charts, test runner)
+- minimize client hydration on static marketing pages
 
 ## 19. Example Axios Client Pattern
 
@@ -364,22 +423,26 @@ export function useSkill(skillId: string) {
 
 clsx
 
-## 25. Environment Variables (Frontend)
+## 18. Environment Variables
+
+Required (backend-only auth model):
 
 ```
-NEXT_PUBLIC_BACKEND_URL=https://api.skillhub.com       # Railway backend root
-NEXT_PUBLIC_SUPABASE_URL=...
-NEXT_PUBLIC_SUPABASE_ANON_KEY=...
-NEXT_PUBLIC_DEFAULT_THEME=light                        # light | dark | system
+NEXT_PUBLIC_BACKEND_URL=http://localhost:4000/api   # backend base url
+NEXT_PUBLIC_DEFAULT_THEME=light                     # light | dark | system
 ```
 
-Optional future:
+Optional (future / only if direct supabase realtime or storage features reintroduced):
 
 ```
-NEXT_PUBLIC_ANALYTICS_WRITE_KEY=...
+NEXT_PUBLIC_SUPABASE_URL=...                        # unused currently
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...                   # unused currently
+NEXT_PUBLIC_ANALYTICS_WRITE_KEY=...                 # future analytics provider
 ```
 
-## 18. Directory Structure (Extended Proposal)
+Rationale: frontend no longer initializes a supabase client; all auth/profile flows use backend token endpoints.
+
+## 19. Directory Structure (Extended Proposal – Future)
 
 ```
 src/
@@ -411,12 +474,12 @@ src/
     index.ts (shared interfaces)
 ```
 
-## 19. Example API Client Pattern
+## 20. Example API Client Pattern
 
 ```ts
 // lib/apiClient.ts
 export async function apiFetch<T>(path: string, options: RequestInit = {}): Promise<T> {
-	const token = await getAccessToken(); // from supabase
+	const token = await getAccessToken(); // from local storage/access token manager
 	const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}${path}`, {
 		...options,
 		headers: {
@@ -434,7 +497,7 @@ export async function apiFetch<T>(path: string, options: RequestInit = {}): Prom
 }
 ```
 
-## 20. Example React Query Hook
+## 21. Example React Query Hook
 
 ```ts
 import { useQuery } from "@tanstack/react-query";
@@ -449,7 +512,7 @@ export function useSkill(skillId: string) {
 }
 ```
 
-## 21. Testing Strategy (Frontend)
+## 22. Testing Strategy (Frontend)
 
 Phase 1:
 
@@ -461,13 +524,13 @@ Phase 2:
 
 - Playwright E2E: auth flow, skill add, test attempt, recommendation generation
 
-## 22. Security Considerations
+## 23. Security Considerations
 
 - Never trust client role; always verify via backend
-- Strip secrets from client bundle (only use anon key for Supabase; service role strictly server-side backend only)
+- Strip secrets from client bundle (no direct supabase usage; only backend url exposed)
 - CSRF not required for pure token-based API calls but ensure `sameSite` if cookies later
 
-## 23. Migration & Future Enhancements
+## 24. Migration & Future Enhancements
 
 | Future Feature        | Notes                                                                    |
 | --------------------- | ------------------------------------------------------------------------ |
@@ -478,7 +541,7 @@ Phase 2:
 | Content Editor        | Rich text for course description                                         |
 | Multi-language        | Duplicate content negotiation + skill translations                       |
 
-## 24. Implementation Phases (Roadmap)
+## 25. Implementation Phases (Roadmap)
 
 1. Core Auth + Layout + Query setup
 2. Skills browse + detail + user skills management
@@ -489,13 +552,7 @@ Phase 2:
 7. Analytics, charts, performance passes
 8. Polish: a11y, dark mode, SEO deepening
 
-## 25. Environment Variables (Frontend)
-
-```
-NEXT_PUBLIC_BACKEND_URL=https://api.skillhub.com   # or Railway URL
-NEXT_PUBLIC_SUPABASE_URL=...
-NEXT_PUBLIC_SUPABASE_ANON_KEY=...
-```
+<!-- duplicate env vars section removed; consolidated in section 18 -->
 
 ## 26. Open Questions / Assumptions
 
@@ -504,43 +561,125 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=...
 - Assumes recommendation generation endpoint returns full course/skill objects when included
 - Assumes tests endpoint hides `isCorrect` flags until submission (frontend must not rely on them pre-submit)
 
-## 27. Minimal Auth Provider Sketch
+## 27. Minimal Auth Provider Sketch (Backend-Only Tokens)
 
 ```tsx
 // context/AuthProvider.tsx
 "use client";
-import { createContext, useContext, useEffect, useState } from "react";
-import { createClient } from "@supabase/supabase-js";
+import { createContext, useContext, useEffect, useState, useCallback } from "react";
 
-const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
+interface UserProfile {
+	id: string;
+	name?: string;
+	email?: string;
+	role: string;
+}
 
 interface AuthState {
-	user: any | null;
+	user: UserProfile | null;
 	loading: boolean;
-	profile: UserProfile | null;
+	refreshing: boolean;
 }
-const AuthCtx = createContext<AuthState>({ user: null, loading: true, profile: null });
+
+interface AuthContextValue extends AuthState {
+	login: (email: string, password: string) => Promise<void>;
+	logout: () => Promise<void>;
+}
+
+const AuthCtx = createContext<AuthContextValue | null>(null);
+
+const ACCESS_KEY = "auth_token";
+const REFRESH_KEY = "refresh_token";
+
+async function fetchProfile(token: string): Promise<UserProfile | null> {
+	try {
+		const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/me`, {
+			headers: { Authorization: `Bearer ${token}` },
+			cache: "no-store",
+		});
+		if (!res.ok) return null;
+		const data = await res.json();
+		return data.user as UserProfile;
+	} catch {
+		return null;
+	}
+}
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-	const [state, setState] = useState<AuthState>({ user: null, loading: true, profile: null });
-	useEffect(() => {
-		const session = supabase.auth.getSession().then(async ({ data }) => {
-			const user = data.session?.user ?? null;
-			let profile = null;
-			if (user) profile = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/me`, { headers: { Authorization: `Bearer ${data.session?.access_token}` } }).then((r) => r.json());
-			setState({ user, loading: false, profile });
-		});
-		const { data: listener } = supabase.auth.onAuthStateChange((_e, session) => {
-			setState((s) => ({ ...s, user: session?.user ?? null }));
-		});
-		return () => {
-			listener.subscription.unsubscribe();
-		};
+	const [user, setUser] = useState<UserProfile | null>(null);
+	const [loading, setLoading] = useState(true);
+	const [refreshing, setRefreshing] = useState(false);
+
+	const load = useCallback(async () => {
+		setLoading(true);
+		const token = localStorage.getItem(ACCESS_KEY);
+		if (token) {
+			const profile = await fetchProfile(token);
+			setUser(profile);
+		}
+		setLoading(false);
 	}, []);
-	return <AuthCtx.Provider value={state}>{children}</AuthCtx.Provider>;
+
+	const refresh = useCallback(async () => {
+		const refreshToken = localStorage.getItem(REFRESH_KEY);
+		if (!refreshToken) return null;
+		setRefreshing(true);
+		try {
+			const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/refresh`, {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ refreshToken }),
+			});
+			if (!res.ok) throw new Error("refresh failed");
+			const data = await res.json();
+			if (data.accessToken) localStorage.setItem(ACCESS_KEY, data.accessToken);
+			if (data.refreshToken) localStorage.setItem(REFRESH_KEY, data.refreshToken);
+			const profile = await fetchProfile(data.accessToken);
+			setUser(profile);
+			return profile;
+		} catch {
+			setUser(null);
+			return null;
+		} finally {
+			setRefreshing(false);
+		}
+	}, []);
+
+	const login = useCallback(async (email: string, password: string) => {
+		const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/login`, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ email, password }),
+		});
+		if (!res.ok) throw new Error("login failed");
+		const data = await res.json();
+		localStorage.setItem(ACCESS_KEY, data.accessToken);
+		localStorage.setItem(REFRESH_KEY, data.refreshToken);
+		setUser(data.user);
+	}, []);
+
+	const logout = useCallback(async () => {
+		try {
+			await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/logout`, { method: "POST" });
+		} catch {}
+		localStorage.removeItem(ACCESS_KEY);
+		localStorage.removeItem(REFRESH_KEY);
+		setUser(null);
+	}, []);
+
+	useEffect(() => {
+		load();
+	}, [load]);
+
+	const value: AuthContextValue = { user, loading, refreshing, login, logout };
+	return <AuthCtx.Provider value={value}>{children}</AuthCtx.Provider>;
 }
 
-export const useAuth = () => useContext(AuthCtx);
+export function useAuth() {
+	const ctx = useContext(AuthCtx);
+	if (!ctx) throw new Error("useAuth must be used within AuthProvider");
+	return ctx;
+}
 ```
 
 ## 28. Design Principles
