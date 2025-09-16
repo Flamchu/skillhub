@@ -11,7 +11,7 @@ const defaultTheme = process.env.NEXT_PUBLIC_DEFAULT_THEME || "system";
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
 	return (
-		<ThemeProvider attribute="class" defaultTheme={defaultTheme} enableSystem>
+		<ThemeProvider attribute="class" defaultTheme={defaultTheme} enableSystem disableTransitionOnChange={false} storageKey="skillhub-theme">
 			<QueryClientProvider client={qc}>
 				<AuthProvider>
 					{children}

@@ -2,6 +2,7 @@ import axios, { type InternalAxiosRequestConfig, type AxiosError, AxiosHeaders }
 import axiosRetry from "axios-retry";
 import { nanoid } from "nanoid";
 import { getAccessToken } from "./tokens";
+import type { CreateCourseData, UpdateCourseData, CreateSkillData, UpdateSkillData, UpdateUserData } from "@/types";
 
 interface RetryableConfig extends InternalAxiosRequestConfig {
 	_retry?: boolean;
@@ -73,4 +74,25 @@ export const api = {
 	getSkill: <T = unknown>(id: string) => http.get<T>(`/skills/${id}`).then((r) => r.data),
 	listSkills: <T = unknown>(params?: QueryParams) => http.get<T>("/skills", { params }).then((r) => r.data),
 	getMe: () => http.get("/auth/me").then((r) => r.data),
+
+	// courses api
+	getCourses: (params?: QueryParams) => http.get("/courses", { params }).then((r) => r.data),
+	getCourse: (id: string) => http.get(`/courses/${id}`).then((r) => r.data),
+	createCourse: (data: CreateCourseData) => http.post("/courses", data).then((r) => r.data),
+	updateCourse: (id: string, data: UpdateCourseData) => http.patch(`/courses/${id}`, data).then((r) => r.data),
+	deleteCourse: (id: string) => http.delete(`/courses/${id}`).then((r) => r.data),
+
+	// skills api
+	createSkill: (data: CreateSkillData) => http.post("/skills", data).then((r) => r.data),
+	updateSkill: (id: string, data: UpdateSkillData) => http.patch(`/skills/${id}`, data).then((r) => r.data),
+	deleteSkill: (id: string) => http.delete(`/skills/${id}`).then((r) => r.data),
+
+	// users api (admin)
+	getUsers: (params?: QueryParams) => http.get("/users", { params }).then((r) => r.data),
+	getUser: (id: string) => http.get(`/users/${id}`).then((r) => r.data),
+	updateUser: (id: string, data: UpdateUserData) => http.patch(`/users/${id}`, data).then((r) => r.data),
+	deleteUser: (id: string) => http.delete(`/users/${id}`).then((r) => r.data),
+
+	// dashboard api (admin)
+	getDashboardStats: () => http.get("/dashboard/stats").then((r) => r.data),
 };
