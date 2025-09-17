@@ -95,4 +95,7 @@ export const api = {
 
 	// dashboard api (admin)
 	getDashboardStats: () => http.get("/dashboard/stats").then((r) => r.data),
+
+	// public stats api (no auth required)
+	getPublicStats: () => http.get("/stats").then((r) => r.data),
 };
