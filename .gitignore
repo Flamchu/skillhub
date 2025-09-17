@@ -6,6 +6,9 @@ node_modules/
 # Github
 .github/*
 
+# Next.js
+.next/*
+
 # Yarn
 .yarn/*
 !.yarn/patches

@@ -171,16 +171,16 @@ export default function AdminSkillsPage() {
 	const renderSkillNode = (node: SkillTreeNode, depth: number = 0) => {
 		return (
 			<div key={node.id} className="select-none">
-				<div className={`flex items-center space-x-2 p-2 rounded hover:bg-gray-50 ${depth === 0 ? "font-medium" : ""}`} style={{ marginLeft: `${depth * 24}px` }}>
+				<div className={`flex items-center space-x-2 p-2 rounded hover:bg-surface-hover ${depth === 0 ? "font-medium" : ""}`} style={{ marginLeft: `${depth * 24}px` }}>
 					{node.children.length > 0 ? (
-						<button onClick={() => toggleNode(node.id)} className="w-4 h-4 flex items-center justify-center hover:bg-gray-200 rounded">
+						<button onClick={() => toggleNode(node.id)} className="w-4 h-4 flex items-center justify-center hover:bg-surface-pressed rounded">
 							{node.expanded ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
 						</button>
 					) : (
 						<div className="w-4 h-4" />
 					)}
 
-					{node.children.length > 0 ? <Folder className="w-4 h-4 text-blue-600 dark:text-blue-400" /> : <FileText className="w-4 h-4 text-gray-600 dark:text-gray-400" />}
+					{node.children.length > 0 ? <Folder className="w-4 h-4 text-primary" /> : <FileText className="w-4 h-4 text-foreground-muted" />}
 
 					<span className="flex-1">{node.name}</span>
 
@@ -191,10 +191,10 @@ export default function AdminSkillsPage() {
 					)}
 
 					<div className="flex items-center space-x-1">
-						<Button variant="ghost" size="sm" onClick={() => handleEdit(node)} className="text-blue-600 hover:text-blue-700 hover:bg-blue-50">
+						<Button variant="ghost" size="sm" onClick={() => handleEdit(node)} className="text-primary hover:text-primary-600 hover:bg-primary-50">
 							<Edit2 className="h-3 w-3" />
 						</Button>
-						<Button variant="ghost" size="sm" onClick={() => handleDelete(node)} className="text-red-600 hover:text-red-700 hover:bg-red-50">
+						<Button variant="ghost" size="sm" onClick={() => handleDelete(node)} className="text-danger hover:text-danger-600 hover:bg-danger-50">
 							<Trash2 className="h-3 w-3" />
 						</Button>
 					</div>
@@ -214,8 +214,8 @@ export default function AdminSkillsPage() {
 			{/* Header */}
 			<div className="flex items-center justify-between">
 				<div>
-					<h1 className="text-3xl font-bold text-gray-900 dark:text-white">Skills Management</h1>
-					<p className="mt-2 text-gray-600 dark:text-gray-400">Manage the skills hierarchy and taxonomy</p>
+					<h1 className="text-3xl font-bold text-foreground">Skills Management</h1>
+					<p className="mt-2 text-foreground-muted">Manage the skills hierarchy and taxonomy</p>
 				</div>
 				<Button onClick={() => setShowCreateForm(true)}>
 					<Plus className="h-4 w-4 mr-2" />
@@ -227,12 +227,12 @@ export default function AdminSkillsPage() {
 			{showCreateForm && (
 				<Card>
 					<CardContent className="p-6">
-						<h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">{editingSkill ? "Edit Skill" : "Create New Skill"}</h3>
+						<h3 className="text-lg font-semibold mb-4 text-foreground">{editingSkill ? "Edit Skill" : "Create New Skill"}</h3>
 
 						<form onSubmit={handleSubmit} className="space-y-4">
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 								<div>
-									<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Skill Name *</label>
+									<label className="block text-sm font-medium text-foreground-alt mb-2">Skill Name *</label>
 									<Input
 										placeholder="e.g., JavaScript, React, Machine Learning"
 										value={formData.name}
@@ -249,14 +249,14 @@ export default function AdminSkillsPage() {
 								</div>
 
 								<div>
-									<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Slug *</label>
+									<label className="block text-sm font-medium text-foreground-alt mb-2">Slug *</label>
 									<Input placeholder="auto-generated-from-name" value={formData.slug} onChange={(e) => setFormData({ ...formData, slug: e.target.value })} required />
 								</div>
 							</div>
 
 							<div>
-								<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Parent Skill</label>
-								<select value={formData.parentId} onChange={(e) => setFormData({ ...formData, parentId: e.target.value })} className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+								<label className="block text-sm font-medium text-foreground-alt mb-2">Parent Skill</label>
+								<select value={formData.parentId} onChange={(e) => setFormData({ ...formData, parentId: e.target.value })} className="block w-full px-3 py-2 border border-border rounded-input shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-100 focus:border-primary-400 bg-surface text-foreground">
 									<option value="">No parent (root skill)</option>
 									{getSkillOptions(editingSkill?.id).map((skill) => (
 										<option key={skill.id} value={skill.id}>
@@ -267,7 +267,7 @@ export default function AdminSkillsPage() {
 							</div>
 
 							<div>
-								<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Description</label>
+								<label className="block text-sm font-medium text-foreground-alt mb-2">Description</label>
 								<textarea placeholder="Optional description of this skill..." value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} rows={3} className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
 							</div>
 
@@ -304,7 +304,7 @@ export default function AdminSkillsPage() {
 			{error && (
 				<Card>
 					<CardContent className="p-8 text-center">
-						<AlertCircle className="w-12 h-12 text-red-500 dark:text-red-400 mx-auto mb-4" />
+						<AlertCircle className="w-12 h-12 text-danger mx-auto mb-4" />
 						<h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">Failed to load skills</h3>
 						<p className="text-gray-600 dark:text-gray-400 mb-4">{error}</p>
 						<Button variant="outline" onClick={loadSkills}>

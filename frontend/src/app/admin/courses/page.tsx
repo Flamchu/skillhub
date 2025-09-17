@@ -57,8 +57,8 @@ export default function AdminCoursesPage() {
 			{/* Header */}
 			<div className="flex justify-between items-center">
 				<div>
-					<h1 className="text-3xl font-bold text-gray-900 dark:text-white">Course Management</h1>
-					<p className="mt-2 text-gray-600 dark:text-gray-400">Manage all courses on your platform</p>
+					<h1 className="text-3xl font-bold text-fg">Course Management</h1>
+					<p className="mt-2 text-fg-muted">Manage all courses on your platform</p>
 				</div>
 				<Link href="/admin/courses/new">
 					<Button>
@@ -73,13 +73,13 @@ export default function AdminCoursesPage() {
 				<CardContent className="p-6">
 					<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 						<div>
-							<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Search</label>
+							<label className="block text-sm font-medium text-fg-muted mb-2">Search</label>
 							<Input placeholder="Search courses..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} leftIcon={<Search className="h-4 w-4" />} />
 						</div>
 
 						<div>
-							<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Source</label>
-							<select value={selectedSource} onChange={(e) => setSelectedSource(e.target.value as CourseFilters["source"] | "all")} className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+							<label className="block text-sm font-medium text-fg-muted mb-2">Source</label>
+							<select value={selectedSource} onChange={(e) => setSelectedSource(e.target.value as CourseFilters["source"] | "all")} className="block w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary bg-bg text-fg">
 								{sources.map((source) => (
 									<option key={source} value={source}>
 										{source === "all" ? "All Sources" : source}
@@ -89,8 +89,8 @@ export default function AdminCoursesPage() {
 						</div>
 
 						<div>
-							<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Difficulty</label>
-							<select value={selectedDifficulty} onChange={(e) => setSelectedDifficulty(e.target.value as CourseFilters["difficulty"] | "all")} className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+							<label className="block text-sm font-medium text-fg-muted mb-2">Difficulty</label>
+							<select value={selectedDifficulty} onChange={(e) => setSelectedDifficulty(e.target.value as CourseFilters["difficulty"] | "all")} className="block w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary bg-bg text-fg">
 								{difficulties.map((difficulty) => (
 									<option key={difficulty} value={difficulty}>
 										{difficulty === "all" ? "All Levels" : difficulty}
@@ -105,8 +105,8 @@ export default function AdminCoursesPage() {
 			{/* Loading State */}
 			{isLoading && (
 				<div className="flex items-center justify-center py-12">
-					<Loader2 className="w-8 h-8 animate-spin text-blue-600 dark:text-blue-400" />
-					<span className="ml-2 text-gray-600 dark:text-gray-400">Loading courses...</span>
+					<Loader2 className="w-8 h-8 animate-spin text-primary" />
+					<span className="ml-2 text-fg-muted">Loading courses...</span>
 				</div>
 			)}
 
@@ -114,9 +114,9 @@ export default function AdminCoursesPage() {
 			{error && (
 				<Card>
 					<CardContent className="p-8 text-center">
-						<AlertCircle className="w-12 h-12 text-red-500 dark:text-red-400 mx-auto mb-4" />
-						<h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">Failed to load courses</h3>
-						<p className="text-gray-600 dark:text-gray-400 mb-4">Something went wrong while fetching the courses.</p>
+						<AlertCircle className="w-12 h-12 text-danger mx-auto mb-4" />
+						<h3 className="text-lg font-medium text-fg mb-2">Failed to load courses</h3>
+						<p className="text-fg-muted mb-4">Something went wrong while fetching the courses.</p>
 						<Button variant="outline" onClick={() => refetch()}>
 							Try Again
 						</Button>
@@ -133,7 +133,7 @@ export default function AdminCoursesPage() {
 								<div className="flex items-start justify-between">
 									<div className="flex-1">
 										<div className="flex items-center space-x-3 mb-2">
-											<h3 className="text-lg font-semibold text-gray-900 dark:text-white">{course.title}</h3>
+											<h3 className="text-lg font-semibold text-fg">{course.title}</h3>
 											<Badge variant={course.source === "INTERNAL" ? "primary" : "default"} size="sm">
 												{course.source}
 											</Badge>
@@ -147,12 +147,12 @@ export default function AdminCoursesPage() {
 											)}
 										</div>
 
-										<p className="text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">{course.description}</p>
+										<p className="text-fg-muted mb-3 line-clamp-2">{course.description}</p>
 
-										<div className="flex items-center space-x-6 text-sm text-gray-500 dark:text-gray-400">
+										<div className="flex items-center space-x-6 text-sm text-fg-muted">
 											{course.rating && (
 												<div className="flex items-center space-x-1">
-													<Star className="w-4 h-4 text-yellow-400 fill-current" />
+													<Star className="w-4 h-4 text-warning fill-current" />
 													<span>{course.rating.toFixed(1)}</span>
 												</div>
 											)}
@@ -203,7 +203,7 @@ export default function AdminCoursesPage() {
 											</Button>
 										</Link>
 
-										<Button variant="ghost" size="sm" onClick={() => handleDelete(course.id, course.title)} disabled={deletingId === course.id} className="text-red-600 hover:text-red-700 hover:bg-red-50">
+										<Button variant="ghost" size="sm" onClick={() => handleDelete(course.id, course.title)} disabled={deletingId === course.id} className="text-danger hover:text-danger hover:bg-surface">
 											{deletingId === course.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
 										</Button>
 									</div>
@@ -215,14 +215,14 @@ export default function AdminCoursesPage() {
 					{/* Pagination */}
 					{pagination && pagination.totalPages > 1 && (
 						<div className="flex items-center justify-between">
-							<div className="text-sm text-gray-600">
+							<div className="text-sm text-fg-muted">
 								Showing {(pagination.page - 1) * pagination.limit + 1} to {Math.min(pagination.page * pagination.limit, pagination.totalCount)} of {pagination.totalCount} courses
 							</div>
 							<div className="flex space-x-2">
 								<Button variant="outline" size="sm" onClick={() => setCurrentPage(currentPage - 1)} disabled={!pagination.hasPrev}>
 									Previous
 								</Button>
-								<span className="py-2 px-3 text-sm text-gray-700 dark:text-gray-300">
+								<span className="py-2 px-3 text-sm text-fg">
 									Page {pagination.page} of {pagination.totalPages}
 								</span>
 								<Button variant="outline" size="sm" onClick={() => setCurrentPage(currentPage + 1)} disabled={!pagination.hasNext}>
@@ -236,9 +236,9 @@ export default function AdminCoursesPage() {
 					{courses.length === 0 && (
 						<Card>
 							<CardContent className="p-12 text-center">
-								<BookOpen className="w-12 h-12 text-gray-500 dark:text-gray-400 mx-auto mb-4" />
-								<h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No courses found</h3>
-								<p className="text-gray-600 dark:text-gray-400 mb-4">{searchQuery || selectedSource !== "all" || selectedDifficulty !== "all" ? "Try adjusting your search criteria." : "Get started by creating your first course."}</p>
+								<BookOpen className="w-12 h-12 text-fg-muted mx-auto mb-4" />
+								<h3 className="text-lg font-medium text-fg mb-2">No courses found</h3>
+								<p className="text-fg-muted mb-4">{searchQuery || selectedSource !== "all" || selectedDifficulty !== "all" ? "Try adjusting your search criteria." : "Get started by creating your first course."}</p>
 								<Link href="/admin/courses/new">
 									<Button>
 										<Plus className="h-4 w-4 mr-2" />

@@ -69,11 +69,11 @@ export default function CoursesPage() {
 	};
 
 	return (
-		<div className="min-h-screen bg-gray-50">
+		<div className="min-h-screen bg-background-alt transition-colors">
 			{/* Navigation */}
-			<nav className="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
+			<nav className="bg-surface shadow-sm border-b border-border px-6 py-4 transition-colors">
 				<div className="max-w-7xl mx-auto">
-					<h1 className="text-2xl font-bold text-gray-900">Courses</h1>
+					<h1 className="text-2xl font-bold text-foreground">Courses</h1>
 				</div>
 			</nav>
 
@@ -81,18 +81,18 @@ export default function CoursesPage() {
 			<main className="max-w-7xl mx-auto px-6 py-8">
 				{/* Header */}
 				<div className="mb-8">
-					<h2 className="text-3xl font-bold text-gray-900 mb-4">Expand Your Skillset</h2>
-					<p className="text-lg text-gray-600">Discover high-quality courses from industry experts and level up your professional skills.</p>
+					<h2 className="text-3xl font-bold text-foreground mb-4">Expand Your Skillset</h2>
+					<p className="text-lg text-foreground-muted">Discover high-quality courses from industry experts and level up your professional skills.</p>
 				</div>
 
 				{/* Filters */}
 				<div className="mb-8 space-y-4">
-					<Input placeholder="Search courses, skills, or topics..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} leftIcon={<Search className="w-4 h-4" />} className="max-w-md" />
+					<Input placeholder="Search courses, skills, or topics..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} leftIcon={<Search className="w-4 h-4 text-foreground-subtle" />} className="max-w-md" />
 
 					<div className="flex flex-wrap gap-4">
 						{/* Difficulty Filter */}
 						<div className="flex flex-wrap gap-2">
-							<span className="text-sm font-medium text-gray-700 py-2">Difficulty:</span>
+							<span className="text-sm font-medium text-foreground-alt py-2">Difficulty:</span>
 							{difficulties.map((difficulty) => (
 								<Button
 									key={difficulty}
@@ -102,6 +102,7 @@ export default function CoursesPage() {
 										setSelectedDifficulty(difficulty);
 										setCurrentPage(1);
 									}}
+									className="transition-colors"
 								>
 									{difficulty === "all" ? "All Levels" : difficulty.toLowerCase()}
 								</Button>
@@ -110,7 +111,7 @@ export default function CoursesPage() {
 
 						{/* Source Filter */}
 						<div className="flex flex-wrap gap-2">
-							<span className="text-sm font-medium text-gray-700 py-2">Source:</span>
+							<span className="text-sm font-medium text-foreground-alt py-2">Source:</span>
 							{sources.map((source) => (
 								<Button
 									key={source}
@@ -120,6 +121,7 @@ export default function CoursesPage() {
 										setSelectedSource(source);
 										setCurrentPage(1);
 									}}
+									className="transition-colors"
 								>
 									{source === "all" ? "All Sources" : source === "INTERNAL" ? "SkillHub" : source.toLowerCase()}
 								</Button>
@@ -134,6 +136,7 @@ export default function CoursesPage() {
 								setFreeOnly(!freeOnly);
 								setCurrentPage(1);
 							}}
+							className="transition-colors"
 						>
 							Free Only
 						</Button>
@@ -143,19 +146,19 @@ export default function CoursesPage() {
 				{/* Loading State */}
 				{isLoading && (
 					<div className="flex items-center justify-center py-12">
-						<Loader2 className="w-8 h-8 animate-spin text-blue-600" />
-						<span className="ml-2 text-gray-600">Loading courses...</span>
+						<Loader2 className="w-8 h-8 animate-spin text-primary" />
+						<span className="ml-2 text-foreground-muted">Loading courses...</span>
 					</div>
 				)}
 
 				{/* Error State */}
 				{error && (
 					<div className="text-center py-12">
-						<div className="text-red-400 mb-4">
+						<div className="text-danger mb-4">
 							<AlertCircle className="w-12 h-12 mx-auto" />
 						</div>
-						<h3 className="text-lg font-medium text-gray-900 mb-2">Failed to load courses</h3>
-						<p className="text-gray-600 mb-4">Something went wrong while fetching the courses.</p>
+						<h3 className="text-lg font-medium text-foreground mb-2">Failed to load courses</h3>
+						<p className="text-foreground-muted mb-4">Something went wrong while fetching the courses.</p>
 						<Button variant="outline" onClick={() => refetch()}>
 							Try Again
 						</Button>
@@ -170,29 +173,29 @@ export default function CoursesPage() {
 								<Card key={course.id} variant="default" className="hover:shadow-lg transition-shadow">
 									<CardHeader>
 										<div className="flex justify-between items-start mb-2">
-											<Badge variant={course.source === "INTERNAL" ? "primary" : "info"} size="sm">
+											<Badge variant={course.source === "INTERNAL" ? "primary" : "info"} size="sm" className="capitalize">
 												{course.source === "INTERNAL" ? "SkillHub" : course.source.toLowerCase()}
 											</Badge>
-											<Button variant="ghost" size="sm" onClick={() => toggleBookmark(course.id)} className="p-1 h-8 w-8">
+											<Button variant="ghost" size="sm" onClick={() => toggleBookmark(course.id)} className="p-1 h-8 w-8 text-foreground-subtle hover:text-foreground">
 												<Bookmark className="w-4 h-4" />
 											</Button>
 										</div>
-										<CardTitle as="h3" className="text-lg">
+										<CardTitle as="h3" className="text-lg text-foreground">
 											{course.title}
 										</CardTitle>
-										<Badge variant="default" size="sm">
+										<Badge variant="default" size="sm" className="capitalize">
 											{course.difficulty.toLowerCase()}
 										</Badge>
 									</CardHeader>
 
 									<CardContent>
-										<p className="text-gray-600 text-sm mb-4 line-clamp-2">{course.description}</p>
+										<p className="text-foreground-muted text-sm mb-4 line-clamp-2">{course.description}</p>
 
 										<div className="space-y-3">
-											<div className="flex items-center gap-4 text-sm text-gray-600">
+											<div className="flex items-center gap-4 text-sm text-foreground-muted">
 												{course.rating && (
 													<div className="flex items-center gap-1">
-														<Star className="w-4 h-4 fill-current text-yellow-400" />
+														<Star className="w-4 h-4 fill-current text-warning" />
 														<span>{course.rating.toFixed(1)}</span>
 													</div>
 												)}
@@ -229,10 +232,10 @@ export default function CoursesPage() {
 
 									<CardFooter>
 										<div className="flex justify-between items-center w-full">
-											<span className="text-lg font-bold text-gray-900">{course.isPaid && course.priceCents ? `$${(course.priceCents / 100).toFixed(2)}` : "Free"}</span>
+											<span className="text-lg font-bold text-foreground">{course.isPaid && course.priceCents ? `$${(course.priceCents / 100).toFixed(2)}` : "Free"}</span>
 											<Button size="sm" onClick={() => window.open(course.url, "_blank")}>
-												{course.source !== "INTERNAL" && <ExternalLink className="w-4 h-4 mr-2" />}
-												Enroll Now
+												{" "}
+												{course.source !== "INTERNAL" && <ExternalLink className="w-4 h-4 mr-2" />} Enroll Now{" "}
 											</Button>
 										</div>
 									</CardFooter>
@@ -243,14 +246,14 @@ export default function CoursesPage() {
 						{/* Pagination */}
 						{pagination && pagination.totalPages > 1 && (
 							<div className="flex items-center justify-between mt-8">
-								<div className="text-sm text-gray-600">
+								<div className="text-sm text-foreground-muted">
 									Showing {(pagination.page - 1) * pagination.limit + 1} to {Math.min(pagination.page * pagination.limit, pagination.totalCount)} of {pagination.totalCount} courses
 								</div>
 								<div className="flex gap-2">
 									<Button variant="outline" size="sm" onClick={() => setCurrentPage(currentPage - 1)} disabled={!pagination.hasPrev}>
 										Previous
 									</Button>
-									<span className="py-2 px-3 text-sm">
+									<span className="py-2 px-3 text-sm text-foreground-alt">
 										Page {pagination.page} of {pagination.totalPages}
 									</span>
 									<Button variant="outline" size="sm" onClick={() => setCurrentPage(currentPage + 1)} disabled={!pagination.hasNext}>
@@ -263,11 +266,11 @@ export default function CoursesPage() {
 						{/* Empty State */}
 						{courses.length === 0 && (
 							<div className="text-center py-12">
-								<div className="text-gray-400 mb-4">
+								<div className="text-foreground-subtle mb-4">
 									<Search className="w-12 h-12 mx-auto" />
 								</div>
-								<h3 className="text-lg font-medium text-gray-900 mb-2">No courses found</h3>
-								<p className="text-gray-600 mb-4">{searchQuery || selectedDifficulty !== "all" || selectedSource !== "all" || freeOnly ? "Try adjusting your search or filter criteria." : "Check back later for new courses!"}</p>
+								<h3 className="text-lg font-medium text-foreground mb-2">No courses found</h3>
+								<p className="text-foreground-muted mb-4">{searchQuery || selectedDifficulty !== "all" || selectedSource !== "all" || freeOnly ? "Try adjusting your search or filter criteria." : "Check back later for new courses!"}</p>
 								<Button variant="outline" onClick={resetFilters}>
 									Clear Filters
 								</Button>

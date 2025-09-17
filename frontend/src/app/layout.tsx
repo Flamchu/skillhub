@@ -18,14 +18,16 @@ export const metadata: Metadata = {
 	description: "Professional skill development platform",
 };
 
-export default function RootLayout({
-	children,
-}: Readonly<{
-	children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+	// minimal no-flash theme init: only sets dark early, does not try to unset (runtime sync handles light)
+	const themeInit = `!function(){try{var k='skillhub-theme',v=localStorage.getItem(k);var sys=window.matchMedia('(prefers-color-scheme: dark)').matches;if(v==='dark'||(!v||v==='system')&&sys){document.documentElement.classList.add('dark')}}catch(e){}}();`;
+
 	return (
-		<html lang="en" suppressHydrationWarning>
-			<body className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors`}>
+		<html lang="en" suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} transition-colors`}>
+			<head>
+				<script dangerouslySetInnerHTML={{ __html: themeInit }} />
+			</head>
+			<body className="antialiased min-h-screen bg-background text-foreground transition-colors">
 				<AppProviders>{children}</AppProviders>
 			</body>
 		</html>

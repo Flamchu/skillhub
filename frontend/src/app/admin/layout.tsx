@@ -79,17 +79,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 	}
 
 	return (
-		<div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+		<div className="min-h-screen bg-bg text-fg transition-colors">
 			{/* Sidebar */}
-			<div className="fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 shadow-lg border-r border-gray-200 dark:border-gray-700">
-				<div className="flex h-16 items-center justify-between px-4 border-b border-gray-200 dark:border-gray-700">
+			<div className="fixed inset-y-0 left-0 z-50 w-64 bg-surface dark:bg-surface shadow-lg border-r border-border dark:border-border">
+				<div className="flex h-16 items-center justify-between px-4 border-b border-border dark:border-border">
 					<Link href="/" className="flex items-center space-x-3 flex-1 min-w-0">
-						<div className="w-8 h-8 bg-blue-600 dark:bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
+						<div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center flex-shrink-0">
 							<span className="text-white font-bold text-sm">SH</span>
 						</div>
 						<div className="min-w-0">
-							<div className="text-lg font-semibold text-gray-900 dark:text-white truncate">SkillHub</div>
-							<div className="text-xs text-gray-500 dark:text-gray-400">Admin Panel</div>
+							<div className="text-lg font-semibold text-fg truncate">SkillHub</div>
+							<div className="text-xs text-fg-muted">Admin Panel</div>
 						</div>
 					</Link>
 					<div className="flex-shrink-0 ml-2">
@@ -104,8 +104,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
 							return (
 								<div key={item.name}>
-									<Link href={item.href} className={`group flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive ? "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300" : "text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700"}`}>
-										<item.icon className={`mr-3 h-5 w-5 ${isActive ? "text-blue-500 dark:text-blue-400" : "text-gray-500 dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300"}`} />
+									<Link href={item.href} className={`group flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive ? "bg-primary/10 text-primary" : "text-fg-muted hover:text-fg hover:bg-bg-muted"}`}>
+										<item.icon className={`mr-3 h-5 w-5 ${isActive ? "text-primary" : "text-fg-subtle group-hover:text-fg-muted"}`} />
 										{item.name}
 									</Link>
 
@@ -113,7 +113,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 									{item.children && isActive && (
 										<div className="ml-8 mt-1 space-y-1">
 											{item.children.map((child) => (
-												<Link key={child.name} href={child.href} className={`block px-3 py-1 rounded-md text-sm transition-colors ${pathname === child.href ? "bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400" : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700"}`}>
+												<Link key={child.name} href={child.href} className={`block px-3 py-1 rounded-md text-sm transition-colors ${pathname === child.href ? "bg-primary/15 text-primary" : "text-fg-muted hover:text-fg hover:bg-bg-muted"}`}>
 													{child.name}
 												</Link>
 											))}
@@ -126,14 +126,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 				</nav>
 
 				{/* User info */}
-				<div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200 dark:border-gray-700">
+				<div className="absolute bottom-0 left-0 right-0 p-4 border-t border-border">
 					<div className="flex items-center space-x-3">
-						<div className="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center">
-							<span className="text-xs font-medium text-gray-700 dark:text-gray-300">{user.name?.charAt(0) || user.email?.charAt(0) || "A"}</span>
+						<div className="w-8 h-8 bg-surface-alt rounded-full flex items-center justify-center">
+							<span className="text-xs font-medium text-fg-muted">{user.name?.charAt(0) || user.email?.charAt(0) || "A"}</span>
 						</div>
 						<div className="flex-1 min-w-0">
-							<p className="text-sm font-medium text-gray-900 dark:text-white truncate">{user.name || "Admin User"}</p>
-							<p className="text-xs text-gray-500 dark:text-gray-400 truncate">{user.email}</p>
+							<p className="text-sm font-medium text-fg truncate">{user.name || "Admin User"}</p>
+							<p className="text-xs text-fg-muted truncate">{user.email}</p>
 						</div>
 					</div>
 				</div>
@@ -142,7 +142,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 			{/* Main content */}
 			<div className="pl-64">
 				<main className="py-6">
-					<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-900 min-h-screen">{children}</div>
+					<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 min-h-screen">
+						<div className="rounded-xl border border-border bg-surface backdrop-blur-sm p-6 transition-colors">{children}</div>
+					</div>
 				</main>
 			</div>
 		</div>

@@ -1,15 +1,257 @@
 @import "tailwindcss";
 
+/* SkillHub Design System - Professional Color Schema using Tailwind v4 @theme */
+
+/* Base theme variables for light and dark modes */
 :root {
 	--font-sans: var(--font-geist-sans);
 	--font-mono: var(--font-geist-mono);
+
+	/* vibrant semantic colors for light mode - educational and inspiring */
+	--bg-default: hsl(220 40% 98%);
+	--bg-alt: hsl(215 50% 96%);
+	--bg-muted: hsl(210 40% 94%);
+	--surface-default: hsl(0 0% 100%);
+	--surface-elevated: hsl(220 40% 99%);
+	--surface-muted: hsl(215 30% 97%);
+	--surface-hover: hsl(210 25% 92%);
+	--surface-pressed: hsl(210 20% 88%);
+	--border-default: hsl(215 25% 88%);
+	--border-divider: hsl(210 20% 82%);
+	--border-strong: hsl(210 15% 65%);
+	--border-focus: hsl(217 91% 60%);
+	--overlay: hsl(220 20% 15% / 0.6);
+	--backdrop: hsl(220 25% 10% / 0.8);
+	--fg-default: hsl(220 40% 15%);
+	--fg-alt: hsl(215 30% 30%);
+	--fg-muted: hsl(210 20% 50%);
+	--fg-subtle: hsl(210 15% 65%);
+	--fg-disabled: hsl(210 10% 75%);
 }
 
+/* Dark mode semantic colors */
+.dark {
+	--bg-default: hsl(240 10% 4%);
+	--bg-alt: hsl(240 8% 6%);
+	--bg-muted: hsl(240 6% 8%);
+	--surface-default: hsl(240 9% 6%);
+	--surface-elevated: hsl(240 7% 9%);
+	--surface-muted: hsl(240 6% 8%);
+	--surface-hover: hsl(240 8% 12%);
+	--surface-pressed: hsl(240 9% 15%);
+	--border-default: hsl(240 6% 20%);
+	--border-divider: hsl(240 5% 18%);
+	--border-strong: hsl(240 5% 30%);
+	--border-focus: hsl(217 91% 65%);
+	--overlay: hsl(240 10% 4% / 0.8);
+	--backdrop: hsl(240 10% 4% / 0.9);
+	--fg-default: hsl(240 10% 95%);
+	--fg-alt: hsl(240 8% 90%);
+	--fg-muted: hsl(240 5% 70%);
+	--fg-subtle: hsl(240 4% 55%);
+	--fg-disabled: hsl(240 3% 40%);
+}
+
+/* Tailwind v4 @theme for custom colors */
+@theme {
+	/* Background colors */
+	--color-background: var(--bg-default);
+	--color-background-alt: var(--bg-alt);
+	--color-background-muted: var(--bg-muted);
+
+	/* Surface colors */
+	--color-surface: var(--surface-default);
+	--color-surface-elevated: var(--surface-elevated);
+	--color-surface-muted: var(--surface-muted);
+	--color-surface-hover: var(--surface-hover);
+	--color-surface-pressed: var(--surface-pressed);
+
+	/* Border colors */
+	--color-border: var(--border-default);
+	--color-border-divider: var(--border-divider);
+	--color-border-strong: var(--border-strong);
+	--color-border-focus: var(--border-focus);
+
+	/* Text colors */
+	--color-foreground: var(--fg-default);
+	--color-foreground-alt: var(--fg-alt);
+	--color-foreground-muted: var(--fg-muted);
+	--color-foreground-subtle: var(--fg-subtle);
+	--color-foreground-disabled: var(--fg-disabled);
+
+	/* Brand Primary - Vibrant Learning Blue */
+	--color-primary-50: hsl(210 100% 97%);
+	--color-primary-100: hsl(210 100% 94%);
+	--color-primary-200: hsl(210 100% 87%);
+	--color-primary-300: hsl(210 95% 78%);
+	--color-primary-400: hsl(210 90% 68%);
+	--color-primary-500: hsl(210 85% 58%);
+	--color-primary-600: hsl(210 80% 52%);
+	--color-primary-700: hsl(210 75% 46%);
+	--color-primary-800: hsl(210 70% 40%);
+	--color-primary-900: hsl(210 65% 32%);
+	--color-primary: hsl(210 85% 58%);
+	--color-primary-foreground: hsl(0 0% 100%);
+
+	/* Success - Energetic Learning Green */
+	--color-success-50: hsl(145 80% 96%);
+	--color-success-100: hsl(145 75% 91%);
+	--color-success-200: hsl(145 70% 83%);
+	--color-success-300: hsl(145 65% 72%);
+	--color-success-400: hsl(145 60% 58%);
+	--color-success-500: hsl(145 65% 45%);
+	--color-success-600: hsl(145 70% 40%);
+	--color-success-700: hsl(145 75% 35%);
+	--color-success-800: hsl(145 80% 30%);
+	--color-success-900: hsl(145 85% 25%);
+	--color-success: hsl(145 65% 45%);
+	--color-success-foreground: hsl(0 0% 100%);
+
+	/* Warning - Vibrant Learning Orange */
+	--color-warning-50: hsl(35 100% 96%);
+	--color-warning-100: hsl(35 95% 91%);
+	--color-warning-200: hsl(35 90% 84%);
+	--color-warning-300: hsl(35 85% 74%);
+	--color-warning-400: hsl(35 80% 65%);
+	--color-warning-500: hsl(35 85% 58%);
+	--color-warning-600: hsl(35 90% 52%);
+	--color-warning-700: hsl(35 95% 46%);
+	--color-warning-800: hsl(35 90% 40%);
+	--color-warning-900: hsl(35 85% 34%);
+	--color-warning: hsl(35 85% 58%);
+	--color-warning-foreground: hsl(0 0% 100%);
+
+	/* Danger - Professional Red */
+	--color-danger-50: hsl(0 100% 97%);
+	--color-danger-100: hsl(0 93% 94%);
+	--color-danger-200: hsl(0 96% 89%);
+	--color-danger-300: hsl(0 94% 82%);
+	--color-danger-400: hsl(0 91% 71%);
+	--color-danger-500: hsl(0 84% 60%);
+	--color-danger-600: hsl(0 84% 55%);
+	--color-danger-700: hsl(0 84% 50%);
+	--color-danger-800: hsl(0 84% 45%);
+	--color-danger-900: hsl(0 84% 40%);
+	--color-danger: hsl(0 84% 60%);
+	--color-danger-foreground: hsl(0 0% 100%);
+
+	/* Info - Energetic Cyan */
+	--color-info-50: hsl(185 90% 96%);
+	--color-info-100: hsl(185 85% 92%);
+	--color-info-200: hsl(185 80% 87%);
+	--color-info-300: hsl(185 75% 78%);
+	--color-info-400: hsl(185 70% 64%);
+	--color-info-500: hsl(185 75% 52%);
+	--color-info-600: hsl(185 80% 47%);
+	--color-info-700: hsl(185 85% 42%);
+	--color-info-800: hsl(185 90% 37%);
+	--color-info-900: hsl(185 95% 32%);
+	--color-info: hsl(185 75% 52%);
+	--color-info-foreground: hsl(0 0% 100%);
+
+	/* New Accent Colors for Educational Spirit */
+	/* Purple - Creativity & Innovation */
+	--color-purple-50: hsl(270 90% 97%);
+	--color-purple-100: hsl(270 85% 94%);
+	--color-purple-200: hsl(270 80% 88%);
+	--color-purple-300: hsl(270 75% 78%);
+	--color-purple-400: hsl(270 70% 68%);
+	--color-purple-500: hsl(270 75% 58%);
+	--color-purple-600: hsl(270 80% 52%);
+	--color-purple-700: hsl(270 85% 46%);
+	--color-purple-800: hsl(270 90% 40%);
+	--color-purple-900: hsl(270 95% 34%);
+	--color-purple: hsl(270 75% 58%);
+	--color-purple-foreground: hsl(0 0% 100%);
+
+	/* Pink - Engagement & Fun */
+	--color-pink-50: hsl(320 85% 97%);
+	--color-pink-100: hsl(320 80% 94%);
+	--color-pink-200: hsl(320 75% 88%);
+	--color-pink-300: hsl(320 70% 80%);
+	--color-pink-400: hsl(320 65% 70%);
+	--color-pink-500: hsl(320 70% 60%);
+	--color-pink-600: hsl(320 75% 54%);
+	--color-pink-700: hsl(320 80% 48%);
+	--color-pink-800: hsl(320 85% 42%);
+	--color-pink-900: hsl(320 90% 36%);
+	--color-pink: hsl(320 70% 60%);
+	--color-pink-foreground: hsl(0 0% 100%);
+
+	/* Neutral Grays - Professional Scale */
+	--color-gray-50: hsl(240 9% 98%);
+	--color-gray-100: hsl(240 5% 96%);
+	--color-gray-200: hsl(240 6% 90%);
+	--color-gray-300: hsl(240 5% 84%);
+	--color-gray-400: hsl(240 4% 64%);
+	--color-gray-500: hsl(240 4% 46%);
+	--color-gray-600: hsl(240 5% 34%);
+	--color-gray-700: hsl(240 5% 26%);
+	--color-gray-800: hsl(240 4% 16%);
+	--color-gray-900: hsl(240 6% 10%);
+}
+
+/* Dark mode overrides for @theme colors using @theme inline */
+@theme inline {
+	--color-primary: light-dark(hsl(217 91% 60%), hsl(217 91% 65%));
+	--color-primary-foreground: light-dark(hsl(0 0% 100%), hsl(240 10% 4%));
+
+	--color-success: light-dark(hsl(142 76% 36%), hsl(142 76% 45%));
+	--color-success-foreground: light-dark(hsl(0 0% 100%), hsl(240 10% 4%));
+
+	--color-warning: light-dark(hsl(43 96% 56%), hsl(43 96% 65%));
+	--color-warning-foreground: light-dark(hsl(43 96% 15%), hsl(43 96% 10%));
+
+	--color-danger: light-dark(hsl(0 84% 60%), hsl(0 84% 65%));
+	--color-danger-foreground: light-dark(hsl(0 0% 100%), hsl(240 10% 4%));
+
+	--color-info: light-dark(hsl(195 100% 50%), hsl(195 100% 60%));
+	--color-info-foreground: light-dark(hsl(0 0% 100%), hsl(240 10% 4%));
+}
+
+/* Global styles */
 body {
+	background-color: var(--bg-default);
+	color: var(--fg-default);
 	font-family: var(--font-geist-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+::selection {
+	background-color: light-dark(hsl(217 91% 60% / 0.25), hsl(217 91% 65% / 0.25));
 }
 
 /* Smooth scrolling for anchor links */
 html {
 	scroll-behavior: smooth;
+}
+
+/* Design Tokens - these can be used in utility classes */
+:root {
+	--radius-xs: 2px;
+	--radius-sm: 4px;
+	--radius-md: 6px;
+	--radius-lg: 8px;
+	--radius-xl: 12px;
+	--radius-2xl: 16px;
+	--radius-full: 9999px;
+
+	/* semantic aliases for consistent usage */
+	--radius-button: var(--radius-md);
+	--radius-card: var(--radius-lg);
+	--radius-input: var(--radius-md);
+	--radius-badge: var(--radius-full);
+
+	--shadow-xs: 0 1px 2px 0 hsl(240 6% 6% / 0.04);
+	--shadow-sm: 0 1px 3px 0 hsl(240 6% 6% / 0.08), 0 1px 2px -1px hsl(240 6% 6% / 0.08);
+	--shadow-md: 0 4px 6px -1px hsl(240 6% 6% / 0.08), 0 2px 4px -2px hsl(240 6% 6% / 0.08);
+	--shadow-lg: 0 10px 15px -3px hsl(240 6% 6% / 0.08), 0 4px 6px -4px hsl(240 6% 6% / 0.08);
+	--shadow-xl: 0 20px 25px -5px hsl(240 6% 6% / 0.1), 0 8px 10px -6px hsl(240 6% 6% / 0.1);
+}
+
+.dark {
+	--shadow-xs: 0 1px 2px 0 hsl(240 6% 0% / 0.15);
+	--shadow-sm: 0 1px 3px 0 hsl(240 6% 0% / 0.2), 0 1px 2px -1px hsl(240 6% 0% / 0.2);
+	--shadow-md: 0 4px 6px -1px hsl(240 6% 0% / 0.25), 0 2px 4px -2px hsl(240 6% 0% / 0.25);
+	--shadow-lg: 0 10px 15px -3px hsl(240 6% 0% / 0.3), 0 4px 6px -4px hsl(240 6% 0% / 0.3);
+	--shadow-xl: 0 20px 25px -5px hsl(240 6% 0% / 0.35), 0 8px 10px -6px hsl(240 6% 0% / 0.35);
 }

@@ -48,45 +48,45 @@ export default function LoginPage() {
 	};
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center px-6">
+		<div className="min-h-screen bg-background-alt flex items-center justify-center px-6">
 			<div className="max-w-md w-full">
 				{/* header */}
 				<div className="text-center mb-8">
-					<Link href="/" className="text-2xl font-bold text-gray-900 hover:text-blue-600 transition-colors">
+					<Link href="/" className="text-2xl font-bold text-foreground hover:text-primary transition-colors">
 						SkillHub
 					</Link>
-					<h1 className="text-3xl font-bold text-gray-900 mt-4">Welcome back</h1>
-					<p className="text-gray-600 mt-2">Sign in to your account to continue learning</p>
+					<h1 className="text-3xl font-bold text-foreground mt-4">Welcome back</h1>
+					<p className="text-foreground-muted mt-2">Sign in to your account to continue learning</p>
 				</div>
 
 				{/* login form */}
-				<div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
+				<div className="bg-surface border border-border rounded-sm shadow-sm p-8">
 					<form onSubmit={handleSubmit} className="space-y-6">
 						<div>
-							<label htmlFor="email" className="block text-sm font-semibold text-gray-900 mb-2">
+							<label htmlFor="email" className="block text-sm font-semibold text-foreground mb-2">
 								Email address
 							</label>
-							<input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="w-full px-4 py-3 text-gray-900 bg-gray-50 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:bg-white outline-none transition-all duration-200 placeholder:text-gray-500" placeholder="Enter your email address" />
+							<input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="w-full px-3 py-2 bg-surface-muted border border-border rounded-sm text-foreground placeholder:text-foreground-subtle focus:border-border-focus focus:ring-2 focus:ring-primary-100 outline-none transition-all" placeholder="Enter your email address" />
 						</div>
 
 						<div>
-							<label htmlFor="password" className="block text-sm font-semibold text-gray-900 mb-2">
+							<label htmlFor="password" className="block text-sm font-semibold text-foreground mb-2">
 								Password
 							</label>
-							<input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required className="w-full px-4 py-3 text-gray-900 bg-gray-50 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:bg-white outline-none transition-all duration-200 placeholder:text-gray-500" placeholder="Enter your password" />
+							<input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required className="w-full px-3 py-2 bg-surface-muted border border-border rounded-sm text-foreground placeholder:text-foreground-subtle focus:border-border-focus focus:ring-2 focus:ring-primary-100 outline-none transition-all" placeholder="Enter your password" />
 						</div>
 
-						{error && <div className="text-red-700 text-sm bg-red-100 border border-red-200 p-4 rounded-lg font-medium">{error}</div>}
+						{error && <div className="text-danger text-sm bg-danger-50 border border-danger rounded-sm p-4 font-medium">{error}</div>}
 
-						<button type="submit" disabled={loading} className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-600 transition-all duration-200 font-semibold text-base shadow-sm">
+						<button type="submit" disabled={loading} className="w-full px-4 py-2 bg-primary text-primary-foreground rounded-sm hover:bg-primary-600 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-base">
 							{loading ? "Signing in..." : "Sign in"}
 						</button>
 					</form>
 
 					<div className="mt-8 text-center">
-						<p className="text-gray-700">
+						<p className="text-foreground">
 							Don&apos;t have an account?{" "}
-							<Link href="/register" className="text-blue-600 hover:text-blue-800 font-semibold hover:underline transition-colors">
+							<Link href="/register" className="text-primary hover:text-primary-600 font-semibold hover:underline transition-colors">
 								Sign up
 							</Link>
 						</p>

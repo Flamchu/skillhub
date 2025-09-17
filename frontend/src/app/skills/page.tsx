@@ -25,20 +25,20 @@ export default function SkillsPage() {
 
 	if (!user) {
 		return (
-			<div className="min-h-screen bg-gray-50 flex items-center justify-center">
+			<div className="min-h-screen bg-background flex items-center justify-center">
 				<div className="text-center">
-					<p className="text-gray-600">please sign in to view your skills.</p>
+					<p className="text-foreground-muted">please sign in to view your skills.</p>
 				</div>
 			</div>
 		);
 	}
 
 	return (
-		<div className="min-h-screen bg-gray-50">
+		<div className="min-h-screen bg-background-alt">
 			{/* navigation */}
-			<nav className="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
+			<nav className="bg-surface shadow-sm border-b border-border px-6 py-4">
 				<div className="max-w-7xl mx-auto flex justify-between items-center">
-					<h1 className="text-2xl font-bold text-gray-900">my skills</h1>
+					<h1 className="text-2xl font-bold text-foreground">my skills</h1>
 					<Button>
 						<Plus className="w-4 h-4 mr-2" />
 						add skill
@@ -50,8 +50,8 @@ export default function SkillsPage() {
 			<main className="max-w-7xl mx-auto px-6 py-8">
 				{/* header */}
 				<div className="mb-8">
-					<h2 className="text-3xl font-bold text-gray-900 mb-4">track your professional skills</h2>
-					<p className="text-lg text-gray-600">Monitor your progress and identify areas for improvement across different skill categories.</p>
+					<h2 className="text-3xl font-bold text-foreground mb-4">track your professional skills</h2>
+					<p className="text-lg text-foreground-muted">Monitor your progress and identify areas for improvement across different skill categories.</p>
 				</div>
 
 				{/* search */}
@@ -75,13 +75,13 @@ export default function SkillsPage() {
 							<CardContent>
 								<div className="space-y-4">
 									<div>
-										<div className="flex justify-between text-sm text-gray-600 mb-1">
+										<div className="flex justify-between text-sm text-foreground-muted mb-1">
 											<span>Progress</span>
 											<span>{skill.proficiency === "BEGINNER" ? "25%" : skill.proficiency === "INTERMEDIATE" ? "50%" : skill.proficiency === "ADVANCED" ? "75%" : "90%"}</span>
 										</div>
-										<div className="w-full bg-gray-200 rounded-full h-2">
+										<div className="w-full bg-surface-muted rounded-full h-2">
 											<div
-												className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+												className="bg-primary h-2 rounded-full transition-all duration-300"
 												style={{
 													width: skill.proficiency === "BEGINNER" ? "25%" : skill.proficiency === "INTERMEDIATE" ? "50%" : skill.proficiency === "ADVANCED" ? "75%" : "90%",
 												}}
@@ -104,11 +104,11 @@ export default function SkillsPage() {
 
 				{filteredSkills.length === 0 && (
 					<div className="text-center py-12">
-						<div className="text-gray-400 mb-4">
+						<div className="text-foreground-subtle mb-4">
 							<Search className="w-12 h-12 mx-auto" />
 						</div>
-						<h3 className="text-lg font-medium text-gray-900 mb-2">No skills found</h3>
-						<p className="text-gray-600">{searchQuery ? "Try adjusting your search terms." : "Start by adding your first skill!"}</p>
+						<h3 className="text-lg font-medium text-foreground mb-2">No skills found</h3>
+						<p className="text-foreground-muted">{searchQuery ? "Try adjusting your search terms." : "Start by adding your first skill!"}</p>
 						<Button className="mt-4">
 							<Plus className="w-4 h-4 mr-2" />
 							Add Your First Skill

@@ -138,7 +138,7 @@ export default function AdminUsersPage() {
 			{error && (
 				<Card>
 					<CardContent className="p-8 text-center">
-						<AlertCircle className="w-12 h-12 text-red-500 dark:text-red-400 mx-auto mb-4" />
+						<AlertCircle className="w-12 h-12 text-danger mx-auto mb-4" />
 						<h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">Failed to load users</h3>
 						<p className="text-gray-600 dark:text-gray-400 mb-4">{error}</p>
 						<Button variant="outline" onClick={loadUsers}>
@@ -189,7 +189,7 @@ export default function AdminUsersPage() {
 											<option value="ADMIN">Admin</option>
 										</select>
 
-										<Button variant="ghost" size="sm" onClick={() => handleDeleteUser(user.id, user.name || user.email || "Unknown")} className="text-red-600 hover:text-red-700 hover:bg-red-50">
+										<Button variant="ghost" size="sm" onClick={() => handleDeleteUser(user.id, user.name || user.email || "Unknown")} className="text-danger hover:text-danger-600 hover:bg-danger-50">
 											<Trash2 className="h-4 w-4" />
 										</Button>
 									</div>
