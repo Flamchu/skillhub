@@ -21,12 +21,12 @@ export function Avatar({ src, alt, name, size = "md", fallbackBg, className, ...
 	};
 
 	// background colors for fallback
-	const backgroundColors = ["bg-red-500", "bg-orange-500", "bg-yellow-500", "bg-green-500", "bg-blue-500", "bg-indigo-500", "bg-purple-500", "bg-pink-500"];
+	const backgroundColors = ["bg-danger-500", "bg-warning-500", "bg-success-500", "bg-primary-500", "bg-info-500", "bg-purple-500", "bg-pink-500", "bg-indigo-500"];
 
 	// generate a consistent background color based on name
 	const getBackgroundColor = () => {
 		if (fallbackBg) return fallbackBg;
-		if (!name) return "bg-gray-500";
+		if (!name) return "bg-surface-muted";
 
 		const index = name.charCodeAt(0) % backgroundColors.length;
 		return backgroundColors[index];
@@ -60,9 +60,9 @@ export function AvatarGroup({ avatars, max = 5, size = "md", className }: Avatar
 	return (
 		<div className={cn("flex -space-x-2", className)}>
 			{displayAvatars.map((avatar, index) => (
-				<Avatar key={index} {...avatar} size={size} className="border-2 border-white dark:border-gray-800" />
+				<Avatar key={index} {...avatar} size={size} className="border-2 border-surface-default" />
 			))}
-			{remainingCount > 0 && <div className={cn("relative inline-flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-medium border-2 border-white dark:border-gray-800", size === "sm" && "h-8 w-8 text-xs", size === "md" && "h-10 w-10 text-sm", size === "lg" && "h-12 w-12 text-base", size === "xl" && "h-16 w-16 text-lg")}>+{remainingCount}</div>}
+			{remainingCount > 0 && <div className={cn("relative inline-flex items-center justify-center rounded-full bg-surface-muted text-fg-muted font-medium border-2 border-surface-default", size === "sm" && "h-8 w-8 text-xs", size === "md" && "h-10 w-10 text-sm", size === "lg" && "h-12 w-12 text-base", size === "xl" && "h-16 w-16 text-lg")}>+{remainingCount}</div>}
 		</div>
 	);
 }

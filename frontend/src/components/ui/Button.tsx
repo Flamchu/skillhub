@@ -10,23 +10,23 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export function Button({ variant = "primary", size = "md", loading = false, className, disabled, children, ...props }: ButtonProps) {
-	// base styles for the button
-	const baseStyles = "inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900 disabled:pointer-events-none disabled:opacity-50";
+	// base styles following styling guide - rounded-sm for professional appearance
+	const baseStyles = "inline-flex items-center justify-center rounded-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-100 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50";
 
-	// variant styles
+	// variant styles using exact styling guide patterns
 	const variants = {
-		primary: "bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 dark:bg-blue-500 dark:hover:bg-blue-600 dark:active:bg-blue-700",
-		secondary: "bg-gray-600 text-white hover:bg-gray-700 active:bg-gray-800 dark:bg-gray-500 dark:hover:bg-gray-600 dark:active:bg-gray-700",
-		outline: "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 active:bg-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700",
-		ghost: "text-gray-700 hover:bg-gray-100 active:bg-gray-200 dark:text-gray-200 dark:hover:bg-gray-800 dark:active:bg-gray-700",
-		danger: "bg-red-600 text-white hover:bg-red-700 active:bg-red-800 dark:bg-red-500 dark:hover:bg-red-600 dark:active:bg-red-700",
+		primary: "bg-primary text-primary-foreground hover:bg-primary-600 shadow-sm",
+		secondary: "bg-surface border border-border text-foreground hover:bg-surface-hover",
+		outline: "border border-border bg-transparent text-foreground hover:bg-surface-hover",
+		ghost: "text-foreground-muted hover:bg-surface-hover hover:text-foreground",
+		danger: "bg-danger text-danger-foreground hover:bg-danger-600 shadow-sm",
 	};
 
-	// size styles
+	// size styles - following styling guide spacing
 	const sizes = {
-		sm: "h-8 px-3 text-sm",
-		md: "h-10 px-4 text-sm",
-		lg: "h-12 px-6 text-base",
+		sm: "px-3 py-1.5 text-sm",
+		md: "px-4 py-2 text-sm",
+		lg: "px-6 py-3 text-base",
 	};
 
 	return (
