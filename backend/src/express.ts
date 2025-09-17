@@ -11,6 +11,7 @@ import bookmarkRoutes from "./routes/bookmarks";
 import testRoutes from "./routes/tests";
 import recommendationRoutes from "./routes/recommendations";
 import dashboardRoutes from "./routes/dashboard";
+import statsRoutes from "./routes/stats";
 import { performanceMonitoring, performanceEndpoint, healthCheck } from "./middleware/performance";
 import { connectDatabase } from "./config/database";
 import "./config/redis"; // initialize redis connection
@@ -58,6 +59,9 @@ app.use("/api/recommendations", recommendationRoutes);
 
 // dashboard routes (admin only)
 app.use("/api/dashboard", dashboardRoutes);
+
+// public stats routes (no auth required)
+app.use("/api/stats", statsRoutes);
 
 // error handling middleware (must be last)
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler";
