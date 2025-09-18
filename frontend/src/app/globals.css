@@ -191,24 +191,6 @@
 	--color-gray-900: hsl(240 6% 10%);
 }
 
-/* Dark mode overrides for @theme colors using @theme inline */
-@theme inline {
-	--color-primary: light-dark(hsl(217 91% 60%), hsl(217 91% 65%));
-	--color-primary-foreground: light-dark(hsl(0 0% 100%), hsl(240 10% 4%));
-
-	--color-success: light-dark(hsl(142 76% 36%), hsl(142 76% 45%));
-	--color-success-foreground: light-dark(hsl(0 0% 100%), hsl(240 10% 4%));
-
-	--color-warning: light-dark(hsl(43 96% 56%), hsl(43 96% 65%));
-	--color-warning-foreground: light-dark(hsl(43 96% 15%), hsl(43 96% 10%));
-
-	--color-danger: light-dark(hsl(0 84% 60%), hsl(0 84% 65%));
-	--color-danger-foreground: light-dark(hsl(0 0% 100%), hsl(240 10% 4%));
-
-	--color-info: light-dark(hsl(195 100% 50%), hsl(195 100% 60%));
-	--color-info-foreground: light-dark(hsl(0 0% 100%), hsl(240 10% 4%));
-}
-
 /* Global styles */
 body {
 	background-color: var(--bg-default);
@@ -217,7 +199,11 @@ body {
 }
 
 ::selection {
-	background-color: light-dark(hsl(217 91% 60% / 0.25), hsl(217 91% 65% / 0.25));
+	background-color: hsl(217 91% 60% / 0.25);
+}
+
+.dark ::selection {
+	background-color: hsl(217 91% 65% / 0.25);
 }
 
 /* Smooth scrolling for anchor links */
