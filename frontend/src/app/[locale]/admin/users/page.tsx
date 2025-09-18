@@ -97,7 +97,7 @@ export default function AdminUsersPage() {
 						<select
 							value={selectedRole}
 							onChange={e => setSelectedRole(e.target.value as "all" | "USER" | "INSTRUCTOR" | "ADMIN")}
-							className="block w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white backdrop-blur-sm transition-all duration-200"
+							className="block w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-all duration-200"
 						>
 							<option value="all">All Roles</option>
 							<option value="USER">Users</option>

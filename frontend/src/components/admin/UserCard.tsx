@@ -74,7 +74,7 @@ export function UserCard({ user, onRoleChange, onDelete }: UserCardProps) {
 					<select
 						value={user.role}
 						onChange={e => onRoleChange(user.id, e.target.value as "USER" | "INSTRUCTOR" | "ADMIN")}
-						className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm"
+						className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white dark:bg-gray-700"
 					>
 						<option value="USER">User</option>
 						<option value="INSTRUCTOR">Instructor</option>

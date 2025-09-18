@@ -19,13 +19,11 @@ export function GlassCard({ children, className = "", hover = true, padding = "m
 		lg: "p-8",
 	};
 
-	const hoverClass = hover
-		? "hover:bg-white/80 dark:hover:bg-gray-800/80 hover:scale-[1.01] transition-all duration-200"
-		: "";
+	const hoverClass = hover ? "hover:scale-[1.01] transition-all duration-200" : "";
 
 	return (
 		<div
-			className={`bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-2xl border border-gray-200/50 dark:border-gray-700/50 shadow-sm ${paddingClasses[padding]} ${hoverClass} ${className}`}
+			className={`bg-white/70 dark:bg-gray-800/70 rounded-2xl border border-gray-200/50 dark:border-gray-700/50 shadow-sm ${paddingClasses[padding]} ${hoverClass} ${className}`}
 		>
 			{children}
 		</div>
