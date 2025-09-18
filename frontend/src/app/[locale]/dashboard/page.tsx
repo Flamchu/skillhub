@@ -119,45 +119,75 @@ export default function DashboardPage() {
 
 				{/* Profile Section */}
 				{profile && (
-					<GlassCard padding="lg">
+					<GlassCard padding="lg" hover={false}>
 						<PageHeader title="Profile Overview" description="Your learning profile and achievements" centered />
 
-						<div className="grid md:grid-cols-2 gap-8">
-							<div className="space-y-6">
-								<div className="bg-gradient-to-br from-primary/5 to-purple/5 dark:from-primary/10 dark:to-purple/10 border border-primary/20 dark:border-primary/30 rounded-xl p-6">
-									<span className="text-sm font-semibold text-primary uppercase tracking-wide">Name</span>
-									<p className="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-2">{profile.name}</p>
-								</div>
-								<div className="bg-gradient-to-br from-success/5 to-info/5 dark:from-success/10 dark:to-info/10 border border-success/20 dark:border-success/30 rounded-xl p-6">
-									<span className="text-sm font-semibold text-success uppercase tracking-wide">Email</span>
-									<p className="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-2">{profile.email}</p>
-								</div>
-								<div className="bg-gradient-to-br from-warning/5 to-pink/5 dark:from-warning/10 dark:to-pink/10 border border-warning/20 dark:border-warning/30 rounded-xl p-6">
-									<span className="text-sm font-semibold text-warning uppercase tracking-wide">Role</span>
-									<div className="mt-3">
-										<span className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-warning to-pink text-white rounded-xl font-semibold shadow-lg">
-											{profile.role}
-										</span>
-									</div>
-								</div>
+						<div className="grid md:grid-cols-2 gap-6">
+							<div className="space-y-6 space-x-2">
+								<DashboardCard
+									icon="👤"
+									title="Name"
+									description={profile.name || "No name set"}
+									linkText="Edit Profile"
+									href="/profile/edit"
+									colorScheme="primary"
+								/>
+
+								<DashboardCard
+									icon="📧"
+									title="Email"
+									description={profile.email || "No email set"}
+									linkText="Update Email"
+									href="/profile/edit"
+									colorScheme="success"
+								/>
+
+								<DashboardCard
+									icon="🎭"
+									title="Role"
+									description={`You are a ${profile.role.toLowerCase()}`}
+									linkText="View Permissions"
+									onClick={() => {
+										// Add role info logic here
+									}}
+									colorScheme="info"
+								/>
 							</div>
 
-							{(profile.headline || profile.bio) && (
-								<div className="space-y-6">
-									{profile.headline && (
-										<div className="bg-gradient-to-br from-info/5 to-primary/5 dark:from-info/10 dark:to-primary/10 border border-info/20 dark:border-info/30 rounded-xl p-6">
-											<span className="text-sm font-semibold text-info uppercase tracking-wide">Headline</span>
-											<p className="text-xl text-gray-900 dark:text-gray-100 font-medium mt-2">{profile.headline}</p>
-										</div>
-									)}
-									{profile.bio && (
-										<div className="bg-gradient-to-br from-purple/5 to-pink/5 dark:from-purple/10 dark:to-pink/10 border border-purple/20 dark:border-purple/30 rounded-xl p-6">
-											<span className="text-sm font-semibold text-purple uppercase tracking-wide">Bio</span>
-											<p className="text-lg text-gray-900 dark:text-gray-100 leading-relaxed mt-2">{profile.bio}</p>
-										</div>
-									)}
-								</div>
-							)}
+							<div className="space-y-6 space-x-2">
+								{profile.headline && (
+									<DashboardCard
+										icon="💡"
+										title="Headline"
+										description={profile.headline}
+										linkText="Update Headline"
+										href="/profile/edit"
+										colorScheme="info"
+									/>
+								)}
+
+								{profile.bio && (
+									<DashboardCard
+										icon="📝"
+										title="Bio"
+										description={profile.bio}
+										linkText="Edit Bio"
+										href="/profile/edit"
+										colorScheme="primary"
+									/>
+								)}
+
+								{!profile.headline && !profile.bio && (
+									<DashboardCard
+										icon="✨"
+										title="Complete Your Profile"
+										description="Add a headline and bio to showcase your expertise and interests"
+										linkText="Complete Profile"
+										href="/profile/edit"
+										colorScheme="success"
+									/>
+								)}
+							</div>
 						</div>
 					</GlassCard>
 				)}
