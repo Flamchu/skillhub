@@ -44,8 +44,8 @@ function FeatureCard({ icon, title, description, linkText, colorScheme }: Featur
 			<div className={`w-16 h-16 ${colors.iconBg} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
 				<span className="text-2xl">{icon}</span>
 			</div>
-			<h4 className={`text-2xl font-bold text-foreground mb-4 ${colors.titleHover} transition-colors`}>{title}</h4>
-			<p className="text-foreground-muted leading-relaxed text-lg">{description}</p>
+			<h4 className={`text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4 ${colors.titleHover} transition-colors`}>{title}</h4>
+			<p className="text-gray-600 dark:text-gray-300 leading-relaxed text-lg">{description}</p>
 			<div className={`mt-6 inline-flex items-center ${colors.linkColor} font-semibold group-hover:translate-x-2 transition-transform`}>{linkText} →</div>
 		</div>
 	);
@@ -60,7 +60,7 @@ export function FeaturesSection() {
 				<h3 className="text-4xl md:text-5xl font-bold mb-4">
 					<span className="bg-gradient-to-br from-primary via-purple to-pink text-transparent bg-clip-text">{t("title")}</span>
 				</h3>
-				<p className="text-xl text-foreground-muted max-w-2xl mx-auto">{t("subtitle")}</p>
+				<p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">{t("subtitle")}</p>
 			</div>
 
 			<div className="grid md:grid-cols-3 gap-10">

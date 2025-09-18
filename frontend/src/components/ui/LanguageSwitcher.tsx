@@ -37,7 +37,7 @@ export function LanguageSwitcher() {
 
 	return (
 		<div className="relative">
-			<select value={locale} onChange={(e) => switchLocale(e.target.value)} className="bg-surface border border-border rounded-sm px-3 py-2 text-sm text-foreground focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none">
+			<select value={locale} onChange={(e) => switchLocale(e.target.value)} className="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 text-sm text-gray-900 dark:text-gray-100 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none shadow-sm hover:border-primary/50 transition-colors">
 				{locales.map((loc) => (
 					<option key={loc} value={loc}>
 						{getLanguageName(loc)}

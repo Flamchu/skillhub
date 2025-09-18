@@ -15,10 +15,10 @@ export function HeroSection() {
 				<h2 className="text-6xl md:text-7xl font-bold mb-6 leading-tight">
 					<span className="bg-gradient-to-br from-primary via-purple to-pink text-transparent bg-clip-text">{t("title")}</span>
 					<br />
-					<span className="text-foreground text-4xl md:text-5xl">{t("subtitle")}</span>
+					<span className="text-gray-900 dark:text-gray-100 text-4xl md:text-5xl">{t("subtitle")}</span>
 				</h2>
 
-				<p className="text-xl text-foreground-muted mb-12 max-w-3xl mx-auto leading-relaxed">{t("description")}</p>
+				<p className="text-xl text-gray-600 dark:text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">{t("description")}</p>
 
 				<div className="flex flex-col sm:flex-row gap-6 justify-center">
 					<Link href="/login" className="group px-12 py-5 bg-gradient-to-r from-primary to-purple text-primary-foreground rounded-lg hover:from-primary-600 hover:to-purple-600 dark:hover:from-primary-500 dark:hover:to-purple-500 shadow-xl hover:shadow-2xl transition-all duration-300 text-xl font-bold text-center transform hover:scale-105 hover:-translate-y-1">
@@ -27,7 +27,7 @@ export function HeroSection() {
 							<span className="group-hover:translate-x-1 transition-transform">→</span>
 						</span>
 					</Link>
-					<Link href="/skills" className="px-12 py-5 bg-surface dark:bg-gray-800 border-2 border-primary/30 dark:border-primary/50 text-foreground rounded-lg hover:bg-primary/10 dark:hover:bg-primary/20 hover:border-primary dark:hover:border-primary shadow-lg hover:shadow-xl transition-all duration-300 text-xl font-bold text-center transform hover:scale-105">
+					<Link href="/skills" className="px-12 py-5 bg-white dark:bg-gray-700 border-2 border-primary/30 dark:border-primary/50 text-gray-900 dark:text-gray-100 rounded-lg hover:bg-primary/10 dark:hover:bg-primary/20 hover:border-primary dark:hover:border-primary shadow-lg hover:shadow-xl transition-all duration-300 text-xl font-bold text-center transform hover:scale-105">
 						<span className="flex items-center justify-center gap-2">{t("cta.browse")}</span>
 					</Link>
 				</div>
@@ -36,19 +36,19 @@ export function HeroSection() {
 				<div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 opacity-70">
 					<div className="text-center">
 						<div className="text-3xl mb-2">💡</div>
-						<p className="text-sm text-foreground-muted font-medium">{t("features.interactive")}</p>
+						<p className="text-sm text-gray-600 dark:text-gray-300 font-medium">{t("features.interactive")}</p>
 					</div>
 					<div className="text-center">
 						<div className="text-3xl mb-2">🎯</div>
-						<p className="text-sm text-foreground-muted font-medium">{t("features.goalOriented")}</p>
+						<p className="text-sm text-gray-600 dark:text-gray-300 font-medium">{t("features.goalOriented")}</p>
 					</div>
 					<div className="text-center">
 						<div className="text-3xl mb-2">👥</div>
-						<p className="text-sm text-foreground-muted font-medium">{t("features.community")}</p>
+						<p className="text-sm text-gray-600 dark:text-gray-300 font-medium">{t("features.community")}</p>
 					</div>
 					<div className="text-center">
 						<div className="text-3xl mb-2">🏆</div>
-						<p className="text-sm text-foreground-muted font-medium">{t("features.certified")}</p>
+						<p className="text-sm text-gray-600 dark:text-gray-300 font-medium">{t("features.certified")}</p>
 					</div>
 				</div>
 			</div>

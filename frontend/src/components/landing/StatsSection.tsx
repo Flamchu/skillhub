@@ -45,8 +45,8 @@ function StatCard({ icon, value, suffix, label, description, apiKey, colorScheme
 			<div className={`text-5xl font-bold ${colors.textGradient} mb-3`}>
 				<StatsCounter targetValue={value} suffix={suffix} fetchFromAPI={true} apiKey={apiKey} />
 			</div>
-			<div className="text-foreground-muted font-semibold text-lg">{label}</div>
-			<div className="text-foreground-subtle text-sm mt-2">{description}</div>
+			<div className="text-gray-700 dark:text-gray-300 font-semibold text-lg">{label}</div>
+			<div className="text-gray-600 dark:text-gray-400 text-sm mt-2">{description}</div>
 		</div>
 	);
 }
@@ -60,7 +60,7 @@ export function StatsSection() {
 				<h3 className="text-3xl md:text-4xl font-bold mb-4">
 					<span className="bg-gradient-to-br from-primary via-purple to-pink text-transparent bg-clip-text">{t("title")}</span>
 				</h3>
-				<p className="text-lg text-foreground-muted max-w-2xl mx-auto">{t("subtitle")}</p>
+				<p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">{t("subtitle")}</p>
 			</div>
 
 			<div className="grid md:grid-cols-3 gap-8">

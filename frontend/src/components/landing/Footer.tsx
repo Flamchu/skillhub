@@ -44,9 +44,9 @@ export function Footer() {
 					<h3 className="text-3xl font-bold text-primary">SkillHub</h3>
 				</div>
 
-				<p className="text-foreground-muted mb-12 text-xl max-w-2xl mx-auto">{t("description")}</p>
+				<p className="text-gray-600 dark:text-gray-300 mb-12 text-xl max-w-2xl mx-auto">{t("description")}</p>
 
-				<div className="flex justify-center gap-8 text-foreground-muted mb-12">
+				<div className="flex justify-center gap-8 text-gray-600 dark:text-gray-300 mb-12">
 					<a href="#" className="group hover:text-primary transition-all duration-300 rounded-xl px-6 py-3 hover:bg-primary/10 dark:hover:bg-primary/20 hover:scale-105 transform font-medium">
 						{t("about")}
 					</a>
@@ -81,9 +81,9 @@ export function Footer() {
 
 				<div className="border-t border-primary/20 dark:border-gray-700 pt-10">
 					<div className="flex items-center justify-center space-x-2 mb-4">
-						<p className="text-foreground-muted text-lg">{t("madeWithCare")}</p>
+						<p className="text-gray-600 dark:text-gray-300 text-lg">{t("madeWithCare")}</p>
 					</div>
-					<p className="text-foreground-muted">{t("copyright")}</p>
+					<p className="text-gray-600 dark:text-gray-300">{t("copyright")}</p>
 				</div>
 			</div>
 		</footer>
