@@ -27,7 +27,11 @@ export function PageHeader({ title, description, action, centered = false, class
 					</span>
 				</h1>
 				{description && (
-					<p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto sm:mx-0">{description}</p>
+					<p
+						className={`text-lg text-gray-600 dark:text-gray-300 max-w-2xl ${centered ? "mx-auto" : "mx-auto sm:mx-0"}`}
+					>
+						{description}
+					</p>
 				)}
 			</div>
 			{action && <div className="flex-shrink-0">{action}</div>}
