@@ -3,10 +3,21 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { api } from "@/lib/http";
 import { Button } from "@/components/ui/Button";
-import { Card, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Input } from "@/components/ui/Input";
-import { Search, Plus, BookOpen, Loader2, AlertCircle, Edit2, Trash2, ChevronRight, ChevronDown, Folder, FileText } from "lucide-react";
+import {
+	Search,
+	Plus,
+	BookOpen,
+	Loader2,
+	AlertCircle,
+	Edit2,
+	Trash2,
+	ChevronRight,
+	ChevronDown,
+	Folder,
+	FileText,
+} from "lucide-react";
 import type { Skill, CreateSkillData, UpdateSkillData } from "@/types";
 
 interface SkillTreeNode extends Skill {
@@ -60,7 +71,7 @@ export default function AdminSkillsPage() {
 		const roots: SkillTreeNode[] = [];
 
 		// Create all nodes
-		skills.forEach((skill) => {
+		skills.forEach(skill => {
 			skillMap.set(skill.id, {
 				...skill,
 				children: [],
@@ -69,7 +80,7 @@ export default function AdminSkillsPage() {
 		});
 
 		// Build tree structure
-		skills.forEach((skill) => {
+		skills.forEach(skill => {
 			const node = skillMap.get(skill.id)!;
 			if (skill.parentId) {
 				const parent = skillMap.get(skill.parentId);
@@ -88,7 +99,7 @@ export default function AdminSkillsPage() {
 
 	const toggleNode = (skillId: string) => {
 		const updateNode = (nodes: SkillTreeNode[]): SkillTreeNode[] => {
-			return nodes.map((node) => {
+			return nodes.map(node => {
 				if (node.id === skillId) {
 					return { ...node, expanded: !node.expanded };
 				}
@@ -134,7 +145,9 @@ export default function AdminSkillsPage() {
 			setEditingSkill(null);
 			loadSkills();
 		} catch (err) {
-			alert(`Failed to ${editingSkill ? "update" : "create"} skill: ${err instanceof Error ? err.message : "Unknown error"}`);
+			alert(
+				`Failed to ${editingSkill ? "update" : "create"} skill: ${err instanceof Error ? err.message : "Unknown error"}`
+			);
 		}
 	};
 
@@ -171,18 +184,36 @@ export default function AdminSkillsPage() {
 	const renderSkillNode = (node: SkillTreeNode, depth: number = 0) => {
 		return (
 			<div key={node.id} className="select-none">
-				<div className={`flex items-center space-x-2 p-2 rounded hover:bg-surface-hover ${depth === 0 ? "font-medium" : ""}`} style={{ marginLeft: `${depth * 24}px` }}>
+				<div
+					className={`flex items-center space-x-3 p-3 rounded-xl hover:bg-gradient-to-r hover:from-primary-50 hover:to-purple-50 dark:hover:from-primary-900/20 dark:hover:to-purple-900/20 transition-all duration-200 ${
+						depth === 0
+							? "font-medium border border-gray-200/50 dark:border-gray-700/50 bg-white/50 dark:bg-gray-800/50"
+							: ""
+					}`}
+					style={{ marginLeft: `${depth * 24}px` }}
+				>
 					{node.children.length > 0 ? (
-						<button onClick={() => toggleNode(node.id)} className="w-4 h-4 flex items-center justify-center hover:bg-surface-pressed rounded">
-							{node.expanded ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
+						<button
+							onClick={() => toggleNode(node.id)}
+							className="w-6 h-6 flex items-center justify-center hover:bg-primary-100 dark:hover:bg-primary-900/30 rounded-lg transition-all duration-200"
+						>
+							{node.expanded ? (
+								<ChevronDown className="w-4 h-4 text-primary" />
+							) : (
+								<ChevronRight className="w-4 h-4 text-primary" />
+							)}
 						</button>
 					) : (
-						<div className="w-4 h-4" />
+						<div className="w-6 h-6" />
 					)}
 
-					{node.children.length > 0 ? <Folder className="w-4 h-4 text-primary" /> : <FileText className="w-4 h-4 text-foreground-muted" />}
+					{node.children.length > 0 ? (
+						<Folder className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+					) : (
+						<FileText className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+					)}
 
-					<span className="flex-1">{node.name}</span>
+					<span className="flex-1 text-gray-900 dark:text-gray-100">{node.name}</span>
 
 					{node.description && (
 						<Badge variant="info" size="sm">
@@ -191,52 +222,73 @@ export default function AdminSkillsPage() {
 					)}
 
 					<div className="flex items-center space-x-1">
-						<Button variant="ghost" size="sm" onClick={() => handleEdit(node)} className="text-primary hover:text-primary-600 hover:bg-primary-50">
-							<Edit2 className="h-3 w-3" />
+						<Button
+							variant="ghost"
+							size="sm"
+							onClick={() => handleEdit(node)}
+							className="text-green-600 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-900/20 transition-all duration-200"
+						>
+							<Edit2 className="h-4 w-4" />
 						</Button>
-						<Button variant="ghost" size="sm" onClick={() => handleDelete(node)} className="text-danger hover:text-danger-600 hover:bg-danger-50">
-							<Trash2 className="h-3 w-3" />
+						<Button
+							variant="ghost"
+							size="sm"
+							onClick={() => handleDelete(node)}
+							className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-200"
+						>
+							<Trash2 className="h-4 w-4" />
 						</Button>
 					</div>
 				</div>
 
-				{node.expanded && node.children.map((child) => renderSkillNode(child, depth + 1))}
+				{node.expanded && node.children.map(child => renderSkillNode(child, depth + 1))}
 			</div>
 		);
 	};
 
 	const getSkillOptions = (currentSkillId?: string): Skill[] => {
-		return skills.filter((skill) => skill.id !== currentSkillId);
+		return skills.filter(skill => skill.id !== currentSkillId);
 	};
 
 	return (
-		<div className="space-y-6">
-			{/* Header */}
-			<div className="flex items-center justify-between">
-				<div>
-					<h1 className="text-3xl font-bold text-foreground">Skills Management</h1>
-					<p className="mt-2 text-foreground-muted">Manage the skills hierarchy and taxonomy</p>
+		<div className="min-h-screen bg-gradient-to-br from-primary-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+			<div className="max-w-7xl mx-auto p-6 space-y-6">
+				{/* Header */}
+				<div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-12">
+					<div className="text-center sm:text-left">
+						<h1 className="text-4xl md:text-5xl font-bold mb-4">
+							<span className="bg-gradient-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
+								Skills Management
+							</span>
+						</h1>
+						<p className="text-lg text-gray-600 dark:text-gray-300">Manage the skills hierarchy and taxonomy</p>
+					</div>
+					<Button
+						onClick={() => setShowCreateForm(true)}
+						className="bg-gradient-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+					>
+						<Plus className="h-4 w-4 mr-2" />
+						Add Skill
+					</Button>
 				</div>
-				<Button onClick={() => setShowCreateForm(true)}>
-					<Plus className="h-4 w-4 mr-2" />
-					Add Skill
-				</Button>
-			</div>
 
-			{/* Create/Edit Form */}
-			{showCreateForm && (
-				<Card>
-					<CardContent className="p-6">
-						<h3 className="text-lg font-semibold mb-4 text-foreground">{editingSkill ? "Edit Skill" : "Create New Skill"}</h3>
+				{/* Create/Edit Form */}
+				{showCreateForm && (
+					<div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-2xl border border-gray-200/50 dark:border-gray-700/50 p-6 hover:bg-white/80 dark:hover:bg-gray-800/80 transition-all duration-200">
+						<h3 className="text-xl font-semibold mb-6 text-gray-900 dark:text-white">
+							{editingSkill ? "Edit Skill" : "Create New Skill"}
+						</h3>
 
-						<form onSubmit={handleSubmit} className="space-y-4">
-							<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+						<form onSubmit={handleSubmit} className="space-y-6">
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 								<div>
-									<label className="block text-sm font-medium text-foreground-alt mb-2">Skill Name *</label>
+									<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+										Skill Name *
+									</label>
 									<Input
 										placeholder="e.g., JavaScript, React, Machine Learning"
 										value={formData.name}
-										onChange={(e) => {
+										onChange={e => {
 											const name = e.target.value;
 											const slug = name
 												.toLowerCase()
@@ -249,16 +301,25 @@ export default function AdminSkillsPage() {
 								</div>
 
 								<div>
-									<label className="block text-sm font-medium text-foreground-alt mb-2">Slug *</label>
-									<Input placeholder="auto-generated-from-name" value={formData.slug} onChange={(e) => setFormData({ ...formData, slug: e.target.value })} required />
+									<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Slug *</label>
+									<Input
+										placeholder="auto-generated-from-name"
+										value={formData.slug}
+										onChange={e => setFormData({ ...formData, slug: e.target.value })}
+										required
+									/>
 								</div>
 							</div>
 
 							<div>
-								<label className="block text-sm font-medium text-foreground-alt mb-2">Parent Skill</label>
-								<select value={formData.parentId} onChange={(e) => setFormData({ ...formData, parentId: e.target.value })} className="block w-full px-3 py-2 border border-border rounded-input shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-100 focus:border-primary-400 bg-surface text-foreground">
+								<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Parent Skill</label>
+								<select
+									value={formData.parentId}
+									onChange={e => setFormData({ ...formData, parentId: e.target.value })}
+									className="block w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white backdrop-blur-sm transition-all duration-200"
+								>
 									<option value="">No parent (root skill)</option>
-									{getSkillOptions(editingSkill?.id).map((skill) => (
+									{getSkillOptions(editingSkill?.id).map(skill => (
 										<option key={skill.id} value={skill.id}>
 											{skill.name}
 										</option>
@@ -267,77 +328,94 @@ export default function AdminSkillsPage() {
 							</div>
 
 							<div>
-								<label className="block text-sm font-medium text-foreground-alt mb-2">Description</label>
-								<textarea placeholder="Optional description of this skill..." value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} rows={3} className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
+								<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Description</label>
+								<textarea
+									placeholder="Optional description of this skill..."
+									value={formData.description}
+									onChange={e => setFormData({ ...formData, description: e.target.value })}
+									rows={4}
+									className="block w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white backdrop-blur-sm transition-all duration-200 resize-none"
+								/>
 							</div>
 
 							<div className="flex space-x-3">
-								<Button type="submit">{editingSkill ? "Update Skill" : "Create Skill"}</Button>
+								<Button
+									type="submit"
+									className="bg-gradient-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0"
+								>
+									{editingSkill ? "Update Skill" : "Create Skill"}
+								</Button>
 								<Button type="button" variant="outline" onClick={cancelForm}>
 									Cancel
 								</Button>
 							</div>
 						</form>
-					</CardContent>
-				</Card>
-			)}
-
-			{/* Search */}
-			<Card>
-				<CardContent className="p-6">
-					<div className="max-w-md">
-						<label className="block text-sm font-medium text-gray-700 mb-2">Search Skills</label>
-						<Input placeholder="Search by skill name..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} leftIcon={<Search className="h-4 w-4" />} />
 					</div>
-				</CardContent>
-			</Card>
+				)}
 
-			{/* Loading State */}
-			{loading && (
-				<div className="flex items-center justify-center py-12">
-					<Loader2 className="w-8 h-8 animate-spin text-blue-600 dark:text-blue-400" />
-					<span className="ml-2 text-gray-600 dark:text-gray-400">Loading skills...</span>
+				{/* Search */}
+				<div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-2xl border border-gray-200/50 dark:border-gray-700/50 p-6 hover:bg-white/80 dark:hover:bg-gray-800/80 transition-all duration-200">
+					<div className="max-w-md">
+						<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Search Skills</label>
+						<Input
+							placeholder="Search by skill name..."
+							value={searchQuery}
+							onChange={e => setSearchQuery(e.target.value)}
+							leftIcon={<Search className="h-4 w-4" />}
+						/>
+					</div>
 				</div>
-			)}
 
-			{/* Error State */}
-			{error && (
-				<Card>
-					<CardContent className="p-8 text-center">
-						<AlertCircle className="w-12 h-12 text-danger mx-auto mb-4" />
+				{/* Loading State */}
+				{loading && (
+					<div className="flex items-center justify-center py-16">
+						<div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-2xl border border-gray-200/50 dark:border-gray-700/50 p-8">
+							<Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
+							<span className="text-gray-600 dark:text-gray-400">Loading skills...</span>
+						</div>
+					</div>
+				)}
+
+				{/* Error State */}
+				{error && (
+					<div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-2xl border border-red-200/50 dark:border-red-700/50 p-8 text-center">
+						<AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
 						<h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">Failed to load skills</h3>
 						<p className="text-gray-600 dark:text-gray-400 mb-4">{error}</p>
 						<Button variant="outline" onClick={loadSkills}>
 							Try Again
 						</Button>
-					</CardContent>
-				</Card>
-			)}
+					</div>
+				)}
 
-			{/* Skills Tree */}
-			{!loading && !error && (
-				<Card>
-					<CardContent className="p-6">
-						<h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Skills Hierarchy</h3>
+				{/* Skills Tree */}
+				{!loading && !error && (
+					<div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-2xl border border-gray-200/50 dark:border-gray-700/50 p-6 hover:bg-white/80 dark:hover:bg-gray-800/80 transition-all duration-200">
+						<h3 className="text-xl font-semibold mb-6 text-gray-900 dark:text-white">Skills Hierarchy</h3>
 
 						{skillTree.length > 0 ? (
-							<div className="space-y-1">{skillTree.map((node) => renderSkillNode(node))}</div>
+							<div className="space-y-1">{skillTree.map(node => renderSkillNode(node))}</div>
 						) : (
-							<div className="text-center py-8">
-								<BookOpen className="w-12 h-12 text-gray-500 dark:text-gray-400 mx-auto mb-4" />
+							<div className="text-center py-12">
+								<BookOpen className="w-12 h-12 text-gray-400 mx-auto mb-4" />
 								<h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No skills found</h3>
-								<p className="text-gray-600 dark:text-gray-400 mb-4">{searchQuery ? "Try adjusting your search criteria." : "Create your first skill to get started."}</p>
+								<p className="text-gray-600 dark:text-gray-400 mb-6">
+									{searchQuery ? "Try adjusting your search criteria." : "Create your first skill to get started."}
+								</p>
 								{!searchQuery && (
-									<Button onClick={() => setShowCreateForm(true)}>
+									<Button
+										onClick={() => setShowCreateForm(true)}
+										className="bg-gradient-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+									>
 										<Plus className="h-4 w-4 mr-2" />
 										Add First Skill
 									</Button>
 								)}
 							</div>
 						)}
-					</CardContent>
-				</Card>
-			)}
+					</div>
+				)}
+			</div>
 		</div>
 	);
 }

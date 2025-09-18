@@ -39,7 +39,7 @@ export default async function LocaleLayout({ children, params }: { children: Rea
 
 	return (
 		<html lang={locale} suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} transition-colors`}>
-			<head></head>
+			<head />
 			<body className="antialiased min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors">
 				<NextIntlClientProvider messages={messages}>
 					<AppProviders>

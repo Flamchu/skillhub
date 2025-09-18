@@ -4,10 +4,10 @@ import React, { useState } from "react";
 import { useCourses } from "@/lib/courses";
 import { api } from "@/lib/http";
 import { Button } from "@/components/ui/Button";
-import { Card, CardContent } from "@/components/ui/Card";
-import { Badge } from "@/components/ui/Badge";
 import { Input } from "@/components/ui/Input";
-import { Plus, Edit2, Trash2, Search, Loader2, AlertCircle, Eye, Star, Clock, Users, BookOpen } from "lucide-react";
+import { PageLayout, PageHeader, GlassCard, LoadingState, ErrorState } from "@/components/ui";
+import { CourseCard } from "@/components/admin";
+import { Plus, Search, BookOpen } from "lucide-react";
 import Link from "next/link";
 import type { CourseFilters } from "@/types";
 
@@ -53,203 +53,138 @@ export default function AdminCoursesPage() {
 	const difficulties = ["all", "BEGINNER", "INTERMEDIATE", "ADVANCED"] as const;
 
 	return (
-		<div className="space-y-6">
-			{/* Header */}
-			<div className="flex justify-between items-center">
-				<div>
-					<h1 className="text-3xl font-bold text-fg">Course Management</h1>
-					<p className="mt-2 text-fg-muted">Manage all courses on your platform</p>
-				</div>
-				<Link href="/admin/courses/new">
-					<Button>
-						<Plus className="h-4 w-4 mr-2" />
-						Add Course
-					</Button>
-				</Link>
-			</div>
+		<PageLayout>
+			<PageHeader
+				title="Course Management"
+				description="Manage all courses on your platform"
+				action={
+					<Link href="/admin/courses/new">
+						<Button className="bg-gradient-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
+							<Plus className="h-4 w-4 mr-2" />
+							Add Course
+						</Button>
+					</Link>
+				}
+			/>
 
 			{/* Filters */}
-			<Card>
-				<CardContent className="p-6">
-					<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-						<div>
-							<label className="block text-sm font-medium text-fg-muted mb-2">Search</label>
-							<Input placeholder="Search courses..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} leftIcon={<Search className="h-4 w-4" />} />
-						</div>
-
-						<div>
-							<label className="block text-sm font-medium text-fg-muted mb-2">Source</label>
-							<select value={selectedSource} onChange={(e) => setSelectedSource(e.target.value as CourseFilters["source"] | "all")} className="block w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary bg-bg text-fg">
-								{sources.map((source) => (
-									<option key={source} value={source}>
-										{source === "all" ? "All Sources" : source}
-									</option>
-								))}
-							</select>
-						</div>
-
-						<div>
-							<label className="block text-sm font-medium text-fg-muted mb-2">Difficulty</label>
-							<select value={selectedDifficulty} onChange={(e) => setSelectedDifficulty(e.target.value as CourseFilters["difficulty"] | "all")} className="block w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary bg-bg text-fg">
-								{difficulties.map((difficulty) => (
-									<option key={difficulty} value={difficulty}>
-										{difficulty === "all" ? "All Levels" : difficulty}
-									</option>
-								))}
-							</select>
-						</div>
+			<GlassCard className="p-6">
+				<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+					<div>
+						<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Search</label>
+						<Input
+							placeholder="Search courses..."
+							value={searchQuery}
+							onChange={e => setSearchQuery(e.target.value)}
+							leftIcon={<Search className="h-4 w-4" />}
+						/>
 					</div>
-				</CardContent>
-			</Card>
+
+					<div>
+						<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Source</label>
+						<select
+							value={selectedSource}
+							onChange={e => setSelectedSource(e.target.value as CourseFilters["source"] | "all")}
+							className="block w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white backdrop-blur-sm transition-all duration-200"
+						>
+							{sources.map(source => (
+								<option key={source} value={source}>
+									{source === "all" ? "All Sources" : source}
+								</option>
+							))}
+						</select>
+					</div>
+
+					<div>
+						<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Difficulty</label>
+						<select
+							value={selectedDifficulty}
+							onChange={e => setSelectedDifficulty(e.target.value as CourseFilters["difficulty"] | "all")}
+							className="block w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white backdrop-blur-sm transition-all duration-200"
+						>
+							{difficulties.map(difficulty => (
+								<option key={difficulty} value={difficulty}>
+									{difficulty === "all" ? "All Levels" : difficulty}
+								</option>
+							))}
+						</select>
+					</div>
+				</div>
+			</GlassCard>
 
 			{/* Loading State */}
-			{isLoading && (
-				<div className="flex items-center justify-center py-12">
-					<Loader2 className="w-8 h-8 animate-spin text-primary" />
-					<span className="ml-2 text-fg-muted">Loading courses...</span>
-				</div>
-			)}
+			{isLoading && <LoadingState message="Loading courses..." />}
 
 			{/* Error State */}
 			{error && (
-				<Card>
-					<CardContent className="p-8 text-center">
-						<AlertCircle className="w-12 h-12 text-danger mx-auto mb-4" />
-						<h3 className="text-lg font-medium text-fg mb-2">Failed to load courses</h3>
-						<p className="text-fg-muted mb-4">Something went wrong while fetching the courses.</p>
-						<Button variant="outline" onClick={() => refetch()}>
-							Try Again
-						</Button>
-					</CardContent>
-				</Card>
+				<ErrorState
+					title="Failed to load courses"
+					message="Something went wrong while fetching the courses."
+					onRetry={() => refetch()}
+				/>
 			)}
 
 			{/* Courses List */}
 			{!isLoading && !error && (
 				<div className="space-y-4">
-					{courses.map((course) => (
-						<Card key={course.id}>
-							<CardContent className="p-6">
-								<div className="flex items-start justify-between">
-									<div className="flex-1">
-										<div className="flex items-center space-x-3 mb-2">
-											<h3 className="text-lg font-semibold text-fg">{course.title}</h3>
-											<Badge variant={course.source === "INTERNAL" ? "primary" : "default"} size="sm">
-												{course.source}
-											</Badge>
-											<Badge variant="default" size="sm">
-												{course.difficulty}
-											</Badge>
-											{course.isPaid && (
-												<Badge variant="info" size="sm">
-													${(course.priceCents || 0) / 100}
-												</Badge>
-											)}
-										</div>
-
-										<p className="text-fg-muted mb-3 line-clamp-2">{course.description}</p>
-
-										<div className="flex items-center space-x-6 text-sm text-fg-muted">
-											{course.rating && (
-												<div className="flex items-center space-x-1">
-													<Star className="w-4 h-4 text-warning fill-current" />
-													<span>{course.rating.toFixed(1)}</span>
-												</div>
-											)}
-											{course.durationMinutes && (
-												<div className="flex items-center space-x-1">
-													<Clock className="w-4 h-4" />
-													<span>
-														{Math.floor(course.durationMinutes / 60)}h {course.durationMinutes % 60}m
-													</span>
-												</div>
-											)}
-											{course._count && (
-												<div className="flex items-center space-x-1">
-													<Users className="w-4 h-4" />
-													<span>{course._count.Bookmark} bookmarks</span>
-												</div>
-											)}
-										</div>
-
-										{/* Skills */}
-										{course.skills && course.skills.length > 0 && (
-											<div className="mt-3 flex flex-wrap gap-1">
-												{course.skills.slice(0, 3).map((courseSkill) => (
-													<Badge key={courseSkill.skill.id} variant="default" size="sm">
-														{courseSkill.skill.name}
-													</Badge>
-												))}
-												{course.skills.length > 3 && (
-													<Badge variant="default" size="sm">
-														+{course.skills.length - 3} more
-													</Badge>
-												)}
-											</div>
-										)}
-									</div>
-
-									{/* Actions */}
-									<div className="flex items-center space-x-2 ml-4">
-										{course.url && (
-											<Button variant="ghost" size="sm" onClick={() => window.open(course.url, "_blank")}>
-												<Eye className="h-4 w-4" />
-											</Button>
-										)}
-
-										<Link href={`/admin/courses/${course.id}/edit`}>
-											<Button variant="ghost" size="sm">
-												<Edit2 className="h-4 w-4" />
-											</Button>
-										</Link>
-
-										<Button variant="ghost" size="sm" onClick={() => handleDelete(course.id, course.title)} disabled={deletingId === course.id} className="text-danger hover:text-danger hover:bg-surface">
-											{deletingId === course.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
-										</Button>
-									</div>
-								</div>
-							</CardContent>
-						</Card>
+					{courses.map(course => (
+						<CourseCard key={course.id} course={course} onDelete={handleDelete} deletingId={deletingId} />
 					))}
 
 					{/* Pagination */}
 					{pagination && pagination.totalPages > 1 && (
-						<div className="flex items-center justify-between">
-							<div className="text-sm text-fg-muted">
-								Showing {(pagination.page - 1) * pagination.limit + 1} to {Math.min(pagination.page * pagination.limit, pagination.totalCount)} of {pagination.totalCount} courses
+						<GlassCard className="p-6">
+							<div className="flex items-center justify-between">
+								<div className="text-sm text-gray-600 dark:text-gray-400">
+									Showing {(pagination.page - 1) * pagination.limit + 1} to{" "}
+									{Math.min(pagination.page * pagination.limit, pagination.totalCount)} of {pagination.totalCount}{" "}
+									courses
+								</div>
+								<div className="flex space-x-2">
+									<Button
+										variant="outline"
+										size="sm"
+										onClick={() => setCurrentPage(currentPage - 1)}
+										disabled={!pagination.hasPrev}
+									>
+										Previous
+									</Button>
+									<span className="py-2 px-3 text-sm text-gray-700 dark:text-gray-300">
+										Page {pagination.page} of {pagination.totalPages}
+									</span>
+									<Button
+										variant="outline"
+										size="sm"
+										onClick={() => setCurrentPage(currentPage + 1)}
+										disabled={!pagination.hasNext}
+									>
+										Next
+									</Button>
+								</div>
 							</div>
-							<div className="flex space-x-2">
-								<Button variant="outline" size="sm" onClick={() => setCurrentPage(currentPage - 1)} disabled={!pagination.hasPrev}>
-									Previous
-								</Button>
-								<span className="py-2 px-3 text-sm text-fg">
-									Page {pagination.page} of {pagination.totalPages}
-								</span>
-								<Button variant="outline" size="sm" onClick={() => setCurrentPage(currentPage + 1)} disabled={!pagination.hasNext}>
-									Next
-								</Button>
-							</div>
-						</div>
+						</GlassCard>
 					)}
 
 					{/* Empty State */}
 					{courses.length === 0 && (
-						<Card>
-							<CardContent className="p-12 text-center">
-								<BookOpen className="w-12 h-12 text-fg-muted mx-auto mb-4" />
-								<h3 className="text-lg font-medium text-fg mb-2">No courses found</h3>
-								<p className="text-fg-muted mb-4">{searchQuery || selectedSource !== "all" || selectedDifficulty !== "all" ? "Try adjusting your search criteria." : "Get started by creating your first course."}</p>
-								<Link href="/admin/courses/new">
-									<Button>
-										<Plus className="h-4 w-4 mr-2" />
-										Add Course
-									</Button>
-								</Link>
-							</CardContent>
-						</Card>
+						<GlassCard className="p-12 text-center">
+							<BookOpen className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+							<h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No courses found</h3>
+							<p className="text-gray-600 dark:text-gray-400 mb-6">
+								{searchQuery || selectedSource !== "all" || selectedDifficulty !== "all"
+									? "Try adjusting your search criteria."
+									: "Get started by creating your first course."}
+							</p>
+							<Link href="/admin/courses/new">
+								<Button className="bg-gradient-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
+									<Plus className="h-4 w-4 mr-2" />
+									Add Course
+								</Button>
+							</Link>
+						</GlassCard>
 					)}
 				</div>
 			)}
-		</div>
+		</PageLayout>
 	);
 }

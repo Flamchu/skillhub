@@ -9,25 +9,37 @@ export function HeroSection() {
 		<main className="px-6 py-20">
 			<div className="max-w-5xl mx-auto text-center">
 				<div className="mb-8">
-					<span className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-success-50 to-info-50 dark:from-success-900/20 dark:to-info-900/20 text-success dark:text-success-400 rounded-full text-sm font-semibold mb-6 border border-success/30 dark:border-success-400/30">{t("badge")}</span>
+					<span className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-success-50 to-info-50 dark:from-success-900/20 dark:to-info-900/20 text-success dark:text-success-400 rounded-full text-sm font-semibold mb-6 border border-success/30 dark:border-success-400/30">
+						{t("badge")}
+					</span>
 				</div>
 
 				<h2 className="text-6xl md:text-7xl font-bold mb-6 leading-tight">
-					<span className="bg-gradient-to-br from-primary via-purple to-pink text-transparent bg-clip-text">{t("title")}</span>
+					<span className="bg-gradient-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
+						{t("title")}
+					</span>
 					<br />
 					<span className="text-gray-900 dark:text-gray-100 text-4xl md:text-5xl">{t("subtitle")}</span>
 				</h2>
 
-				<p className="text-xl text-gray-600 dark:text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">{t("description")}</p>
+				<p className="text-xl text-gray-600 dark:text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
+					{t("description")}
+				</p>
 
 				<div className="flex flex-col sm:flex-row gap-6 justify-center">
-					<Link href="/login" className="group px-12 py-5 bg-gradient-to-r from-primary to-purple text-primary-foreground rounded-lg hover:from-primary-600 hover:to-purple-600 dark:hover:from-primary-500 dark:hover:to-purple-500 shadow-xl hover:shadow-2xl transition-all duration-300 text-xl font-bold text-center transform hover:scale-105 hover:-translate-y-1">
+					<Link
+						href="/auth"
+						className="group px-12 py-5 bg-gradient-to-r from-primary to-purple text-primary-foreground rounded-lg hover:from-primary-600 hover:to-purple-600 dark:hover:from-primary-500 dark:hover:to-purple-500 shadow-xl hover:shadow-2xl transition-all duration-300 text-xl font-bold text-center transform hover:scale-105 hover:-translate-y-1"
+					>
 						<span className="flex items-center justify-center gap-2">
 							{t("cta.start")}
 							<span className="group-hover:translate-x-1 transition-transform">→</span>
 						</span>
 					</Link>
-					<Link href="/skills" className="px-12 py-5 bg-white dark:bg-gray-700 border-2 border-primary/30 dark:border-primary/50 text-gray-900 dark:text-gray-100 rounded-lg hover:bg-primary/10 dark:hover:bg-primary/20 hover:border-primary dark:hover:border-primary shadow-lg hover:shadow-xl transition-all duration-300 text-xl font-bold text-center transform hover:scale-105">
+					<Link
+						href="/skills"
+						className="px-12 py-5 bg-white dark:bg-gray-700 border-2 border-primary/30 dark:border-primary/50 text-gray-900 dark:text-gray-100 rounded-lg hover:bg-primary/10 dark:hover:bg-primary/20 hover:border-primary dark:hover:border-primary shadow-lg hover:shadow-xl transition-all duration-300 text-xl font-bold text-center transform hover:scale-105"
+					>
 						<span className="flex items-center justify-center gap-2">{t("cta.browse")}</span>
 					</Link>
 				</div>

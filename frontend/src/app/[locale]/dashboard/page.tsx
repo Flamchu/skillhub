@@ -5,20 +5,20 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthProvider";
+import { PageLayout, PageHeader, LoadingState, LanguageSwitcher, GlassCard } from "@/components/ui";
+import { DashboardCard } from "@/components/dashboard";
 
 export default function DashboardPage() {
 	const tCommon = useTranslations("common");
+	const tDashboard = useTranslations("dashboard");
 	const { user, profile, loading, logout } = useAuth();
 	const router = useRouter();
 
 	useEffect(() => {
-		console.log("dashboard auth check:", { loading, user: !!user, profile: !!profile });
-
 		// add a small delay to let authprovider settle after login redirect
 		const timer = setTimeout(() => {
 			if (!loading && !user) {
-				console.log("redirecting to login because user is null after delay");
-				router.push("/login");
+				router.push("/auth");
 			}
 		}, 200);
 
@@ -31,14 +31,7 @@ export default function DashboardPage() {
 	}, [user, loading, profile, router]);
 
 	if (loading) {
-		return (
-			<div className="min-h-screen bg-background flex items-center justify-center">
-				<div className="text-center">
-					<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-					<p className="text-foreground-muted mt-4">{tCommon("loading")}</p>
-				</div>
-			</div>
-		);
+		return <LoadingState message={tCommon("loading")} />;
 	}
 
 	if (!user) {
@@ -46,21 +39,27 @@ export default function DashboardPage() {
 	}
 
 	return (
-		<div className="min-h-screen bg-background-alt">
-			{/* navigation */}
-			<nav className="bg-surface shadow-sm border-b border-border px-6 py-4">
+		<PageLayout>
+			{/* Navigation */}
+			<nav className="fixed top-0 left-0 right-0 z-10 px-6 py-6 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border-b border-primary/20 dark:border-gray-700">
 				<div className="max-w-7xl mx-auto flex justify-between items-center">
-					<Link href="/" className="text-2xl font-bold text-foreground hover:text-primary transition-colors">
-						SkillHub
+					<Link
+						href="/"
+						className="text-3xl font-bold bg-gradient-to-br from-primary via-purple to-pink text-transparent bg-clip-text hover:scale-105 transition-transform"
+					>
+						SkillHub ✨
 					</Link>
 					<div className="flex items-center gap-6">
-						<span className="text-foreground-alt font-medium">Welcome, {profile?.name || user?.email}</span>
+						<LanguageSwitcher />
+						<span className="text-gray-600 dark:text-gray-300 font-medium">
+							Welcome, <span className="text-primary font-semibold">{profile?.name || user?.email}</span>
+						</span>
 						<button
 							onClick={() => {
 								logout();
 								router.push("/");
 							}}
-							className="px-4 py-2 text-foreground-muted hover:text-foreground hover:bg-surface-hover rounded-sm transition-all duration-200 font-medium"
+							className="px-6 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 font-medium transition-colors rounded-lg hover:bg-gray-100/70 dark:hover:bg-gray-800"
 						>
 							Sign Out
 						</button>
@@ -68,93 +67,101 @@ export default function DashboardPage() {
 				</div>
 			</nav>
 
-			{/* dashboard content */}
-			<main className="max-w-7xl mx-auto px-6 py-8">
-				<div className="mb-10">
-					<h1 className="text-4xl font-bold text-foreground mb-3">Dashboard</h1>
-					<p className="text-lg text-foreground-alt">Track your learning progress and explore new skills</p>
+			{/* Hero Section */}
+			<main className="py-8 pt-24">
+				<div className="text-center mb-20">
+					<div className="mb-6">
+						<span className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-success-50 to-info-50 dark:from-success-900/20 dark:to-info-900/20 text-success dark:text-success-400 rounded-full text-sm font-semibold border border-success/30 dark:border-success-400/30">
+							🎯 {tDashboard("welcome")}
+						</span>
+					</div>
+					<h1 className="text-5xl md:text-6xl font-bold mb-6">
+						<span className="bg-gradient-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
+							{tDashboard("title")}
+						</span>
+					</h1>
+					<p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
+						Track your learning progress, explore new skills, and continue your journey to success.
+					</p>
 				</div>
 
-				<div className="grid md:grid-cols-3 gap-8">
-					<div className="bg-surface border border-border rounded-sm shadow-sm p-8 hover:shadow-md transition-shadow duration-200">
-						<div className="w-12 h-12 bg-primary-100 rounded-sm flex items-center justify-center mb-6">
-							<svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-							</svg>
-						</div>
-						<h2 className="text-xl font-bold text-foreground mb-4">Your Skills</h2>
-						<p className="text-foreground-muted mb-6 leading-relaxed">Track and improve your current skill levels</p>
-						<Link href="/skills" className="text-primary hover:text-primary-600 font-semibold hover:underline transition-colors">
-							View All Skills →
-						</Link>
-					</div>
+				{/* Dashboard Cards */}
+				<div className="grid md:grid-cols-3 gap-6 mb-12">
+					<DashboardCard
+						icon="⚡"
+						title="Your Skills"
+						description="Track and improve your current skill levels with personalized recommendations."
+						linkText="View All Skills"
+						href="/skills"
+						colorScheme="primary"
+					/>
 
-					<div className="bg-surface border border-border rounded-sm shadow-sm p-8 hover:shadow-md transition-shadow duration-200">
-						<div className="w-12 h-12 bg-success-100 rounded-sm flex items-center justify-center mb-6">
-							<svg className="w-6 h-6 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-							</svg>
-						</div>
-						<h2 className="text-xl font-bold text-foreground mb-4">Recommended Courses</h2>
-						<p className="text-foreground-muted mb-6 leading-relaxed">Personalized course recommendations for you</p>
-						<Link href="/courses" className="text-success hover:text-success-600 font-semibold hover:underline transition-colors">
-							Explore Courses →
-						</Link>
-					</div>
+					<DashboardCard
+						icon="📚"
+						title="Recommended Courses"
+						description="Discover curated courses tailored to your learning goals and interests."
+						linkText="Explore Courses"
+						href="/courses"
+						colorScheme="success"
+					/>
 
-					<div className="bg-surface border border-border rounded-sm shadow-sm p-8 hover:shadow-md transition-shadow duration-200">
-						<div className="w-12 h-12 bg-info-100 rounded-sm flex items-center justify-center mb-6">
-							<svg className="w-6 h-6 text-info" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-							</svg>
-						</div>
-						<h2 className="text-xl font-bold text-foreground mb-4">Take a Test</h2>
-						<p className="text-foreground-muted mb-6 leading-relaxed">Assess your knowledge and track progress</p>
-						<button className="text-info hover:text-info-600 font-semibold hover:underline transition-colors">Start Test →</button>
-					</div>
+					<DashboardCard
+						icon="🎯"
+						title="Skill Assessment"
+						description="Test your knowledge and get insights into your learning progress."
+						linkText="Start Assessment"
+						onClick={() => {
+							// Add assessment logic here
+						}}
+						colorScheme="info"
+					/>
 				</div>
 
-				{/* profile section */}
+				{/* Profile Section */}
 				{profile && (
-					<div className="mt-12 bg-surface border border-border rounded-sm shadow-sm p-8">
-						<h2 className="text-2xl font-bold text-foreground mb-6">Profile Information</h2>
-						<div className="grid md:grid-cols-2 gap-6">
-							<div className="space-y-4">
-								<div>
-									<span className="text-sm font-semibold text-foreground-subtle uppercase tracking-wide">Name</span>
-									<p className="text-lg text-foreground font-medium">{profile.name}</p>
+					<GlassCard padding="lg">
+						<PageHeader title="Profile Overview" description="Your learning profile and achievements" centered />
+
+						<div className="grid md:grid-cols-2 gap-8">
+							<div className="space-y-6">
+								<div className="bg-gradient-to-br from-primary/5 to-purple/5 dark:from-primary/10 dark:to-purple/10 border border-primary/20 dark:border-primary/30 rounded-xl p-6">
+									<span className="text-sm font-semibold text-primary uppercase tracking-wide">Name</span>
+									<p className="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-2">{profile.name}</p>
 								</div>
-								<div>
-									<span className="text-sm font-semibold text-foreground-subtle uppercase tracking-wide">Email</span>
-									<p className="text-lg text-foreground font-medium">{profile.email}</p>
+								<div className="bg-gradient-to-br from-success/5 to-info/5 dark:from-success/10 dark:to-info/10 border border-success/20 dark:border-success/30 rounded-xl p-6">
+									<span className="text-sm font-semibold text-success uppercase tracking-wide">Email</span>
+									<p className="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-2">{profile.email}</p>
 								</div>
-								<div>
-									<span className="text-sm font-semibold text-foreground-subtle uppercase tracking-wide">Role</span>
-									<p className="text-lg text-foreground font-medium">
-										<span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary-100 text-primary">{profile.role}</span>
-									</p>
+								<div className="bg-gradient-to-br from-warning/5 to-pink/5 dark:from-warning/10 dark:to-pink/10 border border-warning/20 dark:border-warning/30 rounded-xl p-6">
+									<span className="text-sm font-semibold text-warning uppercase tracking-wide">Role</span>
+									<div className="mt-3">
+										<span className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-warning to-pink text-white rounded-xl font-semibold shadow-lg">
+											{profile.role}
+										</span>
+									</div>
 								</div>
 							</div>
+
 							{(profile.headline || profile.bio) && (
-								<div className="space-y-4">
+								<div className="space-y-6">
 									{profile.headline && (
-										<div>
-											<span className="text-sm font-semibold text-foreground-subtle uppercase tracking-wide">Headline</span>
-											<p className="text-lg text-foreground font-medium">{profile.headline}</p>
+										<div className="bg-gradient-to-br from-info/5 to-primary/5 dark:from-info/10 dark:to-primary/10 border border-info/20 dark:border-info/30 rounded-xl p-6">
+											<span className="text-sm font-semibold text-info uppercase tracking-wide">Headline</span>
+											<p className="text-xl text-gray-900 dark:text-gray-100 font-medium mt-2">{profile.headline}</p>
 										</div>
 									)}
 									{profile.bio && (
-										<div>
-											<span className="text-sm font-semibold text-foreground-subtle uppercase tracking-wide">Bio</span>
-											<p className="text-lg text-foreground leading-relaxed">{profile.bio}</p>
+										<div className="bg-gradient-to-br from-purple/5 to-pink/5 dark:from-purple/10 dark:to-pink/10 border border-purple/20 dark:border-purple/30 rounded-xl p-6">
+											<span className="text-sm font-semibold text-purple uppercase tracking-wide">Bio</span>
+											<p className="text-lg text-gray-900 dark:text-gray-100 leading-relaxed mt-2">{profile.bio}</p>
 										</div>
 									)}
 								</div>
 							)}
 						</div>
-					</div>
+					</GlassCard>
 				)}
 			</main>
-		</div>
+		</PageLayout>
 	);
 }
