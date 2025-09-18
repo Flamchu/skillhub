@@ -37,9 +37,8 @@ export default function AuthPage() {
 				const { user, session } = response.data;
 
 				if (session?.access_token) {
-					localStorage.setItem("auth_token", session.access_token);
-					localStorage.setItem("refresh_token", session.refresh_token);
-					localStorage.setItem("user", JSON.stringify(user));
+					const { setAuthData } = await import("@/lib/auth");
+					setAuthData(session.access_token, session.refresh_token, user);
 					window.dispatchEvent(new Event("auth-changed"));
 					router.push("/dashboard");
 				}

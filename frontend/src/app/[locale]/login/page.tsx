@@ -28,11 +28,9 @@ export default function LoginPage() {
 			const { user, session } = response.data;
 
 			if (session?.access_token) {
-				console.log("Login successful, storing data and redirecting");
-				// store the session token for future requests
-				localStorage.setItem("auth_token", session.access_token);
-				localStorage.setItem("refresh_token", session.refresh_token);
-				localStorage.setItem("user", JSON.stringify(user));
+				// store the session token and user data for future requests
+				const { setAuthData } = await import("@/lib/auth");
+				setAuthData(session.access_token, session.refresh_token, user);
 
 				// trigger auth context refresh
 				window.dispatchEvent(new Event("auth-changed"));
@@ -68,19 +66,43 @@ export default function LoginPage() {
 							<label htmlFor="email" className="block text-sm font-semibold text-foreground mb-2">
 								{t("email")}
 							</label>
-							<input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="w-full px-3 py-2 bg-surface-muted border border-border rounded-sm text-foreground placeholder:text-foreground-subtle focus:border-border-focus focus:ring-2 focus:ring-primary-100 outline-none transition-all" placeholder={t("email")} />
+							<input
+								id="email"
+								type="email"
+								value={email}
+								onChange={e => setEmail(e.target.value)}
+								required
+								className="w-full px-3 py-2 bg-surface-muted border border-border rounded-sm text-foreground placeholder:text-foreground-subtle focus:border-border-focus focus:ring-2 focus:ring-primary-100 outline-none transition-all"
+								placeholder={t("email")}
+							/>
 						</div>
 
 						<div>
 							<label htmlFor="password" className="block text-sm font-semibold text-foreground mb-2">
 								{t("password")}
 							</label>
-							<input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required className="w-full px-3 py-2 bg-surface-muted border border-border rounded-sm text-foreground placeholder:text-foreground-subtle focus:border-border-focus focus:ring-2 focus:ring-primary-100 outline-none transition-all" placeholder={t("password")} />
+							<input
+								id="password"
+								type="password"
+								value={password}
+								onChange={e => setPassword(e.target.value)}
+								required
+								className="w-full px-3 py-2 bg-surface-muted border border-border rounded-sm text-foreground placeholder:text-foreground-subtle focus:border-border-focus focus:ring-2 focus:ring-primary-100 outline-none transition-all"
+								placeholder={t("password")}
+							/>
 						</div>
 
-						{error && <div className="text-danger text-sm bg-danger-50 border border-danger rounded-sm p-4 font-medium">{error}</div>}
+						{error && (
+							<div className="text-danger text-sm bg-danger-50 border border-danger rounded-sm p-4 font-medium">
+								{error}
+							</div>
+						)}
 
-						<button type="submit" disabled={loading} className="w-full px-4 py-2 bg-primary text-primary-foreground rounded-sm hover:bg-primary-600 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-base">
+						<button
+							type="submit"
+							disabled={loading}
+							className="w-full px-4 py-2 bg-primary text-primary-foreground rounded-sm hover:bg-primary-600 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-base"
+						>
 							{loading ? "..." : t("submit")}
 						</button>
 					</form>
@@ -88,7 +110,10 @@ export default function LoginPage() {
 					<div className="mt-8 text-center">
 						<p className="text-foreground">
 							{t("noAccount")}{" "}
-							<Link href="/register" className="text-primary hover:text-primary-600 font-semibold hover:underline transition-colors">
+							<Link
+								href="/register"
+								className="text-primary hover:text-primary-600 font-semibold hover:underline transition-colors"
+							>
 								{t("signUp")}
 							</Link>
 						</p>

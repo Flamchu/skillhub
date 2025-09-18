@@ -1,6 +1,7 @@
 "use client";
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { api } from "@/lib/http";
+import { clearAuthData, updateUserData } from "@/lib/auth";
 import type { UserProfile } from "@/types";
 
 interface ApiMeResponse {
@@ -41,13 +42,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		// check if we have a stored token
 		const token = localStorage.getItem("auth_token");
 		const storedUser = localStorage.getItem("user");
-		console.log("AuthProvider load:", { hasToken: !!token, hasStoredUser: !!storedUser });
 
 		if (token && storedUser) {
 			try {
 				// parse and trust the stored user data immediately
 				const userData = JSON.parse(storedUser) as UserProfile;
-				console.log("Setting user from localStorage:", userData);
 				setUser(userData);
 				setProfile(userData);
 				setLoading(false); // set loading false immediately when we have user data
@@ -55,20 +54,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 				// optionally verify token in background (don't await this)
 				api
 					.getMe()
-					.then((response) => {
+					.then(response => {
 						// The API returns { user: userProfile }, so we need to extract the user
 						const apiResponse = response as ApiMeResponse;
 						const userProfile = apiResponse.user;
-						console.log("Updated user from API:", userProfile);
 						setUser(userProfile);
 						setProfile(userProfile);
 
-						// Update localStorage with fresh data
-						if (typeof window !== "undefined") {
-							localStorage.setItem("user", JSON.stringify(userProfile));
-						}
+						// Update localStorage and cookies with fresh data
+						updateUserData(userProfile);
 					})
-					.catch((apiError) => {
+					.catch(apiError => {
 						console.warn("API call failed, keeping stored user data", apiError);
 						// keep the stored user data, don't clear it unless token is definitely invalid
 					});
@@ -84,7 +80,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 				setProfile(null);
 			}
 		} else {
-			console.log("No token or stored user found");
 			setUser(null);
 			setProfile(null);
 		}
@@ -92,11 +87,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 	}, []);
 
 	const logout = useCallback(() => {
-		if (typeof window !== "undefined") {
-			localStorage.removeItem("auth_token");
-			localStorage.removeItem("refresh_token");
-			localStorage.removeItem("user");
-		}
+		clearAuthData();
 		setUser(null);
 		setProfile(null);
 	}, []);
