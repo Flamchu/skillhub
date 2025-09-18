@@ -1,6 +1,6 @@
 "use client";
-import React, { useEffect } from "react";
-import { ThemeProvider, useTheme } from "next-themes";
+import React from "react";
+import { ThemeProvider } from "next-themes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { AuthProvider } from "@/context/AuthProvider";
@@ -9,10 +9,18 @@ import { AnalyticsComponent } from "@/lib/analytics";
 const qc = new QueryClient();
 const defaultTheme = process.env.NEXT_PUBLIC_DEFAULT_THEME || "system";
 
+console.log("[AppProviders] Environment check:", {
+	NODE_ENV: process.env.NODE_ENV,
+	NEXT_PUBLIC_DEFAULT_THEME: process.env.NEXT_PUBLIC_DEFAULT_THEME,
+	defaultTheme: defaultTheme,
+	isClient: typeof window !== "undefined",
+});
+
 export function AppProviders({ children }: { children: React.ReactNode }) {
+	console.log("[AppProviders] Rendering with defaultTheme:", defaultTheme);
+
 	return (
-		<ThemeProvider attribute="class" defaultTheme={defaultTheme} enableSystem disableTransitionOnChange storageKey="skillhub-theme">
-			<ThemeClassEnforcer />
+		<ThemeProvider attribute="class" defaultTheme={defaultTheme} enableSystem storageKey="skillhub-theme" disableTransitionOnChange={false}>
 			<QueryClientProvider client={qc}>
 				<AuthProvider>
 					{children}
@@ -22,18 +30,4 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
 			</QueryClientProvider>
 		</ThemeProvider>
 	);
-}
-
-function ThemeClassEnforcer() {
-	const { theme, resolvedTheme } = useTheme();
-	useEffect(() => {
-		const active = theme === "system" ? resolvedTheme : theme;
-		const root = document.documentElement;
-		if (active === "dark") root.classList.add("dark");
-		else root.classList.remove("dark");
-		if (process.env.NODE_ENV === "development") {
-			console.log("[theme] preference=", theme, "resolved=", resolvedTheme, "html class=", root.className);
-		}
-	}, [theme, resolvedTheme]);
-	return null;
 }

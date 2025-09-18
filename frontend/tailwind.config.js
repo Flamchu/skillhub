@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
 	content: ["./src/pages/**/*.{js,ts,jsx,tsx,mdx}", "./src/components/**/*.{js,ts,jsx,tsx,mdx}", "./src/app/**/*.{js,ts,jsx,tsx,mdx}"],
-	darkMode: "class", // Enable class-based dark mode
+	// Note: darkMode is handled by @custom-variant in globals.css for Tailwind v4
 	theme: {
 		extend: {
 			// Only define semantic colors that are NOT in @theme - these reference variables defined in the old CSS section

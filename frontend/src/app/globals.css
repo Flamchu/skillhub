@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Tailwind v4 Dark Mode Configuration */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* SkillHub Design System - Professional Color Schema using Tailwind v4 @theme */
 
 /* Base theme variables for light and dark modes */

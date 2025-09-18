@@ -1,0 +1,29 @@
+# Dependencies
+node_modules
+.pnpm-store
+
+# Production builds
+.next
+out
+build
+dist
+
+# Environment and config files
+.env*
+*.log
+
+# Ignore generated files
+*.lock
+yarn.lock
+package-lock.json
+
+# IDE and editor files
+.vscode
+.idea
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Tailwind v4 CSS - formatted manually for readability
+src/app/globals.css

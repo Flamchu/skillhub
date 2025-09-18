@@ -5,6 +5,7 @@ import { getMessages } from "next-intl/server";
 import { locales } from "@/i18n";
 import { notFound } from "next/navigation";
 import { AppProviders } from "./providers";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import "../globals.css";
 
 const geistSans = Geist({
@@ -35,17 +36,19 @@ export default async function LocaleLayout({ children, params }: { children: Rea
 
 	// Providing all messages to the client side
 	const messages = await getMessages();
-	// minimal no-flash theme init: only sets dark early, does not try to unset (runtime sync handles light)
-	const themeInit = `!function(){try{var k='skillhub-theme',v=localStorage.getItem(k);var sys=window.matchMedia('(prefers-color-scheme: dark)').matches;if(v==='dark'||(!v||v==='system')&&sys){document.documentElement.classList.add('dark')}}catch(e){}}();`;
 
 	return (
 		<html lang={locale} suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} transition-colors`}>
-			<head>
-				<script dangerouslySetInnerHTML={{ __html: themeInit }} />
-			</head>
-			<body className="antialiased min-h-screen bg-background text-foreground transition-colors">
+			<head></head>
+			<body className="antialiased min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors">
 				<NextIntlClientProvider messages={messages}>
-					<AppProviders>{children}</AppProviders>
+					<AppProviders>
+						{children}
+						{/* Fixed Theme Toggle - appears on all pages */}
+						<div className="fixed top-6 right-6 z-50">
+							<ThemeToggle />
+						</div>
+					</AppProviders>
 				</NextIntlClientProvider>
 			</body>
 		</html>
