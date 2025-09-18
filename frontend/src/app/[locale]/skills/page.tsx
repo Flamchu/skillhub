@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useAuth } from "@/context/AuthProvider";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
@@ -9,6 +10,8 @@ import { Badge, ProficiencyBadge } from "@/components/ui/Badge";
 import { Search, Plus } from "lucide-react";
 
 export default function SkillsPage() {
+	const t = useTranslations("pages.skills");
+	const tSkills = useTranslations("skills");
 	const { user } = useAuth();
 	const [searchQuery, setSearchQuery] = useState("");
 
@@ -27,7 +30,7 @@ export default function SkillsPage() {
 		return (
 			<div className="min-h-screen bg-background flex items-center justify-center">
 				<div className="text-center">
-					<p className="text-foreground-muted">please sign in to view your skills.</p>
+					<p className="text-foreground-muted">{t("signInPrompt")}</p>
 				</div>
 			</div>
 		);
@@ -38,10 +41,10 @@ export default function SkillsPage() {
 			{/* navigation */}
 			<nav className="bg-surface shadow-sm border-b border-border px-6 py-4">
 				<div className="max-w-7xl mx-auto flex justify-between items-center">
-					<h1 className="text-2xl font-bold text-foreground">my skills</h1>
+					<h1 className="text-2xl font-bold text-foreground">{tSkills("title")}</h1>
 					<Button>
 						<Plus className="w-4 h-4 mr-2" />
-						add skill
+						{t("addSkill")}
 					</Button>
 				</div>
 			</nav>
@@ -56,7 +59,7 @@ export default function SkillsPage() {
 
 				{/* search */}
 				<div className="mb-8">
-					<Input placeholder="Search skills or categories..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} leftIcon={<Search className="w-4 h-4" />} className="max-w-md" />
+					<Input placeholder={t("searchPlaceholder")} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} leftIcon={<Search className="w-4 h-4" />} className="max-w-md" />
 				</div>
 
 				{/* skills grid */}

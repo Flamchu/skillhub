@@ -1,3 +1,6 @@
+"use client";
+import { useTranslations } from "next-intl";
+
 interface SocialLinkProps {
 	href: string;
 	colorScheme: "primary" | "success" | "warning";
@@ -19,6 +22,8 @@ function SocialLink({ href, colorScheme, children }: SocialLinkProps) {
 }
 
 export function Footer() {
+	const t = useTranslations("footer");
+
 	return (
 		<footer className="relative bg-gradient-to-br from-primary/5 via-purple/5 to-pink/5 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 border-t border-primary/20 dark:border-gray-700 py-20 px-6 mt-32 overflow-hidden">
 			{/* Decorative Background */}
@@ -39,14 +44,14 @@ export function Footer() {
 					<h3 className="text-3xl font-bold text-primary">SkillHub</h3>
 				</div>
 
-				<p className="text-foreground-muted mb-12 text-xl max-w-2xl mx-auto">Empowering professionals worldwide with cutting-edge skills and knowledge. Join thousands of learners on their journey to success.</p>
+				<p className="text-foreground-muted mb-12 text-xl max-w-2xl mx-auto">{t("description")}</p>
 
 				<div className="flex justify-center gap-8 text-foreground-muted mb-12">
 					<a href="#" className="group hover:text-primary transition-all duration-300 rounded-xl px-6 py-3 hover:bg-primary/10 dark:hover:bg-primary/20 hover:scale-105 transform font-medium">
-						About
+						{t("about")}
 					</a>
 					<a href="#" className="group hover:text-success transition-all duration-300 rounded-xl px-6 py-3 hover:bg-success/10 dark:hover:bg-success/20 hover:scale-105 transform font-medium">
-						Contact
+						{t("contact")}
 					</a>
 					<a href="#" className="group hover:text-info transition-all duration-300 rounded-xl px-6 py-3 hover:bg-info/10 dark:hover:bg-info/20 hover:scale-105 transform font-medium">
 						Privacy
@@ -76,9 +81,9 @@ export function Footer() {
 
 				<div className="border-t border-primary/20 dark:border-gray-700 pt-10">
 					<div className="flex items-center justify-center space-x-2 mb-4">
-						<p className="text-foreground-muted text-lg">Made with care for learners worldwide</p>
+						<p className="text-foreground-muted text-lg">{t("madeWithCare")}</p>
 					</div>
-					<p className="text-foreground-muted">&copy; 2025 SkillHub. All rights reserved. Keep learning, keep growing.</p>
+					<p className="text-foreground-muted">{t("copyright")}</p>
 				</div>
 			</div>
 		</footer>

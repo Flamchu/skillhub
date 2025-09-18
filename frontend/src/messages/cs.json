@@ -1,0 +1,153 @@
+{
+	"navigation": {
+		"home": "Domů",
+		"skills": "Dovednosti",
+		"courses": "Kurzy",
+		"dashboard": "Přehled",
+		"login": "Přihlásit se",
+		"register": "Registrovat",
+		"logout": "Odhlásit se"
+	},
+	"hero": {
+		"badge": "🎓 Připojte se k více než 50 000 studentů po celém světě",
+		"title": "Učte se. Rostěte. Uspějte.",
+		"subtitle": "Vaše cesta začína zde! 🌟",
+		"description": "Odemkněte svůj potenciál s interaktivními kurzy, mentorováním odborníků a praktickými projekty. Transformujte svou kariéru s dovednostmi, které jsou důležité v dnešním digitálním světě.",
+		"cta": {
+			"start": "Začněte se učit ještě dnes",
+			"browse": "📚 Procházet kurzy"
+		},
+		"features": {
+			"interactive": "Interaktivní učení",
+			"goalOriented": "Orientované na cíle",
+			"community": "Podpora komunity",
+			"certified": "Certifikované výsledky"
+		}
+	},
+	"auth": {
+		"login": {
+			"title": "Přihlásit se",
+			"subtitle": "Vítejte zpět! Přihlaste se ke svému účtu.",
+			"email": "E-mail",
+			"password": "Heslo",
+			"submit": "Přihlásit se",
+			"noAccount": "Nemáte účet?",
+			"signUp": "Registrujte se"
+		},
+		"register": {
+			"title": "Vytvořit účet",
+			"subtitle": "Připojte se k tisícům studentů, kteří už rozvíjejí své dovednosti.",
+			"name": "Celé jméno",
+			"email": "E-mail",
+			"password": "Heslo",
+			"confirmPassword": "Potvrdit heslo",
+			"submit": "Vytvořit účet",
+			"hasAccount": "Už máte účet?",
+			"signIn": "Přihlásit se"
+		},
+		"validation": {
+			"required": "Toto pole je povinné",
+			"invalidEmail": "Zadejte prosím platnou e-mailovou adresu",
+			"passwordTooShort": "Heslo musí mít alespoň 8 znaků",
+			"passwordsNoMatch": "Hesla se neshodují"
+		}
+	},
+	"dashboard": {
+		"title": "Přehled",
+		"welcome": "Vítejte zpět!"
+	},
+	"skills": {
+		"title": "Dovednosti",
+		"browseSkills": "Procházet dovednosti"
+	},
+	"courses": {
+		"title": "Kurzy",
+		"browseCourses": "Procházet kurzy"
+	},
+	"features": {
+		"title": "Proč si vybrat SkillHub?",
+		"subtitle": "Zažijte učení jako nikdy předtím s naším inovativním přístupem",
+		"lightningFast": {
+			"title": "Bleskurychle učení",
+			"description": "Ovládněte nové dovednosti v rekordním čase s našimi adaptivními cestami učení poháněnými AI a interaktivními výzvami.",
+			"link": "Dozvědět se více"
+		},
+		"industryRecognized": {
+			"title": "Uznávané v oboru",
+			"description": "Získejte certifikáty a kvalifikace, které si váží přední zaměstnavatelé napříč odvětvími po celém světě.",
+			"link": "Zobrazit certifikáty"
+		},
+		"globalCommunity": {
+			"title": "Globální komunita",
+			"description": "Spojte se se studenty a odborníky po celém světě. Sdílejte znalosti, získejte pomoc a budujte trvalé profesní vztahy.",
+			"link": "Připojit se ke komunitě"
+		}
+	},
+	"stats": {
+		"title": "Připojte se k revoluci učení",
+		"subtitle": "Tisíce studentů po celém světě už transformují své kariéry",
+		"activeLearners": {
+			"label": "Aktivní studenti",
+			"description": "Roste každým dnem"
+		},
+		"expertCourses": {
+			"label": "Odborné kurzy",
+			"description": "Od lídrů v oboru"
+		},
+		"successRate": {
+			"label": "Míra úspěšnosti",
+			"description": "Prokázané výsledky"
+		}
+	},
+	"footer": {
+		"description": "Posilujeme profesionály po celém světě s nejmodernějšími dovednostmi a znalostmi. Připojte se k tisícům studentů na jejich cestě k úspěchu.",
+		"about": "O nás",
+		"contact": "Kontakt",
+		"madeWithCare": "Vytvořeno s péčí pro studenty po celém světě",
+		"copyright": "© 2025 SkillHub. Všechna práva vyhrazena. Učte se dál, rostěte dál."
+	},
+	"pages": {
+		"skills": {
+			"signInPrompt": "Prosím přihlaste se pro zobrazení svých dovedností.",
+			"searchPlaceholder": "Hledat dovednosti...",
+			"addSkill": "Přidat dovednost",
+			"noSkillsFound": "Nebyly nalezeny žádné dovednosti odpovídající vašemu hledání.",
+			"category": "Kategorie"
+		},
+		"courses": {
+			"searchPlaceholder": "Hledat kurzy...",
+			"filterByDifficulty": "Filtrovat podle obtížnosti",
+			"filterBySource": "Filtrovat podle zdroje",
+			"freeOnly": "Pouze zdarma",
+			"allDifficulties": "Všechny obtížnosti",
+			"allSources": "Všechny zdroje",
+			"beginner": "Začátečník",
+			"intermediate": "Pokročilý",
+			"advanced": "Expert",
+			"rating": "hodnocení",
+			"students": "studenti",
+			"hours": "hodiny",
+			"free": "Zdarma",
+			"bookmark": "Záložka",
+			"viewCourse": "Zobrazit kurz",
+			"noCoursesFound": "Nebyly nalezeny žádné kurzy",
+			"tryDifferentSearch": "Zkuste upravit své hledání nebo filtry.",
+			"errorLoading": "Chyba při načítání kurzů",
+			"previousPage": "Předchozí",
+			"nextPage": "Další"
+		},
+		"dashboard": {
+			"signInPrompt": "Prosím přihlaste se pro přístup k vašemu přehledu."
+		}
+	},
+	"common": {
+		"loading": "Načítání...",
+		"error": "Chyba",
+		"success": "Úspěch",
+		"cancel": "Zrušit",
+		"save": "Uložit",
+		"edit": "Upravit",
+		"delete": "Smazat",
+		"search": "Hledat"
+	}
+}

@@ -1,3 +1,6 @@
+"use client";
+import { useTranslations } from "next-intl";
+
 interface FeatureCardProps {
 	icon: string;
 	title: string;
@@ -49,21 +52,23 @@ function FeatureCard({ icon, title, description, linkText, colorScheme }: Featur
 }
 
 export function FeaturesSection() {
+	const t = useTranslations("features");
+
 	return (
 		<div className="max-w-7xl mx-auto mt-32">
 			<div className="text-center mb-20">
 				<h3 className="text-4xl md:text-5xl font-bold mb-4">
-					<span className="bg-gradient-to-br from-primary via-purple to-pink text-transparent bg-clip-text">Why Choose SkillHub?</span>
+					<span className="bg-gradient-to-br from-primary via-purple to-pink text-transparent bg-clip-text">{t("title")}</span>
 				</h3>
-				<p className="text-xl text-foreground-muted max-w-2xl mx-auto">Experience learning like never before with our innovative approach</p>
+				<p className="text-xl text-foreground-muted max-w-2xl mx-auto">{t("subtitle")}</p>
 			</div>
 
 			<div className="grid md:grid-cols-3 gap-10">
-				<FeatureCard icon="⚡" title="Lightning Fast Learning" description="Master new skills in record time with our AI-powered adaptive learning paths and interactive challenges." linkText="Learn more" colorScheme="primary" />
+				<FeatureCard icon="⚡" title={t("lightningFast.title")} description={t("lightningFast.description")} linkText={t("lightningFast.link")} colorScheme="primary" />
 
-				<FeatureCard icon="🏅" title="Industry Recognized" description="Earn certificates and credentials that are valued by top employers across industries worldwide." linkText="View certificates" colorScheme="success" />
+				<FeatureCard icon="🏅" title={t("industryRecognized.title")} description={t("industryRecognized.description")} linkText={t("industryRecognized.link")} colorScheme="success" />
 
-				<FeatureCard icon="🌍" title="Global Community" description="Connect with learners and experts worldwide. Share knowledge, get help, and build lasting professional relationships." linkText="Join community" colorScheme="warning" />
+				<FeatureCard icon="🌍" title={t("globalCommunity.title")} description={t("globalCommunity.description")} linkText={t("globalCommunity.link")} colorScheme="warning" />
 			</div>
 		</div>
 	);

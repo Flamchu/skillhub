@@ -1,4 +1,6 @@
+"use client";
 import { StatsCounter } from "@/components/ui";
+import { useTranslations } from "next-intl";
 
 interface StatCardProps {
 	icon: React.ReactNode;
@@ -50,13 +52,15 @@ function StatCard({ icon, value, suffix, label, description, apiKey, colorScheme
 }
 
 export function StatsSection() {
+	const t = useTranslations("stats");
+
 	return (
 		<div className="max-w-6xl mx-auto mt-32">
 			<div className="text-center mb-16">
 				<h3 className="text-3xl md:text-4xl font-bold mb-4">
-					<span className="bg-gradient-to-br from-primary via-purple to-pink text-transparent bg-clip-text">Join the Learning Revolution</span>
+					<span className="bg-gradient-to-br from-primary via-purple to-pink text-transparent bg-clip-text">{t("title")}</span>
 				</h3>
-				<p className="text-lg text-foreground-muted max-w-2xl mx-auto">Thousands of learners worldwide are already transforming their careers</p>
+				<p className="text-lg text-foreground-muted max-w-2xl mx-auto">{t("subtitle")}</p>
 			</div>
 
 			<div className="grid md:grid-cols-3 gap-8">
@@ -68,8 +72,8 @@ export function StatsSection() {
 					}
 					value={50000}
 					suffix="+"
-					label="Active Learners"
-					description="Growing every day"
+					label={t("activeLearners.label")}
+					description={t("activeLearners.description")}
 					apiKey="users"
 					colorScheme="primary"
 				/>
@@ -82,8 +86,8 @@ export function StatsSection() {
 					}
 					value={500}
 					suffix="+"
-					label="Expert Courses"
-					description="From industry leaders"
+					label={t("expertCourses.label")}
+					description={t("expertCourses.description")}
 					apiKey="courses"
 					colorScheme="success"
 				/>
@@ -96,8 +100,8 @@ export function StatsSection() {
 					}
 					value={95}
 					suffix="%"
-					label="Success Rate"
-					description="Proven results"
+					label={t("successRate.label")}
+					description={t("successRate.description")}
 					apiKey="successRate"
 					colorScheme="warning"
 				/>

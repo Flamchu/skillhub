@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { http } from "@/lib/http";
 
 export default function RegisterPage() {
+	const t = useTranslations("auth.register");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [name, setName] = useState("");
@@ -48,8 +50,8 @@ export default function RegisterPage() {
 					<Link href="/" className="text-2xl font-bold text-foreground hover:text-primary transition-colors">
 						SkillHub
 					</Link>
-					<h1 className="text-3xl font-bold text-foreground mt-4">Create account</h1>
-					<p className="text-foreground-muted mt-2">Join SkillHub and start your learning journey</p>
+					<h1 className="text-3xl font-bold text-foreground mt-4">{t("title")}</h1>
+					<p className="text-foreground-muted mt-2">{t("subtitle")}</p>
 				</div>
 
 				{/* register form */}
@@ -57,37 +59,37 @@ export default function RegisterPage() {
 					<form onSubmit={handleSubmit} className="space-y-6">
 						<div>
 							<label htmlFor="name" className="block text-sm font-semibold text-foreground mb-2">
-								Full name
+								{t("name")}
 							</label>
-							<input id="name" type="text" value={name} onChange={(e) => setName(e.target.value)} required className="w-full px-3 py-2 bg-surface-muted border border-border rounded-sm text-foreground placeholder:text-foreground-subtle focus:border-border-focus focus:ring-2 focus:ring-primary-100 outline-none transition-all" placeholder="Enter your full name" />
+							<input id="name" type="text" value={name} onChange={(e) => setName(e.target.value)} required className="w-full px-3 py-2 bg-surface-muted border border-border rounded-sm text-foreground placeholder:text-foreground-subtle focus:border-border-focus focus:ring-2 focus:ring-primary-100 outline-none transition-all" placeholder={t("name")} />
 						</div>
 
 						<div>
 							<label htmlFor="email" className="block text-sm font-semibold text-foreground mb-2">
-								Email address
+								{t("email")}
 							</label>
-							<input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="w-full px-3 py-2 bg-surface-muted border border-border rounded-sm text-foreground placeholder:text-foreground-subtle focus:border-border-focus focus:ring-2 focus:ring-primary-100 outline-none transition-all" placeholder="Enter your email address" />
+							<input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="w-full px-3 py-2 bg-surface-muted border border-border rounded-sm text-foreground placeholder:text-foreground-subtle focus:border-border-focus focus:ring-2 focus:ring-primary-100 outline-none transition-all" placeholder={t("email")} />
 						</div>
 
 						<div>
 							<label htmlFor="password" className="block text-sm font-semibold text-foreground mb-2">
-								Password
+								{t("password")}
 							</label>
-							<input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} className="w-full px-3 py-2 bg-surface-muted border border-border rounded-sm text-foreground placeholder:text-foreground-subtle focus:border-border-focus focus:ring-2 focus:ring-primary-100 outline-none transition-all" placeholder="Create a password (min. 6 characters)" />
+							<input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} className="w-full px-3 py-2 bg-surface-muted border border-border rounded-sm text-foreground placeholder:text-foreground-subtle focus:border-border-focus focus:ring-2 focus:ring-primary-100 outline-none transition-all" placeholder={t("password")} />
 						</div>
 
 						{error && <div className="text-danger text-sm bg-danger-50 border border-danger rounded-sm p-4 font-medium">{error}</div>}
 
 						<button type="submit" disabled={loading} className="w-full px-4 py-2 bg-primary text-primary-foreground rounded-sm hover:bg-primary-600 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-base">
-							{loading ? "Creating account..." : "Create account"}
+							{loading ? "..." : t("submit")}
 						</button>
 					</form>
 
 					<div className="mt-8 text-center">
 						<p className="text-foreground">
-							Already have an account?{" "}
+							{t("hasAccount")}{" "}
 							<Link href="/login" className="text-primary hover:text-primary-600 font-semibold hover:underline transition-colors">
-								Sign in
+								{t("signIn")}
 							</Link>
 						</p>
 					</div>

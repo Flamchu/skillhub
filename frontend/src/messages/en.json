@@ -1,0 +1,153 @@
+{
+	"navigation": {
+		"home": "Home",
+		"skills": "Skills",
+		"courses": "Courses",
+		"dashboard": "Dashboard",
+		"login": "Login",
+		"register": "Register",
+		"logout": "Logout"
+	},
+	"hero": {
+		"badge": "🎓 Join 50,000+ learners worldwide",
+		"title": "Learn. Grow. Succeed.",
+		"subtitle": "Your Journey Starts Here! 🌟",
+		"description": "Unlock your potential with interactive courses, expert mentorship, and hands-on projects. Transform your career with skills that matter in today's digital world.",
+		"cta": {
+			"start": "Start Learning Today",
+			"browse": "📚 Browse Courses"
+		},
+		"features": {
+			"interactive": "Interactive Learning",
+			"goalOriented": "Goal-Oriented",
+			"community": "Community Support",
+			"certified": "Certified Results"
+		}
+	},
+	"auth": {
+		"login": {
+			"title": "Login",
+			"subtitle": "Welcome back! Sign in to your account.",
+			"email": "Email",
+			"password": "Password",
+			"submit": "Sign In",
+			"noAccount": "Don't have an account?",
+			"signUp": "Sign up"
+		},
+		"register": {
+			"title": "Create Account",
+			"subtitle": "Join thousands of learners already growing their skills.",
+			"name": "Full Name",
+			"email": "Email",
+			"password": "Password",
+			"confirmPassword": "Confirm Password",
+			"submit": "Create Account",
+			"hasAccount": "Already have an account?",
+			"signIn": "Sign in"
+		},
+		"validation": {
+			"required": "This field is required",
+			"invalidEmail": "Please enter a valid email address",
+			"passwordTooShort": "Password must be at least 8 characters",
+			"passwordsNoMatch": "Passwords do not match"
+		}
+	},
+	"dashboard": {
+		"title": "Dashboard",
+		"welcome": "Welcome back!"
+	},
+	"skills": {
+		"title": "Skills",
+		"browseSkills": "Browse Skills"
+	},
+	"courses": {
+		"title": "Courses",
+		"browseCourses": "Browse Courses"
+	},
+	"features": {
+		"title": "Why Choose SkillHub?",
+		"subtitle": "Experience learning like never before with our innovative approach",
+		"lightningFast": {
+			"title": "Lightning Fast Learning",
+			"description": "Master new skills in record time with our AI-powered adaptive learning paths and interactive challenges.",
+			"link": "Learn more"
+		},
+		"industryRecognized": {
+			"title": "Industry Recognized",
+			"description": "Earn certificates and credentials that are valued by top employers across industries worldwide.",
+			"link": "View certificates"
+		},
+		"globalCommunity": {
+			"title": "Global Community",
+			"description": "Connect with learners and experts worldwide. Share knowledge, get help, and build lasting professional relationships.",
+			"link": "Join community"
+		}
+	},
+	"stats": {
+		"title": "Join the Learning Revolution",
+		"subtitle": "Thousands of learners worldwide are already transforming their careers",
+		"activeLearners": {
+			"label": "Active Learners",
+			"description": "Growing every day"
+		},
+		"expertCourses": {
+			"label": "Expert Courses",
+			"description": "From industry leaders"
+		},
+		"successRate": {
+			"label": "Success Rate",
+			"description": "Proven results"
+		}
+	},
+	"footer": {
+		"description": "Empowering professionals worldwide with cutting-edge skills and knowledge. Join thousands of learners on their journey to success.",
+		"about": "About",
+		"contact": "Contact",
+		"madeWithCare": "Made with care for learners worldwide",
+		"copyright": "© 2025 SkillHub. All rights reserved. Keep learning, keep growing."
+	},
+	"pages": {
+		"skills": {
+			"signInPrompt": "Please sign in to view your skills.",
+			"searchPlaceholder": "Search skills...",
+			"addSkill": "Add Skill",
+			"noSkillsFound": "No skills found matching your search.",
+			"category": "Category"
+		},
+		"courses": {
+			"searchPlaceholder": "Search courses...",
+			"filterByDifficulty": "Filter by difficulty",
+			"filterBySource": "Filter by source",
+			"freeOnly": "Free only",
+			"allDifficulties": "All Difficulties",
+			"allSources": "All Sources",
+			"beginner": "Beginner",
+			"intermediate": "Intermediate",
+			"advanced": "Advanced",
+			"rating": "rating",
+			"students": "students",
+			"hours": "hours",
+			"free": "Free",
+			"bookmark": "Bookmark",
+			"viewCourse": "View Course",
+			"noCoursesFound": "No courses found",
+			"tryDifferentSearch": "Try adjusting your search or filters.",
+			"errorLoading": "Error loading courses",
+			"previousPage": "Previous",
+			"nextPage": "Next"
+		},
+		"dashboard": {
+			"signInPrompt": "Please sign in to access your dashboard."
+		}
+	},
+	"common": {
+		"loading": "Loading...",
+		"error": "Error",
+		"success": "Success",
+		"cancel": "Cancel",
+		"save": "Save",
+		"edit": "Edit",
+		"delete": "Delete",
+		"search": "Search"
+	}
+}

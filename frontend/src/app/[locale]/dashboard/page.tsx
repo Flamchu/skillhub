@@ -2,10 +2,12 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthProvider";
 
 export default function DashboardPage() {
+	const tCommon = useTranslations("common");
 	const { user, profile, loading, logout } = useAuth();
 	const router = useRouter();
 
@@ -33,7 +35,7 @@ export default function DashboardPage() {
 			<div className="min-h-screen bg-background flex items-center justify-center">
 				<div className="text-center">
 					<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-					<p className="text-foreground-muted mt-4">loading your dashboard...</p>
+					<p className="text-foreground-muted mt-4">{tCommon("loading")}</p>
 				</div>
 			</div>
 		);
