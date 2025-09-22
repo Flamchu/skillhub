@@ -1,124 +1,65 @@
 "use client";
 
-import React, { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useAuth } from "@/context/AuthProvider";
-import { Input } from "@/components/ui/Input";
-import { Button } from "@/components/ui/Button";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
-import { Badge, ProficiencyBadge } from "@/components/ui/Badge";
-import { Search, Plus } from "lucide-react";
+import { LanguageSwitcher } from "@/components/ui";
+import { SkillsContent } from "@/components/skills";
 
 export default function SkillsPage() {
-	const t = useTranslations("pages.skills");
-	const tSkills = useTranslations("skills");
-	const { user } = useAuth();
-	const [searchQuery, setSearchQuery] = useState("");
+	const { user, profile, loading, logout } = useAuth();
+	const router = useRouter();
 
-	// mock data - replace with actual api calls
-	const skills = [
-		{ id: "1", name: "JavaScript", category: "Programming Languages", proficiency: "ADVANCED" as const },
-		{ id: "2", name: "React", category: "Frontend Frameworks", proficiency: "EXPERT" as const },
-		{ id: "3", name: "TypeScript", category: "Programming Languages", proficiency: "INTERMEDIATE" as const },
-		{ id: "4", name: "Node.js", category: "Backend Technologies", proficiency: "ADVANCED" as const },
-		{ id: "5", name: "Python", category: "Programming Languages", proficiency: "BEGINNER" as const },
-	];
+	useEffect(() => {
+		// add a small delay to let authprovider settle after login redirect
+		const timer = setTimeout(() => {
+			if (!loading && !user) {
+				router.push("/auth");
+			}
+		}, 200);
 
-	const filteredSkills = skills.filter((skill) => skill.name.toLowerCase().includes(searchQuery.toLowerCase()) || skill.category.toLowerCase().includes(searchQuery.toLowerCase()));
+		// if we have a user, clear the timer
+		if (user) {
+			clearTimeout(timer);
+		}
+
+		return () => clearTimeout(timer);
+	}, [user, loading, router]);
 
 	if (!user) {
-		return (
-			<div className="min-h-screen bg-background flex items-center justify-center">
-				<div className="text-center">
-					<p className="text-foreground-muted">{t("signInPrompt")}</p>
-				</div>
-			</div>
-		);
+		return null; // will redirect
 	}
 
 	return (
-		<div className="min-h-screen bg-background-alt">
-			{/* navigation */}
-			<nav className="bg-surface shadow-sm border-b border-border px-6 py-4">
+		<div className="min-h-screen bg-gradient-to-br from-primary-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 text-gray-900 dark:text-gray-100">
+			{/* Navigation */}
+			<nav className="fixed top-0 left-0 right-0 z-10 px-6 py-6 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border-b border-primary/20 dark:border-gray-700">
 				<div className="max-w-7xl mx-auto flex justify-between items-center">
-					<h1 className="text-2xl font-bold text-foreground">{tSkills("title")}</h1>
-					<Button>
-						<Plus className="w-4 h-4 mr-2" />
-						{t("addSkill")}
-					</Button>
+					<Link
+						href="/"
+						className="text-3xl font-bold bg-gradient-to-br from-primary via-purple to-pink text-transparent bg-clip-text hover:scale-105 transition-transform"
+					>
+						SkillHub ✨
+					</Link>
+					<div className="flex items-center gap-6">
+						<LanguageSwitcher />
+						<span className="text-gray-600 dark:text-gray-300 font-medium">
+							Welcome, <span className="text-primary font-semibold">{profile?.name || user?.email}</span>
+						</span>
+						<button
+							onClick={() => {
+								logout();
+								router.push("/");
+							}}
+							className="px-6 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 font-medium transition-colors rounded-lg hover:bg-gray-100/70 dark:hover:bg-gray-800"
+						>
+							Sign Out
+						</button>
+					</div>
 				</div>
 			</nav>
-
-			{/* content */}
-			<main className="max-w-7xl mx-auto px-6 py-8">
-				{/* header */}
-				<div className="mb-8">
-					<h2 className="text-3xl font-bold text-foreground mb-4">track your professional skills</h2>
-					<p className="text-lg text-foreground-muted">Monitor your progress and identify areas for improvement across different skill categories.</p>
-				</div>
-
-				{/* search */}
-				<div className="mb-8">
-					<Input placeholder={t("searchPlaceholder")} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} leftIcon={<Search className="w-4 h-4" />} className="max-w-md" />
-				</div>
-
-				{/* skills grid */}
-				<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-					{filteredSkills.map((skill) => (
-						<Card key={skill.id} variant="default" className="hover:shadow-lg transition-shadow">
-							<CardHeader>
-								<div className="flex justify-between items-start">
-									<CardTitle as="h3">{skill.name}</CardTitle>
-									<ProficiencyBadge level={skill.proficiency} />
-								</div>
-								<Badge variant="default" size="sm">
-									{skill.category}
-								</Badge>
-							</CardHeader>
-							<CardContent>
-								<div className="space-y-4">
-									<div>
-										<div className="flex justify-between text-sm text-foreground-muted mb-1">
-											<span>Progress</span>
-											<span>{skill.proficiency === "BEGINNER" ? "25%" : skill.proficiency === "INTERMEDIATE" ? "50%" : skill.proficiency === "ADVANCED" ? "75%" : "90%"}</span>
-										</div>
-										<div className="w-full bg-surface-muted rounded-full h-2">
-											<div
-												className="bg-primary h-2 rounded-full transition-all duration-300"
-												style={{
-													width: skill.proficiency === "BEGINNER" ? "25%" : skill.proficiency === "INTERMEDIATE" ? "50%" : skill.proficiency === "ADVANCED" ? "75%" : "90%",
-												}}
-											/>
-										</div>
-									</div>
-									<div className="flex gap-2">
-										<Button variant="outline" size="sm" className="flex-1">
-											Update
-										</Button>
-										<Button variant="primary" size="sm" className="flex-1">
-											Learn More
-										</Button>
-									</div>
-								</div>
-							</CardContent>
-						</Card>
-					))}
-				</div>
-
-				{filteredSkills.length === 0 && (
-					<div className="text-center py-12">
-						<div className="text-foreground-subtle mb-4">
-							<Search className="w-12 h-12 mx-auto" />
-						</div>
-						<h3 className="text-lg font-medium text-foreground mb-2">No skills found</h3>
-						<p className="text-foreground-muted">{searchQuery ? "Try adjusting your search terms." : "Start by adding your first skill!"}</p>
-						<Button className="mt-4">
-							<Plus className="w-4 h-4 mr-2" />
-							Add Your First Skill
-						</Button>
-					</div>
-				)}
-			</main>
+			<SkillsContent />
 		</div>
 	);
 }

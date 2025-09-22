@@ -1,0 +1,30 @@
+"use client";
+
+import { Button } from "@/components/ui/Button";
+import { Plus } from "lucide-react";
+
+interface SkillsHeaderProps {
+	onAddSkill: () => void;
+}
+
+export function SkillsHeader({ onAddSkill }: SkillsHeaderProps) {
+	return (
+		<div className="flex justify-between items-center mb-8">
+			<div>
+				<h1 className="text-4xl font-bold bg-gradient-to-br from-primary via-purple to-pink text-transparent bg-clip-text mb-4">
+					Your Skills Portfolio
+				</h1>
+				<p className="text-lg text-gray-600 dark:text-gray-300">
+					Track your professional skills and monitor your progress across different categories
+				</p>
+			</div>
+			<Button
+				onClick={onAddSkill}
+				className="bg-gradient-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+			>
+				<Plus className="w-4 h-4 mr-2" />
+				Add New Skill
+			</Button>
+		</div>
+	);
+}
