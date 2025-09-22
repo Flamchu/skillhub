@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 import { useAuth } from "@/context/AuthProvider";
 import { LoadingState, ErrorState } from "@/components/ui";
-import { SkillsHeader, SkillsSearch, SkillsGrid, AddSkillModal } from "./";
+import { SkillsHeader, SkillsSearch, SkillsGrid, AddSkillModal, UpdateSkillModal } from "./";
 
 interface UserSkill {
 	id: string;
@@ -36,6 +36,8 @@ export function SkillsContent() {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [showAddModal, setShowAddModal] = useState(false);
+	const [showUpdateModal, setShowUpdateModal] = useState(false);
+	const [selectedSkill, setSelectedSkill] = useState<UserSkill | null>(null);
 
 	// load available skills from api
 	const loadAvailableSkills = useCallback(async () => {
@@ -83,8 +85,30 @@ export function SkillsContent() {
 	};
 
 	const handleUpdateSkill = (skillId: string) => {
-		// navigate to skill detail page for updates
-		router.push(`/skills/${skillId}`);
+		const skill = userSkills.find(s => s.skillId === skillId);
+		if (skill) {
+			setSelectedSkill(skill);
+			setShowUpdateModal(true);
+		}
+	};
+
+	// update user skill proficiency
+	const handleUpdateSkillLevel = async (
+		skillId: string,
+		proficiency: "BASIC" | "INTERMEDIATE" | "ADVANCED" | "EXPERT"
+	) => {
+		if (!user?.id) return;
+
+		const { api } = await import("@/lib/http");
+		const progress =
+			proficiency === "BASIC" ? 25 : proficiency === "INTERMEDIATE" ? 50 : proficiency === "ADVANCED" ? 75 : 90;
+
+		await api.updateUserSkill(user.id, skillId, { proficiency, progress });
+
+		// refresh skills list
+		await loadUserSkills();
+		setShowUpdateModal(false);
+		setSelectedSkill(null);
 	};
 
 	const handleLearnMore = (skillId: string) => {
@@ -138,6 +162,16 @@ export function SkillsContent() {
 				onClose={() => setShowAddModal(false)}
 				availableSkills={availableSkillsFiltered}
 				onAddSkill={handleAddSkill}
+			/>
+
+			<UpdateSkillModal
+				isOpen={showUpdateModal}
+				onClose={() => {
+					setShowUpdateModal(false);
+					setSelectedSkill(null);
+				}}
+				skill={selectedSkill}
+				onUpdateSkill={handleUpdateSkillLevel}
 			/>
 		</main>
 	);

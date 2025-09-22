@@ -99,6 +99,8 @@ export const api = {
 	// user skills api (protected)
 	getUserSkills: (userId: string, params?: QueryParams) =>
 		http.get(`/users/${userId}/skills`, { params }).then(r => r.data),
+	updateUserSkill: (userId: string, skillId: string, data: { proficiency?: string; progress?: number }) =>
+		http.patch(`/users/${userId}/skills/${skillId}`, data).then(r => r.data),
 
 	// public stats api (no auth required)
 	getPublicStats: () => http.get("/stats").then(r => r.data),
