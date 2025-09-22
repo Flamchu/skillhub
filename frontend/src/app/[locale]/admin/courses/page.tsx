@@ -68,7 +68,7 @@ export default function AdminCoursesPage() {
 			/>
 
 			{/* Filters */}
-			<GlassCard className="p-6">
+			<GlassCard className="p-6 mb-8">
 				<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 					<div>
 						<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Search</label>

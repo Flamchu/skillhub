@@ -119,18 +119,19 @@ export default function CoursesPage() {
 						</p>
 					</div>
 
-					{/* Filters */}
-					<div className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm border border-primary/20 dark:border-gray-700 rounded-2xl p-8 shadow-xl mb-12">
-						<div className="mb-6">
-							<Input
-								placeholder="Search courses, skills, or topics..."
-								value={searchQuery}
-								onChange={e => setSearchQuery(e.target.value)}
-								leftIcon={<Search className="w-4 h-4 text-gray-500" />}
-								className="max-w-md bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600"
-							/>
-						</div>
+					{/* Search */}
+					<div className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm border border-primary/20 dark:border-gray-700 rounded-2xl p-6 shadow-xl mb-8">
+						<Input
+							placeholder="Search courses, skills, or topics..."
+							value={searchQuery}
+							onChange={e => setSearchQuery(e.target.value)}
+							leftIcon={<Search className="w-4 h-4 text-gray-500" />}
+							className="max-w-md bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600"
+						/>
+					</div>
 
+					{/* Filters */}
+					<div className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm border border-primary/20 dark:border-gray-700 rounded-2xl p-8 shadow-xl mb-8">
 						<div className="flex flex-wrap gap-6">
 							{/* Difficulty Filter */}
 							<div className="flex flex-wrap gap-2 items-center">
