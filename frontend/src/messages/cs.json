@@ -56,6 +56,31 @@
 		"title": "Přehled",
 		"welcome": "Vítejte zpět!"
 	},
+	"profile": {
+		"title": "Nastavení profilu",
+		"subtitle": "Spravujte informace o vašem účtu a preference",
+		"form": {
+			"name": "Celé jméno",
+			"headline": "Hlavička",
+			"bio": "O mně",
+			"region": "Region",
+			"namePlaceholder": "Zadejte své celé jméno",
+			"headlinePlaceholder": "Zadejte profesionální hlavičku",
+			"bioPlaceholder": "Řekněte nám něco o sobě...",
+			"regionPlaceholder": "Vyberte svůj region",
+			"save": "Uložit změny",
+			"cancel": "Zrušit",
+			"saving": "Ukládání..."
+		},
+		"success": "Profil byl úspěšně aktualizován!",
+		"error": "Nepodařilo se aktualizovat profil. Zkuste to znovu.",
+		"validation": {
+			"nameRequired": "Jméno je povinné",
+			"nameTooLong": "Jméno musí mít méně než 100 znaků",
+			"headlineTooLong": "Hlavička musí mít méně než 200 znaků",
+			"bioTooLong": "Popis musí mít méně než 1000 znaků"
+		}
+	},
 	"skills": {
 		"title": "Dovednosti",
 		"browseSkills": "Procházet dovednosti"

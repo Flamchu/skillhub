@@ -56,6 +56,31 @@
 		"title": "Dashboard",
 		"welcome": "Welcome back!"
 	},
+	"profile": {
+		"title": "Profile Settings",
+		"subtitle": "Manage your account information and preferences",
+		"form": {
+			"name": "Full Name",
+			"headline": "Headline",
+			"bio": "Bio",
+			"region": "Region",
+			"namePlaceholder": "Enter your full name",
+			"headlinePlaceholder": "Enter a professional headline",
+			"bioPlaceholder": "Tell us about yourself...",
+			"regionPlaceholder": "Select your region",
+			"save": "Save Changes",
+			"cancel": "Cancel",
+			"saving": "Saving..."
+		},
+		"success": "Profile updated successfully!",
+		"error": "Failed to update profile. Please try again.",
+		"validation": {
+			"nameRequired": "Name is required",
+			"nameTooLong": "Name must be less than 100 characters",
+			"headlineTooLong": "Headline must be less than 200 characters",
+			"bioTooLong": "Bio must be less than 1000 characters"
+		}
+	},
 	"skills": {
 		"title": "Skills",
 		"browseSkills": "Browse Skills"

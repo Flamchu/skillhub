@@ -54,6 +54,12 @@ export default function DashboardPage() {
 						<span className="text-gray-600 dark:text-gray-300 font-medium">
 							Welcome, <span className="text-primary font-semibold">{profile?.name || user?.email}</span>
 						</span>
+						<Link
+							href="/profile"
+							className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 font-medium transition-colors rounded-lg hover:bg-gray-100/70 dark:hover:bg-gray-800"
+						>
+							Profile
+						</Link>
 						<button
 							onClick={() => {
 								logout();
@@ -86,7 +92,7 @@ export default function DashboardPage() {
 				</div>
 
 				{/* Dashboard Cards */}
-				<div className="grid md:grid-cols-3 gap-6 mb-12">
+				<div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
 					<DashboardCard
 						icon="⚡"
 						title="Your Skills"
@@ -106,6 +112,15 @@ export default function DashboardPage() {
 					/>
 
 					<DashboardCard
+						icon="👤"
+						title="Profile Settings"
+						description="Manage your account information, preferences, and personal details."
+						linkText="Edit Profile"
+						href="/profile"
+						colorScheme="info"
+					/>
+
+					<DashboardCard
 						icon="🎯"
 						title="Skill Assessment"
 						description="Test your knowledge and get insights into your learning progress."
@@ -113,7 +128,7 @@ export default function DashboardPage() {
 						onClick={() => {
 							// Add assessment logic here
 						}}
-						colorScheme="info"
+						colorScheme="primary"
 					/>
 				</div>
 
@@ -129,7 +144,7 @@ export default function DashboardPage() {
 									title="Name"
 									description={profile.name || "No name set"}
 									linkText="Edit Profile"
-									href="/profile/edit"
+									href="/profile"
 									colorScheme="primary"
 								/>
 
@@ -137,8 +152,8 @@ export default function DashboardPage() {
 									icon="📧"
 									title="Email"
 									description={profile.email || "No email set"}
-									linkText="Update Email"
-									href="/profile/edit"
+									linkText="View Profile"
+									href="/profile"
 									colorScheme="success"
 								/>
 
@@ -160,8 +175,8 @@ export default function DashboardPage() {
 										icon="💡"
 										title="Headline"
 										description={profile.headline}
-										linkText="Update Headline"
-										href="/profile/edit"
+										linkText="Edit Profile"
+										href="/profile"
 										colorScheme="info"
 									/>
 								)}
@@ -171,8 +186,8 @@ export default function DashboardPage() {
 										icon="📝"
 										title="Bio"
 										description={profile.bio}
-										linkText="Edit Bio"
-										href="/profile/edit"
+										linkText="Edit Profile"
+										href="/profile"
 										colorScheme="primary"
 									/>
 								)}
@@ -183,7 +198,7 @@ export default function DashboardPage() {
 										title="Complete Your Profile"
 										description="Add a headline and bio to showcase your expertise and interests"
 										linkText="Complete Profile"
-										href="/profile/edit"
+										href="/profile"
 										colorScheme="success"
 									/>
 								)}

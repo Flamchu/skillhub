@@ -104,4 +104,17 @@ export const api = {
 
 	// public stats api (no auth required)
 	getPublicStats: () => http.get("/stats").then(r => r.data),
+
+	// regions api (public)
+	getRegions: () => http.get("/regions").then(r => r.data),
+
+	// profile api (protected)
+	updateProfile: (data: UpdateUserData) => {
+		// get current user from auth and update their profile
+		return api.getMe().then((response: { user?: { id: string } }) => {
+			const userId = response.user?.id;
+			if (!userId) throw new Error("User not authenticated");
+			return api.updateUser(userId, data);
+		});
+	},
 };
