@@ -117,4 +117,8 @@ export const api = {
 			return api.updateUser(userId, data);
 		});
 	},
+
+	// enrollment api (protected)
+	enrollInCourse: (courseId: string) => http.post(`/courses/${courseId}/enroll`).then(r => r.data),
+	getUserEnrollments: (params?: QueryParams) => http.get("/courses/enrollments", { params }).then(r => r.data),
 };

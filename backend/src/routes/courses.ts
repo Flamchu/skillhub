@@ -5,10 +5,80 @@ import { cache, cacheConfigs, invalidateCacheMiddleware } from "../middleware/ca
 import { CACHE_KEYS } from "../config/redis";
 import { prisma } from "../config/database";
 import { YouTubeService } from "../services/youtubeService";
-import { validate, extractSchemas } from "../middleware/validation";
+import { validate, extractSchemas, ValidatedRequest } from "../middleware/validation";
 import { schemas } from "../schemas";
+import { aiSummaryService } from "../services/aiSummaryService";
+import { generateMissingAiSummaries } from "../scripts/generateAiSummaries";
+
+// combined interface for authenticated and validated requests
+interface AuthenticatedValidatedRequest extends AuthenticatedRequest, ValidatedRequest {}
 
 const router = Router();
+
+// get user's enrolled courses (protected)
+router.get("/enrollments", authenticateSupabaseToken, validate(extractSchemas(schemas.getUserEnrollments)), async (req: AuthenticatedValidatedRequest, res: Response) => {
+	try {
+		const userId = req.user?.id;
+
+		if (!userId) {
+			return res.status(401).json({ error: "User not authenticated" });
+		}
+
+		// use validated query data with defaults
+		const { page = 1, limit = 20 } = req.validatedQuery || {};
+		const offset = (Number(page) - 1) * Number(limit);
+
+		const enrollments = await prisma.enrollment.findMany({
+			where: {
+				userId,
+			},
+			include: {
+				course: {
+					include: {
+						tags: {
+							include: {
+								tag: true,
+							},
+						},
+						_count: {
+							select: {
+								lessons: true,
+							},
+						},
+					},
+				},
+			},
+			orderBy: {
+				enrolledAt: "desc",
+			},
+			skip: offset,
+			take: Number(limit),
+		});
+
+		const totalCount = await prisma.enrollment.count({
+			where: {
+				userId,
+			},
+		});
+
+		const totalPages = Math.ceil(totalCount / Number(limit));
+
+		res.json({
+			enrollments,
+			pagination: {
+				page: Number(page),
+				limit: Number(limit),
+				totalCount,
+				totalPages,
+				hasNext: Number(page) < totalPages,
+				hasPrev: Number(page) > 1,
+			},
+		});
+	} catch (error) {
+		console.error("Error fetching user enrollments:", error);
+		res.status(500).json({ error: "Failed to fetch user enrollments" });
+	}
+});
 
 // get courses
 router.get("/", cache(cacheConfigs.coursesList), async (req: Request, res: Response) => {
@@ -224,7 +294,7 @@ router.post("/", authenticateSupabaseToken, invalidateCacheMiddleware([`${CACHE_
 			return res.status(403).json({ error: "Admin access required" });
 		}
 
-		const { title, description, provider, source = "INTERNAL", externalId, url, language = "en", difficulty = "BEGINNER", durationMinutes, rating, isPaid = false, priceCents, tags = [], skills = [] } = req.body;
+		const { title, description, aiSummary, provider, source = "INTERNAL", externalId, url, language = "en", difficulty = "BEGINNER", durationMinutes, rating, isPaid = false, priceCents, tags = [], skills = [] } = req.body;
 
 		// validate
 		if (!title) {
@@ -256,6 +326,7 @@ router.post("/", authenticateSupabaseToken, invalidateCacheMiddleware([`${CACHE_
 			data: {
 				title,
 				description,
+				aiSummary,
 				provider,
 				source,
 				externalId,
@@ -318,7 +389,7 @@ router.patch("/:id", authenticateSupabaseToken, invalidateCacheMiddleware([`${CA
 		}
 
 		const { id } = req.params;
-		const { title, description, provider, source, externalId, url, language, difficulty, durationMinutes, rating, isPaid, priceCents, tags, skills } = req.body;
+		const { title, description, aiSummary, provider, source, externalId, url, language, difficulty, durationMinutes, rating, isPaid, priceCents, tags, skills } = req.body;
 
 		// ensure exists
 		const existingCourse = await prisma.course.findUnique({
@@ -355,6 +426,7 @@ router.patch("/:id", authenticateSupabaseToken, invalidateCacheMiddleware([`${CA
 
 		if (title !== undefined) updateData.title = title;
 		if (description !== undefined) updateData.description = description;
+		if (aiSummary !== undefined) updateData.aiSummary = aiSummary;
 		if (provider !== undefined) updateData.provider = provider;
 		if (source !== undefined) updateData.source = source;
 		if (externalId !== undefined) updateData.externalId = externalId;
@@ -684,6 +756,141 @@ router.patch("/lessons/:lessonId/progress", authenticateSupabaseToken, validate(
 	} catch (error) {
 		console.error("Error updating lesson progress:", error);
 		res.status(500).json({ error: "Failed to update lesson progress" });
+	}
+});
+
+// enroll in a course (protected)
+router.post("/:courseId/enroll", authenticateSupabaseToken, validate(extractSchemas(schemas.enrollCourse)), async (req: AuthenticatedRequest, res: Response) => {
+	try {
+		const { courseId } = req.params;
+		const userId = req.user?.id;
+
+		if (!userId) {
+			return res.status(401).json({ error: "User not authenticated" });
+		}
+
+		// check if course exists
+		const course = await prisma.course.findUnique({
+			where: { id: courseId },
+			select: { id: true, title: true },
+		});
+
+		if (!course) {
+			return res.status(404).json({ error: "Course not found" });
+		}
+
+		// check if already enrolled
+		const existingEnrollment = await prisma.enrollment.findUnique({
+			where: {
+				userId_courseId: {
+					userId,
+					courseId,
+				},
+			},
+		});
+
+		if (existingEnrollment) {
+			return res.status(200).json({
+				message: "Already enrolled in this course",
+				enrollment: existingEnrollment,
+			});
+		}
+
+		// create enrollment
+		const enrollment = await prisma.enrollment.create({
+			data: {
+				userId,
+				courseId,
+			},
+			include: {
+				course: {
+					select: {
+						id: true,
+						title: true,
+						thumbnail: true,
+					},
+				},
+			},
+		});
+
+		res.status(201).json({
+			message: "Successfully enrolled in course",
+			enrollment,
+		});
+	} catch (error) {
+		console.error("Error enrolling in course:", error);
+		res.status(500).json({ error: "Failed to enroll in course" });
+	}
+});
+
+// generate AI summaries for courses (admin only)
+router.post("/generate-summaries", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
+	try {
+		if (req.user?.role !== "ADMIN") {
+			return res.status(403).json({ error: "Admin access required" });
+		}
+
+		console.log(`🤖 Admin ${req.user?.email} initiated AI summary generation`);
+
+		// run the summary generation script in the background
+		generateMissingAiSummaries()
+			.then(() => console.log("✅ AI summary generation completed"))
+			.catch((error) => console.error("❌ AI summary generation failed:", error));
+
+		res.json({
+			message: "AI summary generation started",
+			note: "This process runs in the background. Check server logs for progress.",
+		});
+	} catch (error) {
+		console.error("Error starting AI summary generation:", error);
+		res.status(500).json({ error: "Failed to start AI summary generation" });
+	}
+});
+
+// generate AI summary for specific course (admin only)
+router.post("/:id/generate-summary", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
+	try {
+		if (req.user?.role !== "ADMIN") {
+			return res.status(403).json({ error: "Admin access required" });
+		}
+
+		const { id } = req.params;
+
+		const course = await prisma.course.findUnique({
+			where: { id },
+			select: { id: true, title: true, description: true, aiSummary: true },
+		});
+
+		if (!course) {
+			return res.status(404).json({ error: "Course not found" });
+		}
+
+		if (!course.description) {
+			return res.status(400).json({ error: "Course has no description to summarize" });
+		}
+
+		console.log(`🤖 Admin ${req.user?.email} requested AI summary for: ${course.title}`);
+
+		const aiSummary = await aiSummaryService.generateSummary(course.description);
+
+		if (aiSummary) {
+			await prisma.course.update({
+				where: { id },
+				data: { aiSummary },
+			});
+
+			console.log(`✅ Generated AI summary for: ${course.title}`);
+			res.json({
+				message: "AI summary generated successfully",
+				aiSummary,
+				previousSummary: course.aiSummary,
+			});
+		} else {
+			res.status(500).json({ error: "Failed to generate AI summary" });
+		}
+	} catch (error) {
+		console.error("Error generating AI summary for course:", error);
+		res.status(500).json({ error: "Failed to generate AI summary" });
 	}
 });
 

@@ -6,6 +6,7 @@
 		"build": "tsc",
 		"start": "node ./dist/express.js",
 		"seed": "ts-node ./src/seed.ts",
+		"generate-ai-summaries": "ts-node ./src/scripts/generateAiSummaries.ts",
 		"prisma:migrate:deploy": "prisma migrate deploy",
 		"prisma:generate": "prisma generate"
 	},

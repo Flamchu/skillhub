@@ -23,13 +23,27 @@ export function useCourse(id: string) {
 }
 
 // bookmark course helper (would need backend integration)
-export const bookmarkCourse = async (courseId: string) => {
+export const bookmarkCourse = async (_courseId: string) => {
 	// implementation would make api call to bookmark course
-	console.log("Bookmark course:", courseId);
+	throw new Error("Bookmark functionality not yet implemented");
 };
 
 // remove bookmark helper
-export const removeBookmark = async (courseId: string) => {
+export const removeBookmark = async (_courseId: string) => {
 	// implementation would make api call to remove bookmark
-	console.log("Remove bookmark:", courseId);
+	throw new Error("Remove bookmark functionality not yet implemented");
 };
+
+// enroll in course helper
+export const enrollInCourse = async (courseId: string) => {
+	return api.enrollInCourse(courseId);
+};
+
+// get user enrollments hook
+export function useUserEnrollments() {
+	return useQuery({
+		queryKey: qk.userEnrollments(),
+		queryFn: () => api.getUserEnrollments(),
+		staleTime: 5 * 60 * 1000, // 5 minutes
+	});
+}

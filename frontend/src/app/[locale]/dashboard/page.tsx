@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthProvider";
 import { PageLayout, PageHeader, LoadingState, LanguageSwitcher, GlassCard } from "@/components/ui";
-import { DashboardCard } from "@/components/dashboard";
+import { DashboardCard, EnrolledCourses } from "@/components/dashboard";
 
 export default function DashboardPage() {
 	const tCommon = useTranslations("common");
@@ -138,6 +138,11 @@ export default function DashboardPage() {
 							colorScheme="primary"
 						/>
 					</div>
+				</div>
+
+				{/* Enrolled Courses Section */}
+				<div className="mb-12">
+					<EnrolledCourses limit={6} />
 				</div>
 
 				{/* Profile Section */}

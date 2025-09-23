@@ -10,4 +10,5 @@ export const qk = {
 	test: (id: string) => ["test", id] as const,
 	tests: (filters?: Record<string, unknown>) => ["tests", filters ?? {}] as const,
 	attempt: (id: string) => ["attempt", id] as const,
+	userEnrollments: () => ["user", "enrollments"] as const,
 };

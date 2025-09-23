@@ -214,6 +214,7 @@ export const createCourseSchema = z.object({
 	body: z.object({
 		title: z.string().min(1).max(200),
 		description: z.string().max(2000).optional(),
+		aiSummary: z.string().max(500).optional(), // ai-generated summary
 		url: z.url(),
 		provider: z.string().min(1).max(100),
 		source: z.enum(CourseSource),
@@ -245,6 +246,7 @@ export const updateCourseSchema = z.object({
 	body: z.object({
 		title: z.string().min(1).max(200).optional(),
 		description: z.string().max(2000).optional(),
+		aiSummary: z.string().max(500).optional(), // ai-generated summary
 		url: z.url().optional(),
 		provider: z.string().min(1).max(100).optional(),
 		difficulty: z.enum(CourseDifficulty).optional(),
@@ -307,6 +309,16 @@ export const getCourseProgressSchema = z.object({
 	params: z.object({
 		courseId: uuidSchema,
 	}),
+});
+
+export const enrollCourseSchema = z.object({
+	params: z.object({
+		courseId: uuidSchema,
+	}),
+});
+
+export const getUserEnrollmentsSchema = z.object({
+	query: paginationSchema,
 });
 
 // bookmarks schemas
@@ -482,6 +494,10 @@ export const schemas = {
 	youtubeIngest: youtubeIngestSchema,
 	updateUserProgress: updateUserProgressSchema,
 	getCourseProgress: getCourseProgressSchema,
+
+	// Enrollments
+	enrollCourse: enrollCourseSchema,
+	getUserEnrollments: getUserEnrollmentsSchema,
 
 	// Bookmarks
 	getUserBookmarks: getUserBookmarksSchema,

@@ -2,6 +2,7 @@ import { exec } from "child_process";
 import { promisify } from "util";
 import { prisma } from "../config/database";
 import { CourseSource, CourseDifficulty } from "@prisma/client";
+import { aiSummaryService } from "./aiSummaryService";
 
 const execAsync = promisify(exec);
 
@@ -117,11 +118,23 @@ export class YouTubeService {
 
 		const totalDurationMinutes = Math.round(totalDurationSeconds / 60);
 
+		// prepare description and generate AI summary
+		const description = options.overrides?.description || data.description || `YouTube playlist: ${data.title}`;
+		let aiSummary: string | null = null;
+
+		console.log(`📹 Generating AI summary for playlist: ${data.title}`);
+		try {
+			aiSummary = await aiSummaryService.generateSummary(description);
+		} catch (error) {
+			console.warn("Failed to generate AI summary for playlist, continuing without it:", error);
+		}
+
 		// create course record
 		const course = await prisma.course.create({
 			data: {
 				title: options.overrides?.title || data.title,
-				description: options.overrides?.description || data.description || `YouTube playlist: ${data.title}`,
+				description,
+				aiSummary,
 				provider: data.uploader || "YouTube",
 				source: CourseSource.YOUTUBE,
 				externalId: data.id, // playlist ID
@@ -226,11 +239,23 @@ export class YouTubeService {
 		const durationSeconds = this.parseDuration(data.duration);
 		const durationMinutes = durationSeconds ? Math.round(durationSeconds / 60) : null;
 
+		// prepare description and generate AI summary
+		const description = options.overrides?.description || data.description || `YouTube video: ${data.title}`;
+		let aiSummary: string | null = null;
+
+		console.log(`📹 Generating AI summary for video: ${data.title}`);
+		try {
+			aiSummary = await aiSummaryService.generateSummary(description);
+		} catch (error) {
+			console.warn("Failed to generate AI summary for video, continuing without it:", error);
+		}
+
 		// create course with single lesson
 		const course = await prisma.course.create({
 			data: {
 				title: options.overrides?.title || data.title,
-				description: options.overrides?.description || data.description || `YouTube video: ${data.title}`,
+				description,
+				aiSummary,
 				provider: data.uploader || "YouTube",
 				source: CourseSource.YOUTUBE,
 				externalId: data.id, // video ID

@@ -67,6 +67,7 @@ model User {
   bookmarks       Bookmark[]
   recommendations Recommendation[]
   userProgress    UserProgress[]
+  enrollments     Enrollment[]
   Test            Test[]
 
   @@index([regionId])
@@ -118,6 +119,7 @@ model Course {
   id              String           @id @default(uuid())
   title           String
   description     String?
+  aiSummary       String? // ai-generated summary of the description
   provider        String? // e.g. "udemy", "youtube channel", "internal"
   source          CourseSource     @default(INTERNAL)
   externalId      String? // provider-specific id (youtube playlist id, udemy course id)
@@ -132,6 +134,7 @@ model Course {
   tags            CourseTag[]
   skills          CourseSkill[]
   lessons         Lesson[] // for structured courses with multiple lessons
+  enrollments     Enrollment[]
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
   Bookmark        Bookmark[]
@@ -144,6 +147,25 @@ model Course {
   @@index([language])
   @@index([createdAt])
   @@index([externalId])
+}
+
+model Enrollment {
+  id         String    @id @default(uuid())
+  userId     String
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId   String
+  course     Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  enrolledAt DateTime  @default(now())
+  completedAt DateTime?
+  isCompleted Boolean  @default(false)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@unique([userId, courseId])
+  @@index([userId])
+  @@index([courseId])
+  @@index([enrolledAt])
+  @@index([isCompleted])
 }
 
 model CourseSkill {

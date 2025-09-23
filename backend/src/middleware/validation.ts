@@ -1,6 +1,13 @@
 import { Request, Response, NextFunction } from "express";
 import { z, ZodSchema } from "zod";
 
+// extend Request interface to include validated data
+export interface ValidatedRequest<T = any, U = any, V = any> extends Request {
+	validatedParams?: T;
+	validatedQuery?: U;
+	validatedBody?: V;
+}
+
 // interface for validation schema
 interface ValidationSchema {
 	params?: ZodSchema<any>;
@@ -22,7 +29,7 @@ export class ValidationError extends Error {
 
 // middleware factory that validates request parameters, query, and body using zod schemas
 export const validate = (schema: ValidationSchema) => {
-	return (req: Request, res: Response, next: NextFunction) => {
+	return (req: ValidatedRequest, res: Response, next: NextFunction) => {
 		try {
 			// validate params if schema provided
 			if (schema.params) {
@@ -30,7 +37,7 @@ export const validate = (schema: ValidationSchema) => {
 				if (!result.success) {
 					throw new ValidationError(result.error.issues);
 				}
-				req.params = result.data;
+				req.validatedParams = result.data;
 			}
 
 			// validate query if schema provided
@@ -39,7 +46,7 @@ export const validate = (schema: ValidationSchema) => {
 				if (!result.success) {
 					throw new ValidationError(result.error.issues);
 				}
-				req.query = result.data;
+				req.validatedQuery = result.data;
 			}
 
 			// validate body if schema provided
@@ -48,7 +55,7 @@ export const validate = (schema: ValidationSchema) => {
 				if (!result.success) {
 					throw new ValidationError(result.error.issues);
 				}
-				req.body = result.data;
+				req.validatedBody = result.data;
 			}
 
 			next();
