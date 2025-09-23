@@ -17,10 +17,23 @@ export interface Skill {
 	parentId?: string;
 }
 
+export interface Lesson {
+	id: string;
+	title: string;
+	description?: string;
+	position: number;
+	providerVideoId: string;
+	url: string;
+	durationSeconds: number;
+	thumbnail?: string;
+	createdAt: string;
+}
+
 export interface Course {
 	id: string;
 	title: string;
 	description?: string;
+	aiSummary?: string; // ai-generated summary
 	provider?: string;
 	source: "INTERNAL" | "YOUTUBE" | "UDEMY" | "OTHER";
 	difficulty: "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
@@ -31,8 +44,10 @@ export interface Course {
 	language?: string;
 	url?: string;
 	externalId?: string;
+	thumbnail?: string;
 	createdAt: string;
 	updatedAt: string;
+	lessons?: Lesson[];
 	tags?: {
 		tag: {
 			id: string;
@@ -48,6 +63,7 @@ export interface Course {
 		relevance: number;
 	}[];
 	_count?: {
+		lessons?: number;
 		Bookmark: number;
 		Recommendation: number;
 	};
@@ -160,4 +176,28 @@ export interface DashboardStats {
 
 export interface DashboardStatsResponse {
 	stats: DashboardStats;
+}
+
+export interface Enrollment {
+	id: string;
+	userId: string;
+	courseId: string;
+	enrolledAt: string;
+	completedAt?: string;
+	isCompleted: boolean;
+	createdAt: string;
+	updatedAt: string;
+	course: Course;
+}
+
+export interface EnrollmentsResponse {
+	enrollments: Enrollment[];
+	pagination: {
+		page: number;
+		limit: number;
+		totalCount: number;
+		totalPages: number;
+		hasNext: boolean;
+		hasPrev: boolean;
+	};
 }
