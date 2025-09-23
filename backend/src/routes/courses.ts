@@ -4,6 +4,9 @@ import { AuthenticatedRequest, authenticateSupabaseToken } from "../middleware/s
 import { cache, cacheConfigs, invalidateCacheMiddleware } from "../middleware/cache";
 import { CACHE_KEYS } from "../config/redis";
 import { prisma } from "../config/database";
+import { YouTubeService } from "../services/youtubeService";
+import { validate, extractSchemas } from "../middleware/validation";
+import { schemas } from "../schemas";
 
 const router = Router();
 
@@ -475,6 +478,212 @@ router.delete("/:id", authenticateSupabaseToken, async (req: AuthenticatedReques
 	} catch (error) {
 		console.error("Error deleting course:", error);
 		res.status(500).json({ error: "Failed to delete course" });
+	}
+});
+
+// ===== YOUTUBE INGESTION ENDPOINTS =====
+
+// import youtube playlist or video (admin only)
+router.post("/import/youtube", authenticateSupabaseToken, validate(extractSchemas(schemas.youtubeIngest)), invalidateCacheMiddleware([`${CACHE_KEYS.COURSES_LIST}:*`]), async (req: AuthenticatedRequest, res: Response) => {
+	try {
+		if (req.user?.role !== "ADMIN") {
+			return res.status(403).json({ error: "Admin access required" });
+		}
+
+		const { url, skillIds, tags, difficulty, overrides } = req.body;
+
+		// validate skills exist if provided
+		if (skillIds && skillIds.length > 0) {
+			const existingSkills = await prisma.skill.findMany({
+				where: { id: { in: skillIds } },
+				select: { id: true },
+			});
+
+			if (existingSkills.length !== skillIds.length) {
+				return res.status(400).json({
+					error: "One or more skill IDs are invalid",
+				});
+			}
+		}
+
+		console.log(`📹 Admin ${req.user?.email} initiated YouTube import for: ${url}`);
+
+		// determine if it's a playlist or single video and ingest accordingly
+		const result = await (async () => {
+			try {
+				// try playlist first (yt-dlp will handle single videos in playlists gracefully)
+				return await YouTubeService.ingestPlaylist(url, {
+					skillIds,
+					tags,
+					difficulty,
+					overrides,
+				});
+			} catch (error) {
+				// if playlist fails, try as single video
+				console.log("Playlist ingestion failed, trying single video...");
+				return await YouTubeService.ingestSingleVideo(url, {
+					skillIds,
+					tags,
+					difficulty,
+					overrides,
+				});
+			}
+		})();
+
+		res.status(201).json({
+			message: "YouTube content imported successfully",
+			course: result.course,
+			lessonsCount: result.lessonsCount,
+			type: result.lessonsCount > 1 ? "playlist" : "video",
+		});
+	} catch (error) {
+		console.error("Error importing YouTube content:", error);
+		res.status(500).json({
+			error: "Failed to import YouTube content",
+			details: error instanceof Error ? error.message : "Unknown error",
+		});
+	}
+});
+
+// get course with lessons (enhanced endpoint)
+router.get("/:id/lessons", async (req: Request, res: Response) => {
+	try {
+		const { id } = req.params;
+
+		const course = await prisma.course.findUnique({
+			where: { id },
+			include: {
+				lessons: {
+					orderBy: { position: "asc" },
+					select: {
+						id: true,
+						title: true,
+						description: true,
+						position: true,
+						providerVideoId: true,
+						url: true,
+						durationSeconds: true,
+						thumbnail: true,
+						createdAt: true,
+					},
+				},
+				tags: {
+					include: {
+						tag: {
+							select: {
+								id: true,
+								name: true,
+							},
+						},
+					},
+				},
+				skills: {
+					include: {
+						skill: {
+							select: {
+								id: true,
+								name: true,
+								slug: true,
+							},
+						},
+					},
+				},
+				_count: {
+					select: {
+						lessons: true,
+						Bookmark: true,
+					},
+				},
+			},
+		});
+
+		if (!course) {
+			return res.status(404).json({ error: "Course not found" });
+		}
+
+		res.json({ course });
+	} catch (error) {
+		console.error("Error fetching course lessons:", error);
+		res.status(500).json({ error: "Failed to fetch course lessons" });
+	}
+});
+
+// get user's progress for a course (protected)
+router.get("/:courseId/progress", authenticateSupabaseToken, validate(extractSchemas(schemas.getCourseProgress)), async (req: AuthenticatedRequest, res: Response) => {
+	try {
+		const { courseId } = req.params;
+		const userId = req.user!.id;
+
+		// check if course exists
+		const course = await prisma.course.findUnique({
+			where: { id: courseId },
+			select: { id: true, title: true },
+		});
+
+		if (!course) {
+			return res.status(404).json({ error: "Course not found" });
+		}
+
+		const progress = await YouTubeService.getCourseProgress(userId, courseId);
+
+		res.json({
+			course: {
+				id: course.id,
+				title: course.title,
+			},
+			progress,
+		});
+	} catch (error) {
+		console.error("Error fetching course progress:", error);
+		res.status(500).json({ error: "Failed to fetch course progress" });
+	}
+});
+
+// update user progress for a lesson (protected)
+router.patch("/lessons/:lessonId/progress", authenticateSupabaseToken, validate(extractSchemas(schemas.updateUserProgress)), async (req: AuthenticatedRequest, res: Response) => {
+	try {
+		const { lessonId } = req.params;
+		const userId = req.user!.id;
+		const { completed, progressPercent, watchTimeSeconds } = req.body;
+
+		// check if lesson exists
+		const lesson = await prisma.lesson.findUnique({
+			where: { id: lessonId },
+			select: {
+				id: true,
+				title: true,
+				courseId: true,
+				course: {
+					select: {
+						id: true,
+						title: true,
+					},
+				},
+			},
+		});
+
+		if (!lesson) {
+			return res.status(404).json({ error: "Lesson not found" });
+		}
+
+		const progress = await YouTubeService.updateUserProgress(userId, lessonId, {
+			completed,
+			progressPercent,
+			watchTimeSeconds,
+		});
+
+		res.json({
+			message: "Progress updated successfully",
+			progress,
+			lesson: {
+				id: lesson.id,
+				title: lesson.title,
+				course: lesson.course,
+			},
+		});
+	} catch (error) {
+		console.error("Error updating lesson progress:", error);
+		res.status(500).json({ error: "Failed to update lesson progress" });
 	}
 });
 

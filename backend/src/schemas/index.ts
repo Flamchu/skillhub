@@ -267,6 +267,48 @@ export const updateCourseSchema = z.object({
 	}),
 });
 
+// youtube ingestion schemas
+export const youtubeIngestSchema = z.object({
+	body: z.object({
+		url: z
+			.string()
+			.url({ message: "Valid YouTube URL is required" })
+			.refine(
+				(url) => {
+					const youtubeRegex = /^https?:\/\/(www\.)?(youtube\.com|youtu\.be)\/.+/;
+					return youtubeRegex.test(url);
+				},
+				{ message: "URL must be a valid YouTube URL" }
+			),
+		skillIds: z.array(uuidSchema).optional(),
+		tags: z.array(z.string().min(1).max(50)).max(10).optional(),
+		difficulty: z.enum(CourseDifficulty).optional(),
+		overrides: z
+			.object({
+				title: z.string().min(1).max(200).optional(),
+				description: z.string().max(2000).optional(),
+			})
+			.optional(),
+	}),
+});
+
+export const updateUserProgressSchema = z.object({
+	params: z.object({
+		lessonId: uuidSchema,
+	}),
+	body: z.object({
+		completed: z.boolean().optional(),
+		progressPercent: z.number().int().min(0).max(100).optional(),
+		watchTimeSeconds: z.number().int().min(0).optional(),
+	}),
+});
+
+export const getCourseProgressSchema = z.object({
+	params: z.object({
+		courseId: uuidSchema,
+	}),
+});
+
 // bookmarks schemas
 export const getUserBookmarksSchema = z.object({
 	params: z.object({
@@ -435,6 +477,11 @@ export const schemas = {
 	getCourse: getCourseSchema,
 	createCourse: createCourseSchema,
 	updateCourse: updateCourseSchema,
+
+	// YouTube Ingestion
+	youtubeIngest: youtubeIngestSchema,
+	updateUserProgress: updateUserProgressSchema,
+	getCourseProgress: getCourseProgressSchema,
 
 	// Bookmarks
 	getUserBookmarks: getUserBookmarksSchema,

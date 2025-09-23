@@ -66,6 +66,7 @@ model User {
   testAttempts    TestAttempt[]
   bookmarks       Bookmark[]
   recommendations Recommendation[]
+  userProgress    UserProgress[]
   Test            Test[]
 
   @@index([regionId])
@@ -119,7 +120,7 @@ model Course {
   description     String?
   provider        String? // e.g. "udemy", "youtube channel", "internal"
   source          CourseSource     @default(INTERNAL)
-  externalId      String? // provider-specific id (youtube video id, udemy course id)
+  externalId      String? // provider-specific id (youtube playlist id, udemy course id)
   url             String?
   language        String?          @default("en")
   difficulty      CourseDifficulty @default(BEGINNER)
@@ -127,8 +128,10 @@ model Course {
   rating          Float?
   isPaid          Boolean          @default(false)
   priceCents      Int? // prices stored as cents
+  thumbnail       String? // course thumbnail url
   tags            CourseTag[]
   skills          CourseSkill[]
+  lessons         Lesson[] // for structured courses with multiple lessons
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
   Bookmark        Bookmark[]
@@ -140,6 +143,7 @@ model Course {
   @@index([rating])
   @@index([language])
   @@index([createdAt])
+  @@index([externalId])
 }
 
 model CourseSkill {
@@ -275,4 +279,46 @@ model SkillMarketStat {
   updatedAt      DateTime @updatedAt
 
   @@unique([skillId, regionId])
+}
+
+model Lesson {
+  id             String         @id @default(uuid())
+  courseId       String
+  course         Course         @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  title          String
+  description    String?
+  position       Int // order within course
+  providerVideoId String? // youtube video id for youtube courses
+  url            String? // direct video url
+  durationSeconds Int? // lesson duration in seconds
+  thumbnail      String? // lesson thumbnail url
+  isCompleted    Boolean        @default(false) // for tracking completion status
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  userProgress   UserProgress[]
+
+  @@index([courseId])
+  @@index([position])
+  @@index([providerVideoId])
+}
+
+model UserProgress {
+  id             String   @id @default(uuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lessonId       String
+  lesson         Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  completed      Boolean  @default(false)
+  progressPercent Int?    @default(0) // 0-100 for partial progress tracking
+  watchTimeSeconds Int?   @default(0) // time spent watching/studying
+  lastAccessedAt DateTime @default(now())
+  completedAt    DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([userId, lessonId])
+  @@index([userId])
+  @@index([lessonId])
+  @@index([completed])
+  @@index([lastAccessedAt])
 }
