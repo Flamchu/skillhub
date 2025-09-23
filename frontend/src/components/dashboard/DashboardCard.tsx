@@ -10,12 +10,22 @@ interface DashboardCardProps {
 	href?: string;
 	onClick?: () => void;
 	colorScheme: "primary" | "success" | "info";
+	size?: "default" | "compact";
 }
 
 /**
  * Dashboard navigation card component with gradient styling
  */
-export function DashboardCard({ icon, title, description, linkText, href, onClick, colorScheme }: DashboardCardProps) {
+export function DashboardCard({
+	icon,
+	title,
+	description,
+	linkText,
+	href,
+	onClick,
+	colorScheme,
+	size = "default",
+}: DashboardCardProps) {
 	const colorClasses = {
 		primary: {
 			bg: "bg-gradient-to-br from-primary/5 to-purple/5 dark:from-primary/10 dark:to-purple/10",
@@ -45,22 +55,38 @@ export function DashboardCard({ icon, title, description, linkText, href, onClic
 
 	const colors = colorClasses[colorScheme];
 
+	// size-specific styling
+	const sizeClasses = {
+		default: {
+			container: "p-6 min-h-[160px] rounded-2xl",
+			iconSize: "p-3 text-2xl",
+			titleSize: "text-lg",
+		},
+		compact: {
+			container: "p-4 min-h-[120px] rounded-xl",
+			iconSize: "p-2 text-xl",
+			titleSize: "text-base",
+		},
+	};
+
+	const sizing = sizeClasses[size];
+
 	const content = (
 		<div
-			className={`group ${colors.bg} ${colors.border} ${colors.hover} backdrop-blur-sm rounded-2xl border p-6 hover:scale-105 transition-all duration-300 cursor-pointer`}
+			className={`group ${colors.bg} ${colors.border} ${colors.hover} backdrop-blur-sm border ${sizing.container} hover:scale-105 transition-all duration-300 cursor-pointer h-full flex flex-col`}
 		>
-			<div className="flex items-start space-x-4">
-				<div className={`${colors.iconBg} p-3 rounded-xl text-white shadow-lg`}>
-					<span className="text-2xl">{icon}</span>
+			<div className="flex items-start space-x-4 flex-1">
+				<div className={`${colors.iconBg} ${sizing.iconSize} rounded-xl text-white shadow-lg flex-shrink-0`}>
+					<span>{icon}</span>
 				</div>
-				<div className="flex-1 min-w-0">
+				<div className="flex-1 min-w-0 flex flex-col h-full">
 					<h3
-						className={`text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 ${colors.titleHover} transition-colors`}
+						className={`${sizing.titleSize} font-semibold text-gray-900 dark:text-gray-100 mb-2 ${colors.titleHover} transition-colors`}
 					>
 						{title}
 					</h3>
-					<p className="text-gray-600 dark:text-gray-300 text-sm mb-4 leading-relaxed">{description}</p>
-					<span className={`${colors.linkColor} text-sm font-medium group-hover:underline`}>{linkText} →</span>
+					<p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed flex-1">{description}</p>
+					<span className={`${colors.linkColor} text-sm font-medium group-hover:underline mt-4`}>{linkText} →</span>
 				</div>
 			</div>
 		</div>
@@ -71,7 +97,7 @@ export function DashboardCard({ icon, title, description, linkText, href, onClic
 	}
 
 	return (
-		<button onClick={onClick} className="w-full text-left">
+		<button onClick={onClick} className="w-full text-left h-full">
 			{content}
 		</button>
 	);

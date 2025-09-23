@@ -92,44 +92,52 @@ export default function DashboardPage() {
 				</div>
 
 				{/* Dashboard Cards */}
-				<div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-					<DashboardCard
-						icon="⚡"
-						title="Your Skills"
-						description="Track and improve your current skill levels with personalized recommendations."
-						linkText="View All Skills"
-						href="/skills"
-						colorScheme="primary"
-					/>
+				<div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 items-stretch">
+					<div className="h-full">
+						<DashboardCard
+							icon="⚡"
+							title="Your Skills"
+							description="Track and improve your current skill levels with personalized recommendations."
+							linkText="View All Skills"
+							href="/skills"
+							colorScheme="primary"
+						/>
+					</div>
 
-					<DashboardCard
-						icon="📚"
-						title="Recommended Courses"
-						description="Discover curated courses tailored to your learning goals and interests."
-						linkText="Explore Courses"
-						href="/courses"
-						colorScheme="success"
-					/>
+					<div className="h-full">
+						<DashboardCard
+							icon="📚"
+							title="Recommended Courses"
+							description="Discover curated courses tailored to your learning goals and interests."
+							linkText="Explore Courses"
+							href="/courses"
+							colorScheme="success"
+						/>
+					</div>
 
-					<DashboardCard
-						icon="👤"
-						title="Profile Settings"
-						description="Manage your account information, preferences, and personal details."
-						linkText="Edit Profile"
-						href="/profile"
-						colorScheme="info"
-					/>
+					<div className="h-full">
+						<DashboardCard
+							icon="👤"
+							title="Profile Settings"
+							description="Manage your account information, preferences, and personal details."
+							linkText="Edit Profile"
+							href="/profile"
+							colorScheme="info"
+						/>
+					</div>
 
-					<DashboardCard
-						icon="🎯"
-						title="Skill Assessment"
-						description="Test your knowledge and get insights into your learning progress."
-						linkText="Start Assessment"
-						onClick={() => {
-							// Add assessment logic here
-						}}
-						colorScheme="primary"
-					/>
+					<div className="h-full">
+						<DashboardCard
+							icon="🎯"
+							title="Skill Assessment"
+							description="Test your knowledge and get insights into your learning progress."
+							linkText="Start Assessment"
+							onClick={() => {
+								// Add assessment logic here
+							}}
+							colorScheme="primary"
+						/>
+					</div>
 				</div>
 
 				{/* Profile Section */}
@@ -138,7 +146,7 @@ export default function DashboardPage() {
 						<PageHeader title="Profile Overview" description="Your learning profile and achievements" centered />
 
 						<div className="grid md:grid-cols-2 gap-6">
-							<div className="space-y-6 space-x-2">
+							<div className="space-y-6 flex flex-col">
 								<DashboardCard
 									icon="👤"
 									title="Name"
@@ -146,8 +154,8 @@ export default function DashboardPage() {
 									linkText="Edit Profile"
 									href="/profile"
 									colorScheme="primary"
-								/>
-
+									size="compact"
+								/>{" "}
 								<DashboardCard
 									icon="📧"
 									title="Email"
@@ -155,21 +163,22 @@ export default function DashboardPage() {
 									linkText="View Profile"
 									href="/profile"
 									colorScheme="success"
-								/>
-
+									size="compact"
+								/>{" "}
 								<DashboardCard
 									icon="🎭"
 									title="Role"
 									description={`You are a ${profile.role.toLowerCase()}`}
 									linkText="View Permissions"
 									onClick={() => {
-										// Add role info logic here
+										// add role info logic here
 									}}
 									colorScheme="info"
+									size="compact"
 								/>
 							</div>
 
-							<div className="space-y-6 space-x-2">
+							<div className="space-y-6 flex flex-col">
 								{profile.headline && (
 									<DashboardCard
 										icon="💡"
@@ -178,6 +187,7 @@ export default function DashboardPage() {
 										linkText="Edit Profile"
 										href="/profile"
 										colorScheme="info"
+										size="compact"
 									/>
 								)}
 
@@ -189,6 +199,7 @@ export default function DashboardPage() {
 										linkText="Edit Profile"
 										href="/profile"
 										colorScheme="primary"
+										size="compact"
 									/>
 								)}
 
@@ -200,6 +211,7 @@ export default function DashboardPage() {
 										linkText="Complete Profile"
 										href="/profile"
 										colorScheme="success"
+										size="compact"
 									/>
 								)}
 							</div>
