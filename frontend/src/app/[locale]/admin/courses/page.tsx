@@ -6,8 +6,8 @@ import { api } from "@/lib/http";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { PageLayout, PageHeader, GlassCard, LoadingState, ErrorState } from "@/components/ui";
-import { CourseCard } from "@/components/admin";
-import { Plus, Search, BookOpen } from "lucide-react";
+import { CourseCard, YouTubeImportModal } from "@/components/admin";
+import { Plus, Search, BookOpen, Youtube } from "lucide-react";
 import Link from "next/link";
 import type { CourseFilters } from "@/types";
 
@@ -17,6 +17,7 @@ export default function AdminCoursesPage() {
 	const [selectedDifficulty, setSelectedDifficulty] = useState<CourseFilters["difficulty"] | "all">("all");
 	const [currentPage, setCurrentPage] = useState(1);
 	const [deletingId, setDeletingId] = useState<string | null>(null);
+	const [showYouTubeImport, setShowYouTubeImport] = useState(false);
 
 	// build filters
 	const filters: CourseFilters = {
@@ -49,6 +50,11 @@ export default function AdminCoursesPage() {
 		}
 	};
 
+	const handleYouTubeImportSuccess = () => {
+		setShowYouTubeImport(false);
+		refetch(); // Refresh the course list
+	};
+
 	const sources = ["all", "INTERNAL", "YOUTUBE", "UDEMY", "OTHER"] as const;
 	const difficulties = ["all", "BEGINNER", "INTERMEDIATE", "ADVANCED"] as const;
 
@@ -58,12 +64,23 @@ export default function AdminCoursesPage() {
 				title="Course Management"
 				description="Manage all courses on your platform"
 				action={
-					<Link href="/admin/courses/new">
-						<Button className="bg-gradient-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
-							<Plus className="h-4 w-4 mr-2" />
-							Add Course
+					<div className="flex gap-3">
+						<Button
+							onClick={() => setShowYouTubeImport(true)}
+							variant="ghost"
+							size="sm"
+							className="bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 shadow-sm hover:shadow-md transition-all duration-200"
+						>
+							<Youtube className="h-4 w-4 mr-2" />
+							YouTube Import
 						</Button>
-					</Link>
+						<Link href="/admin/courses/new">
+							<Button className="bg-gradient-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
+								<Plus className="h-4 w-4 mr-2" />
+								Add Course
+							</Button>
+						</Link>
+					</div>
 				}
 			/>
 
@@ -175,16 +192,33 @@ export default function AdminCoursesPage() {
 									? "Try adjusting your search criteria."
 									: "Get started by creating your first course."}
 							</p>
-							<Link href="/admin/courses/new">
-								<Button className="bg-gradient-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
-									<Plus className="h-4 w-4 mr-2" />
-									Add Course
+							<div className="flex gap-3 justify-center">
+								<Button
+									onClick={() => setShowYouTubeImport(true)}
+									variant="ghost"
+									className="bg-red-50 hover:bg-red-100 text-red-600 border border-red-200"
+								>
+									<Youtube className="h-4 w-4 mr-2" />
+									Import from YouTube
 								</Button>
-							</Link>
+								<Link href="/admin/courses/new">
+									<Button className="bg-gradient-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
+										<Plus className="h-4 w-4 mr-2" />
+										Add Course
+									</Button>
+								</Link>
+							</div>
 						</GlassCard>
 					)}
 				</div>
 			)}
+
+			{/* YouTube Import Modal */}
+			<YouTubeImportModal
+				isOpen={showYouTubeImport}
+				onClose={() => setShowYouTubeImport(false)}
+				onSuccess={handleYouTubeImportSuccess}
+			/>
 		</PageLayout>
 	);
 }

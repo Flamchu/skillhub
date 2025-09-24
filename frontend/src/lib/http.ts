@@ -28,7 +28,7 @@ http.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
 	if (!config.headers) {
 		config.headers = new AxiosHeaders();
 	} else if (!(config.headers instanceof AxiosHeaders)) {
-		// Convert plain object to AxiosHeaders
+		// convert plain object to AxiosHeaders
 		config.headers = new AxiosHeaders(config.headers as Record<string, string>);
 	}
 	(config.headers as AxiosHeaders).set("X-Request-Id", nanoid());
@@ -121,4 +121,10 @@ export const api = {
 	// enrollment api (protected)
 	enrollInCourse: (courseId: string) => http.post(`/courses/${courseId}/enroll`).then(r => r.data),
 	getUserEnrollments: (params?: QueryParams) => http.get("/courses/enrollments", { params }).then(r => r.data),
+
+	// youtube import api (admin)
+	importYouTubeCourse: (data: import("@/types").YouTubeImportData) =>
+		http.post("/courses/import/youtube", data).then(r => r.data),
+	generateCourseSummaries: () => http.post("/courses/generate-summaries").then(r => r.data),
+	generateCourseSummary: (courseId: string) => http.post(`/courses/${courseId}/generate-summary`).then(r => r.data),
 };

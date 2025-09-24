@@ -141,6 +141,24 @@ export interface UpdateUserData {
 	role?: "USER" | "INSTRUCTOR" | "ADMIN";
 }
 
+// YouTube import types
+export interface YouTubeImportData {
+	url: string;
+	skillIds?: string[];
+	tags?: string[];
+	difficulty?: "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
+	overrides?: {
+		title?: string;
+		description?: string;
+	};
+}
+
+export interface YouTubeImportResponse {
+	course: Course;
+	lessonsCount: number;
+	message: string;
+}
+
 export interface UsersResponse {
 	users: UserProfile[];
 	pagination: {
