@@ -208,6 +208,7 @@ router.get("/", cache(cacheConfigs.coursesList), async (req: Request, res: Respo
 						select: {
 							Bookmark: true,
 							Recommendation: true,
+							enrollments: true,
 						},
 					},
 				},
@@ -271,6 +272,7 @@ router.get("/:id", async (req: Request, res: Response) => {
 					select: {
 						Bookmark: true,
 						Recommendation: true,
+						enrollments: true,
 					},
 				},
 			},
@@ -519,6 +521,7 @@ router.delete("/:id", authenticateSupabaseToken, async (req: AuthenticatedReques
 					select: {
 						Bookmark: true,
 						Recommendation: true,
+						enrollments: true,
 					},
 				},
 			},
@@ -664,6 +667,7 @@ router.get("/:id/lessons", async (req: Request, res: Response) => {
 					select: {
 						lessons: true,
 						Bookmark: true,
+						enrollments: true,
 					},
 				},
 			},

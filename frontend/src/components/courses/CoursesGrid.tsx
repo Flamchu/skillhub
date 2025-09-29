@@ -142,10 +142,10 @@ export function CoursesGrid({
 											</span>
 										</div>
 									)}
-									{course._count && (
+									{course._count && course._count.enrollments !== undefined && (
 										<div className="flex items-center gap-1">
 											<Users className="w-4 h-4" />
-											<span>{course._count.Bookmark}</span>
+											<span>{course._count.enrollments} enrolled</span>
 										</div>
 									)}
 								</div>

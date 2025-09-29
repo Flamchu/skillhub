@@ -136,10 +136,31 @@ export function CourseLessons({
 	onTimestampSelect,
 }: CourseLessonsProps) {
 	const [activeTab, setActiveTab] = useState<"lessons" | "timestamps">("lessons");
+	const [showAllLessons, setShowAllLessons] = useState(false);
 
-	const currentLesson = selectedLessonId && course.lessons ? course.lessons.find(l => l.id === selectedLessonId) : null;
+	// sort lessons once
+	const sortedLessons = course.lessons ? [...course.lessons].sort((a, b) => a.position - b.position) : [];
+
+	const currentLesson = selectedLessonId && sortedLessons ? sortedLessons.find(l => l.id === selectedLessonId) : null;
 	const timestamps = currentLesson ? parseYouTubeTimestamps(currentLesson.description || course.description || "") : [];
 	const hasMultipleLessons = course.lessons ? course.lessons.length > 1 : false;
+	const hasHiddenLessons = sortedLessons.length > 7;
+
+	function getVisibleLessons() {
+		if (showAllLessons || sortedLessons.length <= 7) return sortedLessons;
+
+		const selectedIndex = sortedLessons.findIndex(l => l.id === selectedLessonId);
+		if (selectedIndex === -1) return sortedLessons.slice(0, 7);
+
+		const middle = 3; // 3 before, current, 3 after
+		let start = selectedIndex - middle;
+		if (start < 0) start = 0;
+		if (start + 7 > sortedLessons.length) start = Math.max(0, sortedLessons.length - 7);
+
+		return sortedLessons.slice(start, start + 7);
+	}
+
+	const visibleLessons = getVisibleLessons();
 
 	// function to get visible timestamps (7 total: 3 before, current, 3 after)
 	function getVisibleTimestamps() {
@@ -226,16 +247,32 @@ export function CourseLessons({
 			<div className="flex-1 overflow-auto p-6">
 				{activeTab === "lessons" && hasMultipleLessons && (
 					<div className="space-y-2">
-						{course.lessons
-							?.sort((a, b) => a.position - b.position)
-							.map(lesson => (
-								<LessonItem
-									key={lesson.id}
-									lesson={lesson}
-									isActive={selectedLessonId === lesson.id}
-									onClick={() => onLessonSelect(lesson.id)}
-								/>
-							))}
+						{/* show a small indicator when we're not showing all lessons */}
+						{hasHiddenLessons && !showAllLessons && (
+							<div className="text-xs text-foreground-muted text-center py-2 border-b border-border">
+								Showing {visibleLessons.length} of {sortedLessons.length} lessons
+							</div>
+						)}
+
+						{visibleLessons.map(lesson => (
+							<LessonItem
+								key={lesson.id}
+								lesson={lesson}
+								isActive={selectedLessonId === lesson.id}
+								onClick={() => onLessonSelect(lesson.id)}
+							/>
+						))}
+
+						{hasHiddenLessons && (
+							<div className="pt-3 text-center">
+								<button
+									onClick={() => setShowAllLessons(prev => !prev)}
+									className="text-sm text-foreground-muted hover:text-foreground"
+								>
+									{showAllLessons ? `Show less` : `Show all (${sortedLessons.length})`}
+								</button>
+							</div>
+						)}
 					</div>
 				)}
 

@@ -66,6 +66,7 @@ export interface Course {
 		lessons?: number;
 		Bookmark: number;
 		Recommendation: number;
+		enrollments: number;
 	};
 }
 

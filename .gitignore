@@ -5,6 +5,7 @@ node_modules/
 
 # Github
 .github/*
+WARP.md
 
 # Next.js
 .next/*
