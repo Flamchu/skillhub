@@ -106,35 +106,33 @@ export default function DashboardPage() {
 
 					<div className="h-full">
 						<DashboardCard
-							icon="📚"
-							title="Recommended Courses"
-							description="Discover curated courses tailored to your learning goals and interests."
-							linkText="Explore Courses"
-							href="/courses"
+							icon="🎯"
+							title="Personalized Recommendations"
+							description="AI-powered course recommendations based on your skills and learning path."
+							linkText="View Recommendations"
+							href="/courses/recommended"
 							colorScheme="success"
 						/>
 					</div>
 
 					<div className="h-full">
 						<DashboardCard
-							icon="👤"
-							title="Profile Settings"
-							description="Manage your account information, preferences, and personal details."
-							linkText="Edit Profile"
-							href="/profile"
+							icon="�"
+							title="Browse All Courses"
+							description="Explore our complete catalog of courses across all skill levels and topics."
+							linkText="Browse Courses"
+							href="/courses"
 							colorScheme="info"
 						/>
 					</div>
 
 					<div className="h-full">
 						<DashboardCard
-							icon="🎯"
-							title="Skill Assessment"
-							description="Test your knowledge and get insights into your learning progress."
-							linkText="Start Assessment"
-							onClick={() => {
-								// Add assessment logic here
-							}}
+							icon="👤"
+							title="Enhanced Profile"
+							description="Manage your profile, generate AI skills, and track your learning journey."
+							linkText="View Profile"
+							href="/profile"
 							colorScheme="primary"
 						/>
 					</div>
@@ -143,6 +141,78 @@ export default function DashboardPage() {
 				{/* Enrolled Courses Section */}
 				<div className="mb-12">
 					<EnrolledCourses limit={6} />
+				</div>
+
+				{/* Quick Recommendations Section */}
+				<div className="mb-12">
+					<GlassCard padding="lg" hover={false}>
+						<div className="flex items-center justify-between mb-6">
+							<div>
+								<h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">🎯 Recommended For You</h2>
+								<p className="text-gray-600 dark:text-gray-300 mt-1">
+									Courses tailored to your skills and learning path
+								</p>
+							</div>
+							<Link
+								href="/courses/recommended"
+								className="px-6 py-3 bg-gradient-to-r from-primary to-purple text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-200 hover:scale-105"
+							>
+								View All Recommendations
+							</Link>
+						</div>
+
+						<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+							<DashboardCard
+								icon="🚀"
+								title="Advanced JavaScript"
+								description="Take your JavaScript skills to the next level with advanced concepts and patterns."
+								linkText="Enroll Now"
+								href="/courses/advanced-javascript"
+								colorScheme="primary"
+								size="compact"
+							/>
+							<DashboardCard
+								icon="⚛️"
+								title="React Mastery"
+								description="Master React with hooks, context, and modern development practices."
+								linkText="Learn More"
+								href="/courses/react-mastery"
+								colorScheme="success"
+								size="compact"
+							/>
+							<DashboardCard
+								icon="🎨"
+								title="UI/UX Design Fundamentals"
+								description="Learn design principles and create beautiful, user-friendly interfaces."
+								linkText="Start Learning"
+								href="/courses/ui-ux-design"
+								colorScheme="info"
+								size="compact"
+							/>
+						</div>
+
+						<div className="mt-6 p-4 bg-gradient-to-r from-primary/10 to-purple/10 rounded-lg border border-primary/20">
+							<div className="flex items-center space-x-3">
+								<div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+									<span className="text-white font-bold text-sm">AI</span>
+								</div>
+								<div className="flex-1">
+									<p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+										Want more personalized recommendations?
+									</p>
+									<p className="text-xs text-gray-600 dark:text-gray-300">
+										Use our AI skill generator to get courses tailored to your goals
+									</p>
+								</div>
+								<Link
+									href="/profile?tab=ai-skills"
+									className="px-4 py-2 text-primary hover:bg-primary/10 rounded-lg transition-colors text-sm font-medium"
+								>
+									Try AI Generator
+								</Link>
+							</div>
+						</div>
+					</GlassCard>
 				</div>
 
 				{/* Profile Section */}

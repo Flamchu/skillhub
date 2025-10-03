@@ -5,7 +5,13 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthProvider";
 import { useCourses, enrollInCourse } from "@/lib/courses";
 import { Footer } from "@/components/landing";
-import { CoursesNavigation, CoursesHero, CoursesFilters, CoursesGrid } from "@/components/courses";
+import {
+	CoursesNavigation,
+	CoursesHero,
+	CoursesFilters,
+	CoursesGrid,
+	RecommendationsStrip,
+} from "@/components/courses";
 import type { CourseFilters } from "@/types";
 
 export default function CoursesPage() {
@@ -95,6 +101,7 @@ export default function CoursesPage() {
 			<main className="px-6 py-20">
 				<div className="max-w-7xl mx-auto">
 					<CoursesHero />
+					<RecommendationsStrip />
 					<CoursesFilters
 						searchQuery={searchQuery}
 						setSearchQuery={setSearchQuery}

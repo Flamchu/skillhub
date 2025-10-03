@@ -7,8 +7,8 @@
 		"frontend"
 	],
 	"scripts": {
-		"dev": "yarn workspaces foreach -pi run dev",
-		"build": "yarn workspaces foreach -t run build",
+		"dev": "yarn workspaces foreach --all --parallel --interlaced run dev",
+		"build": "yarn workspaces foreach --all --topological run build",
 		"backend:dev": "yarn workspace backend run dev",
 		"frontend:dev": "yarn workspace frontend run dev",
 		"backend:build": "yarn workspace backend run build",

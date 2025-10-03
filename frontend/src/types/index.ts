@@ -101,6 +101,45 @@ export interface CourseFilters {
 
 export interface Recommendation {
 	id: string;
+	userId: string;
+	skillId?: string;
+	courseId?: string;
+	algorithm: "RULES" | "CONTENT_BASED" | "COLLAB_FILTER" | "HYBRID";
+	score: number;
+	meta?: {
+		reasons?: string[];
+		algorithm?: string;
+	};
+	createdAt: string;
+	skill?: Skill;
+	course?: Course;
+}
+
+export interface RecommendationsResponse {
+	recommendations: Recommendation[];
+	pagination: {
+		currentPage: number;
+		totalPages: number;
+		totalCount: number;
+		hasNext: boolean;
+		hasPrev: boolean;
+	};
+}
+
+export interface AISkillSuggestion {
+	skill: Skill;
+	suggestedProficiency: "NONE" | "BASIC" | "INTERMEDIATE" | "ADVANCED" | "EXPERT";
+	reason: string;
+}
+
+export interface AISkillsResponse {
+	message: string;
+	skills: AISkillSuggestion[];
+	prompt: string;
+}
+
+export interface Recommendation {
+	id: string;
 	algorithm: "RULES" | "CONTENT_BASED" | "COLLAB_FILTER" | "HYBRID";
 	score: number;
 }

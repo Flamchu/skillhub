@@ -13,7 +13,8 @@ const EnvSchema = z.object({
 	SUPABASE_SERVICE_ROLE_KEY: z.string().optional(),
 	SUPABASE_ANON_KEY: z.string().optional(),
 	SUPABASE_DISABLED: z.enum(["true", "false"]).optional(),
-	HUGGINGFACE_API_KEY: z.string().optional(), // for AI summarization (optional, will use public API if not provided)
+	LOCAL_AI_SERVICE_URL: z.string().optional(), // local ai service url
+	AI_SERVICE_ENABLED: z.enum(["true", "false"]).optional(), // enable/disable ai service
 	REDIS_ENABLED: z.string().optional(),
 	REDIS_HOST: z.string().optional(),
 	REDIS_PORT: z.string().optional(),

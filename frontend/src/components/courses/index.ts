@@ -7,3 +7,4 @@ export { CourseNavigation } from "./CourseNavigation";
 export { CourseHeader } from "./CourseHeader";
 export { VideoPlayer } from "./CourseVideoPlayer";
 export { CourseLessons } from "./CourseLessons";
+export { RecommendationsStrip } from "./RecommendationsStrip";

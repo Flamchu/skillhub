@@ -1,14 +1,306 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
+model User {
+  id              String           @id @default(uuid())
+  name            String?
+  email           String?          @unique
+  bio             String?
+  createdAt       DateTime         @default(now())
+  headline        String?
+  regionId        String?
+  role            Role             @default(USER)
+  updatedAt       DateTime         @updatedAt
+  supabaseId      String           @unique
+  bookmarks       Bookmark[]
+  enrollments     Enrollment[]
+  recommendations Recommendation[]
+  Test            Test[]
+  testAttempts    TestAttempt[]
+  region          Region?          @relation(fields: [regionId], references: [id])
+  userProgress    UserProgress[]
+  skills          UserSkill[]
+
+  @@index([regionId])
+  @@index([supabaseId])
 }
 
-// enums
+model Skill {
+  id              String            @id @default(uuid())
+  name            String            @unique
+  createdAt       DateTime          @default(now())
+  description     String?
+  parentId        String?
+  slug            String            @unique
+  updatedAt       DateTime          @updatedAt
+  courses         CourseSkill[]
+  Recommendation  Recommendation[]
+  parent          Skill?            @relation("SkillParent", fields: [parentId], references: [id])
+  children        Skill[]           @relation("SkillParent")
+  SkillMarketStat SkillMarketStat[]
+  tests           Test[]
+  UserSkill       UserSkill[]
+
+  @@index([parentId])
+  @@index([name])
+  @@index([slug])
+}
+
+model UserSkill {
+  id            String            @id @default(uuid())
+  userId        String
+  skillId       String
+  createdAt     DateTime          @default(now())
+  lastPracticed DateTime?
+  proficiency   ProficiencyLevel  @default(BASIC)
+  progress      Int               @default(0)
+  targetLevel   ProficiencyLevel?
+  updatedAt     DateTime          @updatedAt
+  skill         Skill             @relation(fields: [skillId], references: [id])
+  user          User              @relation(fields: [userId], references: [id])
+
+  @@unique([userId, skillId])
+  @@index([skillId])
+  @@index([proficiency])
+  @@index([progress])
+  @@index([lastPracticed])
+}
+
+model Course {
+  id              String           @id @default(uuid())
+  title           String
+  url             String?
+  createdAt       DateTime         @default(now())
+  description     String?
+  difficulty      CourseDifficulty @default(BEGINNER)
+  durationMinutes Int?
+  externalId      String?
+  isPaid          Boolean          @default(false)
+  language        String?          @default("en")
+  priceCents      Int?
+  provider        String?
+  rating          Float?
+  updatedAt       DateTime         @updatedAt
+  source          CourseSource     @default(INTERNAL)
+  thumbnail       String?
+  aiSummary       String?
+  Bookmark        Bookmark[]
+  skills          CourseSkill[]
+  tags            CourseTag[]
+  enrollments     Enrollment[]
+  lessons         Lesson[]
+  Recommendation  Recommendation[]
+
+  @@index([provider, source])
+  @@index([difficulty])
+  @@index([isPaid])
+  @@index([rating])
+  @@index([language])
+  @@index([createdAt])
+  @@index([externalId])
+}
+
+model Enrollment {
+  id          String    @id @default(uuid())
+  userId      String
+  courseId    String
+  enrolledAt  DateTime  @default(now())
+  completedAt DateTime?
+  isCompleted Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  course      Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+  @@index([userId])
+  @@index([courseId])
+  @@index([enrolledAt])
+  @@index([isCompleted])
+}
+
+model CourseSkill {
+  id        String @id @default(uuid())
+  courseId  String
+  skillId   String
+  relevance Int    @default(50)
+  course    Course @relation(fields: [courseId], references: [id])
+  skill     Skill  @relation(fields: [skillId], references: [id])
+
+  @@unique([courseId, skillId])
+  @@index([skillId])
+}
+
+model Tag {
+  id      String      @id @default(uuid())
+  name    String      @unique
+  courses CourseTag[]
+}
+
+model CourseTag {
+  id       String @id @default(uuid())
+  courseId String
+  tagId    String
+  course   Course @relation(fields: [courseId], references: [id])
+  tag      Tag    @relation(fields: [tagId], references: [id])
+
+  @@unique([courseId, tagId])
+}
+
+model Test {
+  id             String            @id @default(uuid())
+  title          String
+  skillId        String?
+  difficulty     CourseDifficulty?
+  totalQuestions Int?
+  published      Boolean           @default(true)
+  createdById    String?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  createdBy      User?             @relation(fields: [createdById], references: [id])
+  skill          Skill?            @relation(fields: [skillId], references: [id])
+  TestAttempt    TestAttempt[]
+  questions      TestQuestion[]
+}
+
+model TestQuestion {
+  id        String       @id @default(uuid())
+  testId    String
+  text      String
+  type      QuestionType @default(MULTIPLE_CHOICE)
+  order     Int          @default(0)
+  points    Int          @default(1)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  choices   TestChoice[]
+  test      Test         @relation(fields: [testId], references: [id])
+}
+
+model TestChoice {
+  id         String       @id @default(uuid())
+  questionId String
+  text       String
+  isCorrect  Boolean      @default(false)
+  order      Int          @default(0)
+  question   TestQuestion @relation(fields: [questionId], references: [id])
+}
+
+model TestAttempt {
+  id          String    @id @default(uuid())
+  userId      String
+  testId      String
+  startedAt   DateTime  @default(now())
+  completedAt DateTime?
+  score       Float?
+  answers     Json?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  test        Test      @relation(fields: [testId], references: [id])
+  user        User      @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([testId])
+}
+
+model Bookmark {
+  id        String   @id @default(uuid())
+  userId    String
+  courseId  String
+  createdAt DateTime @default(now())
+  course    Course   @relation(fields: [courseId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, courseId])
+}
+
+model Recommendation {
+  id        String                  @id @default(uuid())
+  userId    String
+  skillId   String?
+  courseId  String?
+  algorithm RecommendationAlgorithm @default(RULES)
+  score     Float                   @default(0)
+  meta      Json?
+  createdAt DateTime                @default(now())
+  course    Course?                 @relation(fields: [courseId], references: [id])
+  skill     Skill?                  @relation(fields: [skillId], references: [id])
+  user      User                    @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model Region {
+  id         String            @id @default(uuid())
+  name       String            @unique
+  code       String?
+  createdAt  DateTime          @default(now())
+  skillStats SkillMarketStat[]
+  users      User[]
+}
+
+model SkillMarketStat {
+  id             String   @id @default(uuid())
+  skillId        String
+  regionId       String
+  usersCount     Int      @default(0)
+  avgProficiency Float?
+  demandScore    Float?
+  updatedAt      DateTime @updatedAt
+  region         Region   @relation(fields: [regionId], references: [id])
+  skill          Skill    @relation(fields: [skillId], references: [id])
+
+  @@unique([skillId, regionId])
+}
+
+model Lesson {
+  id              String         @id @default(uuid())
+  courseId        String
+  title           String
+  description     String?
+  position        Int
+  providerVideoId String?
+  url             String?
+  durationSeconds Int?
+  thumbnail       String?
+  isCompleted     Boolean        @default(false)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  course          Course         @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  userProgress    UserProgress[]
+
+  @@index([courseId])
+  @@index([position])
+  @@index([providerVideoId])
+}
+
+model UserProgress {
+  id               String    @id @default(uuid())
+  userId           String
+  lessonId         String
+  completed        Boolean   @default(false)
+  progressPercent  Int?      @default(0)
+  watchTimeSeconds Int?      @default(0)
+  lastAccessedAt   DateTime  @default(now())
+  completedAt      DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  lesson           Lesson    @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+  @@index([userId])
+  @@index([lessonId])
+  @@index([completed])
+  @@index([lastAccessedAt])
+}
+
 enum Role {
   USER
   INSTRUCTOR
@@ -46,301 +338,4 @@ enum RecommendationAlgorithm {
   CONTENT_BASED
   COLLAB_FILTER
   HYBRID
-}
-
-// models
-model User {
-  id         String   @id @default(uuid())
-  supabaseId String   @unique // links to supabase auth user
-  email      String?  @unique // optional since supabase handles email verification
-  name       String?
-  headline   String?
-  bio        String?
-  regionId   String?
-  region     Region?  @relation(fields: [regionId], references: [id])
-  role       Role     @default(USER)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-  skills          UserSkill[]
-  testAttempts    TestAttempt[]
-  bookmarks       Bookmark[]
-  recommendations Recommendation[]
-  userProgress    UserProgress[]
-  enrollments     Enrollment[]
-  Test            Test[]
-
-  @@index([regionId])
-  @@index([supabaseId])
-}
-
-model Skill {
-  id              String            @id @default(uuid())
-  name            String            @unique
-  slug            String            @unique
-  description     String?
-  parentId        String?
-  parent          Skill?            @relation("SkillParent", fields: [parentId], references: [id])
-  children        Skill[]           @relation("SkillParent")
-  courses         CourseSkill[]
-  tests           Test[]
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  UserSkill       UserSkill[]
-  Recommendation  Recommendation[]
-  SkillMarketStat SkillMarketStat[]
-
-  @@index([parentId])
-  @@index([name])
-  @@index([slug])
-}
-
-model UserSkill {
-  id            String            @id @default(uuid())
-  userId        String
-  user          User              @relation(fields: [userId], references: [id])
-  skillId       String
-  skill         Skill             @relation(fields: [skillId], references: [id])
-  proficiency   ProficiencyLevel  @default(BASIC)
-  targetLevel   ProficiencyLevel?
-  progress      Int               @default(0) // 0-100 completion
-  lastPracticed DateTime?
-  createdAt     DateTime          @default(now())
-  updatedAt     DateTime          @updatedAt
-
-  @@unique([userId, skillId])
-  @@index([skillId])
-  @@index([proficiency])
-  @@index([progress])
-  @@index([lastPracticed])
-}
-
-model Course {
-  id              String           @id @default(uuid())
-  title           String
-  description     String?
-  aiSummary       String? // ai-generated summary of the description
-  provider        String? // e.g. "udemy", "youtube channel", "internal"
-  source          CourseSource     @default(INTERNAL)
-  externalId      String? // provider-specific id (youtube playlist id, udemy course id)
-  url             String?
-  language        String?          @default("en")
-  difficulty      CourseDifficulty @default(BEGINNER)
-  durationMinutes Int?
-  rating          Float?
-  isPaid          Boolean          @default(false)
-  priceCents      Int? // prices stored as cents
-  thumbnail       String? // course thumbnail url
-  tags            CourseTag[]
-  skills          CourseSkill[]
-  lessons         Lesson[] // for structured courses with multiple lessons
-  enrollments     Enrollment[]
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
-  Bookmark        Bookmark[]
-  Recommendation  Recommendation[]
-
-  @@index([provider, source])
-  @@index([difficulty])
-  @@index([isPaid])
-  @@index([rating])
-  @@index([language])
-  @@index([createdAt])
-  @@index([externalId])
-}
-
-model Enrollment {
-  id         String    @id @default(uuid())
-  userId     String
-  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  courseId   String
-  course     Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  enrolledAt DateTime  @default(now())
-  completedAt DateTime?
-  isCompleted Boolean  @default(false)
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-
-  @@unique([userId, courseId])
-  @@index([userId])
-  @@index([courseId])
-  @@index([enrolledAt])
-  @@index([isCompleted])
-}
-
-model CourseSkill {
-  id        String @id @default(uuid())
-  course    Course @relation(fields: [courseId], references: [id])
-  courseId  String
-  skill     Skill  @relation(fields: [skillId], references: [id])
-  skillId   String
-  relevance Int    @default(50) // 0-100 relevance
-
-  @@unique([courseId, skillId])
-  @@index([skillId])
-}
-
-model Tag {
-  id      String      @id @default(uuid())
-  name    String      @unique
-  courses CourseTag[]
-}
-
-model CourseTag {
-  id       String @id @default(uuid())
-  course   Course @relation(fields: [courseId], references: [id])
-  courseId String
-  tag      Tag    @relation(fields: [tagId], references: [id])
-  tagId    String
-
-  @@unique([courseId, tagId])
-}
-
-model Test {
-  id             String            @id @default(uuid())
-  title          String
-  skillId        String?
-  skill          Skill?            @relation(fields: [skillId], references: [id])
-  difficulty     CourseDifficulty?
-  totalQuestions Int?
-  published      Boolean           @default(true)
-  questions      TestQuestion[]
-  createdById    String?
-  createdBy      User?             @relation(fields: [createdById], references: [id])
-  createdAt      DateTime          @default(now())
-  updatedAt      DateTime          @updatedAt
-  TestAttempt    TestAttempt[]
-}
-
-model TestQuestion {
-  id        String       @id @default(uuid())
-  testId    String
-  test      Test         @relation(fields: [testId], references: [id])
-  text      String
-  type      QuestionType @default(MULTIPLE_CHOICE)
-  order     Int          @default(0)
-  points    Int          @default(1)
-  choices   TestChoice[]
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
-}
-
-model TestChoice {
-  id         String       @id @default(uuid())
-  questionId String
-  question   TestQuestion @relation(fields: [questionId], references: [id])
-  text       String
-  isCorrect  Boolean      @default(false)
-  order      Int          @default(0)
-}
-
-model TestAttempt {
-  id          String    @id @default(uuid())
-  userId      String
-  user        User      @relation(fields: [userId], references: [id])
-  testId      String
-  test        Test      @relation(fields: [testId], references: [id])
-  startedAt   DateTime  @default(now())
-  completedAt DateTime?
-  score       Float?
-  answers     Json? // structured answers for analytics
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  @@index([userId])
-  @@index([testId])
-}
-
-model Bookmark {
-  id        String   @id @default(uuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
-  courseId  String
-  course    Course   @relation(fields: [courseId], references: [id])
-  createdAt DateTime @default(now())
-
-  @@unique([userId, courseId])
-}
-
-model Recommendation {
-  id        String                  @id @default(uuid())
-  userId    String
-  user      User                    @relation(fields: [userId], references: [id])
-  skillId   String?
-  skill     Skill?                  @relation(fields: [skillId], references: [id])
-  courseId  String?
-  course    Course?                 @relation(fields: [courseId], references: [id])
-  algorithm RecommendationAlgorithm @default(RULES)
-  score     Float                   @default(0)
-  meta      Json? // explanation, rationale, features
-  createdAt DateTime                @default(now())
-
-  @@index([userId])
-}
-
-model Region {
-  id         String            @id @default(uuid())
-  name       String
-  code       String?
-  users      User[]
-  skillStats SkillMarketStat[]
-  createdAt  DateTime          @default(now())
-
-  @@unique([name])
-}
-
-model SkillMarketStat {
-  id             String   @id @default(uuid())
-  skillId        String
-  skill          Skill    @relation(fields: [skillId], references: [id])
-  regionId       String
-  region         Region   @relation(fields: [regionId], references: [id])
-  usersCount     Int      @default(0)
-  avgProficiency Float?
-  demandScore    Float?
-  updatedAt      DateTime @updatedAt
-
-  @@unique([skillId, regionId])
-}
-
-model Lesson {
-  id             String         @id @default(uuid())
-  courseId       String
-  course         Course         @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  title          String
-  description    String?
-  position       Int // order within course
-  providerVideoId String? // youtube video id for youtube courses
-  url            String? // direct video url
-  durationSeconds Int? // lesson duration in seconds
-  thumbnail      String? // lesson thumbnail url
-  isCompleted    Boolean        @default(false) // for tracking completion status
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
-  userProgress   UserProgress[]
-
-  @@index([courseId])
-  @@index([position])
-  @@index([providerVideoId])
-}
-
-model UserProgress {
-  id             String   @id @default(uuid())
-  userId         String
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  lessonId       String
-  lesson         Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
-  completed      Boolean  @default(false)
-  progressPercent Int?    @default(0) // 0-100 for partial progress tracking
-  watchTimeSeconds Int?   @default(0) // time spent watching/studying
-  lastAccessedAt DateTime @default(now())
-  completedAt    DateTime?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-
-  @@unique([userId, lessonId])
-  @@index([userId])
-  @@index([lessonId])
-  @@index([completed])
-  @@index([lastAccessedAt])
 }

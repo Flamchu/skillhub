@@ -2,59 +2,477 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
 import { useAuth } from "@/context/AuthProvider";
-import { PageLayout, PageHeader, LoadingState } from "@/components/ui";
-import { ProfileForm } from "@/components/profile";
+import { Button } from "@/components/ui/Button";
+import { AISkillGenerator } from "@/components/skills/AISkillGenerator";
+import { getRecommendations } from "@/lib/recommendations";
+import {
+	User,
+	Settings,
+	BookOpen,
+	Target,
+	Award,
+	ArrowRight,
+	Star,
+	TrendingUp,
+	Edit3,
+	Eye,
+	Mail,
+	Briefcase,
+} from "lucide-react";
+import type { Recommendation, AISkillSuggestion } from "@/types";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function ProfilePage() {
-	const t = useTranslations("profile");
-	const tCommon = useTranslations("common");
 	const { user, profile, loading } = useAuth();
 	const router = useRouter();
-	const [initialized, setInitialized] = useState(false);
+	const [activeTab, setActiveTab] = useState("overview");
+	const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+	const [loadingRecommendations, setLoadingRecommendations] = useState(false);
+	const [isEditing, setIsEditing] = useState(false);
 
 	useEffect(() => {
-		// add a small delay to let authprovider settle
-		const timer = setTimeout(() => {
-			if (!loading && !user) {
-				router.push("/auth");
-			} else if (user) {
-				setInitialized(true);
-			}
-		}, 200);
+		if (!loading && !user) {
+			router.push("/login");
+			return;
+		}
 
-		return () => clearTimeout(timer);
+		// Check for tab parameter in URL
+		const urlParams = new URLSearchParams(window.location.search);
+		const tabParam = urlParams.get("tab");
+		if (tabParam && ["overview", "recommendations", "ai-skills", "settings"].includes(tabParam)) {
+			setActiveTab(tabParam);
+		}
+
+		if (user) {
+			loadRecommendations();
+		}
 	}, [user, loading, router]);
 
-	if (loading || !initialized) {
-		return <LoadingState message={tCommon("loading")} />;
-	}
+	const loadRecommendations = async () => {
+		try {
+			setLoadingRecommendations(true);
+			const data = await getRecommendations({ limit: 6, sortBy: "score", sortOrder: "desc" });
+			setRecommendations(data.recommendations.filter(r => r.course));
+		} catch (error) {
+			console.error("Failed to load recommendations:", error);
+		} finally {
+			setLoadingRecommendations(false);
+		}
+	};
 
-	if (!user) {
-		return null; // will redirect
-	}
+	const handleSkillsGenerated = (_skills: AISkillSuggestion[]) => {
+		// Handle adding the generated skills to user profile
+		// TODO: Integrate with actual skill addition API
+		// This would call an API to add the selected skills to the user's profile
+	};
 
-	return (
-		<PageLayout>
-			<div className="min-h-screen bg-gradient-to-br from-primary-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-				<div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-					{/* back button */}
-					<button
-						onClick={() => router.back()}
-						className="mb-6 inline-flex items-center gap-2 px-4 py-2 text-sm text-foreground-muted hover:text-foreground transition-colors rounded-sm hover:bg-surface-hover"
-					>
-						<span className="text-lg">←</span>
-						Back
-					</button>
-
-					<PageHeader title={t("title")} description={t("subtitle")} className="mb-8" />
-
-					<div className="bg-surface/95 dark:bg-gray-800/95 backdrop-blur-md border border-border dark:border-gray-700 rounded-lg shadow-xl overflow-hidden">
-						<ProfileForm user={profile} />
-					</div>
+	if (loading) {
+		return (
+			<div className="min-h-screen bg-gradient-to-br from-primary-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
+				<div className="text-center">
+					<div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4" />
+					<p className="text-gray-600 dark:text-gray-300">Loading profile...</p>
 				</div>
 			</div>
-		</PageLayout>
+		);
+	}
+
+	if (!user) return null;
+
+	const tabs = [
+		{ id: "overview", label: "Overview", icon: User },
+		{ id: "recommendations", label: "Recommendations", icon: Target },
+		{ id: "ai-skills", label: "AI Skills", icon: Star },
+		{ id: "settings", label: "Settings", icon: Settings },
+	];
+
+	return (
+		<div className="min-h-screen bg-gradient-to-br from-primary-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+			{/* Navigation */}
+			<nav className="px-6 py-6 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border-b border-primary/20 dark:border-gray-700">
+				<div className="max-w-7xl mx-auto flex justify-between items-center">
+					<Link
+						href="/dashboard"
+						className="text-3xl font-bold bg-gradient-to-br from-primary via-purple to-pink text-transparent bg-clip-text hover:scale-105 transition-transform"
+					>
+						SkillHub ✨
+					</Link>
+					<div className="flex items-center space-x-4">
+						<Button onClick={() => router.push("/courses")} variant="outline" className="flex items-center space-x-2">
+							<BookOpen className="w-4 h-4" />
+							<span>Browse Courses</span>
+						</Button>
+						<Button
+							onClick={() => router.push("/courses/recommended")}
+							className="flex items-center space-x-2 bg-gradient-to-r from-primary to-purple text-white"
+						>
+							<Target className="w-4 h-4" />
+							<span>My Recommendations</span>
+						</Button>
+					</div>
+				</div>
+			</nav>
+
+			<main className="max-w-7xl mx-auto px-6 py-8">
+				{/* Profile Header */}
+				<div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden mb-8">
+					<div className="relative h-48 bg-gradient-to-r from-primary via-purple to-pink">
+						<div className="absolute inset-0 bg-black/20" />
+						<div className="absolute bottom-6 left-6 right-6">
+							<div className="flex items-end justify-between">
+								<div className="flex items-end space-x-6">
+									<div className="w-24 h-24 bg-white dark:bg-gray-800 rounded-full flex items-center justify-center shadow-lg border-4 border-white dark:border-gray-800">
+										{user.name ? (
+											<span className="text-2xl font-bold text-primary">{user.name.charAt(0).toUpperCase()}</span>
+										) : (
+											<User className="w-8 h-8 text-gray-400" />
+										)}
+									</div>
+									<div className="pb-2">
+										<h1 className="text-3xl font-bold text-white mb-1">{user.name || "Anonymous User"}</h1>
+										{profile?.headline && <p className="text-white/90 text-lg">{profile.headline}</p>}
+									</div>
+								</div>
+								<Button
+									onClick={() => setIsEditing(!isEditing)}
+									variant="outline"
+									className="mb-2 bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20"
+								>
+									{isEditing ? <Eye className="w-4 h-4 mr-2" /> : <Edit3 className="w-4 h-4 mr-2" />}
+									{isEditing ? "View Mode" : "Edit Profile"}
+								</Button>
+							</div>
+						</div>
+					</div>
+
+					{/* Profile Info */}
+					<div className="p-6">
+						<div className="grid md:grid-cols-3 gap-6">
+							<div className="md:col-span-2">
+								{profile?.bio ? (
+									<div className="mb-6">
+										<h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">About</h3>
+										<p className="text-gray-600 dark:text-gray-300 leading-relaxed">{profile.bio}</p>
+									</div>
+								) : (
+									<div className="mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border-2 border-dashed border-gray-200 dark:border-gray-600">
+										<p className="text-gray-500 dark:text-gray-400 text-center">
+											Add a bio to tell others about yourself
+										</p>
+									</div>
+								)}
+
+								<div className="grid grid-cols-2 gap-4">
+									<div className="flex items-center space-x-3">
+										<Mail className="w-5 h-5 text-gray-400" />
+										<span className="text-gray-600 dark:text-gray-300">{user.email || "No email"}</span>
+									</div>
+									<div className="flex items-center space-x-3">
+										<Briefcase className="w-5 h-5 text-gray-400" />
+										<span className="text-gray-600 dark:text-gray-300 capitalize">
+											{user.role?.toLowerCase() || "User"}
+										</span>
+									</div>
+								</div>
+							</div>
+
+							<div>
+								<h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Quick Stats</h3>
+								<div className="space-y-3">
+									<div className="flex items-center justify-between p-3 bg-primary/10 rounded-lg">
+										<span className="text-gray-600 dark:text-gray-300">Skills</span>
+										<span className="font-bold text-primary">12</span>
+									</div>
+									<div className="flex items-center justify-between p-3 bg-success/10 rounded-lg">
+										<span className="text-gray-600 dark:text-gray-300">Courses</span>
+										<span className="font-bold text-success">8</span>
+									</div>
+									<div className="flex items-center justify-between p-3 bg-warning/10 rounded-lg">
+										<span className="text-gray-600 dark:text-gray-300">Certificates</span>
+										<span className="font-bold text-warning">3</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				{/* Tabs */}
+				<div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
+					{/* Tab Navigation */}
+					<div className="border-b border-gray-200 dark:border-gray-700">
+						<nav className="flex space-x-8 px-6">
+							{tabs.map(tab => {
+								const IconComponent = tab.icon;
+								return (
+									<button
+										key={tab.id}
+										onClick={() => setActiveTab(tab.id)}
+										className={`flex items-center space-x-2 py-4 px-2 border-b-2 font-medium text-sm transition-colors ${
+											activeTab === tab.id
+												? "border-primary text-primary"
+												: "border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+										}`}
+									>
+										<IconComponent className="w-4 h-4" />
+										<span>{tab.label}</span>
+									</button>
+								);
+							})}
+						</nav>
+					</div>
+
+					{/* Tab Content */}
+					<div className="p-6">
+						{activeTab === "overview" && (
+							<div className="space-y-8">
+								{/* Recent Activity */}
+								<div>
+									<h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Recent Activity</h3>
+									<div className="space-y-3">
+										<div className="flex items-center space-x-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+											<div className="w-10 h-10 bg-success rounded-full flex items-center justify-center">
+												<Award className="w-5 h-5 text-white" />
+											</div>
+											<div className="flex-1">
+												<p className="font-medium text-gray-900 dark:text-gray-100">
+													Completed JavaScript Fundamentals
+												</p>
+												<p className="text-sm text-gray-500 dark:text-gray-400">2 days ago</p>
+											</div>
+										</div>
+										<div className="flex items-center space-x-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+											<div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
+												<BookOpen className="w-5 h-5 text-white" />
+											</div>
+											<div className="flex-1">
+												<p className="font-medium text-gray-900 dark:text-gray-100">Enrolled in React Mastery Course</p>
+												<p className="text-sm text-gray-500 dark:text-gray-400">5 days ago</p>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								{/* Current Learning Path */}
+								<div>
+									<h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Current Learning Path</h3>
+									<div className="bg-gradient-to-r from-primary/10 to-purple/10 rounded-xl p-6">
+										<div className="flex items-center justify-between mb-4">
+											<h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Web Development Track</h4>
+											<span className="text-sm font-medium text-primary bg-primary/10 px-3 py-1 rounded-full">
+												60% Complete
+											</span>
+										</div>
+										<div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-4">
+											<div
+												className="bg-gradient-to-r from-primary to-purple h-2 rounded-full"
+												style={{ width: "60%" }}
+											/>
+										</div>
+										<p className="text-gray-600 dark:text-gray-300 mb-4">
+											Master modern web development with HTML, CSS, JavaScript, and React.
+										</p>
+										<Button className="bg-gradient-to-r from-primary to-purple text-white">
+											Continue Learning <ArrowRight className="w-4 h-4 ml-2" />
+										</Button>
+									</div>
+								</div>
+							</div>
+						)}
+
+						{activeTab === "recommendations" && (
+							<div className="space-y-6">
+								<div className="flex items-center justify-between">
+									<h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">
+										Personalized Course Recommendations
+									</h3>
+									<Button
+										onClick={() => router.push("/courses/recommended")}
+										variant="outline"
+										className="flex items-center space-x-2"
+									>
+										<TrendingUp className="w-4 h-4" />
+										<span>View All</span>
+									</Button>
+								</div>
+
+								{loadingRecommendations ? (
+									<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+										{[1, 2, 3, 4, 5, 6].map(i => (
+											<div key={i} className="animate-pulse">
+												<div className="bg-gray-200 dark:bg-gray-700 h-48 rounded-lg mb-4" />
+												<div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-2" />
+												<div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3" />
+											</div>
+										))}
+									</div>
+								) : recommendations.length > 0 ? (
+									<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+										{recommendations.map(recommendation => {
+											if (!recommendation.course) return null;
+											const course = recommendation.course;
+
+											return (
+												<div
+													key={recommendation.id}
+													className="bg-white dark:bg-gray-700 rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden"
+												>
+													<div className="relative h-40 bg-gradient-to-br from-primary/10 to-purple/10">
+														{course.thumbnail ? (
+															<Image
+																src={course.thumbnail}
+																alt={course.title}
+																width={300}
+																height={160}
+																className="w-full h-full object-cover"
+															/>
+														) : (
+															<div className="w-full h-full flex items-center justify-center">
+																<BookOpen className="w-12 h-12 text-primary/30" />
+															</div>
+														)}
+														<div className="absolute top-3 right-3">
+															<span className="bg-black/20 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs">
+																{Math.round(recommendation.score)}% Match
+															</span>
+														</div>
+													</div>
+													<div className="p-4">
+														<h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2">
+															{course.title}
+														</h4>
+														<p className="text-sm text-gray-600 dark:text-gray-300 mb-3 line-clamp-2">
+															{course.description}
+														</p>
+														<div className="flex items-center justify-between">
+															<span className="text-sm font-medium text-primary">
+																{course.isPaid ? `$${((course.priceCents || 0) / 100).toFixed(2)}` : "Free"}
+															</span>
+															<Button size="sm" className="bg-gradient-to-r from-primary to-purple text-white">
+																Enroll Now
+															</Button>
+														</div>
+													</div>
+												</div>
+											);
+										})}
+									</div>
+								) : (
+									<div className="text-center py-12">
+										<BookOpen className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+										<h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+											No Recommendations Yet
+										</h4>
+										<p className="text-gray-600 dark:text-gray-300 mb-6">
+											Add some skills to your profile to get personalized course recommendations.
+										</p>
+										<Button
+											onClick={() => setActiveTab("ai-skills")}
+											className="bg-gradient-to-r from-primary to-purple text-white"
+										>
+											Generate Skills with AI
+										</Button>
+									</div>
+								)}
+							</div>
+						)}
+
+						{activeTab === "ai-skills" && (
+							<div className="space-y-6">
+								<div>
+									<h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">AI Skill Generator</h3>
+									<p className="text-gray-600 dark:text-gray-300">
+										Tell our AI about your background, goals, or interests, and get personalized skill recommendations
+										to add to your profile.
+									</p>
+								</div>
+
+								<AISkillGenerator onSkillsGenerated={handleSkillsGenerated} />
+							</div>
+						)}
+
+						{activeTab === "settings" && (
+							<div className="space-y-8">
+								<div>
+									<h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Profile Settings</h3>
+									<div className="space-y-6">
+										<div>
+											<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+												Display Name
+											</label>
+											<input
+												type="text"
+												value={user.name || ""}
+												readOnly={!isEditing}
+												className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+											/>
+										</div>
+
+										<div>
+											<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+												Headline
+											</label>
+											<input
+												type="text"
+												value={profile?.headline || ""}
+												readOnly={!isEditing}
+												className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+												placeholder="e.g., Full Stack Developer, Data Scientist, etc."
+											/>
+										</div>
+
+										<div>
+											<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Bio</label>
+											<textarea
+												value={profile?.bio || ""}
+												readOnly={!isEditing}
+												rows={4}
+												className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+												placeholder="Tell others about yourself, your experience, and what you're learning..."
+											/>
+										</div>
+
+										{isEditing && (
+											<div className="flex space-x-4">
+												<Button className="bg-gradient-to-r from-primary to-purple text-white">Save Changes</Button>
+												<Button variant="outline" onClick={() => setIsEditing(false)}>
+													Cancel
+												</Button>
+											</div>
+										)}
+									</div>
+								</div>
+
+								<div>
+									<h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Notification Preferences</h3>
+									<div className="space-y-4">
+										<div className="flex items-center justify-between">
+											<div>
+												<h4 className="font-medium text-gray-900 dark:text-gray-100">Course Recommendations</h4>
+												<p className="text-sm text-gray-600 dark:text-gray-300">
+													Get notified when new courses match your skills
+												</p>
+											</div>
+											<input type="checkbox" defaultChecked className="h-5 w-5 text-primary" />
+										</div>
+										<div className="flex items-center justify-between">
+											<div>
+												<h4 className="font-medium text-gray-900 dark:text-gray-100">Learning Reminders</h4>
+												<p className="text-sm text-gray-600 dark:text-gray-300">
+													Reminders to continue your learning progress
+												</p>
+											</div>
+											<input type="checkbox" defaultChecked className="h-5 w-5 text-primary" />
+										</div>
+									</div>
+								</div>
+							</div>
+						)}
+					</div>
+				</div>
+			</main>
+		</div>
 	);
 }
