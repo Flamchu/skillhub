@@ -595,38 +595,6 @@ router.get("/categories", cache(cacheConfigs.skillsList), async (req: Request, r
 	}
 });
 
-// get popular tags
-router.get("/tags", cache(cacheConfigs.skillsList), async (req: Request, res: Response) => {
-	try {
-		// Get tag counts from SkillTag relationships
-		const tagCounts = await prisma.tag.findMany({
-			include: {
-				_count: {
-					select: {
-						skills: true,
-					},
-				},
-			},
-			orderBy: {
-				skills: {
-					_count: "desc",
-				},
-			},
-			take: 50, // Top 50 tags
-		});
-
-		const popularTags = tagCounts
-			.filter((tag) => tag._count.skills > 0) // Only tags with skills
-			.map((tag) => ({
-				name: tag.name,
-				count: tag._count.skills,
-			}));
-
-		res.json({ tags: popularTags });
-	} catch (error) {
-		console.error("Get skill tags error:", error);
-		res.status(500).json({ error: "Internal server error" });
-	}
-});
+// Note: Tags endpoint removed - use skills categories instead
 
 export default router;

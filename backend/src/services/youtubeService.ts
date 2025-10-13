@@ -94,7 +94,6 @@ export class YouTubeService {
 		url: string,
 		options: {
 			skillIds?: string[];
-			tags?: string[];
 			difficulty?: CourseDifficulty;
 			overrides?: {
 				title?: string;
@@ -152,19 +151,6 @@ export class YouTubeService {
 							})),
 						}
 					: undefined,
-				// create associated tags
-				tags: options.tags
-					? {
-							create: options.tags.map((tagName) => ({
-								tag: {
-									connectOrCreate: {
-										where: { name: tagName },
-										create: { name: tagName },
-									},
-								},
-							})),
-						}
-					: undefined,
 				// create lessons from playlist entries
 				lessons: {
 					create: data.entries.map((entry, index) => ({
@@ -192,16 +178,6 @@ export class YouTubeService {
 						},
 					},
 				},
-				tags: {
-					include: {
-						tag: {
-							select: {
-								id: true,
-								name: true,
-							},
-						},
-					},
-				},
 			},
 		});
 
@@ -220,7 +196,6 @@ export class YouTubeService {
 		url: string,
 		options: {
 			skillIds?: string[];
-			tags?: string[];
 			difficulty?: CourseDifficulty;
 			overrides?: {
 				title?: string;
@@ -273,19 +248,6 @@ export class YouTubeService {
 							})),
 						}
 					: undefined,
-				// create associated tags
-				tags: options.tags
-					? {
-							create: options.tags.map((tagName) => ({
-								tag: {
-									connectOrCreate: {
-										where: { name: tagName },
-										create: { name: tagName },
-									},
-								},
-							})),
-						}
-					: undefined,
 				// create single lesson
 				lessons: {
 					create: {
@@ -309,16 +271,6 @@ export class YouTubeService {
 								id: true,
 								name: true,
 								slug: true,
-							},
-						},
-					},
-				},
-				tags: {
-					include: {
-						tag: {
-							select: {
-								id: true,
-								name: true,
 							},
 						},
 					},

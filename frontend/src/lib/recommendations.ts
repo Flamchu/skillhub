@@ -18,7 +18,7 @@ export async function getRecommendations(params?: {
 // generate new recommendations for user
 export async function generateRecommendations(params?: {
 	userId?: string;
-	algorithm?: "RULES" | "CONTENT_BASED" | "COLLAB_FILTER" | "HYBRID";
+	algorithm?: "RULES" | "CONTENT_BASED" | "COLLAB_FILTER" | "HYBRID" | "SEMANTIC";
 	maxRecommendations?: number;
 }): Promise<{
 	message: string;

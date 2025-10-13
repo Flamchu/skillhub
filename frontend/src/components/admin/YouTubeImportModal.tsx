@@ -1,12 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Alert } from "@/components/ui/Alert";
 import { api } from "@/lib/http";
-import { Youtube, Plus, X, Loader2, CheckCircle, AlertCircle } from "lucide-react";
-import type { YouTubeImportData, YouTubeImportResponse } from "@/types";
+import { Youtube, X, Loader2, CheckCircle, AlertCircle } from "lucide-react";
+import type { YouTubeImportData, YouTubeImportResponse, Skill } from "@/types";
 
 interface YouTubeImportModalProps {
 	isOpen: boolean;
@@ -18,24 +18,43 @@ export function YouTubeImportModal({ isOpen, onClose, onSuccess }: YouTubeImport
 	const [formData, setFormData] = useState<YouTubeImportData>({
 		url: "",
 		skillIds: [],
-		tags: [],
 		difficulty: "BEGINNER",
 		overrides: {},
 	});
-	const [tagInput, setTagInput] = useState("");
+	const [availableSkills, setAvailableSkills] = useState<Skill[]>([]);
+	const [skillsLoading, setSkillsLoading] = useState(false);
+	const [skillSearch, setSkillSearch] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [result, setResult] = useState<YouTubeImportResponse | null>(null);
 	const [error, setError] = useState<string | null>(null);
+
+	// fetch skills when modal opens
+	useEffect(() => {
+		if (isOpen) {
+			fetchSkills();
+		}
+	}, [isOpen]);
+
+	const fetchSkills = async () => {
+		setSkillsLoading(true);
+		try {
+			const response = await api.listSkills<{ skills: Skill[] }>();
+			setAvailableSkills(response.skills || []);
+		} catch (error) {
+			console.error("Failed to fetch skills:", error);
+		} finally {
+			setSkillsLoading(false);
+		}
+	};
 
 	const resetForm = () => {
 		setFormData({
 			url: "",
 			skillIds: [],
-			tags: [],
 			difficulty: "BEGINNER",
 			overrides: {},
 		});
-		setTagInput("");
+		setSkillSearch("");
 		setResult(null);
 		setError(null);
 	};
@@ -45,22 +64,16 @@ export function YouTubeImportModal({ isOpen, onClose, onSuccess }: YouTubeImport
 		onClose();
 	};
 
-	const addTag = () => {
-		if (tagInput.trim() && !formData.tags?.includes(tagInput.trim())) {
-			setFormData(prev => ({
-				...prev,
-				tags: [...(prev.tags || []), tagInput.trim()],
-			}));
-			setTagInput("");
-		}
-	};
-
-	const removeTag = (tagToRemove: string) => {
+	const toggleSkill = (skillId: string) => {
 		setFormData(prev => ({
 			...prev,
-			tags: prev.tags?.filter(tag => tag !== tagToRemove) || [],
+			skillIds: prev.skillIds?.includes(skillId)
+				? prev.skillIds.filter(id => id !== skillId)
+				: [...(prev.skillIds || []), skillId],
 		}));
 	};
+
+	const filteredSkills = availableSkills.filter(skill => skill.name.toLowerCase().includes(skillSearch.toLowerCase()));
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -212,39 +225,68 @@ export function YouTubeImportModal({ isOpen, onClose, onSuccess }: YouTubeImport
 								</select>
 							</div>
 
-							{/* Tags */}
+							{/* Skills */}
 							<div>
 								<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-									Tags (Optional)
+									Skills (Optional)
 								</label>
-								<div className="flex gap-2 mb-2">
+								<div className="mb-2">
 									<Input
-										placeholder="Add a tag..."
-										value={tagInput}
-										onChange={e => setTagInput(e.target.value)}
-										onKeyDown={e => {
-											if (e.key === "Enter") {
-												e.preventDefault();
-												addTag();
-											}
-										}}
+										placeholder="Search skills..."
+										value={skillSearch}
+										onChange={e => setSkillSearch(e.target.value)}
 									/>
-									<Button type="button" onClick={addTag} size="sm">
-										<Plus className="h-4 w-4" />
-									</Button>
 								</div>
-								{formData.tags && formData.tags.length > 0 && (
-									<div className="flex flex-wrap gap-2">
-										{formData.tags.map(tag => (
-											<Badge key={tag} variant="default" className="flex items-center gap-1">
-												{tag}
-												<button type="button" onClick={() => removeTag(tag)} className="hover:text-red-500">
-													<X className="h-3 w-3" />
-												</button>
-											</Badge>
-										))}
+
+								{/* Selected Skills */}
+								{formData.skillIds && formData.skillIds.length > 0 && (
+									<div className="flex flex-wrap gap-2 mb-3">
+										{formData.skillIds.map(skillId => {
+											const skill = availableSkills.find(s => s.id === skillId);
+											return skill ? (
+												<Badge key={skillId} variant="default" className="flex items-center gap-1">
+													{skill.name}
+													<button type="button" onClick={() => toggleSkill(skillId)} className="hover:text-red-500">
+														<X className="h-3 w-3" />
+													</button>
+												</Badge>
+											) : null;
+										})}
 									</div>
 								)}
+
+								{/* Available Skills */}
+								<div className="border border-gray-200 dark:border-gray-600 rounded-lg max-h-40 overflow-y-auto">
+									{skillsLoading ? (
+										<div className="p-4 text-center text-gray-500">Loading skills...</div>
+									) : filteredSkills.length > 0 ? (
+										<div className="p-2 space-y-1">
+											{filteredSkills.slice(0, 20).map(skill => (
+												<button
+													key={skill.id}
+													type="button"
+													onClick={() => toggleSkill(skill.id)}
+													className={`w-full text-left px-3 py-2 rounded text-sm transition-colors ${
+														formData.skillIds?.includes(skill.id)
+															? "bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100"
+															: "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+													}`}
+												>
+													{skill.name}
+												</button>
+											))}
+											{filteredSkills.length > 20 && (
+												<div className="text-xs text-gray-500 p-2 text-center">
+													Showing 20 of {filteredSkills.length} skills. Keep typing to narrow down results.
+												</div>
+											)}
+										</div>
+									) : (
+										<div className="p-4 text-center text-gray-500">
+											{skillSearch ? `No skills found matching "${skillSearch}"` : "No skills available"}
+										</div>
+									)}
+								</div>
 							</div>
 
 							{/* Overrides */}

@@ -48,12 +48,6 @@ export interface Course {
 	createdAt: string;
 	updatedAt: string;
 	lessons?: Lesson[];
-	tags?: {
-		tag: {
-			id: string;
-			name: string;
-		};
-	}[];
 	skills?: {
 		skill: {
 			id: string;
@@ -158,7 +152,6 @@ export interface CreateCourseData {
 	rating?: number;
 	isPaid?: boolean;
 	priceCents?: number;
-	tags?: string[];
 	skills?: Array<{ skillId: string; relevance?: number }>;
 }
 
@@ -185,7 +178,6 @@ export interface UpdateUserData {
 export interface YouTubeImportData {
 	url: string;
 	skillIds?: string[];
-	tags?: string[];
 	difficulty?: "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
 	overrides?: {
 		title?: string;

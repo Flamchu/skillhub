@@ -13,7 +13,7 @@ import { Star, Clock, BookOpen, RefreshCw, Sparkles, TrendingUp, Target } from "
 import type { Recommendation } from "@/types";
 
 export default function RecommendedCoursesPage() {
-	const { user } = useAuth();
+	const { user, loading } = useAuth();
 	const router = useRouter();
 	const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
@@ -36,18 +36,20 @@ export default function RecommendedCoursesPage() {
 	};
 
 	useEffect(() => {
+		if (loading) return; // wait for auth to load
+
 		if (!user) {
 			router.push("/login");
 			return;
 		}
 		loadRecommendations();
-	}, [user, router]);
+	}, [user, loading, router]);
 
-	const handleGenerateRecommendations = async () => {
+	const handleGenerateRecommendations = async (algorithm: "RULES" | "SEMANTIC" | "COLLAB_FILTER" = "SEMANTIC") => {
 		try {
 			setIsGenerating(true);
 			setError(null);
-			await generateRecommendations({ algorithm: "RULES", maxRecommendations: 20 });
+			await generateRecommendations({ algorithm, maxRecommendations: 20 });
 			loadRecommendations();
 		} catch (error) {
 			console.error("Failed to generate recommendations:", error);
@@ -55,6 +57,10 @@ export default function RecommendedCoursesPage() {
 		} finally {
 			setIsGenerating(false);
 		}
+	};
+
+	const handleGenerateClick = (algorithm: "RULES" | "SEMANTIC" | "COLLAB_FILTER" = "SEMANTIC") => {
+		return () => handleGenerateRecommendations(algorithm);
 	};
 
 	const handleEnrollClick = async (courseId: string) => {
@@ -84,9 +90,21 @@ export default function RecommendedCoursesPage() {
 			CONTENT_BASED: { label: "Content Based", color: "bg-success/10 text-success border-success/20", icon: BookOpen },
 			COLLAB_FILTER: { label: "Community", color: "bg-warning/10 text-warning border-warning/20", icon: Target },
 			HYBRID: { label: "AI Powered", color: "bg-purple/10 text-purple border-purple/20", icon: Sparkles },
+			SEMANTIC: { label: "AI Semantic", color: "bg-info/10 text-info border-info/20", icon: Sparkles },
 		};
 		return badges[algorithm as keyof typeof badges] || badges.RULES;
 	};
+
+	if (loading) {
+		return (
+			<div className="min-h-screen bg-gradient-to-br from-primary-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
+				<div className="text-center">
+					<div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mb-4" />
+					<p className="text-gray-600 dark:text-gray-300">Loading...</p>
+				</div>
+			</div>
+		);
+	}
 
 	if (!user) return null;
 
@@ -115,9 +133,37 @@ export default function RecommendedCoursesPage() {
 							recommendation system.
 						</p>
 
+						{/* Algorithm Selection */}
+						<div className="flex flex-wrap justify-center gap-3 mb-6">
+							<Button
+								onClick={handleGenerateClick("SEMANTIC")}
+								disabled={isGenerating}
+								className="px-4 py-2 bg-gradient-to-r from-info to-info-600 text-white rounded-lg hover:from-info-600 hover:to-info-700 shadow-md hover:shadow-lg transition-all duration-300"
+							>
+								<Sparkles className="w-4 h-4 mr-2" />
+								AI Semantic
+							</Button>
+							<Button
+								onClick={handleGenerateClick("RULES")}
+								disabled={isGenerating}
+								className="px-4 py-2 bg-gradient-to-r from-primary to-primary-600 text-white rounded-lg hover:from-primary-600 hover:to-primary-700 shadow-md hover:shadow-lg transition-all duration-300"
+							>
+								<Target className="w-4 h-4 mr-2" />
+								Smart Match
+							</Button>
+							<Button
+								onClick={handleGenerateClick("COLLAB_FILTER")}
+								disabled={isGenerating}
+								className="px-4 py-2 bg-gradient-to-r from-warning to-warning-600 text-white rounded-lg hover:from-warning-600 hover:to-warning-700 shadow-md hover:shadow-lg transition-all duration-300"
+							>
+								<Target className="w-4 h-4 mr-2" />
+								Community
+							</Button>
+						</div>
+
 						<div className="flex justify-center">
 							<Button
-								onClick={handleGenerateRecommendations}
+								onClick={handleGenerateClick("SEMANTIC")}
 								disabled={isGenerating}
 								className="px-8 py-3 bg-gradient-to-r from-primary to-purple text-white rounded-lg hover:from-primary-600 hover:to-purple-600 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
 							>
@@ -164,7 +210,7 @@ export default function RecommendedCoursesPage() {
 							</p>
 							<div className="flex flex-col sm:flex-row gap-4 justify-center">
 								<Button
-									onClick={handleGenerateRecommendations}
+									onClick={handleGenerateClick("SEMANTIC")}
 									disabled={isGenerating}
 									className="px-6 py-3 bg-gradient-to-r from-primary to-purple text-white rounded-lg"
 								>

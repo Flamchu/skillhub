@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 		return {
 			title: `${courseData.title} | SkillHub`,
 			description: courseData.description || `Learn with ${courseData.title} on SkillHub`,
-			keywords: courseData.tags?.map(tag => tag.tag.name).join(", ") || "",
+			keywords: courseData.skills?.map(skill => skill.skill.name).join(", ") || "",
 		};
 	} catch {
 		return {

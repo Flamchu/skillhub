@@ -31,12 +31,12 @@ export function CourseHeader({ course, onBookmark, onShare }: CourseHeaderProps)
 						)}
 					</div>
 
-					{/* tags */}
-					{course.tags && course.tags.length > 0 && (
+					{/* skills */}
+					{course.skills && course.skills.length > 0 && (
 						<div className="flex flex-wrap gap-2 mb-4">
-							{course.tags?.map((courseTag, index) => (
+							{course.skills?.map((courseSkill, index) => (
 								<Badge key={index} variant="default" size="sm">
-									{courseTag.tag.name}
+									{courseSkill.skill.name}
 								</Badge>
 							))}
 						</div>

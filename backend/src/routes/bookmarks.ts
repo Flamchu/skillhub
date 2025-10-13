@@ -47,11 +47,6 @@ router.get("/:id/bookmarks", authenticateSupabaseToken, async (req: Authenticate
 				include: {
 					course: {
 						include: {
-							tags: {
-								include: {
-									tag: true,
-								},
-							},
 							skills: {
 								include: {
 									skill: {
@@ -83,7 +78,6 @@ router.get("/:id/bookmarks", authenticateSupabaseToken, async (req: Authenticate
 				createdAt: bookmark.createdAt,
 				course: {
 					...bookmark.course,
-					tags: bookmark.course.tags.map((t) => t.tag),
 					skills: bookmark.course.skills.map((s) => s.skill),
 				},
 			})),
@@ -101,42 +95,31 @@ router.get("/:id/bookmarks", authenticateSupabaseToken, async (req: Authenticate
 	}
 });
 
-// bookmark a course
-router.post("/:id/bookmarks", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
+// add bookmark
+router.post("/", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
 	try {
-		const { id: userId } = req.params;
 		const { courseId } = req.body;
+		const userId = req.user?.id;
 
-		// verify user can create bookmarks (own only)
-		if (req.user?.id !== userId) {
-			return res.status(403).json({ error: "Access denied" });
+		if (!userId) {
+			return res.status(401).json({ error: "Unauthorized" });
 		}
 
 		if (!courseId) {
 			return res.status(400).json({ error: "Course ID is required" });
 		}
 
-		// verify user and course exist
-		const [user, course] = await Promise.all([
-			prisma.user.findUnique({
-				where: { id: userId },
-				select: { id: true },
-			}),
-			prisma.course.findUnique({
-				where: { id: courseId },
-				select: { id: true, title: true },
-			}),
-		]);
+		// check if course exists
+		const courseExists = await prisma.course.findUnique({
+			where: { id: courseId },
+			select: { id: true },
+		});
 
-		if (!user) {
-			return res.status(404).json({ error: "User not found" });
-		}
-
-		if (!course) {
+		if (!courseExists) {
 			return res.status(404).json({ error: "Course not found" });
 		}
 
-		// check if bookmark already exists
+		// check if already bookmarked
 		const existingBookmark = await prisma.bookmark.findUnique({
 			where: {
 				userId_courseId: {
@@ -159,11 +142,6 @@ router.post("/:id/bookmarks", authenticateSupabaseToken, async (req: Authenticat
 			include: {
 				course: {
 					include: {
-						tags: {
-							include: {
-								tag: true,
-							},
-						},
 						skills: {
 							include: {
 								skill: {
@@ -186,7 +164,6 @@ router.post("/:id/bookmarks", authenticateSupabaseToken, async (req: Authenticat
 				createdAt: bookmark.createdAt,
 				course: {
 					...bookmark.course,
-					tags: bookmark.course.tags.map((t) => t.tag),
 					skills: bookmark.course.skills.map((s) => s.skill),
 				},
 			},
@@ -198,16 +175,49 @@ router.post("/:id/bookmarks", authenticateSupabaseToken, async (req: Authenticat
 });
 
 // remove bookmark
-router.delete("/:id/bookmarks/:courseId", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
+router.delete("/:bookmarkId", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
 	try {
-		const { id: userId, courseId } = req.params;
+		const { bookmarkId } = req.params;
+		const userId = req.user?.id;
 
-		// verify user can delete bookmarks (own only)
-		if (req.user?.id !== userId) {
+		if (!userId) {
+			return res.status(401).json({ error: "Unauthorized" });
+		}
+
+		// find bookmark and verify ownership
+		const bookmark = await prisma.bookmark.findUnique({
+			where: { id: bookmarkId },
+		});
+
+		if (!bookmark) {
+			return res.status(404).json({ error: "Bookmark not found" });
+		}
+
+		if (bookmark.userId !== userId && req.user?.role !== "ADMIN") {
 			return res.status(403).json({ error: "Access denied" });
 		}
 
-		// check if bookmark exists
+		await prisma.bookmark.delete({
+			where: { id: bookmarkId },
+		});
+
+		res.json({ message: "Bookmark removed successfully" });
+	} catch (error) {
+		console.error("Error deleting bookmark:", error);
+		res.status(500).json({ error: "Internal server error" });
+	}
+});
+
+// remove bookmark by course id
+router.delete("/course/:courseId", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
+	try {
+		const { courseId } = req.params;
+		const userId = req.user?.id;
+
+		if (!userId) {
+			return res.status(401).json({ error: "Unauthorized" });
+		}
+
 		const bookmark = await prisma.bookmark.findUnique({
 			where: {
 				userId_courseId: {
@@ -221,7 +231,6 @@ router.delete("/:id/bookmarks/:courseId", authenticateSupabaseToken, async (req:
 			return res.status(404).json({ error: "Bookmark not found" });
 		}
 
-		// delete bookmark
 		await prisma.bookmark.delete({
 			where: {
 				userId_courseId: {

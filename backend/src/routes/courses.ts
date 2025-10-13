@@ -35,11 +35,6 @@ router.get("/enrollments", authenticateSupabaseToken, validate(extractSchemas(sc
 			include: {
 				course: {
 					include: {
-						tags: {
-							include: {
-								tag: true,
-							},
-						},
 						_count: {
 							select: {
 								lessons: true,
@@ -83,7 +78,7 @@ router.get("/enrollments", authenticateSupabaseToken, validate(extractSchemas(sc
 // get courses
 router.get("/", cache(cacheConfigs.coursesList), async (req: Request, res: Response) => {
 	try {
-		const { skillId, skillTags, tag, difficulty, freeOnly = "false", provider, source, language = "en", minRating, maxDuration, search, page = "1", limit = "20", sortBy = "createdAt", sortOrder = "desc" } = req.query;
+		const { skillId, difficulty, freeOnly = "false", provider, source, language = "en", minRating, maxDuration, search, page = "1", limit = "20", sortBy = "createdAt", sortOrder = "desc" } = req.query;
 
 		// where clause
 		const where: any = {};
@@ -96,38 +91,7 @@ router.get("/", cache(cacheConfigs.coursesList), async (req: Request, res: Respo
 			};
 		}
 
-		// filter by skill tags
-		if (skillTags) {
-			const tagArray = Array.isArray(skillTags) ? skillTags.map((t) => String(t)) : String(skillTags).split(",");
-			where.skills = {
-				some: {
-					skill: {
-						tags: {
-							some: {
-								tag: {
-									name: {
-										in: tagArray,
-									},
-								},
-							},
-						},
-					},
-				},
-			};
-		}
-
-		if (tag) {
-			where.tags = {
-				some: {
-					tag: {
-						name: {
-							equals: tag as string,
-							mode: "insensitive",
-						},
-					},
-				},
-			};
-		}
+		// filter by skill tags has been removed - use skillId instead
 
 		if (difficulty) {
 			where.difficulty = difficulty as CourseDifficulty;
@@ -203,16 +167,6 @@ router.get("/", cache(cacheConfigs.coursesList), async (req: Request, res: Respo
 				take: limitNum,
 				orderBy,
 				include: {
-					tags: {
-						include: {
-							tag: {
-								select: {
-									id: true,
-									name: true,
-								},
-							},
-						},
-					},
 					skills: {
 						include: {
 							skill: {
@@ -263,16 +217,6 @@ router.get("/:id", async (req: Request, res: Response) => {
 		const course = await prisma.course.findUnique({
 			where: { id },
 			include: {
-				tags: {
-					include: {
-						tag: {
-							select: {
-								id: true,
-								name: true,
-							},
-						},
-					},
-				},
 				skills: {
 					include: {
 						skill: {
@@ -316,7 +260,7 @@ router.post("/", authenticateSupabaseToken, invalidateCacheMiddleware([`${CACHE_
 			return res.status(403).json({ error: "Admin access required" });
 		}
 
-		const { title, description, aiSummary, provider, source = "INTERNAL", externalId, url, language = "en", difficulty = "BEGINNER", durationMinutes, rating, isPaid = false, priceCents, tags = [], skills = [] } = req.body;
+		const { title, description, aiSummary, provider, source = "INTERNAL", externalId, url, language = "en", difficulty = "BEGINNER", durationMinutes, rating, isPaid = false, priceCents, skills = [] } = req.body;
 
 		// validate
 		if (!title) {
@@ -359,16 +303,6 @@ router.post("/", authenticateSupabaseToken, invalidateCacheMiddleware([`${CACHE_
 				rating,
 				isPaid,
 				priceCents,
-				tags: {
-					create: tags.map((tagName: string) => ({
-						tag: {
-							connectOrCreate: {
-								where: { name: tagName },
-								create: { name: tagName },
-							},
-						},
-					})),
-				},
 				skills: {
 					create: skills.map((skillData: { skillId: string; relevance?: number }) => ({
 						skillId: skillData.skillId,
@@ -377,11 +311,6 @@ router.post("/", authenticateSupabaseToken, invalidateCacheMiddleware([`${CACHE_
 				},
 			},
 			include: {
-				tags: {
-					include: {
-						tag: true,
-					},
-				},
 				skills: {
 					include: {
 						skill: {
@@ -411,7 +340,7 @@ router.patch("/:id", authenticateSupabaseToken, invalidateCacheMiddleware([`${CA
 		}
 
 		const { id } = req.params;
-		const { title, description, aiSummary, provider, source, externalId, url, language, difficulty, durationMinutes, rating, isPaid, priceCents, tags, skills } = req.body;
+		const { title, description, aiSummary, provider, source, externalId, url, language, difficulty, durationMinutes, rating, isPaid, priceCents, skills } = req.body;
 
 		// ensure exists
 		const existingCourse = await prisma.course.findUnique({
@@ -460,25 +389,6 @@ router.patch("/:id", authenticateSupabaseToken, invalidateCacheMiddleware([`${CA
 		if (isPaid !== undefined) updateData.isPaid = isPaid;
 		if (priceCents !== undefined) updateData.priceCents = priceCents;
 
-		// tags update
-		if (tags !== undefined) {
-			// reset tags
-			await prisma.courseTag.deleteMany({
-				where: { courseId: id },
-			});
-
-			updateData.tags = {
-				create: tags.map((tagName: string) => ({
-					tag: {
-						connectOrCreate: {
-							where: { name: tagName },
-							create: { name: tagName },
-						},
-					},
-				})),
-			};
-		}
-
 		// skills update
 		if (skills !== undefined) {
 			// reset skills
@@ -498,11 +408,6 @@ router.patch("/:id", authenticateSupabaseToken, invalidateCacheMiddleware([`${CA
 			where: { id },
 			data: updateData,
 			include: {
-				tags: {
-					include: {
-						tag: true,
-					},
-				},
 				skills: {
 					include: {
 						skill: {
@@ -567,7 +472,7 @@ router.delete("/:id", authenticateSupabaseToken, async (req: AuthenticatedReques
 		}
 
 		// remove related associations then delete course in a transaction
-		await prisma.$transaction([prisma.courseTag.deleteMany({ where: { courseId: id } }), prisma.courseSkill.deleteMany({ where: { courseId: id } }), prisma.course.delete({ where: { id } })]);
+		await prisma.$transaction([prisma.courseSkill.deleteMany({ where: { courseId: id } }), prisma.course.delete({ where: { id } })]);
 
 		res.json({ message: "Course deleted successfully" });
 	} catch (error) {
@@ -609,7 +514,6 @@ router.post("/import/youtube", authenticateSupabaseToken, validate(extractSchema
 				// try playlist first (yt-dlp will handle single videos in playlists gracefully)
 				return await YouTubeService.ingestPlaylist(url, {
 					skillIds,
-					tags,
 					difficulty,
 					overrides,
 				});
@@ -618,7 +522,6 @@ router.post("/import/youtube", authenticateSupabaseToken, validate(extractSchema
 				console.log("Playlist ingestion failed, trying single video...");
 				return await YouTubeService.ingestSingleVideo(url, {
 					skillIds,
-					tags,
 					difficulty,
 					overrides,
 				});
@@ -660,16 +563,6 @@ router.get("/:id/lessons", async (req: Request, res: Response) => {
 						durationSeconds: true,
 						thumbnail: true,
 						createdAt: true,
-					},
-				},
-				tags: {
-					include: {
-						tag: {
-							select: {
-								id: true,
-								name: true,
-							},
-						},
 					},
 				},
 				skills: {
