@@ -47,6 +47,21 @@ export const changePasswordSchema = z.object({
 	}),
 });
 
+// oauth schemas
+export const oauthCallbackSchema = z.object({
+	query: z.object({
+		code: z.string().min(1, { message: "Authorization code is required" }),
+		state: z.string().min(1, { message: "State parameter is required" }),
+	}),
+});
+
+export const oauthInitiateSchema = z.object({
+	body: z.object({
+		provider: z.enum(["google"], { message: "Provider must be 'google'" }),
+		redirectUrl: z.string().url({ message: "Valid redirect URL is required" }).optional(),
+	}),
+});
+
 // user schemas
 export const getUserSchema = z.object({
 	params: z.object({
@@ -464,6 +479,10 @@ export const schemas = {
 	login: loginSchema,
 	refreshToken: refreshTokenSchema,
 	changePassword: changePasswordSchema,
+
+	// OAuth
+	oauthCallback: oauthCallbackSchema,
+	oauthInitiate: oauthInitiateSchema,
 
 	// Users
 	getUser: getUserSchema,

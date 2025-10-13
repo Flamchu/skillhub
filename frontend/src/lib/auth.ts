@@ -93,3 +93,38 @@ export async function getAccessToken(forceRefresh = false): Promise<string | nul
 
 	return localStorage.getItem("auth_token");
 }
+
+// google oauth functions
+export async function initiateGoogleLogin(): Promise<string> {
+	const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/oauth/initiate`, {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify({
+			provider: "google",
+			redirectUrl: `${window.location.origin}/auth/callback`,
+		}),
+	});
+
+	if (!response.ok) {
+		throw new Error("Failed to initiate Google login");
+	}
+
+	const data = await response.json();
+	return data.url;
+}
+
+export async function handleOAuthCallback(code: string, state: string) {
+	const response = await fetch(
+		`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/oauth/callback?code=${encodeURIComponent(code)}&state=${encodeURIComponent(state)}`,
+		{
+			method: "GET",
+			headers: { "Content-Type": "application/json" },
+		}
+	);
+
+	if (!response.ok) {
+		throw new Error("OAuth callback failed");
+	}
+
+	return response.json();
+}

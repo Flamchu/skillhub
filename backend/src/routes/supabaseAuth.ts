@@ -260,14 +260,117 @@ router.get("/me", authenticateSupabaseToken, async (req: AuthenticatedRequest, r
 		});
 
 		if (!userProfile) {
-			return res.status(404).json({ error: "User profile not found" });
+			console.error(`User profile not found for authenticated user ID: ${user.id}`);
+			return res.status(404).json({
+				error: "User profile not found",
+				details: "Profile exists in auth but not in database - this should not happen",
+			});
 		}
 
 		res.json({ user: userProfile });
 	} catch (error) {
-		console.error("Get user error:", error);
+		console.error("Get user profile error:", error);
 		res.status(500).json({ error: "Internal server error" });
 	}
 });
+
+// OAuth initiate endpoint - generates OAuth URL for frontend redirect
+router.post(
+	"/oauth/initiate",
+	authLimiter,
+	validate(extractSchemas(schemas.oauthInitiate)),
+	catchAsync(async (req: Request, res: Response) => {
+		const { provider, redirectUrl } = req.body;
+
+		if (provider !== "google") {
+			throw createError.badRequest("Only Google OAuth is supported");
+		}
+
+		try {
+			// Generate OAuth URL using Supabase
+			const { data, error } = await supabaseAuth.auth.signInWithOAuth({
+				provider: "google",
+				options: {
+					redirectTo: redirectUrl || `${process.env.FRONTEND_URL || "http://localhost:3000"}/auth/callback`,
+					queryParams: {
+						access_type: "offline",
+						prompt: "consent",
+					},
+				},
+			});
+
+			if (error) {
+				console.error("OAuth initiate error:", error);
+				throw createError.internalServerError("Failed to initiate OAuth flow");
+			}
+
+			res.json({
+				message: "OAuth URL generated successfully",
+				url: data.url,
+				provider: "google",
+			});
+		} catch (error) {
+			console.error("OAuth initiate error:", error);
+			throw createError.internalServerError("Failed to initiate OAuth flow");
+		}
+	})
+);
+
+// OAuth callback endpoint - handles the callback from OAuth provider
+router.get(
+	"/oauth/callback",
+	authLimiter,
+	validate(extractSchemas(schemas.oauthCallback)),
+	catchAsync(async (req: Request, res: Response) => {
+		const { code, state } = req.query;
+
+		try {
+			// Exchange code for session using Supabase
+			const { data, error } = await supabaseAuth.auth.exchangeCodeForSession(code as string);
+
+			if (error || !data.session || !data.user) {
+				console.error("OAuth callback error:", error);
+				throw createError.unauthorized("OAuth authentication failed");
+			}
+
+			const supabaseUser = data.user;
+
+			// Check if user profile already exists in our database
+			let userProfile = await prisma.user.findUnique({
+				where: { supabaseId: supabaseUser.id },
+				select: {
+					id: true,
+					email: true,
+					name: true,
+					role: true,
+					headline: true,
+					bio: true,
+					createdAt: true,
+				},
+			});
+
+			// If user doesn't exist, create profile from OAuth data
+			if (!userProfile) {
+				const email = supabaseUser.email || "";
+				const name = supabaseUser.user_metadata?.full_name || supabaseUser.user_metadata?.name || email.split("@")[0];
+
+				userProfile = await createUserProfile(supabaseUser.id, email, name);
+			}
+
+			res.json({
+				message: "OAuth login successful",
+				user: userProfile,
+				session: {
+					access_token: data.session.access_token,
+					refresh_token: data.session.refresh_token,
+					expires_at: data.session.expires_at,
+				},
+			});
+		} catch (error) {
+			console.error("OAuth callback error:", error);
+			throw createError.internalServerError("OAuth authentication failed");
+		}
+	})
+);
 
 export default router;

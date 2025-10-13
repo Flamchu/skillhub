@@ -32,7 +32,9 @@
 			"password": "Heslo",
 			"submit": "Přihlásit se",
 			"noAccount": "Nemáte účet?",
-			"signUp": "Registrujte se"
+			"signUp": "Registrujte se",
+			"or": "nebo",
+			"continueWithGoogle": "Pokračovat s Google"
 		},
 		"register": {
 			"title": "Vytvořit účet",
@@ -50,7 +52,13 @@
 			"invalidEmail": "Zadejte prosím platnou e-mailovou adresu",
 			"passwordTooShort": "Heslo musí mít alespoň 8 znaků",
 			"passwordsNoMatch": "Hesla se neshodují"
-		}
+		},
+		"completing_login": "Dokončování přihlášení",
+		"processing_authentication": "Zpracování vaší autentizace...",
+		"login_successful": "Přihlášení úspěšné!",
+		"redirecting_to_dashboard": "Přesměrování na váš dashboard...",
+		"login_failed": "Přihlášení se nezdařilo",
+		"redirecting_to_login": "Přesměrování zpět na přihlášení..."
 	},
 	"dashboard": {
 		"title": "Přehled",

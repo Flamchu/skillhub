@@ -49,15 +49,34 @@ export const authenticateSupabaseToken = async (req: AuthenticatedRequest, res: 
 
 		if (!dbUser) {
 			// user exists in supabase but not in database
-			// could happen for new users - might want to create them automatically
-			res.status(401).json({
-				error: "User profile not found. Please complete registration.",
-				supabaseUser: {
-					id: user.id,
-					email: user.email,
-				},
+			// automatically create profile for oauth users (google login)
+			console.log(`Creating new user profile for Supabase user: ${user.email}`, {
+				supabaseId: user.id,
+				email: user.email,
+				metadata: user.user_metadata,
 			});
-			return;
+
+			try {
+				const newUser = await createUserProfile(user.id, user.email || "", user.user_metadata?.full_name || user.user_metadata?.name || null);
+
+				req.user = {
+					id: newUser.id,
+					email: newUser.email || user.email || "",
+					role: newUser.role,
+					supabaseId: newUser.supabaseId!,
+				};
+
+				console.log(`✅ Auto-created user profile for OAuth user: ${user.email} (DB ID: ${newUser.id})`);
+				next();
+				return;
+			} catch (createError) {
+				console.error("Failed to auto-create user profile:", createError);
+				res.status(500).json({
+					error: "Failed to create user profile",
+					details: createError instanceof Error ? createError.message : "Unknown error",
+				});
+				return;
+			}
 		}
 
 		req.user = {
@@ -90,6 +109,8 @@ export const createUserProfile = async (supabaseId: string, email: string, name?
 				email: true,
 				name: true,
 				role: true,
+				headline: true,
+				bio: true,
 				supabaseId: true,
 				createdAt: true,
 			},

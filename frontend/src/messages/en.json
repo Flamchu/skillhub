@@ -32,7 +32,9 @@
 			"password": "Password",
 			"submit": "Sign In",
 			"noAccount": "Don't have an account?",
-			"signUp": "Sign up"
+			"signUp": "Sign up",
+			"or": "or",
+			"continueWithGoogle": "Continue with Google"
 		},
 		"register": {
 			"title": "Create Account",
@@ -50,7 +52,13 @@
 			"invalidEmail": "Please enter a valid email address",
 			"passwordTooShort": "Password must be at least 8 characters",
 			"passwordsNoMatch": "Passwords do not match"
-		}
+		},
+		"completing_login": "Completing Login",
+		"processing_authentication": "Processing your authentication...",
+		"login_successful": "Login Successful!",
+		"redirecting_to_dashboard": "Redirecting to your dashboard...",
+		"login_failed": "Login Failed",
+		"redirecting_to_login": "Redirecting back to login..."
 	},
 	"dashboard": {
 		"title": "Start Learning Today",
