@@ -1,13 +1,14 @@
 "use client";
 
 import { Button } from "@/components/ui/Button";
-import { Plus } from "lucide-react";
+import { Plus, Sparkles } from "lucide-react";
 
 interface SkillsHeaderProps {
 	onAddSkill: () => void;
+	onAISkills?: () => void;
 }
 
-export function SkillsHeader({ onAddSkill }: SkillsHeaderProps) {
+export function SkillsHeader({ onAddSkill, onAISkills }: SkillsHeaderProps) {
 	return (
 		<div className="flex justify-between items-center mb-8">
 			<div>
@@ -18,13 +19,25 @@ export function SkillsHeader({ onAddSkill }: SkillsHeaderProps) {
 					Track your professional skills and monitor your progress across different categories
 				</p>
 			</div>
-			<Button
-				onClick={onAddSkill}
-				className="bg-gradient-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
-			>
-				<Plus className="w-4 h-4 mr-2" />
-				Add New Skill
-			</Button>
+			<div className="flex gap-3">
+				{onAISkills && (
+					<Button
+						onClick={onAISkills}
+						variant="outline"
+						className="border-primary text-primary hover:bg-primary hover:text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+					>
+						<Sparkles className="w-4 h-4 mr-2" />
+						AI Skills
+					</Button>
+				)}
+				<Button
+					onClick={onAddSkill}
+					className="bg-gradient-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+				>
+					<Plus className="w-4 h-4 mr-2" />
+					Add New Skill
+				</Button>
+			</div>
 		</div>
 	);
 }

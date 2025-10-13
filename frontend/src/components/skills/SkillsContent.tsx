@@ -5,7 +5,9 @@ import { useRouter } from "next/navigation";
 
 import { useAuth } from "@/context/AuthProvider";
 import { LoadingState, ErrorState } from "@/components/ui";
-import { SkillsHeader, SkillsSearch, SkillsGrid, AddSkillModal, UpdateSkillModal } from "./";
+import { SuccessAnimation } from "@/components/ui/SuccessAnimation";
+import { SkillsHeader, SkillsSearch, SkillsGrid, AddSkillModal, UpdateSkillModal, AISkillGenerator } from "./";
+import type { AISkillSuggestion } from "@/types";
 
 interface UserSkill {
 	id: string;
@@ -37,9 +39,12 @@ export function SkillsContent() {
 	const [error, setError] = useState<string | null>(null);
 	const [showAddModal, setShowAddModal] = useState(false);
 	const [showUpdateModal, setShowUpdateModal] = useState(false);
+	const [showAIModal, setShowAIModal] = useState(false);
 	const [selectedSkill, setSelectedSkill] = useState<UserSkill | null>(null);
+	const [showSuccess, setShowSuccess] = useState(false);
+	const [successMessage, setSuccessMessage] = useState("");
 
-	// load available skills from api
+	// load available skills
 	const loadAvailableSkills = useCallback(async () => {
 		try {
 			const { api } = await import("@/lib/http");
@@ -50,7 +55,7 @@ export function SkillsContent() {
 		}
 	}, []);
 
-	// load user skills from api
+	// load user skills
 	const loadUserSkills = useCallback(async () => {
 		if (!user?.id) return;
 
@@ -116,6 +121,36 @@ export function SkillsContent() {
 		router.push(`/courses?skill=${skillId}`);
 	};
 
+	// handle ai generated skills
+	const handleAISkillsGenerated = async (skills: AISkillSuggestion[]) => {
+		if (!user?.id) return;
+
+		try {
+			// Add each selected skill to user profile
+			for (const skillSuggestion of skills) {
+				try {
+					await handleAddSkill(
+						skillSuggestion.skill.id,
+						skillSuggestion.suggestedProficiency === "NONE"
+							? "BASIC"
+							: (skillSuggestion.suggestedProficiency as "BASIC" | "INTERMEDIATE" | "ADVANCED" | "EXPERT")
+					);
+				} catch (error) {
+					console.warn(`Failed to add skill ${skillSuggestion.skill.name}:`, error);
+				}
+			}
+
+			// close AI modal and show success message
+			setShowAIModal(false);
+			setSuccessMessage(`Successfully added ${skills.length} skills to your profile!`);
+			setShowSuccess(true);
+		} catch (error) {
+			console.error("Failed to add AI generated skills:", error);
+			setSuccessMessage("Failed to add some skills. Please try again.");
+			setShowSuccess(true);
+		}
+	};
+
 	useEffect(() => {
 		loadUserSkills();
 		loadAvailableSkills();
@@ -144,7 +179,7 @@ export function SkillsContent() {
 	return (
 		<main className="py-8 pt-24">
 			<div className="max-w-7xl mx-auto px-6">
-				<SkillsHeader onAddSkill={() => setShowAddModal(true)} />
+				<SkillsHeader onAddSkill={() => setShowAddModal(true)} onAISkills={() => setShowAIModal(true)} />
 
 				<SkillsSearch searchQuery={searchQuery} onSearchChange={setSearchQuery} />
 
@@ -173,6 +208,28 @@ export function SkillsContent() {
 				skill={selectedSkill}
 				onUpdateSkill={handleUpdateSkillLevel}
 			/>
+
+			{/* AI Skills Modal */}
+			{showAIModal && (
+				<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+					<div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+						<div className="p-6">
+							<div className="flex justify-between items-center mb-6">
+								<h3 className="text-2xl font-bold text-gray-900 dark:text-white">AI Skill Generator</h3>
+								<button
+									onClick={() => setShowAIModal(false)}
+									className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-2xl"
+								>
+									×
+								</button>
+							</div>
+							<AISkillGenerator onSkillsGenerated={handleAISkillsGenerated} />
+						</div>
+					</div>
+				</div>
+			)}
+
+			<SuccessAnimation message={successMessage} isVisible={showSuccess} onComplete={() => setShowSuccess(false)} />
 		</main>
 	);
 }

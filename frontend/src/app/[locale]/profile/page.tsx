@@ -21,6 +21,7 @@ import {
 	Briefcase,
 } from "lucide-react";
 import type { Recommendation, AISkillSuggestion } from "@/types";
+import { SuccessAnimation } from "@/components/ui/SuccessAnimation";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -31,6 +32,8 @@ export default function ProfilePage() {
 	const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
 	const [loadingRecommendations, setLoadingRecommendations] = useState(false);
 	const [isEditing, setIsEditing] = useState(false);
+	const [showSuccess, setShowSuccess] = useState(false);
+	const [successMessage, setSuccessMessage] = useState("");
 
 	useEffect(() => {
 		if (!loading && !user) {
@@ -38,7 +41,7 @@ export default function ProfilePage() {
 			return;
 		}
 
-		// Check for tab parameter in URL
+		// check tab parameter
 		const urlParams = new URLSearchParams(window.location.search);
 		const tabParam = urlParams.get("tab");
 		if (tabParam && ["overview", "recommendations", "ai-skills", "settings"].includes(tabParam)) {
@@ -62,10 +65,49 @@ export default function ProfilePage() {
 		}
 	};
 
-	const handleSkillsGenerated = (_skills: AISkillSuggestion[]) => {
-		// Handle adding the generated skills to user profile
-		// TODO: Integrate with actual skill addition API
-		// This would call an API to add the selected skills to the user's profile
+	const handleSkillsGenerated = async (skills: AISkillSuggestion[]) => {
+		if (!user?.id) return;
+
+		try {
+			// import api client
+			const { api } = await import("@/lib/http");
+
+			// add skills to profile
+			for (const skillSuggestion of skills) {
+				try {
+					await api.addUserSkill(user.id, {
+						skillId: skillSuggestion.skill.id,
+						proficiency:
+							skillSuggestion.suggestedProficiency === "NONE" ? "BASIC" : skillSuggestion.suggestedProficiency,
+						progress:
+							skillSuggestion.suggestedProficiency === "NONE"
+								? 0
+								: skillSuggestion.suggestedProficiency === "BASIC"
+									? 25
+									: skillSuggestion.suggestedProficiency === "INTERMEDIATE"
+										? 50
+										: skillSuggestion.suggestedProficiency === "ADVANCED"
+											? 75
+											: 90,
+					});
+				} catch (error) {
+					// Log error but continue with other skills
+					console.warn(`Failed to add skill ${skillSuggestion.skill.name}:`, error);
+				}
+			}
+
+			// show success message and switch to overview tab
+			setSuccessMessage(`Successfully added ${skills.length} skills to your profile!`);
+			setShowSuccess(true);
+			setActiveTab("overview");
+
+			// Refresh recommendations since we added new skills
+			loadRecommendations();
+		} catch (error) {
+			console.error("Failed to add skills:", error);
+			setSuccessMessage("Failed to add some skills. Please try again.");
+			setShowSuccess(true);
+		}
 	};
 
 	if (loading) {
@@ -473,6 +515,7 @@ export default function ProfilePage() {
 					</div>
 				</div>
 			</main>
+			<SuccessAnimation message={successMessage} isVisible={showSuccess} onComplete={() => setShowSuccess(false)} />
 		</div>
 	);
 }

@@ -13,16 +13,16 @@ interface StatsCounterProps {
 
 function roundToNiceNumber(value: number): number {
 	if (value >= 10000) {
-		// Round to nearest thousand for values 10k+
+		// round to nearest thousand for values 10k+
 		return Math.round(value / 1000) * 1000;
 	} else if (value >= 1000) {
-		// Round to nearest hundred for values 1k-10k
+		// round to nearest hundred for values 1k-10k
 		return Math.round(value / 100) * 100;
 	} else if (value >= 100) {
-		// Round to nearest ten for values 100-1k
+		// round to nearest ten for values 100-1k
 		return Math.round(value / 10) * 10;
 	} else {
-		// Keep as-is for smaller values
+		// keep as-is for smaller values
 		return Math.round(value);
 	}
 }
@@ -37,7 +37,13 @@ function formatNumber(value: number): string {
 	}
 }
 
-export default function StatsCounter({ targetValue, suffix = "", duration = 2000, fetchFromAPI = true, apiKey }: StatsCounterProps) {
+export default function StatsCounter({
+	targetValue,
+	suffix = "",
+	duration = 2000,
+	fetchFromAPI = true,
+	apiKey,
+}: StatsCounterProps) {
 	const [currentValue, setCurrentValue] = useState(0);
 	const [finalValue, setFinalValue] = useState(targetValue);
 	const [isLoading, setIsLoading] = useState(fetchFromAPI);
@@ -49,13 +55,13 @@ export default function StatsCounter({ targetValue, suffix = "", duration = 2000
 				try {
 					setIsLoading(true);
 					const data = await api.getPublicStats();
-					// Extract the value based on the apiKey
+					// extract the value based on the apiKey
 					const apiValue = apiKey ? data[apiKey] : data;
 					const roundedValue = roundToNiceNumber(apiValue);
 					setFinalValue(roundedValue);
 				} catch (error) {
 					console.error("Failed to fetch stats:", error);
-					// Fallback to provided targetValue
+					// fallback to provided targetValue
 					setFinalValue(roundToNiceNumber(targetValue));
 				} finally {
 					setIsLoading(false);
@@ -79,7 +85,7 @@ export default function StatsCounter({ targetValue, suffix = "", duration = 2000
 			if (!startTime) startTime = timestamp;
 			const progress = Math.min((timestamp - startTime) / duration, 1);
 
-			// Easing function for smooth animation
+			// easing function for smooth animation
 			const easeOutQuart = 1 - Math.pow(1 - progress, 4);
 			const value = Math.floor(finalValue * easeOutQuart);
 
@@ -102,7 +108,7 @@ export default function StatsCounter({ targetValue, suffix = "", duration = 2000
 	if (isLoading) {
 		return (
 			<div className="animate-pulse">
-				<div className="h-12 bg-gradient-to-br from-primary/20 to-purple/20 rounded"></div>
+				<div className="h-12 bg-gradient-to-br from-primary/20 to-purple/20 rounded" />
 			</div>
 		);
 	}

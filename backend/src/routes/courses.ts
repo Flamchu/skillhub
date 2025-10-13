@@ -15,7 +15,7 @@ interface AuthenticatedValidatedRequest extends AuthenticatedRequest, ValidatedR
 
 const router = Router();
 
-// get user's enrolled courses (protected)
+// get user enrollments
 router.get("/enrollments", authenticateSupabaseToken, validate(extractSchemas(schemas.getUserEnrollments)), async (req: AuthenticatedValidatedRequest, res: Response) => {
 	try {
 		const userId = req.user?.id;
@@ -83,7 +83,7 @@ router.get("/enrollments", authenticateSupabaseToken, validate(extractSchemas(sc
 // get courses
 router.get("/", cache(cacheConfigs.coursesList), async (req: Request, res: Response) => {
 	try {
-		const { skillId, tag, difficulty, freeOnly = "false", provider, source, language = "en", minRating, maxDuration, search, page = "1", limit = "20", sortBy = "createdAt", sortOrder = "desc" } = req.query;
+		const { skillId, skillTags, tag, difficulty, freeOnly = "false", provider, source, language = "en", minRating, maxDuration, search, page = "1", limit = "20", sortBy = "createdAt", sortOrder = "desc" } = req.query;
 
 		// where clause
 		const where: any = {};
@@ -92,6 +92,26 @@ router.get("/", cache(cacheConfigs.coursesList), async (req: Request, res: Respo
 			where.skills = {
 				some: {
 					skillId: skillId as string,
+				},
+			};
+		}
+
+		// filter by skill tags
+		if (skillTags) {
+			const tagArray = Array.isArray(skillTags) ? skillTags.map((t) => String(t)) : String(skillTags).split(",");
+			where.skills = {
+				some: {
+					skill: {
+						tags: {
+							some: {
+								tag: {
+									name: {
+										in: tagArray,
+									},
+								},
+							},
+						},
+					},
 				},
 			};
 		}
@@ -289,7 +309,7 @@ router.get("/:id", async (req: Request, res: Response) => {
 	}
 });
 
-// create course (admin)
+// create course
 router.post("/", authenticateSupabaseToken, invalidateCacheMiddleware([`${CACHE_KEYS.COURSES_LIST}:*`]), async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		if (req.user?.role !== "ADMIN") {
@@ -383,7 +403,7 @@ router.post("/", authenticateSupabaseToken, invalidateCacheMiddleware([`${CACHE_
 	}
 });
 
-// update course (admin)
+// update course
 router.patch("/:id", authenticateSupabaseToken, invalidateCacheMiddleware([`${CACHE_KEYS.COURSES_LIST}:*`, `${CACHE_KEYS.COURSE_DETAIL}:*`]), async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		if (req.user?.role !== "ADMIN") {
@@ -504,7 +524,7 @@ router.patch("/:id", authenticateSupabaseToken, invalidateCacheMiddleware([`${CA
 	}
 });
 
-// delete course (admin)
+// delete course
 router.delete("/:id", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		if (req.user?.role !== "ADMIN") {
@@ -763,7 +783,7 @@ router.patch("/lessons/:lessonId/progress", authenticateSupabaseToken, validate(
 	}
 });
 
-// enroll in a course (protected)
+// enroll in course
 router.post("/:courseId/enroll", authenticateSupabaseToken, validate(extractSchemas(schemas.enrollCourse)), async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		const { courseId } = req.params;

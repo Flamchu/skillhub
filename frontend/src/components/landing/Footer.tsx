@@ -15,7 +15,10 @@ function SocialLink({ href, colorScheme, children }: SocialLinkProps) {
 	};
 
 	return (
-		<a href={href} className={`group w-14 h-14 ${colorClasses[colorScheme]} rounded-xl flex items-center justify-center hover:scale-110 transition-all duration-300 shadow-lg hover:shadow-xl`}>
+		<a
+			href={href}
+			className={`group w-14 h-14 ${colorClasses[colorScheme]} rounded-xl flex items-center justify-center hover:scale-110 transition-all duration-300 shadow-lg hover:shadow-xl`}
+		>
 			<div className="w-6 h-6 text-white group-hover:scale-110 transition-transform">{children}</div>
 		</a>
 	);
@@ -28,9 +31,9 @@ export function Footer() {
 		<footer className="relative bg-gradient-to-br from-primary/5 via-purple/5 to-pink/5 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 border-t border-primary/20 dark:border-gray-700 py-20 px-6 mt-32 overflow-hidden">
 			{/* Decorative Background */}
 			<div className="absolute inset-0 opacity-20">
-				<div className="absolute top-10 left-10 w-20 h-20 bg-gradient-to-br from-primary to-purple rounded-full blur-xl"></div>
-				<div className="absolute top-32 right-20 w-32 h-32 bg-gradient-to-br from-success to-info rounded-full blur-xl"></div>
-				<div className="absolute bottom-20 left-1/3 w-24 h-24 bg-gradient-to-br from-warning to-pink rounded-full blur-xl"></div>
+				<div className="absolute top-10 left-10 w-20 h-20 bg-gradient-to-br from-primary to-purple rounded-full blur-xl" />
+				<div className="absolute top-32 right-20 w-32 h-32 bg-gradient-to-br from-success to-info rounded-full blur-xl" />
+				<div className="absolute bottom-20 left-1/3 w-24 h-24 bg-gradient-to-br from-warning to-pink rounded-full blur-xl" />
 			</div>
 
 			<div className="relative max-w-6xl mx-auto text-center">
@@ -38,7 +41,12 @@ export function Footer() {
 					<div className="w-12 h-12 bg-gradient-to-br from-primary to-purple rounded-2xl flex items-center justify-center shadow-lg">
 						<svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5z" />
-							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m12 14 6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth={2}
+								d="m12 14 6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"
+							/>
 						</svg>
 					</div>
 					<h3 className="text-3xl font-bold text-primary">SkillHub</h3>
@@ -47,13 +55,22 @@ export function Footer() {
 				<p className="text-gray-600 dark:text-gray-300 mb-12 text-xl max-w-2xl mx-auto">{t("description")}</p>
 
 				<div className="flex justify-center gap-8 text-gray-600 dark:text-gray-300 mb-12">
-					<a href="#" className="group hover:text-primary transition-all duration-300 rounded-xl px-6 py-3 hover:bg-primary/10 dark:hover:bg-primary/20 hover:scale-105 transform font-medium">
+					<a
+						href="#"
+						className="group hover:text-primary transition-all duration-300 rounded-xl px-6 py-3 hover:bg-primary/10 dark:hover:bg-primary/20 hover:scale-105 transform font-medium"
+					>
 						{t("about")}
 					</a>
-					<a href="#" className="group hover:text-success transition-all duration-300 rounded-xl px-6 py-3 hover:bg-success/10 dark:hover:bg-success/20 hover:scale-105 transform font-medium">
+					<a
+						href="#"
+						className="group hover:text-success transition-all duration-300 rounded-xl px-6 py-3 hover:bg-success/10 dark:hover:bg-success/20 hover:scale-105 transform font-medium"
+					>
 						{t("contact")}
 					</a>
-					<a href="#" className="group hover:text-info transition-all duration-300 rounded-xl px-6 py-3 hover:bg-info/10 dark:hover:bg-info/20 hover:scale-105 transform font-medium">
+					<a
+						href="#"
+						className="group hover:text-info transition-all duration-300 rounded-xl px-6 py-3 hover:bg-info/10 dark:hover:bg-info/20 hover:scale-105 transform font-medium"
+					>
 						Privacy
 					</a>
 				</div>

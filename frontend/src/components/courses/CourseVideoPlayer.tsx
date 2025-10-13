@@ -146,7 +146,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoPlayerProps>(
 					clearInterval(timeUpdateIntervalRef.current);
 				}
 			};
-		}, [videoId, onTimeUpdate]);
+		}, [videoId, onTimeUpdate, startTime]);
 		if (!videoId) {
 			return (
 				<div className="bg-surface/60 dark:bg-gray-800/60 backdrop-blur-sm border border-border/20 rounded-2xl p-8 shadow-lg">

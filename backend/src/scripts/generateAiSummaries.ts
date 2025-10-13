@@ -1,10 +1,7 @@
 import { prisma } from "../config/database";
 import { aiSummaryService } from "../services/aiSummaryService";
 
-/**
- * Utility script to generate AI summaries for existing courses
- * that don't have them yet
- */
+// generate ai summaries for courses without them
 async function generateMissingAiSummaries() {
 	try {
 		console.log("🤖 Starting AI summary generation for existing courses...");
@@ -48,7 +45,7 @@ async function generateMissingAiSummaries() {
 					failureCount++;
 				}
 
-				// rate limiting - wait between requests to avoid overwhelming the API
+				// rate limiting
 				await new Promise((resolve) => setTimeout(resolve, 1000));
 			} catch (error) {
 				console.error(`❌ Failed to process ${course.title}:`, error);

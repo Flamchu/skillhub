@@ -28,7 +28,7 @@ class AnalyticsService {
 		};
 
 		if (process.env.NODE_ENV === "development") {
-			console.debug("[analytics]", analyticsEvent);
+			console.warn("[analytics]", analyticsEvent);
 		}
 
 		if (this.isEnabled) {

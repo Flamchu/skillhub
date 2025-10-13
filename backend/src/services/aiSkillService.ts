@@ -16,7 +16,7 @@ interface AISkillResponse {
 	analysis: string;
 }
 
-// local ai service configuration
+// ai service config
 const LOCAL_AI_SERVICE_URL = env.LOCAL_AI_SERVICE_URL || "http://localhost:8000";
 const AI_SERVICE_ENABLED = env.AI_SERVICE_ENABLED !== "false";
 
@@ -28,6 +28,7 @@ export async function generateAISkillSuggestions(prompt: string, availableSkills
 	// try local ai service first if enabled
 	if (AI_SERVICE_ENABLED) {
 		try {
+			2;
 			console.log("[AI SERVICE] Using Local AI Service with sentence-transformers for skill recommendations");
 			return await generateLocalAISkillSuggestions(prompt, availableSkills);
 		} catch (error) {
@@ -41,7 +42,7 @@ export async function generateAISkillSuggestions(prompt: string, availableSkills
 	return generateRuleBasedSuggestions(prompt, availableSkills);
 }
 
-// local ai service using sentence-transformers
+// local ai service with sentence-transformers
 async function generateLocalAISkillSuggestions(prompt: string, availableSkills: Array<{ name: string; slug: string; description?: string }>): Promise<AISkillResponse> {
 	const headers: Record<string, string> = {
 		"Content-Type": "application/json",
@@ -187,10 +188,14 @@ function generateRuleBasedSuggestions(prompt: string, availableSkills: Array<{ n
 
 	// determine experience level
 	let baseProficiency: ProficiencyLevel = "BASIC";
-	const beginnerKeywords = ["new", "start", "learn", "beginning", "first time", "never", "beginner", "complete beginner"];
-	if (beginnerKeywords.some((k) => normalizedPrompt.includes(k))) {
+	const beginnerKeywords = ["new", "start", "learn", "beginning", "first time", "never", "beginner", "complete beginner", "no experience", "just starting"];
+	const completeBeginnerKeywords = ["complete beginner", "no experience", "never used", "starting from scratch", "absolute beginner"];
+
+	if (completeBeginnerKeywords.some((k) => normalizedPrompt.includes(k))) {
 		baseProficiency = "NONE";
-	} else if (normalizedPrompt.includes("experienced") || normalizedPrompt.includes("advanced")) {
+	} else if (beginnerKeywords.some((k) => normalizedPrompt.includes(k))) {
+		baseProficiency = "BASIC";
+	} else if (normalizedPrompt.includes("experienced") || normalizedPrompt.includes("advanced") || normalizedPrompt.includes("expert")) {
 		baseProficiency = "INTERMEDIATE";
 	}
 

@@ -6,10 +6,10 @@ import { prisma } from "../config/database";
 
 const router = Router();
 
-// get all skills with optional filtering and hierarchy
+// get skills with filtering and hierarchy
 router.get("/", cache(cacheConfigs.skillsList), async (req: Request, res: Response) => {
 	try {
-		const { includeChildren = "false", parentId, search, sortBy = "name", sortOrder = "asc" } = req.query;
+		const { includeChildren = "false", parentId, search, sortBy = "name", sortOrder = "asc", tags, category } = req.query;
 
 		// build where clause
 		const where: any = {};
@@ -19,7 +19,16 @@ router.get("/", cache(cacheConfigs.skillsList), async (req: Request, res: Respon
 		}
 
 		if (search) {
-			where.OR = [{ name: { contains: search as string, mode: "insensitive" } }, { description: { contains: search as string, mode: "insensitive" } }, { slug: { contains: search as string, mode: "insensitive" } }];
+			where.OR = [{ name: { contains: search as string, mode: "insensitive" } }, { description: { contains: search as string, mode: "insensitive" } }, { slug: { contains: search as string, mode: "insensitive" } }, { tags: { some: { tag: { name: { contains: search as string, mode: "insensitive" } } } } }];
+		}
+
+		// filter by tags
+		if (tags) {
+			const tagArray = Array.isArray(tags) ? tags.map((t) => String(t)) : String(tags).split(",");
+			where.tags = { some: { tag: { name: { in: tagArray } } } };
+		} // filter by category
+		if (category) {
+			where.category = category as string;
 		}
 
 		// build order by
@@ -45,7 +54,7 @@ router.get("/", cache(cacheConfigs.skillsList), async (req: Request, res: Respon
 									slug: true,
 									description: true,
 								},
-						  }
+							}
 						: false,
 				_count: {
 					select: {
@@ -65,7 +74,7 @@ router.get("/", cache(cacheConfigs.skillsList), async (req: Request, res: Respon
 	}
 });
 
-// get skill by id with full details
+// get skill by id
 router.get("/:id", async (req: Request, res: Response) => {
 	try {
 		const { id } = req.params;
@@ -188,7 +197,7 @@ router.get("/:id", async (req: Request, res: Response) => {
 	}
 });
 
-// get skills hierarchy (root skills with nested children)
+// get skills hierarchy
 router.get("/hierarchy/tree", cache(cacheConfigs.skillsHierarchy), async (_req, res: Response) => {
 	try {
 		const rootSkills = await prisma.skill.findMany({
@@ -223,7 +232,7 @@ router.get("/hierarchy/tree", cache(cacheConfigs.skillsHierarchy), async (_req, 
 	}
 });
 
-// search skills with advanced filtering
+// search skills
 router.get("/search/advanced", async (req: Request, res: Response) => {
 	try {
 		const {
@@ -553,6 +562,69 @@ router.delete("/:id", authenticateSupabaseToken, async (req: AuthenticatedReques
 		res.json({ message: "Skill deleted successfully" });
 	} catch (error) {
 		console.error("Delete skill error:", error);
+		res.status(500).json({ error: "Internal server error" });
+	}
+});
+
+// get categories
+router.get("/categories", cache(cacheConfigs.skillsList), async (req: Request, res: Response) => {
+	try {
+		const categories = await prisma.skill.groupBy({
+			by: ["category"],
+			_count: {
+				id: true,
+			},
+			orderBy: {
+				_count: {
+					id: "desc",
+				},
+			},
+		});
+
+		const categoryData = categories
+			.filter((cat) => cat.category) // Remove null categories
+			.map((cat) => ({
+				name: cat.category,
+				count: cat._count.id,
+			}));
+
+		res.json({ categories: categoryData });
+	} catch (error) {
+		console.error("Get skill categories error:", error);
+		res.status(500).json({ error: "Internal server error" });
+	}
+});
+
+// get popular tags
+router.get("/tags", cache(cacheConfigs.skillsList), async (req: Request, res: Response) => {
+	try {
+		// Get tag counts from SkillTag relationships
+		const tagCounts = await prisma.tag.findMany({
+			include: {
+				_count: {
+					select: {
+						skills: true,
+					},
+				},
+			},
+			orderBy: {
+				skills: {
+					_count: "desc",
+				},
+			},
+			take: 50, // Top 50 tags
+		});
+
+		const popularTags = tagCounts
+			.filter((tag) => tag._count.skills > 0) // Only tags with skills
+			.map((tag) => ({
+				name: tag.name,
+				count: tag._count.skills,
+			}));
+
+		res.json({ tags: popularTags });
+	} catch (error) {
+		console.error("Get skill tags error:", error);
 		res.status(500).json({ error: "Internal server error" });
 	}
 });

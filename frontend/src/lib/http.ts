@@ -24,11 +24,11 @@ export const http = axios.create({
 });
 
 http.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
-	// ensure headers is an axiosheaders instance
+	// ensure headers is axiosheaders
 	if (!config.headers) {
 		config.headers = new AxiosHeaders();
 	} else if (!(config.headers instanceof AxiosHeaders)) {
-		// convert plain object to AxiosHeaders
+		// convert to axiosheaders
 		config.headers = new AxiosHeaders(config.headers as Record<string, string>);
 	}
 	(config.headers as AxiosHeaders).set("X-Request-Id", nanoid());
@@ -69,7 +69,7 @@ axiosRetry(http, {
 	retryCondition: err => !err.response || err.response.status >= 500,
 });
 
-// example helpers for typed responses
+// typed api helpers
 export const api = {
 	getSkill: <T = unknown>(id: string) => http.get<T>(`/skills/${id}`).then(r => r.data),
 	listSkills: <T = unknown>(params?: QueryParams) => http.get<T>("/skills", { params }).then(r => r.data),
@@ -99,6 +99,8 @@ export const api = {
 	// user skills api (protected)
 	getUserSkills: (userId: string, params?: QueryParams) =>
 		http.get(`/users/${userId}/skills`, { params }).then(r => r.data),
+	addUserSkill: (userId: string, data: { skillId: string; proficiency?: string; progress?: number }) =>
+		http.post(`/users/${userId}/skills`, data).then(r => r.data),
 	updateUserSkill: (userId: string, skillId: string, data: { proficiency?: string; progress?: number }) =>
 		http.patch(`/users/${userId}/skills/${skillId}`, data).then(r => r.data),
 
