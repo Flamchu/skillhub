@@ -378,16 +378,70 @@ router.post("/ai-skills", authenticateSupabaseToken, async (req: AuthenticatedRe
 			return res.status(400).json({ error: "Prompt is required" });
 		}
 
-		// for now, return a simple response since we don't have AI skill generation yet
-		// this can be enhanced with actual AI service integration
+		// import AI skill service
+		const { generateAISkillSuggestions } = await import("../services/aiSkillService");
+
+		// get available skills from database
+		const dbSkills = await prisma.skill.findMany({
+			select: {
+				id: true,
+				name: true,
+				slug: true,
+				description: true,
+			},
+		});
+
+		// map to format expected by AI service
+		const availableSkills = dbSkills.map((skill) => ({
+			name: skill.name,
+			slug: skill.slug,
+			description: skill.description || undefined,
+		}));
+
+		// generate AI skill suggestions
+		console.log(`[AI SKILLS] Generating suggestions for user ${userId} with prompt: "${prompt}"`);
+		const aiResponse = await generateAISkillSuggestions(prompt, availableSkills);
+
+		// map AI suggestions to our response format
+		const skillSuggestions = await Promise.all(
+			aiResponse.skills.map(async (suggestion) => {
+				// find the skill in database by name or slug
+				const skill = dbSkills.find((s) => s.slug === suggestion.skillSlug || s.name.toLowerCase() === suggestion.skillName.toLowerCase());
+
+				if (!skill) {
+					console.warn(`[AI SKILLS] Skill not found in database: ${suggestion.skillName}`);
+					return null;
+				}
+
+				return {
+					skill: {
+						id: skill.id,
+						name: skill.name,
+						slug: skill.slug,
+						description: skill.description,
+					},
+					suggestedProficiency: suggestion.suggestedProficiency,
+					reason: suggestion.reason,
+					priority: suggestion.priority,
+				};
+			})
+		);
+
+		// filter out null results and sort by priority
+		const validSuggestions = skillSuggestions.filter((s): s is NonNullable<typeof s> => s !== null).sort((a, b) => b.priority - a.priority);
+
 		res.json({
-			skills: [],
-			message: "AI skill generation is not yet implemented",
+			skills: validSuggestions,
+			analysis: aiResponse.analysis,
 			prompt,
+			totalSuggestions: validSuggestions.length,
 		});
 	} catch (error) {
 		console.error("AI skills generation error:", error);
-		res.status(500).json({ error: "Internal server error" });
+		res.status(500).json({
+			error: "Failed to generate skill suggestions",
+			details: error instanceof Error ? error.message : "Unknown error",
+		});
 	}
 });
 

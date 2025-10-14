@@ -251,3 +251,26 @@ export interface EnrollmentsResponse {
 		hasPrev: boolean;
 	};
 }
+
+export interface UserActivity {
+	id: string;
+	type: "enrollment" | "progress" | "completion";
+	title: string;
+	description: string;
+	courseId?: string;
+	courseTitle?: string;
+	lessonId?: string;
+	lessonTitle?: string;
+	provider?: string;
+	progressPercent?: number;
+	completed?: boolean;
+	timestamp: string;
+	timeAgo: string;
+	icon: "BookOpen" | "Play" | "CheckCircle" | "Award";
+}
+
+export interface UserActivityResponse {
+	userId: string;
+	activity: UserActivity[];
+	totalCount: number;
+}

@@ -128,3 +128,26 @@ export async function handleOAuthCallback(code: string, state: string) {
 
 	return response.json();
 }
+
+// fetch user activity
+export async function fetchUserActivity(userId: string, limit = 10) {
+	const token = localStorage.getItem("auth_token");
+
+	if (!token) {
+		throw new Error("No authentication token found");
+	}
+
+	const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/${userId}/activity?limit=${limit}`, {
+		method: "GET",
+		headers: {
+			Authorization: `Bearer ${token}`,
+			"Content-Type": "application/json",
+		},
+	});
+
+	if (!response.ok) {
+		throw new Error("Failed to fetch user activity");
+	}
+
+	return response.json();
+}

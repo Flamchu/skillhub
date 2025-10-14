@@ -19,8 +19,11 @@ import {
 	Eye,
 	Mail,
 	Briefcase,
+	CheckCircle,
+	Play,
 } from "lucide-react";
-import type { Recommendation, AISkillSuggestion } from "@/types";
+import type { Recommendation, AISkillSuggestion, UserActivity, UserActivityResponse } from "@/types";
+import { fetchUserActivity } from "@/lib/auth";
 import { SuccessAnimation } from "@/components/ui/SuccessAnimation";
 import Image from "next/image";
 import Link from "next/link";
@@ -34,6 +37,8 @@ export default function ProfilePage() {
 	const [isEditing, setIsEditing] = useState(false);
 	const [showSuccess, setShowSuccess] = useState(false);
 	const [successMessage, setSuccessMessage] = useState("");
+	const [userActivity, setUserActivity] = useState<UserActivity[]>([]);
+	const [loadingActivity, setLoadingActivity] = useState(false);
 
 	useEffect(() => {
 		if (!loading && !user) {
@@ -50,6 +55,21 @@ export default function ProfilePage() {
 
 		if (user) {
 			loadRecommendations();
+
+			// load user activity
+			const loadActivity = async () => {
+				try {
+					setLoadingActivity(true);
+					const data: UserActivityResponse = await fetchUserActivity(user.id, 8);
+					setUserActivity(data.activity);
+				} catch (error) {
+					console.error("Failed to load user activity:", error);
+				} finally {
+					setLoadingActivity(false);
+				}
+			};
+
+			loadActivity();
 		}
 	}, [user, loading, router]);
 
@@ -273,28 +293,78 @@ export default function ProfilePage() {
 								{/* Recent Activity */}
 								<div>
 									<h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Recent Activity</h3>
-									<div className="space-y-3">
-										<div className="flex items-center space-x-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-											<div className="w-10 h-10 bg-success rounded-full flex items-center justify-center">
-												<Award className="w-5 h-5 text-white" />
-											</div>
-											<div className="flex-1">
-												<p className="font-medium text-gray-900 dark:text-gray-100">
-													Completed JavaScript Fundamentals
-												</p>
-												<p className="text-sm text-gray-500 dark:text-gray-400">2 days ago</p>
-											</div>
+									{loadingActivity ? (
+										<div className="space-y-3">
+											{[1, 2, 3].map(i => (
+												<div
+													key={i}
+													className="flex items-center space-x-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg animate-pulse"
+												>
+													<div className="w-10 h-10 bg-gray-300 dark:bg-gray-600 rounded-full" />
+													<div className="flex-1 space-y-2">
+														<div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-3/4" />
+														<div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2" />
+													</div>
+												</div>
+											))}
 										</div>
-										<div className="flex items-center space-x-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-											<div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
-												<BookOpen className="w-5 h-5 text-white" />
-											</div>
-											<div className="flex-1">
-												<p className="font-medium text-gray-900 dark:text-gray-100">Enrolled in React Mastery Course</p>
-												<p className="text-sm text-gray-500 dark:text-gray-400">5 days ago</p>
-											</div>
+									) : userActivity.length > 0 ? (
+										<div className="space-y-3">
+											{userActivity.map(activity => {
+												const getActivityIcon = () => {
+													switch (activity.icon) {
+														case "Award":
+															return <Award className="w-5 h-5 text-white" />;
+														case "CheckCircle":
+															return <CheckCircle className="w-5 h-5 text-white" />;
+														case "Play":
+															return <Play className="w-5 h-5 text-white" />;
+														case "BookOpen":
+														default:
+															return <BookOpen className="w-5 h-5 text-white" />;
+													}
+												};
+
+												const getActivityColor = () => {
+													switch (activity.type) {
+														case "completion":
+															return "bg-success";
+														case "progress":
+															return activity.completed ? "bg-success" : "bg-primary";
+														case "enrollment":
+														default:
+															return "bg-primary";
+													}
+												};
+
+												return (
+													<div
+														key={activity.id}
+														className="flex items-center space-x-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg"
+													>
+														<div
+															className={`w-10 h-10 ${getActivityColor()} rounded-full flex items-center justify-center`}
+														>
+															{getActivityIcon()}
+														</div>
+														<div className="flex-1">
+															<p className="font-medium text-gray-900 dark:text-gray-100">{activity.title}</p>
+															<p className="text-sm text-gray-600 dark:text-gray-300">{activity.description}</p>
+															<p className="text-sm text-gray-500 dark:text-gray-400">{activity.timeAgo}</p>
+														</div>
+													</div>
+												);
+											})}
 										</div>
-									</div>
+									) : (
+										<div className="p-8 text-center bg-gray-50 dark:bg-gray-700 rounded-lg">
+											<BookOpen className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+											<p className="text-gray-500 dark:text-gray-400">No recent activity</p>
+											<p className="text-sm text-gray-400 dark:text-gray-500">
+												Start learning to see your progress here
+											</p>
+										</div>
+									)}
 								</div>
 
 								{/* Current Learning Path */}

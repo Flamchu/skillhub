@@ -379,6 +379,192 @@ router.get("/:id/stats", authenticateSupabaseToken, async (req: AuthenticatedReq
 	}
 });
 
+// get user recent activity (protected, only own activity or admin)
+router.get("/:id/activity", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
+	try {
+		const { id } = req.params;
+		const currentUser = req.user!;
+		const { limit = "10" } = req.query;
+
+		// users can only access their own activity unless they're admin
+		if (currentUser.id !== id && currentUser.role !== "ADMIN") {
+			return res.status(403).json({ error: "Access denied" });
+		}
+
+		const user = await prisma.user.findUnique({
+			where: { id },
+		});
+
+		if (!user) {
+			return res.status(404).json({ error: "User not found" });
+		}
+
+		const limitNum = Math.min(parseInt(limit as string), 50); // max 50 items
+
+		// get recent enrollments and progress
+		const [recentEnrollments, recentProgress, recentCompletions] = await Promise.all([
+			// recent course enrollments
+			prisma.enrollment.findMany({
+				where: {
+					userId: id,
+					enrolledAt: {
+						gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // last 30 days
+					},
+				},
+				include: {
+					course: {
+						select: {
+							id: true,
+							title: true,
+							provider: true,
+							source: true,
+						},
+					},
+				},
+				orderBy: { enrolledAt: "desc" },
+				take: limitNum,
+			}),
+
+			// recent lesson progress
+			prisma.userProgress.findMany({
+				where: {
+					userId: id,
+					lastAccessedAt: {
+						gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // last 30 days
+					},
+				},
+				include: {
+					lesson: {
+						select: {
+							id: true,
+							title: true,
+							course: {
+								select: {
+									id: true,
+									title: true,
+								},
+							},
+						},
+					},
+				},
+				orderBy: { lastAccessedAt: "desc" },
+				take: limitNum,
+			}),
+
+			// recent course completions
+			prisma.enrollment.findMany({
+				where: {
+					userId: id,
+					isCompleted: true,
+					completedAt: {
+						not: null,
+						gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // last 30 days
+					},
+				},
+				include: {
+					course: {
+						select: {
+							id: true,
+							title: true,
+							provider: true,
+							source: true,
+						},
+					},
+				},
+				orderBy: { completedAt: "desc" },
+				take: limitNum,
+			}),
+		]);
+
+		// format activity items
+		const activity: any[] = [
+			// enrollments
+			...recentEnrollments.map((enrollment) => ({
+				id: enrollment.id,
+				type: "enrollment",
+				title: `Enrolled in ${enrollment.course.title}`,
+				description: `Started learning ${enrollment.course.title}`,
+				courseId: enrollment.course.id,
+				courseTitle: enrollment.course.title,
+				provider: enrollment.course.provider,
+				timestamp: enrollment.enrolledAt,
+				icon: "BookOpen",
+			})),
+
+			// lesson progress
+			...recentProgress
+				.filter((p) => p.progressPercent && p.progressPercent > 0) // only actual progress
+				.map((progress) => ({
+					id: progress.id,
+					type: "progress",
+					title: progress.completed ? `Completed "${progress.lesson.title}"` : `Progress in "${progress.lesson.title}"`,
+					description: progress.completed ? `Finished lesson in ${progress.lesson.course.title}` : `Made progress in ${progress.lesson.course.title} (${progress.progressPercent}%)`,
+					courseId: progress.lesson.course.id,
+					courseTitle: progress.lesson.course.title,
+					lessonId: progress.lesson.id,
+					lessonTitle: progress.lesson.title,
+					progressPercent: progress.progressPercent,
+					completed: progress.completed,
+					timestamp: progress.lastAccessedAt,
+					icon: progress.completed ? "CheckCircle" : "Play",
+				})),
+
+			// course completions
+			...recentCompletions
+				.filter((completion) => completion.completedAt !== null) // ensure completedAt exists
+				.map((completion) => ({
+					id: completion.id + "_completed",
+					type: "completion",
+					title: `Completed ${completion.course.title}`,
+					description: `Successfully finished the entire course`,
+					courseId: completion.course.id,
+					courseTitle: completion.course.title,
+					provider: completion.course.provider,
+					timestamp: completion.completedAt!,
+					icon: "Award",
+				})),
+		]
+			.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+			.slice(0, limitNum);
+
+		// format timestamps
+		const formattedActivity = activity.map((item) => ({
+			...item,
+			timeAgo: formatTimeAgo(new Date(item.timestamp)),
+			timestamp: item.timestamp,
+		}));
+
+		res.json({
+			userId: id,
+			activity: formattedActivity,
+			totalCount: formattedActivity.length,
+		});
+	} catch (error) {
+		console.error("Get user activity error:", error);
+		res.status(500).json({ error: "Internal server error" });
+	}
+});
+
+// helper function to format relative time
+function formatTimeAgo(date: Date): string {
+	const now = new Date();
+	const diffInMs = now.getTime() - date.getTime();
+	const diffInMins = Math.floor(diffInMs / (1000 * 60));
+	const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
+	const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+
+	if (diffInMins < 1) return "just now";
+	if (diffInMins < 60) return `${diffInMins} minute${diffInMins > 1 ? "s" : ""} ago`;
+	if (diffInHours < 24) return `${diffInHours} hour${diffInHours > 1 ? "s" : ""} ago`;
+	if (diffInDays < 7) return `${diffInDays} day${diffInDays > 1 ? "s" : ""} ago`;
+	if (diffInDays < 30) {
+		const weeks = Math.floor(diffInDays / 7);
+		return `${weeks} week${weeks > 1 ? "s" : ""} ago`;
+	}
+	const months = Math.floor(diffInDays / 30);
+	return `${months} month${months > 1 ? "s" : ""} ago`;
+}
+
 // get users list (admin only, with pagination and filtering)
 router.get("/", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
 	try {
