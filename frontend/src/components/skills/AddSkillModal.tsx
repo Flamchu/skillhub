@@ -64,13 +64,8 @@ export function AddSkillModal({ isOpen, onClose, availableSkills, onAddSkill }: 
 	};
 
 	const handleApplyVerification = async () => {
-		// skill added by backend when applying
+		// skill added by backend when applying verification
 		handleClose();
-		// refresh skills list if callback provided
-		if (onAddSkill) {
-			// trigger refresh
-			window.location.reload();
-		}
 	};
 
 	const handleRetakeVerification = () => {

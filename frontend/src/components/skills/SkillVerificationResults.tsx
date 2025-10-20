@@ -12,11 +12,11 @@ interface SkillVerificationResultsProps {
 }
 
 const proficiencyColors: Record<ProficiencyLevel, string> = {
-	NONE: "bg-gray-100 text-gray-800",
-	BASIC: "bg-blue-100 text-blue-800",
-	INTERMEDIATE: "bg-green-100 text-green-800",
-	ADVANCED: "bg-purple-100 text-purple-800",
-	EXPERT: "bg-yellow-100 text-yellow-800",
+	NONE: "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200",
+	BASIC: "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200",
+	INTERMEDIATE: "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200",
+	ADVANCED: "bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-200",
+	EXPERT: "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200",
 };
 
 const proficiencyIcons: Record<ProficiencyLevel, string> = {
@@ -68,20 +68,20 @@ export default function SkillVerificationResults({
 
 	const getScoreColor = () => {
 		const percentage = testResults.scorePercentage;
-		if (percentage >= 90) return "text-yellow-600";
-		if (percentage >= 75) return "text-purple-600";
-		if (percentage >= 60) return "text-green-600";
-		return "text-red-600";
+		if (percentage >= 90) return "text-yellow-600 dark:text-yellow-400";
+		if (percentage >= 75) return "text-purple-600 dark:text-purple-400";
+		if (percentage >= 60) return "text-green-600 dark:text-green-400";
+		return "text-red-600 dark:text-red-400";
 	};
 
 	return (
 		<div className="max-w-2xl mx-auto">
-			<div className="bg-white rounded-lg shadow-lg overflow-hidden">
+			<div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700">
 				{/* header */}
-				<div className={`p-6 ${passed ? "bg-green-50" : "bg-red-50"}`}>
+				<div className={`p-6 ${passed ? "bg-green-50 dark:bg-green-900/20" : "bg-red-50 dark:bg-red-900/20"}`}>
 					<div className="text-center">
 						<div className="text-6xl mb-4">{passed ? "🎉" : "📚"}</div>
-						<h2 className="text-3xl font-bold text-gray-900 mb-2">
+						<h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
 							{passed ? "Verification Passed!" : "Keep Learning!"}
 						</h2>
 						<p className={`text-lg font-medium ${getScoreColor()}`}>{getScoreMessage()}</p>
@@ -92,39 +92,43 @@ export default function SkillVerificationResults({
 				<div className="p-6 space-y-6">
 					{/* score summary */}
 					<div className="grid grid-cols-2 gap-4">
-						<div className="bg-gray-50 p-4 rounded-lg text-center">
-							<div className="text-3xl font-bold text-gray-900">{testResults.scorePercentage}%</div>
-							<div className="text-sm text-gray-600 mt-1">Score</div>
+						<div className="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg text-center border border-gray-200 dark:border-gray-600">
+							<div className="text-3xl font-bold bg-gradient-to-br from-primary to-purple text-transparent bg-clip-text">
+								{testResults.scorePercentage}%
+							</div>
+							<div className="text-sm text-gray-600 dark:text-gray-300 mt-1">Score</div>
 						</div>
-						<div className="bg-gray-50 p-4 rounded-lg text-center">
-							<div className="text-3xl font-bold text-gray-900">
+						<div className="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg text-center border border-gray-200 dark:border-gray-600">
+							<div className="text-3xl font-bold text-gray-900 dark:text-white">
 								{testResults.earnedPoints}/{testResults.totalPoints}
 							</div>
-							<div className="text-sm text-gray-600 mt-1">Points</div>
+							<div className="text-sm text-gray-600 dark:text-gray-300 mt-1">Points</div>
 						</div>
 					</div>
 
 					{/* detailed stats */}
-					<div className="border-t border-gray-200 pt-4 space-y-3">
+					<div className="border-t border-gray-200 dark:border-gray-700 pt-4 space-y-3">
 						<div className="flex items-center justify-between">
-							<span className="text-gray-600">Questions Answered</span>
-							<span className="font-semibold text-gray-900">{testResults.answersCount}</span>
+							<span className="text-gray-600 dark:text-gray-300">Questions Answered</span>
+							<span className="font-semibold text-gray-900 dark:text-white">{testResults.answersCount}</span>
 						</div>
 						<div className="flex items-center justify-between">
-							<span className="text-gray-600">Correct Answers</span>
-							<span className="font-semibold text-green-600">{testResults.correctAnswersCount}</span>
+							<span className="text-gray-600 dark:text-gray-300">Correct Answers</span>
+							<span className="font-semibold text-green-600 dark:text-green-400">
+								{testResults.correctAnswersCount}
+							</span>
 						</div>
 						<div className="flex items-center justify-between">
-							<span className="text-gray-600">Incorrect Answers</span>
-							<span className="font-semibold text-red-600">
+							<span className="text-gray-600 dark:text-gray-300">Incorrect Answers</span>
+							<span className="font-semibold text-red-600 dark:text-red-400">
 								{testResults.answersCount - testResults.correctAnswersCount}
 							</span>
 						</div>
 					</div>
 
 					{/* achieved level */}
-					<div className="border-t border-gray-200 pt-4">
-						<h3 className="text-sm font-semibold text-gray-700 mb-3">Achieved Proficiency Level</h3>
+					<div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+						<h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Achieved Proficiency Level</h3>
 						<div className="flex items-center gap-3">
 							<div className="text-4xl">{proficiencyIcons[testResults.achievedLevel]}</div>
 							<div className="flex-1">
@@ -135,7 +139,7 @@ export default function SkillVerificationResults({
 								>
 									{testResults.achievedLevel}
 								</div>
-								<p className="text-sm text-gray-600 mt-2">
+								<p className="text-sm text-gray-600 dark:text-gray-300 mt-2">
 									{passed
 										? "This proficiency level will be added to your profile."
 										: "You need to score at least 60% to verify your skill proficiency."}
@@ -145,9 +149,9 @@ export default function SkillVerificationResults({
 					</div>
 
 					{/* scoring guide */}
-					<div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-						<h4 className="text-sm font-semibold text-blue-900 mb-2">Scoring Guide</h4>
-						<div className="space-y-1 text-sm text-blue-800">
+					<div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+						<h4 className="text-sm font-semibold text-blue-900 dark:text-blue-100 mb-2">Scoring Guide</h4>
+						<div className="space-y-1 text-sm text-blue-800 dark:text-blue-200">
 							<div>• 90%+ = Expert Level</div>
 							<div>• 75-89% = Advanced Level</div>
 							<div>• 60-74% = Intermediate Level</div>
@@ -156,20 +160,20 @@ export default function SkillVerificationResults({
 					</div>
 
 					{error && (
-						<div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-							<p className="text-sm text-red-600">{error}</p>
+						<div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+							<p className="text-sm text-red-600 dark:text-red-300">{error}</p>
 						</div>
 					)}
 				</div>
 
 				{/* actions */}
-				<div className="p-6 bg-gray-50 border-t border-gray-200 flex items-center justify-between">
+				<div className="p-6 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between">
 					<div className="flex gap-3">
 						{onCancel && (
 							<button
 								onClick={onCancel}
 								disabled={applying}
-								className="px-6 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+								className="px-6 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 transition-colors"
 							>
 								Close
 							</button>
@@ -177,7 +181,7 @@ export default function SkillVerificationResults({
 						<button
 							onClick={onRetake}
 							disabled={applying}
-							className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+							className="px-6 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
 						>
 							Retake Quiz
 						</button>
@@ -187,7 +191,7 @@ export default function SkillVerificationResults({
 						<button
 							onClick={handleApply}
 							disabled={applying}
-							className="px-8 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+							className="px-8 py-2 bg-gradient-to-r from-success to-green-600 text-white rounded-lg hover:from-success-600 hover:to-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 font-medium shadow-lg hover:shadow-xl"
 						>
 							{applying ? "Applying..." : "Apply to Profile"}
 						</button>
