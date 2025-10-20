@@ -59,6 +59,8 @@ http.interceptors.response.use(
 			message: payload?.error || payload?.message || error.message,
 			details: payload?.details,
 			path: payload?.path,
+			// preserve the full response data for special cases (like attemptId in 409 errors)
+			data: payload,
 		};
 	}
 );

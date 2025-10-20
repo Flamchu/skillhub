@@ -6,3 +6,5 @@ export { AddSkillModal } from "./AddSkillModal";
 export { UpdateSkillModal } from "./UpdateSkillModal";
 export { SkillsContent } from "./SkillsContent";
 export { AISkillGenerator } from "./AISkillGenerator";
+export { default as SkillVerificationQuiz } from "./SkillVerificationQuiz";
+export { default as SkillVerificationResults } from "./SkillVerificationResults";

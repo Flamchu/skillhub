@@ -35,7 +35,7 @@ Ensure these are set in Railway and locally (e.g., `.env`) before running the ap
 
 The Prisma schema (`prisma/schema.prisma`) defines the primary models used across the API. Important models and notable fields:
 
-- `User` — id (uuid), **supabaseId** (unique, links to Supabase Auth), email (optional, unique), name, headline, bio, regionId, role (enum: USER, INSTRUCTOR, ADMIN), relations: `skills`, `testAttempts`, `bookmarks`, `recommendations`.
+- `User` — id (uuid), **supabaseId** (unique, links to Supabase Auth), email (optional, unique), name, headline, bio, regionId, role (enum: USER, INSTRUCTOR, ADMIN), **deletedAt** (soft delete timestamp), relations: `skills`, `testAttempts`, `bookmarks`, `recommendations`.
 - `Skill` — hierarchical skill model with `parentId`, `slug`, `name`, `children`, and relations to `Course`, `Test`, `UserSkill`.
 - `UserSkill` — junction table storing `proficiency` (enum), `targetLevel`, `progress` (0–100), `lastPracticed`.
 - `Course` — title, provider, `source` (enum: INTERNAL, YOUTUBE, UDEMY, OTHER), `externalId`, `difficulty`, `isPaid`, `priceCents`, relation to `CourseTag` & `CourseSkill`.
@@ -85,7 +85,6 @@ The backend now features a comprehensive validation and error handling system im
 ### Error Handling
 
 - **Centralized Error Handler** (`src/middleware/errorHandler.ts`):
-
   - Maps Prisma errors to user-friendly HTTP responses
   - Handles validation errors with detailed field information
   - Consistent error response format with timestamps and request context
@@ -140,7 +139,6 @@ router.post(
 All endpoints are mounted under `/api` in `src/express.ts`. Major route files and what they offer:
 
 - `supabaseAuth.ts` (/api/auth)
-
   - `POST /register` — create user via Supabase Auth, creates linked database profile
   - `POST /login` — login via Supabase Auth, returns session tokens
   - `POST /refresh` — refresh access tokens using refresh token
@@ -150,16 +148,16 @@ All endpoints are mounted under `/api` in `src/express.ts`. Major route files an
   - Rate-limited using `express-rate-limit` (20 requests per 15 min window)
 
 - `users.ts` (/api/users)
-
   - `GET /:id` — public basic profile info (public fields + public skills list)
   - `GET /:id/profile` — protected full profile (only own profile or admin)
   - `PATCH /:id` — protected update (name, headline, bio, regionId) (only own or admin)
-  - `DELETE /:id` — protected delete (hard delete) (only own or admin)
+  - `DELETE /:id` — protected soft delete (sets deletedAt, transforms email) (only own or admin)
   - `GET /:id/stats` — protected stats (skills, tests, bookmarks, recommendations) (only own or admin)
-  - `GET /` — admin-only list users with pagination/filtering
+  - `GET /` — admin-only list active users with pagination/filtering (excludes soft-deleted)
+  - `GET /deleted/list` — admin-only list soft-deleted users with pagination
+  - `PATCH /:id/restore` — admin-only restore soft-deleted user account
 
 - `userSkills.ts` (mounted under `/api/users`)
-
   - `GET /:userId/skills` — list user's skills, optional progress
   - `POST /:userId/skills` — protected add skill to user (only own or admin)
   - `PATCH /:userId/skills/:skillId` — protected update user skill
@@ -167,7 +165,6 @@ All endpoints are mounted under `/api` in `src/express.ts`. Major route files an
   - `GET /:userId/skills/:skillId/progression` — protected, provides recommended courses/tests for progression
 
 - `skills.ts` (/api/skills)
-
   - `GET /` — list skills with optional filters (parent, search, include children)
   - `GET /:id` — get skill details; `includeStats=true` returns distribution/top users/recent courses
   - `GET /hierarchy/tree` — returns root skills with nested children
@@ -177,20 +174,17 @@ All endpoints are mounted under `/api` in `src/express.ts`. Major route files an
   - (additional admin endpoints exist down the file)
 
 - `courses.ts` (/api/courses)
-
   - `GET /` — list courses with many filters (skill, tag, difficulty, freeOnly, provider, source, language, minRating, maxDuration, search), plus pagination
   - `GET /:id` — get course with tags & skills
   - `POST /` — admin-only create course (supports connectOrCreate for tags and creation of course-skill links)
   - `PATCH /:id` — admin-only update course (resets tags/skills when provided)
 
 - `bookmarks.ts` (mounted under `/api/users`)
-
   - `GET /:id/bookmarks` — protected, list user's bookmarks (pagination)
   - `POST /:id/bookmarks` — protected, create bookmark for user (own only)
   - `DELETE /:id/bookmarks/:courseId` — protected, remove bookmark
 
 - `tests.ts` (/api/tests)
-
   - `GET /` — list published tests with filters
   - `GET /:id` — test details with questions & non-sensitive choice info
   - `POST /:id/attempts` — protected, create new attempt (prevents multiple incomplete attempts)
@@ -198,7 +192,6 @@ All endpoints are mounted under `/api` in `src/express.ts`. Major route files an
   - `GET /users/:id/attempts` — protected, list attempts for a user
 
 - `recommendations.ts` (/api/recommendations)
-
   - `GET /` — list recommendations (protected) with optional algorithm/type filters
   - `POST /generate` — protected; generates recommendations using simple rules-based, content-based, or collaborative-filtering implementations included in the code (creates `Recommendation` records)
 
@@ -233,7 +226,6 @@ Notes:
 ## Security Features Implemented ✅
 
 1. **Supabase Authentication Integration**
-
    - ✅ Secure session management with automatic token refresh
    - ✅ Built-in email verification and password reset flows
    - ✅ Rate limiting on auth endpoints (20 requests per 15 min)
@@ -242,7 +234,6 @@ Notes:
    - ✅ OAuth provider integration ready
 
 2. **Enhanced Security Measures**
-
    - ✅ Service role key isolation for server-side operations
    - ✅ Proper token verification through Supabase Auth service
    - ✅ User profile linking with database integrity
@@ -266,10 +257,14 @@ Notes:
 - Add DB indexes where missing for common filters (search fields already indexed in Prisma for some columns; review slow queries in production logs).
 - Consider full-text search using Postgres GIN indexes (for `courses`, `skills`) for better search performance. Estimated effort: 1–3 days.
 
-6. Data safety and soft deletes
+6. Data safety and soft deletes ✅ COMPLETED
 
-- Use `deletedAt` soft-delete pattern on critical models (User, Course) instead of hard deletes to support recovery and analytics.
-- Update admin delete endpoints to soft delete and provide reassign/cleanup flows. Estimated effort: 1–2 days + migration.
+- ✅ Implemented `deletedAt` soft-delete pattern on User model for data retention and audit trails
+- ✅ Migration: `20251020090346_add_soft_delete_to_users` adds `deletedAt` field with index
+- ✅ Updated `DELETE /api/users/:id` to perform soft delete (sets `deletedAt`, transforms email)
+- ✅ Authentication middleware blocks soft-deleted users (returns 403 Forbidden)
+- ✅ Added admin endpoints: `GET /api/users/deleted/list` and `PATCH /api/users/:id/restore`
+- ✅ User list queries automatically filter out soft-deleted users
 
 7. Tests & CI
 
@@ -294,17 +289,27 @@ Notes:
 ## Implemented Improvements ✅
 
 1. **API Enhancement** ✅ COMPLETED
-
    - ✅ Added comprehensive request validation with `zod` for all endpoint input validation
    - ✅ Implemented centralized error handling middleware with proper Prisma error mapping
    - ✅ Created reusable validation middleware factory for params, query, and body validation
    - ✅ Standardized error response format with timestamps, paths, and detailed field validation
    - ✅ Added proper TypeScript types and async error handling with catchAsync wrapper
 
+2. **User Soft Delete** ✅ COMPLETED
+   - ✅ Added `deletedAt` field to User model with database index
+   - ✅ Implemented soft delete on `DELETE /api/users/:id` (data retention for audit trails)
+   - ✅ Email transformation on delete to prevent conflicts (`deleted_{userId}@deleted.local`)
+   - ✅ Authentication middleware blocks deleted users (403 Forbidden response)
+   - ✅ Admin endpoints to list and restore deleted users
+   - ✅ User queries automatically filter out soft-deleted accounts
+
+3. **Code Quality** ✅ COMPLETED
+   - ✅ Removed debug console.log statements from production code (kept error logging)
+   - ✅ All TODO comments resolved with production-ready implementations
+
 ## Remaining Improvement Opportunities
 
-2. **Performance Optimization**
-
+4. **Performance Optimization**
    - Add Redis caching for frequently accessed endpoints
    - Implement database query optimization and proper indexing
    - Add connection pooling configuration

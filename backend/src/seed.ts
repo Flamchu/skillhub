@@ -495,6 +495,323 @@ async function main() {
 		}
 	}
 
+	// seed verification questions for some skills
+	console.log("");
+	console.log("📝 Seeding verification questions...");
+
+	// get some skills to add verification questions
+	const reactSkill = await prisma.skill.findUnique({ where: { slug: "react" } });
+	const typescriptSkill = await prisma.skill.findUnique({ where: { slug: "typescript" } });
+	const nodeSkill = await prisma.skill.findUnique({ where: { slug: "nodejs" } });
+
+	if (reactSkill) {
+		const existingQuestions = await prisma.skillVerificationQuestion.count({
+			where: { skillId: reactSkill.id },
+		});
+
+		if (existingQuestions === 0) {
+			const reactQuestions = [
+				{
+					questionText: "What is the purpose of the useEffect hook in React?",
+					difficultyLevel: "INTERMEDIATE",
+					points: 1,
+					order: 0,
+					choices: [
+						{ text: "To manage side effects in functional components", isCorrect: true },
+						{ text: "To create state variables", isCorrect: false },
+						{ text: "To handle user input", isCorrect: false },
+						{ text: "To render JSX elements", isCorrect: false },
+					],
+				},
+				{
+					questionText: "Which of the following are correct ways to pass data from parent to child components in React?",
+					difficultyLevel: "INTERMEDIATE",
+					points: 1,
+					order: 1,
+					choices: [
+						{ text: "Using props", isCorrect: true },
+						{ text: "Using context API", isCorrect: true },
+						{ text: "Using localStorage", isCorrect: false },
+						{ text: "Direct variable assignment", isCorrect: false },
+					],
+				},
+				{
+					questionText: "What does React.memo() do?",
+					difficultyLevel: "ADVANCED",
+					points: 1,
+					order: 2,
+					choices: [
+						{ text: "Prevents unnecessary re-renders by memoizing components", isCorrect: true },
+						{ text: "Stores component data in memory", isCorrect: false },
+						{ text: "Creates a memory snapshot", isCorrect: false },
+						{ text: "Increases component load time", isCorrect: false },
+					],
+				},
+				{
+					questionText: "Which hooks can cause infinite loops if used incorrectly?",
+					difficultyLevel: "ADVANCED",
+					points: 1,
+					order: 3,
+					choices: [
+						{ text: "useEffect without dependency array", isCorrect: true },
+						{ text: "useEffect with state updates that trigger re-render", isCorrect: true },
+						{ text: "useState", isCorrect: false },
+						{ text: "useRef", isCorrect: false },
+					],
+				},
+				{
+					questionText: "What is the correct way to update state based on previous state in React?",
+					difficultyLevel: "INTERMEDIATE",
+					points: 1,
+					order: 4,
+					choices: [
+						{ text: "Use functional update form: setState(prev => prev + 1)", isCorrect: true },
+						{ text: "Directly access state: setState(state + 1)", isCorrect: false },
+						{ text: "Use this.state", isCorrect: false },
+						{ text: "Use global variable", isCorrect: false },
+					],
+				},
+				{
+					questionText: "Which of the following are valid ways to handle forms in React?",
+					difficultyLevel: "INTERMEDIATE",
+					points: 1,
+					order: 5,
+					choices: [
+						{ text: "Controlled components with state", isCorrect: true },
+						{ text: "Uncontrolled components with refs", isCorrect: true },
+						{ text: "Direct DOM manipulation", isCorrect: false },
+						{ text: "jQuery form handling", isCorrect: false },
+					],
+				},
+				{
+					questionText: "What is the purpose of keys in React lists?",
+					difficultyLevel: "INTERMEDIATE",
+					points: 1,
+					order: 6,
+					choices: [
+						{ text: "To help React identify which items changed, were added, or removed", isCorrect: true },
+						{ text: "To style list items", isCorrect: false },
+						{ text: "To sort list items", isCorrect: false },
+						{ text: "To encrypt data", isCorrect: false },
+					],
+				},
+				{
+					questionText: "Which statements about React Context are true?",
+					difficultyLevel: "ADVANCED",
+					points: 1,
+					order: 7,
+					choices: [
+						{ text: "Context provides a way to pass data through the component tree without props drilling", isCorrect: true },
+						{ text: "Context re-renders all consuming components when value changes", isCorrect: true },
+						{ text: "Context is only for authentication", isCorrect: false },
+						{ text: "Context cannot be used with hooks", isCorrect: false },
+					],
+				},
+				{
+					questionText: "What is React Suspense used for?",
+					difficultyLevel: "EXPERT",
+					points: 1,
+					order: 8,
+					choices: [
+						{ text: "Handling asynchronous rendering and code-splitting", isCorrect: true },
+						{ text: "Pausing component execution", isCorrect: false },
+						{ text: "Error handling", isCorrect: false },
+						{ text: "Animation control", isCorrect: false },
+					],
+				},
+				{
+					questionText: "Which are correct patterns for optimizing React performance?",
+					difficultyLevel: "EXPERT",
+					points: 1,
+					order: 9,
+					choices: [
+						{ text: "Using React.memo for expensive components", isCorrect: true },
+						{ text: "Implementing useMemo and useCallback for expensive computations", isCorrect: true },
+						{ text: "Code splitting with lazy loading", isCorrect: true },
+						{ text: "Forcing re-renders on every state change", isCorrect: false },
+					],
+				},
+			];
+
+			for (const q of reactQuestions) {
+				await prisma.skillVerificationQuestion.create({
+					data: {
+						skillId: reactSkill.id,
+						questionText: q.questionText,
+						difficultyLevel: q.difficultyLevel as any,
+						points: q.points,
+						order: q.order,
+						choices: {
+							create: q.choices.map((choice, idx) => ({
+								choiceText: choice.text,
+								label: ["A", "B", "C", "D"][idx],
+								isCorrect: choice.isCorrect,
+								order: idx,
+							})),
+						},
+					},
+				});
+			}
+			console.log(`   ✅ Created ${reactQuestions.length} verification questions for React`);
+		} else {
+			console.log(`   ⏭️  React already has verification questions`);
+		}
+	}
+
+	if (typescriptSkill) {
+		const existingQuestions = await prisma.skillVerificationQuestion.count({
+			where: { skillId: typescriptSkill.id },
+		});
+
+		if (existingQuestions === 0) {
+			const tsQuestions = [
+				{
+					questionText: "What is the main purpose of TypeScript?",
+					difficultyLevel: "INTERMEDIATE",
+					points: 1,
+					order: 0,
+					choices: [
+						{ text: "To add static type checking to JavaScript", isCorrect: true },
+						{ text: "To replace JavaScript entirely", isCorrect: false },
+						{ text: "To make JavaScript run faster", isCorrect: false },
+						{ text: "To compile to machine code", isCorrect: false },
+					],
+				},
+				{
+					questionText: "Which of the following are valid TypeScript utility types?",
+					difficultyLevel: "ADVANCED",
+					points: 1,
+					order: 1,
+					choices: [
+						{ text: "Partial<T>", isCorrect: true },
+						{ text: "Required<T>", isCorrect: true },
+						{ text: "Readonly<T>", isCorrect: true },
+						{ text: "Mutable<T>", isCorrect: false },
+					],
+				},
+				{
+					questionText: "What is type narrowing in TypeScript?",
+					difficultyLevel: "ADVANCED",
+					points: 1,
+					order: 2,
+					choices: [
+						{ text: "Refining types based on conditional checks", isCorrect: true },
+						{ text: "Reducing file size", isCorrect: false },
+						{ text: "Removing unused types", isCorrect: false },
+						{ text: "Converting types to strings", isCorrect: false },
+					],
+				},
+				{
+					questionText: "Which keywords can be used for type guards in TypeScript?",
+					difficultyLevel: "ADVANCED",
+					points: 1,
+					order: 3,
+					choices: [
+						{ text: "typeof", isCorrect: true },
+						{ text: "instanceof", isCorrect: true },
+						{ text: "in", isCorrect: true },
+						{ text: "has", isCorrect: false },
+					],
+				},
+				{
+					questionText: "What does the 'never' type represent in TypeScript?",
+					difficultyLevel: "EXPERT",
+					points: 1,
+					order: 4,
+					choices: [
+						{ text: "Values that never occur or functions that never return", isCorrect: true },
+						{ text: "Null or undefined values", isCorrect: false },
+						{ text: "Empty objects", isCorrect: false },
+						{ text: "Boolean false", isCorrect: false },
+					],
+				},
+				{
+					questionText: "Which are correct ways to define optional properties in TypeScript?",
+					difficultyLevel: "INTERMEDIATE",
+					points: 1,
+					order: 5,
+					choices: [
+						{ text: "property?: string", isCorrect: true },
+						{ text: "property: string | undefined", isCorrect: true },
+						{ text: "property: optional string", isCorrect: false },
+						{ text: "optional property: string", isCorrect: false },
+					],
+				},
+				{
+					questionText: "What is the purpose of generics in TypeScript?",
+					difficultyLevel: "ADVANCED",
+					points: 1,
+					order: 6,
+					choices: [
+						{ text: "To create reusable components that work with multiple types", isCorrect: true },
+						{ text: "To generate code automatically", isCorrect: false },
+						{ text: "To improve runtime performance", isCorrect: false },
+						{ text: "To create global variables", isCorrect: false },
+					],
+				},
+				{
+					questionText: "Which statements about interfaces and types in TypeScript are true?",
+					difficultyLevel: "ADVANCED",
+					points: 1,
+					order: 7,
+					choices: [
+						{ text: "Interfaces can be extended and merged", isCorrect: true },
+						{ text: "Types can use union and intersection operators", isCorrect: true },
+						{ text: "Interfaces and types are completely interchangeable", isCorrect: false },
+						{ text: "Types cannot be used for object shapes", isCorrect: false },
+					],
+				},
+				{
+					questionText: "What is mapped type in TypeScript?",
+					difficultyLevel: "EXPERT",
+					points: 1,
+					order: 8,
+					choices: [
+						{ text: "A type that transforms properties of another type", isCorrect: true },
+						{ text: "A JavaScript Map converted to a type", isCorrect: false },
+						{ text: "A type stored in memory", isCorrect: false },
+						{ text: "A geographic coordinate type", isCorrect: false },
+					],
+				},
+				{
+					questionText: "Which are valid TypeScript conditional type patterns?",
+					difficultyLevel: "EXPERT",
+					points: 1,
+					order: 9,
+					choices: [
+						{ text: "T extends U ? X : Y", isCorrect: true },
+						{ text: "infer keyword for type inference", isCorrect: true },
+						{ text: "Distributive conditional types over unions", isCorrect: true },
+						{ text: "if-else statements in types", isCorrect: false },
+					],
+				},
+			];
+
+			for (const q of tsQuestions) {
+				await prisma.skillVerificationQuestion.create({
+					data: {
+						skillId: typescriptSkill.id,
+						questionText: q.questionText,
+						difficultyLevel: q.difficultyLevel as any,
+						points: q.points,
+						order: q.order,
+						choices: {
+							create: q.choices.map((choice, idx) => ({
+								choiceText: choice.text,
+								label: ["A", "B", "C", "D"][idx],
+								isCorrect: choice.isCorrect,
+								order: idx,
+							})),
+						},
+					},
+				});
+			}
+			console.log(`   ✅ Created ${tsQuestions.length} verification questions for TypeScript`);
+		} else {
+			console.log(`   ⏭️  TypeScript already has verification questions`);
+		}
+	}
+
 	console.log("");
 	console.log("🎉 Database seeding completed successfully!");
 }

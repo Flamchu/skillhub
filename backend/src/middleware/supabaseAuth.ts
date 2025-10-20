@@ -35,7 +35,7 @@ export const authenticateSupabaseToken = async (req: AuthenticatedRequest, res: 
 
 		const user = data.user;
 
-		// find the user in database using supabase id
+		// find the user in database using supabase id, excluding soft-deleted users
 		const dbUser = await prisma.user.findUnique({
 			where: { supabaseId: user.id },
 			select: {
@@ -44,10 +44,16 @@ export const authenticateSupabaseToken = async (req: AuthenticatedRequest, res: 
 				role: true,
 				supabaseId: true,
 				name: true,
+				deletedAt: true,
 			},
 		});
 
-		if (!dbUser) {
+		if (!dbUser || dbUser.deletedAt) {
+			// user is deleted or doesn't exist
+			if (dbUser?.deletedAt) {
+				res.status(403).json({ error: "Account has been deleted" });
+				return;
+			}
 			// user exists in supabase but not in database
 			// automatically create profile for oauth users (google login)
 			console.log(`Creating new user profile for Supabase user: ${user.email}`, {

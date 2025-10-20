@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { AuthenticatedRequest, authenticateSupabaseToken } from "../middleware/supabaseAuth";
+import { AuthenticatedRequest, authenticateSupabaseToken, requireAdmin } from "../middleware/supabaseAuth";
 import { validate, extractSchemas } from "../middleware/validation";
 import { catchAsync, createError } from "../middleware/errorHandler";
 import { schemas } from "../schemas";
@@ -252,7 +252,7 @@ router.delete("/:id", authenticateSupabaseToken, async (req: AuthenticatedReques
 			return res.status(403).json({ error: "Access denied" });
 		}
 
-		// check if user exists
+		// check if user exists and is not already deleted
 		const user = await prisma.user.findUnique({
 			where: { id },
 		});
@@ -261,10 +261,17 @@ router.delete("/:id", authenticateSupabaseToken, async (req: AuthenticatedReques
 			return res.status(404).json({ error: "User not found" });
 		}
 
-		// TODO: in production, consider soft delete instead of hard delete
-		// for data retention and analytics purposes
-		await prisma.user.delete({
+		if (user.deletedAt) {
+			return res.status(410).json({ error: "User account already deleted" });
+		}
+
+		// soft delete for data retention and audit trail
+		await prisma.user.update({
 			where: { id },
+			data: {
+				deletedAt: new Date(),
+				email: `deleted_${id}@deleted.local`, // prevent email conflicts on re-registration
+			},
 		});
 
 		res.json({ message: "User account deleted successfully" });
@@ -580,8 +587,10 @@ router.get("/", authenticateSupabaseToken, async (req: AuthenticatedRequest, res
 		const limitNum = parseInt(limit as string);
 		const skip = (pageNum - 1) * limitNum;
 
-		// build where clause
-		const where: any = {};
+		// build where clause - exclude soft-deleted users
+		const where: any = {
+			deletedAt: null,
+		};
 
 		if (search) {
 			where.OR = [{ name: { contains: search as string, mode: "insensitive" } }, { email: { contains: search as string, mode: "insensitive" } }, { headline: { contains: search as string, mode: "insensitive" } }];
@@ -646,6 +655,105 @@ router.get("/", authenticateSupabaseToken, async (req: AuthenticatedRequest, res
 		});
 	} catch (error) {
 		console.error("Get users list error:", error);
+		res.status(500).json({ error: "Internal server error" });
+	}
+});
+
+// admin: get soft-deleted users
+router.get("/deleted/list", authenticateSupabaseToken, requireAdmin, async (req: AuthenticatedRequest, res: Response) => {
+	try {
+		const { page = "1", limit = "20" } = req.query;
+
+		const pageNum = parseInt(page as string);
+		const limitNum = parseInt(limit as string);
+		const skip = (pageNum - 1) * limitNum;
+
+		const [users, totalCount] = await Promise.all([
+			prisma.user.findMany({
+				where: {
+					deletedAt: { not: null },
+				},
+				select: {
+					id: true,
+					email: true,
+					name: true,
+					headline: true,
+					role: true,
+					createdAt: true,
+					deletedAt: true,
+					_count: {
+						select: {
+							skills: true,
+							testAttempts: true,
+							bookmarks: true,
+						},
+					},
+				},
+				orderBy: { deletedAt: "desc" },
+				skip,
+				take: limitNum,
+			}),
+			prisma.user.count({ where: { deletedAt: { not: null } } }),
+		]);
+
+		const totalPages = Math.ceil(totalCount / limitNum);
+
+		res.json({
+			users,
+			pagination: {
+				currentPage: pageNum,
+				totalPages,
+				totalCount,
+				hasNext: pageNum < totalPages,
+				hasPrev: pageNum > 1,
+			},
+		});
+	} catch (error) {
+		console.error("Get deleted users error:", error);
+		res.status(500).json({ error: "Internal server error" });
+	}
+});
+
+// admin: restore soft-deleted user
+router.patch("/:id/restore", authenticateSupabaseToken, requireAdmin, async (req: AuthenticatedRequest, res: Response) => {
+	try {
+		const { id } = req.params;
+
+		const user = await prisma.user.findUnique({
+			where: { id },
+			select: { id: true, email: true, deletedAt: true, supabaseId: true },
+		});
+
+		if (!user) {
+			return res.status(404).json({ error: "User not found" });
+		}
+
+		if (!user.deletedAt) {
+			return res.status(400).json({ error: "User is not deleted" });
+		}
+
+		// restore the user
+		const restoredUser = await prisma.user.update({
+			where: { id },
+			data: {
+				deletedAt: null,
+				email: user.email?.startsWith("deleted_") ? user.email.replace(/^deleted_[a-f0-9-]+@deleted\.local$/, "") || user.email : user.email,
+			},
+			select: {
+				id: true,
+				email: true,
+				name: true,
+				role: true,
+				deletedAt: true,
+			},
+		});
+
+		res.json({
+			message: "User restored successfully",
+			user: restoredUser,
+		});
+	} catch (error) {
+		console.error("Restore user error:", error);
 		res.status(500).json({ error: "Internal server error" });
 	}
 });
