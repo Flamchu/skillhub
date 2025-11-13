@@ -1,9 +1,9 @@
-// supabase client removed - using backend auth instead
-// if you need supabase client in the future, create it in a separate file
+// supabase client removed, using backend auth
+// note: if you need supabase client in the future, create it separately
 
 import type { UserProfile } from "@/types";
 
-// helper function to set cookies with proper security settings
+// set cookies with proper security settings
 function setCookie(name: string, value: string, days = 7) {
 	if (typeof document === "undefined") return;
 
@@ -13,14 +13,14 @@ function setCookie(name: string, value: string, days = 7) {
 	document.cookie = `${name}=${value}; expires=${expires.toUTCString()}; path=/; secure; samesite=strict`;
 }
 
-// helper function to remove cookies
+// remove cookies
 function removeCookie(name: string) {
 	if (typeof document === "undefined") return;
 
 	document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; secure; samesite=strict`;
 }
 
-// store authentication data in both localStorage and cookies
+// store auth data in both localStorage and cookies
 export function setAuthData(token: string, refreshToken: string, user: UserProfile) {
 	if (typeof window === "undefined") return;
 
@@ -34,7 +34,7 @@ export function setAuthData(token: string, refreshToken: string, user: UserProfi
 	setCookie("user", JSON.stringify(user));
 }
 
-// clear authentication data from both localStorage and cookies
+// clear auth data from both localStorage and cookies
 export function clearAuthData() {
 	if (typeof window === "undefined") return;
 
@@ -48,7 +48,7 @@ export function clearAuthData() {
 	removeCookie("user");
 }
 
-// update user data in both localStorage and cookies
+// update user data in localStorage and cookies
 export function updateUserData(user: UserProfile) {
 	if (typeof window === "undefined") return;
 
@@ -57,17 +57,17 @@ export function updateUserData(user: UserProfile) {
 }
 
 export async function getAccessToken(forceRefresh = false): Promise<string | null> {
-	// check if we're on the client side
+	// check if we're on client side
 	if (typeof window === "undefined") {
 		return null;
 	}
 
 	if (forceRefresh) {
-		// try to refresh the token using the refresh token
+		// refresh token using refresh endpoint
 		const refreshToken = localStorage.getItem("refresh_token");
 		if (refreshToken) {
 			try {
-				// call your backend refresh endpoint
+				// call backend refresh endpoint
 				const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/refresh`, {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
@@ -79,7 +79,7 @@ export async function getAccessToken(forceRefresh = false): Promise<string | nul
 					localStorage.setItem("auth_token", data.session.access_token);
 					localStorage.setItem("refresh_token", data.session.refresh_token);
 
-					// update auth cookie as well
+					// update auth cookie
 					setCookie("auth_token", data.session.access_token);
 
 					return data.session.access_token;

@@ -32,11 +32,7 @@ interface AICourseResponse {
 }
 
 export async function generateAICourseRecommendations(userSkills: UserSkill[], availableCourses: CourseForRecommendation[], maxRecommendations = 10): Promise<AICourseResponse> {
-	console.log(`[AI COURSE] generating recommendations for ${userSkills.length} user skills`);
-	console.log(`[AI COURSE] analyzing ${availableCourses.length} available courses`);
-
 	if (!AI_SERVICE_ENABLED) {
-		console.log("[AI COURSE] ai service disabled, returning empty recommendations");
 		return {
 			courses: [],
 			analysis: "ai service is currently disabled",
@@ -44,8 +40,6 @@ export async function generateAICourseRecommendations(userSkills: UserSkill[], a
 	}
 
 	try {
-		console.log("[AI COURSE] calling local ai service for course recommendations");
-
 		const response = await fetch(`${LOCAL_AI_SERVICE_URL}/recommend-courses`, {
 			method: "POST",
 			headers: {
@@ -58,8 +52,6 @@ export async function generateAICourseRecommendations(userSkills: UserSkill[], a
 			}),
 		});
 
-		console.log(`[AI COURSE] ai service response status: ${response.status}`);
-
 		if (!response.ok) {
 			const errorText = await response.text();
 			console.error(`[AI COURSE] ai service error: ${response.status} - ${errorText}`);
@@ -67,8 +59,6 @@ export async function generateAICourseRecommendations(userSkills: UserSkill[], a
 		}
 
 		const data = (await response.json()) as AICourseResponse;
-
-		console.log(`[AI COURSE] received ${data.courses.length} course recommendations`);
 
 		return data;
 	} catch (error) {

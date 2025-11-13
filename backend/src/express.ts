@@ -12,6 +12,8 @@ import testRoutes from "./routes/tests";
 import recommendationRoutes from "./routes/recommendations";
 import dashboardRoutes from "./routes/dashboard";
 import statsRoutes from "./routes/stats";
+import skillVerificationRoutes from "./routes/skillVerification";
+import skillVerificationAdminRoutes from "./routes/skillVerificationAdmin";
 import { performanceMonitoring, performanceEndpoint, healthCheck } from "./middleware/performance";
 import { connectDatabase } from "./config/database";
 import "./config/redis"; // initialize redis connection
@@ -19,7 +21,6 @@ import "./config/redis"; // initialize redis connection
 dotenv.config();
 const app = express();
 
-// performance monitoring
 app.use(performanceMonitoring);
 
 app.use(cors());
@@ -48,7 +49,7 @@ app.use("/api/skills", skillRoutes);
 // course routes (mixed public/protected)
 app.use("/api/courses", courseRoutes);
 
-// bookmark routes (protected) - mounted under /api/users for restful urls
+// bookmark routes (protected), mounted under /api/users
 app.use("/api/users", bookmarkRoutes);
 
 // test routes (mixed public/protected)
@@ -62,6 +63,12 @@ app.use("/api/dashboard", dashboardRoutes);
 
 // public stats routes (no auth required)
 app.use("/api/stats", statsRoutes);
+
+// skill verification routes (protected)
+app.use("/api", skillVerificationRoutes);
+
+// skill verification admin routes (admin only)
+app.use("/api", skillVerificationAdminRoutes);
 
 // error handling middleware (must be last)
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler";

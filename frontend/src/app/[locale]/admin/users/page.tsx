@@ -56,7 +56,7 @@ export default function AdminUsersPage() {
 	const handleRoleChange = async (userId: string, newRole: "USER" | "INSTRUCTOR" | "ADMIN") => {
 		try {
 			await api.updateUser(userId, { role: newRole });
-			loadUsers(); // Refresh the list
+			loadUsers(); // refresh the list
 		} catch (err) {
 			alert(`Failed to update user role: ${err instanceof Error ? err.message : "Unknown error"}`);
 		}
@@ -69,7 +69,7 @@ export default function AdminUsersPage() {
 
 		try {
 			await api.deleteUser(userId);
-			loadUsers(); // Refresh the list
+			loadUsers(); // refresh the list
 		} catch (err) {
 			alert(`Failed to delete user: ${err instanceof Error ? err.message : "Unknown error"}`);
 		}

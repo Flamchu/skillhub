@@ -52,7 +52,7 @@ export default function AdminCoursesPage() {
 
 	const handleYouTubeImportSuccess = () => {
 		setShowYouTubeImport(false);
-		refetch(); // Refresh the course list
+		refetch(); // refresh the course list
 	};
 
 	const sources = ["all", "INTERNAL", "YOUTUBE", "UDEMY", "OTHER"] as const;

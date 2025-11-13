@@ -2,7 +2,7 @@
 
 This document defines the architecture, information architecture (IA), component system, data flows, and implementation guidelines for the SkillHub frontend as a **pure standalone client**. It consumes a separately hosted backend (Railway) + Supabase Auth and does **not** expose its own API routes (no Next.js route handlers). All interactions occur over HTTP to the backend REST API.
 
-> Status: Core auth context, minimal layout, and initial pages (`/login`, `/register`, `/dashboard`, `/skills`, `/courses`) plus primitive ui components (button, input, card, badge, avatar, theme toggle) are implemented. Remaining sections describe target future build-out.
+> Status: Core auth context, minimal layout, and initial pages (`/auth`, `/register`, `/dashboard`, `/skills`, `/courses`) plus primitive ui components (button, input, card, badge, avatar, theme toggle) are implemented. Remaining sections describe target future build-out.
 
 ## 1. High-Level Overview
 
@@ -24,7 +24,7 @@ frontend/
 			layout.tsx
 			providers.tsx
 			page.tsx                  # landing / placeholder
-			login/page.tsx
+			auth/page.tsx
 			register/page.tsx
 			dashboard/page.tsx
 			skills/page.tsx
@@ -78,7 +78,7 @@ frontend/
 
 ## 3. Information Architecture & Routing Structure
 
-Current implemented routes (subset): `/(root)`, `/login`, `/register`, `/dashboard`, `/skills`, `/courses`.
+Current implemented routes (subset): `/(root)`, `/auth`, `/register`, `/dashboard`, `/skills`, `/courses`.
 
 The following is the planned expanded architecture (future):
 
@@ -96,7 +96,7 @@ src/app/
     users/
       [userId]/page.tsx     # Public user profile (limited fields)
   (auth)/
-    login/page.tsx
+    auth/page.tsx
     register/page.tsx
     callback/route.ts       # OAuth provider redirects (if enabled)
   (app)/                    # Authenticated layout (guards + nav)
@@ -370,7 +370,7 @@ export const http = axios.create({
 	timeout: 15000,
 });
 
-http.interceptors.request.use(async (config) => {
+http.interceptors.request.use(async config => {
 	config.headers["X-Request-Id"] = nanoid();
 	const token = await getAccessToken();
 	if (token) config.headers.Authorization = `Bearer ${token}`;
@@ -378,8 +378,8 @@ http.interceptors.request.use(async (config) => {
 });
 
 http.interceptors.response.use(
-	(r) => r,
-	async (error) => {
+	r => r,
+	async error => {
 		const { response, config } = error;
 		if (response?.status === 401 && !config._retry) {
 			config._retry = true;
@@ -401,10 +401,10 @@ http.interceptors.response.use(
 axiosRetry(http, {
 	retries: 2,
 	retryDelay: axiosRetry.exponentialDelay,
-	retryCondition: (err) => !err.response || err.response.status >= 500,
+	retryCondition: err => !err.response || err.response.status >= 500,
 });
 
-export const getSkill = (id: string) => http.get(`/api/skills/${id}`).then((r) => r.data);
+export const getSkill = (id: string) => http.get(`/api/skills/${id}`).then(r => r.data);
 ```
 
 ```ts

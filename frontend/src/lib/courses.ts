@@ -24,13 +24,13 @@ export function useCourse(id: string) {
 
 // bookmark course helper (would need backend integration)
 export const bookmarkCourse = async (_courseId: string) => {
-	// implementation would make api call to bookmark course
+	// todo: bookmark course
 	throw new Error("Bookmark functionality not yet implemented");
 };
 
 // remove bookmark helper
 export const removeBookmark = async (_courseId: string) => {
-	// implementation would make api call to remove bookmark
+	// todo: remove bookmark
 	throw new Error("Remove bookmark functionality not yet implemented");
 };
 

@@ -9,14 +9,14 @@ export function LanguageSwitcher() {
 	const locale = useLocale();
 
 	const switchLocale = (newLocale: string) => {
-		// Replace the locale in the current pathname
+		// replace the locale in the current pathname
 		const segments = pathname.split("/");
 
-		// If pathname starts with a locale (e.g., /en/dashboard), replace it
+		// if pathname starts with a locale (e.g., /en/dashboard), replace it
 		if (locales.includes(segments[1] as (typeof locales)[number])) {
 			segments[1] = newLocale;
 		} else {
-			// If no locale in path, add it
+			// if no locale in path, add it
 			segments.splice(1, 0, newLocale);
 		}
 

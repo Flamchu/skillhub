@@ -65,7 +65,7 @@ export const validate = (schema: ValidationSchema) => {
 	};
 };
 
-// helper function to extract specific parts of a validation schema
+// extract specific parts of a validation schema
 export const extractSchemas = (fullSchema: z.ZodObject<any>) => {
 	const shape = fullSchema.shape;
 	return {

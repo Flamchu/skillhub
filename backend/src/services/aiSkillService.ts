@@ -157,7 +157,7 @@ function enhanceAIRecommendations(prompt: string, aiSuggestions: SkillSuggestion
 	return enhanced.slice(0, 8); // limit total suggestions
 }
 
-// helper function to extract main topics from prompt
+// extract main topics from prompt
 function extractMainTopics(prompt: string): string[] {
 	const topics = [];
 	const lowerPrompt = prompt.toLowerCase();

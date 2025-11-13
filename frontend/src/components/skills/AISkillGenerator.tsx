@@ -57,9 +57,9 @@ export function AISkillGenerator({ onSkillsGenerated, className = "" }: AISkillG
 		if (onSkillsGenerated && selectedSkills.size > 0) {
 			const selectedSuggestions = suggestions.filter(s => selectedSkills.has(s.skill.id));
 			onSkillsGenerated(selectedSuggestions);
-			setSuggestions([]); // Clear suggestions
-			setPrompt(""); // Clear prompt
-			setSelectedSkills(new Set()); // Clear selection
+			setSuggestions([]); // clear suggestions
+			setPrompt(""); // clear prompt
+			setSelectedSkills(new Set()); // clear selection
 		}
 	};
 

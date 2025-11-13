@@ -108,7 +108,7 @@ router.post("/:userId/skills", authenticateSupabaseToken, async (req: Authentica
 			return res.status(403).json({ error: "Access denied" });
 		}
 
-		const { skillId, proficiency = "BASIC", targetLevel, progress = 0 } = req.body;
+		const { skillId, proficiency = "BASIC", targetLevel, progress = 0, skipVerification = false } = req.body;
 
 		if (!skillId) {
 			return res.status(400).json({ error: "Skill ID is required" });
@@ -124,7 +124,27 @@ router.post("/:userId/skills", authenticateSupabaseToken, async (req: Authentica
 			return res.status(400).json({ error: "Invalid target level" });
 		}
 
-		// validate and convert progress to number if needed
+		// check if verification is required for this proficiency level
+		const requiresVerification = proficiency !== ProficiencyLevel.NONE && proficiency !== ProficiencyLevel.BASIC;
+
+		if (requiresVerification && !skipVerification) {
+			// check if skill has verification questions
+			const verificationQuestionsCount = await prisma.skillVerificationQuestion.count({
+				where: { skillId },
+			});
+
+			if (verificationQuestionsCount > 0) {
+				// user needs to complete verification first
+				return res.status(428).json({
+					error: "Verification required",
+					message: "This proficiency level requires verification. Please complete the skill verification quiz first.",
+					requiresVerification: true,
+					skillId,
+					requestedProficiency: proficiency,
+				});
+			}
+			// if no verification questions exist, allow adding skill without verification
+		} // validate and convert progress to number if needed
 		const progressNum = typeof progress === "string" ? parseFloat(progress) : progress;
 		if (isNaN(progressNum) || progressNum < 0 || progressNum > 100) {
 			return res.status(400).json({ error: "Progress must be a number between 0 and 100" });

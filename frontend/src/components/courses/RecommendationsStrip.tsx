@@ -39,7 +39,7 @@ export function RecommendationsStrip() {
 
 	const handleEnrollClick = async (courseId: string) => {
 		if (!user) {
-			router.push("/login");
+			router.push("/auth");
 			return;
 		}
 
@@ -58,7 +58,7 @@ export function RecommendationsStrip() {
 		}
 	};
 
-	// Don't render if user is not logged in or no recommendations
+	// don't render if user not logged in or no recommendations
 	if (!user || isLoading || recommendations.length === 0) {
 		return null;
 	}

@@ -42,7 +42,7 @@ export default function ProfilePage() {
 
 	useEffect(() => {
 		if (!loading && !user) {
-			router.push("/login");
+			router.push("/auth");
 			return;
 		}
 
@@ -89,7 +89,6 @@ export default function ProfilePage() {
 		if (!user?.id) return;
 
 		try {
-			// import api client
 			const { api } = await import("@/lib/http");
 
 			// add skills to profile
@@ -111,17 +110,17 @@ export default function ProfilePage() {
 											: 90,
 					});
 				} catch (error) {
-					// Log error but continue with other skills
+					// log error but continue with other skills
 					console.warn(`Failed to add skill ${skillSuggestion.skill.name}:`, error);
 				}
 			}
 
-			// show success message and switch to overview tab
+			// show success and switch to overview tab
 			setSuccessMessage(`Successfully added ${skills.length} skills to your profile!`);
 			setShowSuccess(true);
 			setActiveTab("overview");
 
-			// Refresh recommendations since we added new skills
+			// refresh recommendations after adding skills
 			loadRecommendations();
 		} catch (error) {
 			console.error("Failed to add skills:", error);

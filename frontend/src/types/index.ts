@@ -274,3 +274,135 @@ export interface UserActivityResponse {
 	activity: UserActivity[];
 	totalCount: number;
 }
+
+// skill verification types
+export type ProficiencyLevel = "NONE" | "BASIC" | "INTERMEDIATE" | "ADVANCED" | "EXPERT";
+
+export interface SkillVerificationChoice {
+	id: string;
+	label: string;
+	choiceText: string;
+	order: number;
+	isCorrect?: boolean; // only included in admin views
+}
+
+export interface SkillVerificationQuestion {
+	id: string;
+	questionText: string;
+	difficultyLevel: ProficiencyLevel;
+	points: number;
+	order: number;
+	choices: SkillVerificationChoice[];
+}
+
+export interface SkillVerificationQuestionsResponse {
+	skill: {
+		id: string;
+		name: string;
+		slug: string;
+	};
+	questions: SkillVerificationQuestion[];
+	totalPoints: number;
+	questionsCount: number;
+}
+
+export interface SkillVerificationAttempt {
+	id: string;
+	userId: string;
+	skillId: string;
+	startedAt: string;
+	completedAt?: string;
+	totalPoints: number;
+	earnedPoints: number;
+	achievedLevel?: ProficiencyLevel;
+	passedVerification: boolean;
+	createdAt: string;
+	updatedAt: string;
+	skill: {
+		id: string;
+		name: string;
+		slug: string;
+	};
+	scorePercentage?: number;
+}
+
+export interface SkillVerificationResults {
+	totalPoints: number;
+	earnedPoints: number;
+	scorePercentage: number;
+	achievedLevel: ProficiencyLevel;
+	passedVerification: boolean;
+	answersCount: number;
+	correctAnswersCount: number;
+}
+
+export interface SkillVerificationAttemptResponse {
+	attempt: SkillVerificationAttempt;
+	results?: SkillVerificationResults;
+}
+
+export interface SkillVerificationAnswer {
+	questionId: string;
+	selectedChoices: string[]; // array of choice IDs
+}
+
+export interface SkillVerificationSubmitRequest {
+	answers: SkillVerificationAnswer[];
+}
+
+export interface SkillVerificationSubmitResponse {
+	attempt: SkillVerificationAttempt;
+	results: SkillVerificationResults;
+}
+
+export interface UserSkill {
+	id: string;
+	userId: string;
+	skillId: string;
+	proficiency: ProficiencyLevel;
+	targetLevel?: ProficiencyLevel;
+	progress: number;
+	lastPracticed?: string;
+	isVerified: boolean;
+	verificationAttemptId?: string;
+	createdAt: string;
+	updatedAt: string;
+	skill: {
+		id: string;
+		name: string;
+		slug: string;
+		description?: string;
+	};
+}
+
+export interface AddSkillRequest {
+	skillId: string;
+	proficiency?: ProficiencyLevel;
+	targetLevel?: ProficiencyLevel;
+	progress?: number;
+	skipVerification?: boolean;
+}
+
+export interface AddSkillResponse {
+	message: string;
+	userSkill?: UserSkill;
+	requiresVerification?: boolean;
+	skillId?: string;
+	requestedProficiency?: ProficiencyLevel;
+}
+
+// admin verification types
+export interface CreateVerificationQuestionRequest {
+	questionText: string;
+	difficultyLevel?: ProficiencyLevel;
+	points?: number;
+	order?: number;
+	choices: Array<{
+		choiceText: string;
+		isCorrect: boolean;
+	}>;
+}
+
+export interface BulkCreateVerificationQuestionsRequest {
+	questions: CreateVerificationQuestionRequest[];
+}

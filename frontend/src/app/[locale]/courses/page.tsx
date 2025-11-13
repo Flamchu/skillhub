@@ -55,8 +55,8 @@ export default function CoursesPage() {
 	// handle enrollment and redirect to course page
 	const handleEnrollClick = async (courseId: string) => {
 		if (!user) {
-			// redirect to login if not authenticated
-			router.push("/login");
+			// redirect to auth if not authenticated
+			router.push("/auth");
 			return;
 		}
 
@@ -84,7 +84,7 @@ export default function CoursesPage() {
 	const pagination = data?.pagination;
 
 	const toggleBookmark = (_courseId: string) => {
-		// implementation would make api call to toggle bookmark
+		// todo: implement bookmark toggle api call
 	};
 
 	const resetFilters = () => {

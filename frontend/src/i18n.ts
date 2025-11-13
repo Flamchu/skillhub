@@ -1,14 +1,14 @@
 import { getRequestConfig } from "next-intl/server";
 
-// Can be imported from a shared config
+// can be imported from a shared config
 export const locales = ["en", "cs"] as const;
 export type Locale = (typeof locales)[number];
 
 export default getRequestConfig(async ({ requestLocale }) => {
-	// This typically corresponds to the `[locale]` segment
+	// this typically corresponds to the `[locale]` segment
 	let locale = await requestLocale;
 
-	// Ensure that a valid locale is used
+	// ensure that a valid locale is used
 	if (!locale || !locales.includes(locale as Locale)) {
 		locale = "en";
 	}

@@ -7,7 +7,7 @@ import { useAuth } from "@/context/AuthProvider";
 import { LoadingState, ErrorState } from "@/components/ui";
 import { SuccessAnimation } from "@/components/ui/SuccessAnimation";
 import { SkillsHeader, SkillsSearch, SkillsGrid, AddSkillModal, UpdateSkillModal, AISkillGenerator } from "./";
-import type { AISkillSuggestion } from "@/types";
+import type { AISkillSuggestion, ProficiencyLevel } from "@/types";
 
 interface UserSkill {
 	id: string;
@@ -74,7 +74,7 @@ export function SkillsContent() {
 	}, [user?.id]);
 
 	// add new skill to user profile
-	const handleAddSkill = async (skillId: string, proficiency: "BASIC" | "INTERMEDIATE" | "ADVANCED" | "EXPERT") => {
+	const handleAddSkill = async (skillId: string, proficiency: Exclude<ProficiencyLevel, "NONE">) => {
 		if (!user?.id) return;
 
 		const { http } = await import("@/lib/http");
@@ -126,7 +126,7 @@ export function SkillsContent() {
 		if (!user?.id) return;
 
 		try {
-			// Add each selected skill to user profile
+			// add each selected skill to user profile
 			for (const skillSuggestion of skills) {
 				try {
 					await handleAddSkill(

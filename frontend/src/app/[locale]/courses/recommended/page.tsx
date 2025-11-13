@@ -39,7 +39,7 @@ export default function RecommendedCoursesPage() {
 		if (loading) return; // wait for auth to load
 
 		if (!user) {
-			router.push("/login");
+			router.push("/auth");
 			return;
 		}
 		loadRecommendations();
@@ -65,7 +65,7 @@ export default function RecommendedCoursesPage() {
 
 	const handleEnrollClick = async (courseId: string) => {
 		if (!user) {
-			router.push("/login");
+			router.push("/auth");
 			return;
 		}
 

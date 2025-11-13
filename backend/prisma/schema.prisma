@@ -9,45 +9,50 @@ datasource db {
 }
 
 model User {
-  id              String           @id @default(uuid())
-  name            String?
-  email           String?          @unique
-  bio             String?
-  createdAt       DateTime         @default(now())
-  headline        String?
-  regionId        String?
-  role            Role             @default(USER)
-  updatedAt       DateTime         @updatedAt
-  supabaseId      String           @unique
-  bookmarks       Bookmark[]
-  enrollments     Enrollment[]
-  recommendations Recommendation[]
-  Test            Test[]
-  testAttempts    TestAttempt[]
-  region          Region?          @relation(fields: [regionId], references: [id])
-  userProgress    UserProgress[]
-  skills          UserSkill[]
+  id                       String                     @id @default(uuid())
+  name                     String?
+  email                    String?                    @unique
+  bio                      String?
+  createdAt                DateTime                   @default(now())
+  headline                 String?
+  regionId                 String?
+  role                     Role                       @default(USER)
+  updatedAt                DateTime                   @updatedAt
+  supabaseId               String                     @unique
+  deletedAt                DateTime?
+  bookmarks                Bookmark[]
+  enrollments              Enrollment[]
+  recommendations          Recommendation[]
+  Test                     Test[]
+  testAttempts             TestAttempt[]
+  region                   Region?                    @relation(fields: [regionId], references: [id])
+  userProgress             UserProgress[]
+  skills                   UserSkill[]
+  verificationAttempts     SkillVerificationAttempt[]
 
   @@index([regionId])
   @@index([supabaseId])
+  @@index([deletedAt])
 }
 
 model Skill {
-  id              String            @id @default(uuid())
-  name            String            @unique
-  createdAt       DateTime          @default(now())
-  description     String?
-  parentId        String?
-  slug            String            @unique
-  updatedAt       DateTime          @updatedAt
-  category        String?
-  courses         CourseSkill[]
-  Recommendation  Recommendation[]
-  parent          Skill?            @relation("SkillParent", fields: [parentId], references: [id])
-  children        Skill[]           @relation("SkillParent")
-  SkillMarketStat SkillMarketStat[]
-  tests           Test[]
-  UserSkill       UserSkill[]
+  id                       String                     @id @default(uuid())
+  name                     String                     @unique
+  createdAt                DateTime                   @default(now())
+  description              String?
+  parentId                 String?
+  slug                     String                     @unique
+  updatedAt                DateTime                   @updatedAt
+  category                 String?
+  courses                  CourseSkill[]
+  Recommendation           Recommendation[]
+  parent                   Skill?                     @relation("SkillParent", fields: [parentId], references: [id])
+  children                 Skill[]                    @relation("SkillParent")
+  SkillMarketStat          SkillMarketStat[]
+  tests                    Test[]
+  UserSkill                UserSkill[]
+  verificationQuestions    SkillVerificationQuestion[]
+  verificationAttempts     SkillVerificationAttempt[]
 
   @@index([parentId])
   @@index([name])
@@ -56,23 +61,26 @@ model Skill {
 }
 
 model UserSkill {
-  id            String            @id @default(uuid())
-  userId        String
-  skillId       String
-  createdAt     DateTime          @default(now())
-  lastPracticed DateTime?
-  proficiency   ProficiencyLevel  @default(BASIC)
-  progress      Int               @default(0)
-  targetLevel   ProficiencyLevel?
-  updatedAt     DateTime          @updatedAt
-  skill         Skill             @relation(fields: [skillId], references: [id])
-  user          User              @relation(fields: [userId], references: [id])
+  id                    String            @id @default(uuid())
+  userId                String
+  skillId               String
+  createdAt             DateTime          @default(now())
+  lastPracticed         DateTime?
+  proficiency           ProficiencyLevel  @default(BASIC)
+  progress              Int               @default(0)
+  targetLevel           ProficiencyLevel?
+  updatedAt             DateTime          @updatedAt
+  isVerified            Boolean           @default(false)
+  verificationAttemptId String?
+  skill                 Skill             @relation(fields: [skillId], references: [id])
+  user                  User              @relation(fields: [userId], references: [id])
 
   @@unique([userId, skillId])
   @@index([skillId])
   @@index([proficiency])
   @@index([progress])
   @@index([lastPracticed])
+  @@index([isVerified])
 }
 
 model Course {
@@ -284,6 +292,74 @@ model UserProgress {
   @@index([lessonId])
   @@index([completed])
   @@index([lastAccessedAt])
+}
+
+model SkillVerificationQuestion {
+  id                    String                           @id @default(uuid())
+  skillId               String
+  questionText          String
+  difficultyLevel       ProficiencyLevel                 @default(INTERMEDIATE)
+  points                Int                              @default(1)
+  order                 Int                              @default(0)
+  createdAt             DateTime                         @default(now())
+  updatedAt             DateTime                         @updatedAt
+  skill                 Skill                            @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  choices               SkillVerificationChoice[]
+  userAnswers           SkillVerificationUserAnswer[]
+
+  @@index([skillId])
+  @@index([difficultyLevel])
+  @@index([order])
+}
+
+model SkillVerificationChoice {
+  id          String                    @id @default(uuid())
+  questionId  String
+  choiceText  String
+  label       String
+  isCorrect   Boolean                   @default(false)
+  order       Int                       @default(0)
+  question    SkillVerificationQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@index([questionId])
+  @@index([order])
+}
+
+model SkillVerificationAttempt {
+  id                 String                        @id @default(uuid())
+  userId             String
+  skillId            String
+  startedAt          DateTime                      @default(now())
+  completedAt        DateTime?
+  totalPoints        Int                           @default(0)
+  earnedPoints       Int                           @default(0)
+  achievedLevel      ProficiencyLevel?
+  passedVerification Boolean                       @default(false)
+  createdAt          DateTime                      @default(now())
+  updatedAt          DateTime                      @updatedAt
+  user               User                          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skill              Skill                         @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  userAnswers        SkillVerificationUserAnswer[]
+
+  @@index([userId])
+  @@index([skillId])
+  @@index([completedAt])
+  @@index([achievedLevel])
+}
+
+model SkillVerificationUserAnswer {
+  id               String                     @id @default(uuid())
+  attemptId        String
+  questionId       String
+  selectedChoices  String[]
+  isCorrect        Boolean                    @default(false)
+  pointsEarned     Int                        @default(0)
+  createdAt        DateTime                   @default(now())
+  attempt          SkillVerificationAttempt   @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  question         SkillVerificationQuestion  @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@index([attemptId])
+  @@index([questionId])
 }
 
 enum Role {
