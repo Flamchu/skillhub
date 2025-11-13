@@ -19,7 +19,7 @@ interface AddSkillModalProps {
 	isOpen: boolean;
 	onClose: () => void;
 	availableSkills: Skill[];
-	onAddSkill: (skillId: string, proficiency: ProficiencyLevel) => Promise<void>;
+	onAddSkill: (skillId: string, proficiency: Exclude<ProficiencyLevel, "NONE">) => Promise<void>;
 }
 
 type ModalView = "form" | "verification" | "results";
@@ -36,6 +36,7 @@ export function AddSkillModal({ isOpen, onClose, availableSkills, onAddSkill }: 
 
 	const handleSubmit = async () => {
 		if (!selectedSkill) return;
+		if (selectedProficiency === "NONE") return; // guard against invalid state
 
 		setSubmitting(true);
 		setError(null);
@@ -46,8 +47,8 @@ export function AddSkillModal({ isOpen, onClose, availableSkills, onAddSkill }: 
 				setView("verification");
 				setSubmitting(false); // quiz handles own loading
 			} else {
-				// add skill directly for basic proficiency
-				await onAddSkill(selectedSkill, selectedProficiency);
+				// add skill directly for basic proficiency (type-safe: NONE is already excluded)
+				await onAddSkill(selectedSkill, selectedProficiency as Exclude<ProficiencyLevel, "NONE">);
 				handleClose();
 			}
 		} catch (err) {

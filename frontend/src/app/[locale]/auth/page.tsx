@@ -55,7 +55,7 @@ export default function AuthPage() {
 				if (user) {
 					setMode("login");
 					setError("");
-					// Clear form except email
+					// clear form except email
 					setPassword("");
 					setName("");
 				}
@@ -80,7 +80,7 @@ export default function AuthPage() {
 
 		try {
 			const oauthUrl = await initiateGoogleLogin();
-			// Redirect to Google OAuth URL
+			// redirect to Google OAuth URL
 			window.location.href = oauthUrl;
 		} catch (err) {
 			console.error("Google login error:", err);

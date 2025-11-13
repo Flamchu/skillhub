@@ -141,7 +141,7 @@ router.get("/stats", authenticateSupabaseToken, async (req, res) => {
 	}
 });
 
-// helper function to format relative time
+// format relative time
 function formatTimeAgo(date: Date): string {
 	const now = new Date();
 	const diffInMs = now.getTime() - date.getTime();

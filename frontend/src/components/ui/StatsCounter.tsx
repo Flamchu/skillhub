@@ -48,7 +48,7 @@ export default function StatsCounter({
 	const [finalValue, setFinalValue] = useState(targetValue);
 	const [isLoading, setIsLoading] = useState(fetchFromAPI);
 
-	// Fetch data from API if needed
+	// fetch data from API if needed
 	useEffect(() => {
 		if (fetchFromAPI) {
 			const fetchStats = async () => {

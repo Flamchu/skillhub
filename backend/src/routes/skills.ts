@@ -582,7 +582,7 @@ router.get("/categories", cache(cacheConfigs.skillsList), async (req: Request, r
 		});
 
 		const categoryData = categories
-			.filter((cat) => cat.category) // Remove null categories
+			.filter((cat) => cat.category) // remove null categories
 			.map((cat) => ({
 				name: cat.category,
 				count: cat._count.id,

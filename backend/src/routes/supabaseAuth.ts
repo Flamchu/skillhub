@@ -115,7 +115,7 @@ router.post(
 	})
 );
 
-// Refresh token endpoint
+// refresh token endpoint
 router.post(
 	"/refresh",
 	authLimiter,
@@ -176,7 +176,7 @@ router.patch("/change-password", authenticateSupabaseToken, async (req: Authenti
 			});
 		}
 
-		// Verify current password by attempting to sign in
+		// verify current password by attempting to sign in
 		const { error: verifyError } = await supabaseAuth.auth.signInWithPassword({
 			email: user.email,
 			password: currentPassword,
@@ -186,7 +186,7 @@ router.patch("/change-password", authenticateSupabaseToken, async (req: Authenti
 			return res.status(401).json({ error: "Current password is incorrect" });
 		}
 
-		// Update password in Supabase
+		// update password in Supabase
 		const { error: updateError } = await supabase.auth.admin.updateUserById(user.supabaseId, { password: newPassword });
 
 		if (updateError) {
@@ -195,7 +195,7 @@ router.patch("/change-password", authenticateSupabaseToken, async (req: Authenti
 		}
 
 		// After password change, we should create a new session for the user
-		// This ensures their current session remains valid
+		// this ensures their current session remains valid
 		const { data: newSessionData, error: sessionError } = await supabaseAuth.auth.signInWithPassword({
 			email: user.email,
 			password: newPassword,
@@ -210,7 +210,7 @@ router.patch("/change-password", authenticateSupabaseToken, async (req: Authenti
 			});
 		}
 
-		// Return new session tokens so user doesn't need to re-authenticate
+		// return new session tokens so user doesn't need to re-authenticate
 		res.json({
 			message: "Password updated successfully",
 			session: {
@@ -230,8 +230,8 @@ router.post("/complete-profile", authenticateSupabaseToken, async (req: Authenti
 	try {
 		const { name, headline, bio } = req.body;
 
-		// This endpoint should only be accessible if user doesn't have a profile yet
-		// The middleware will handle this case and provide supabase user info
+		// this endpoint should only be accessible if user doesn't have a profile yet
+		// the middleware will handle this case and provide supabase user info
 		res.status(400).json({ error: "Profile already exists" });
 	} catch (error) {
 		console.error("Complete profile error:", error);
@@ -239,7 +239,7 @@ router.post("/complete-profile", authenticateSupabaseToken, async (req: Authenti
 	}
 });
 
-// Get current user endpoint
+// get current user endpoint
 router.get("/me", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		const user = req.user!;
@@ -287,7 +287,7 @@ router.post(
 		}
 
 		try {
-			// Generate OAuth URL using Supabase
+			// generate OAuth URL using Supabase
 			const { data, error } = await supabaseAuth.auth.signInWithOAuth({
 				provider: "google",
 				options: {
@@ -335,7 +335,7 @@ router.get(
 
 			const supabaseUser = data.user;
 
-			// Check if user profile already exists in our database
+			// check if user profile already exists in our database
 			let userProfile = await prisma.user.findUnique({
 				where: { supabaseId: supabaseUser.id },
 				select: {
@@ -349,7 +349,7 @@ router.get(
 				},
 			});
 
-			// If user doesn't exist, create profile from OAuth data
+			// if user doesn't exist, create profile from OAuth data
 			if (!userProfile) {
 				const email = supabaseUser.email || "";
 				const name = supabaseUser.user_metadata?.full_name || supabaseUser.user_metadata?.name || email.split("@")[0];

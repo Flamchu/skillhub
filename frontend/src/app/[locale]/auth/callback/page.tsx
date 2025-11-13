@@ -17,12 +17,12 @@ export default function AuthCallbackPage() {
 			try {
 				setStatus("loading");
 
-				// Check for Supabase session in URL fragments
+				// check for supabase session in url fragments
 				const hashParams = new URLSearchParams(window.location.hash.substring(1));
 				const accessToken = hashParams.get("access_token");
 				const refreshToken = hashParams.get("refresh_token");
 
-				// Check for error in URL
+				// check for error in url
 				const error = searchParams.get("error");
 				const errorDescription = searchParams.get("error_description");
 
@@ -31,8 +31,7 @@ export default function AuthCallbackPage() {
 				}
 
 				if (accessToken && refreshToken) {
-					// We have tokens from Supabase OAuth
-					// Now get user profile from our backend
+					// get user profile from backend
 					const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/me`, {
 						headers: {
 							Authorization: `Bearer ${accessToken}`,
@@ -45,15 +44,15 @@ export default function AuthCallbackPage() {
 
 					const { user } = await response.json();
 
-					// Store authentication data
+					// store auth data
 					setAuthData(accessToken, refreshToken, user);
 
-					// Trigger auth context refresh
+					// trigger auth context refresh
 					window.dispatchEvent(new Event("auth-changed"));
 
 					setStatus("success");
 
-					// Redirect to dashboard after a brief success message
+					// redirect to dashboard after brief delay
 					setTimeout(() => {
 						router.push("/dashboard");
 					}, 1500);
@@ -65,9 +64,9 @@ export default function AuthCallbackPage() {
 				setStatus("error");
 				setError(err instanceof Error ? err.message : "Authentication failed");
 
-				// Redirect to login after showing error
+				// redirect to auth after showing error
 				setTimeout(() => {
-					router.push("/login");
+					router.push("/auth");
 				}, 3000);
 			}
 		};

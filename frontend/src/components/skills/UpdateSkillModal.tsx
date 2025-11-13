@@ -27,7 +27,7 @@ export function UpdateSkillModal({ isOpen, onClose, skill, onUpdateSkill }: Upda
 	const [selectedProficiency, setSelectedProficiency] = useState<ProficiencyLevel>("BASIC");
 	const [updating, setUpdating] = useState(false);
 
-	// Initialize selected proficiency when skill changes
+	// initialize selected proficiency when skill changes
 	useEffect(() => {
 		if (skill && skill.proficiency !== "NONE") {
 			setSelectedProficiency(skill.proficiency as ProficiencyLevel);

@@ -55,13 +55,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 				api
 					.getMe()
 					.then(response => {
-						// The API returns { user: userProfile }, so we need to extract the user
+						// the API returns { user: userProfile }, so we need to extract the user
 						const apiResponse = response as ApiMeResponse;
 						const userProfile = apiResponse.user;
 						setUser(userProfile);
 						setProfile(userProfile);
 
-						// Update localStorage and cookies with fresh data
+						// update localStorage and cookies with fresh data
 						updateUserData(userProfile);
 					})
 					.catch(apiError => {

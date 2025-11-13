@@ -70,7 +70,7 @@ export default function AdminSkillsPage() {
 		const skillMap = new Map<string, SkillTreeNode>();
 		const roots: SkillTreeNode[] = [];
 
-		// Create all nodes
+		// create all nodes
 		skills.forEach(skill => {
 			skillMap.set(skill.id, {
 				...skill,
@@ -79,7 +79,7 @@ export default function AdminSkillsPage() {
 			});
 		});
 
-		// Build tree structure
+		// build tree structure
 		skills.forEach(skill => {
 			const node = skillMap.get(skill.id)!;
 			if (skill.parentId) {
@@ -113,7 +113,7 @@ export default function AdminSkillsPage() {
 		e.preventDefault();
 
 		try {
-			// Generate slug from name if not provided
+			// generate slug from name if not provided
 			const slug =
 				formData.slug ||
 				formData.name

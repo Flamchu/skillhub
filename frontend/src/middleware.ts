@@ -4,14 +4,14 @@ import { locales } from "./i18n";
 
 // create the intl middleware
 const intlMiddleware = createMiddleware({
-	// A list of all locales that are supported
+	// list of all locales that are supported
 	locales,
 
-	// Used when no locale matches
+	// used when no locale matches
 	defaultLocale: "en",
 });
 
-// helper function to check if user is authenticated
+// check if user is authenticated
 function isAuthenticated(request: NextRequest): boolean {
 	// check for auth token in cookies (preferred for SSR)
 	const authToken = request.cookies.get("auth_token")?.value;
@@ -24,7 +24,7 @@ function isAuthenticated(request: NextRequest): boolean {
 	return !!(authHeader && authHeader.startsWith("Bearer "));
 }
 
-// helper function to get user role from stored user data
+// get user role from stored user data
 function getUserRole(request: NextRequest): string | null {
 	// check for user data in cookies
 	const userData = request.cookies.get("user")?.value;
@@ -68,6 +68,6 @@ export default function middleware(request: NextRequest) {
 }
 
 export const config = {
-	// Match only internationalized pathnames
+	// match only internationalized pathnames
 	matcher: ["/((?!api|_next|_vercel|.*\\.).*)"],
 };

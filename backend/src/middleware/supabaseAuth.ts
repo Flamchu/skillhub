@@ -100,7 +100,7 @@ export const authenticateSupabaseToken = async (req: AuthenticatedRequest, res: 
 	}
 };
 
-// helper function to create user profile after supabase registration
+// create user profile after supabase registration
 export const createUserProfile = async (supabaseId: string, email: string, name?: string) => {
 	try {
 		const user = await prisma.user.create({

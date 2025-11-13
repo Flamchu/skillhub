@@ -21,7 +21,6 @@ import "./config/redis"; // initialize redis connection
 dotenv.config();
 const app = express();
 
-// performance monitoring
 app.use(performanceMonitoring);
 
 app.use(cors());
@@ -50,7 +49,7 @@ app.use("/api/skills", skillRoutes);
 // course routes (mixed public/protected)
 app.use("/api/courses", courseRoutes);
 
-// bookmark routes (protected) - mounted under /api/users for restful urls
+// bookmark routes (protected), mounted under /api/users
 app.use("/api/users", bookmarkRoutes);
 
 // test routes (mixed public/protected)
