@@ -23,7 +23,20 @@ const app = express();
 
 app.use(performanceMonitoring);
 
-app.use(cors());
+const allowedOrigins = [process.env.FRONTEND_URL || "http://localhost:3000"];
+
+app.use(
+	cors({
+		origin: (origin, callback) => {
+			if (!origin || allowedOrigins.includes(origin)) {
+				callback(null, true);
+			} else {
+				callback(new Error("CORS not allowed from this origin"));
+			}
+		},
+		credentials: true,
+	})
+);
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
