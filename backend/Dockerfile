@@ -59,6 +59,11 @@ WORKDIR /app
 RUN groupadd --system --gid 1001 nodejs && \
     useradd --system --uid 1001 --gid nodejs backend
 
+    # install dependencies
+RUN corepack enable \
+ && corepack prepare yarn@4.9.4 --activate \
+ && yarn install --frozen-lockfile --production
+
 # copy yarn configuration
 COPY --from=builder --chown=backend:nodejs /app/package.json /app/yarn.lock /app/.yarnrc.yml ./
 COPY --from=builder --chown=backend:nodejs /app/.yarn ./.yarn
