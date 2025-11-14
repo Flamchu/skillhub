@@ -59,10 +59,6 @@ WORKDIR /app
 RUN groupadd --system --gid 1001 nodejs && \
     useradd --system --uid 1001 --gid nodejs backend
 
-    # install dependencies
-RUN yarn workspaces focus --all --production && yarn install --immutable
-
-
 # copy yarn configuration
 COPY --from=builder --chown=backend:nodejs /app/package.json /app/yarn.lock /app/.yarnrc.yml ./
 COPY --from=builder --chown=backend:nodejs /app/.yarn ./.yarn
