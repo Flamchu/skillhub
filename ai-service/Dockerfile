@@ -28,11 +28,11 @@ RUN useradd --create-home --shell /bin/bash aiuser && \
 USER aiuser
 
 # expose port
-EXPOSE 8000
+EXPOSE 5000
 
 # health check
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s \
-  CMD curl -f https://skillhub.lopataa.site:8000/health || exit 1
+  CMD curl -f https://skillhub.lopataa.site:5000/health || exit 1
 
 # run the application
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "5000"]
