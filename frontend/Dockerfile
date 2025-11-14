@@ -68,7 +68,7 @@ ENV HOSTNAME="0.0.0.0"
 
 # health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=40s \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:3000 || exit 1
+  CMD wget --no-verbose --tries=1 --spider https://skillhub.lopataa.site:3000 || exit 1
 
 RUN yarn install --frozen-lockfile --production
 CMD ["yarn", "start"]
