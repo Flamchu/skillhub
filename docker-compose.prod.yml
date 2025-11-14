@@ -138,34 +138,6 @@ services:
           cpus: "1.0"
           memory: 1024M
 
-  # nginx reverse proxy
-  nginx:
-    image: nginx:stable-bookworm
-    container_name: skillhub-nginx
-    restart: always
-    depends_on:
-      - backend
-      - frontend
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx/ssl:/etc/nginx/ssl:ro
-      - nginx_cache:/var/cache/nginx
-    networks:
-      - skillhub-network
-    healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "https://skillhub.lopataa.site/health"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-    deploy:
-      resources:
-        limits:
-          cpus: "0.5"
-          memory: 256M
-
 volumes:
   postgres_data:
     driver: local
