@@ -70,5 +70,5 @@ ENV HOSTNAME="0.0.0.0"
 HEALTHCHECK --interval=30s --timeout=3s --start-period=40s \
   CMD wget --no-verbose --tries=1 --spider https://skillhub.lopataa.site:3000 || exit 1
 
-RUN yarn install --immutable
+RUN yarn workspaces focus --all --production && yarn install --immutable
 CMD ["yarn", "start"]
