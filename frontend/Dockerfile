@@ -1,7 +1,7 @@
 # multi-stage dockerfile for frontend (next.js)
 
 # stage 1: dependencies
-FROM node:20-bookworm-slim AS deps
+FROM node:24-bookworm-slim AS deps
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
@@ -19,7 +19,7 @@ COPY frontend/package.json ./frontend/
 RUN yarn workspaces focus frontend
 
 # stage 2: builder
-FROM node:20-bookworm-slim AS builder
+FROM node:24-bookworm-slim AS builder
 WORKDIR /app
 
 # enable corepack for yarn
@@ -45,7 +45,7 @@ ENV NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL
 RUN yarn build
 
 # stage 3: runner
-FROM node:20-bookworm-slim AS runner
+FROM node:24-bookworm-slim AS runner
 RUN apt-get update && apt-get install -y --no-install-recommends \
     wget \
     && rm -rf /var/lib/apt/lists/*
@@ -56,8 +56,7 @@ RUN groupadd --system --gid 1001 nodejs && \
     useradd --system --uid 1001 --gid nodejs nextjs
 
 # copy necessary files (skip public if it doesn't exist)
-COPY --from=builder --chown=nextjs:nodejs /app/frontend/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/frontend/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/frontend/ ./
 
 USER nextjs
 
@@ -71,4 +70,5 @@ ENV HOSTNAME="0.0.0.0"
 HEALTHCHECK --interval=30s --timeout=3s --start-period=40s \
   CMD wget --no-verbose --tries=1 --spider http://localhost:3000 || exit 1
 
-CMD ["node", "frontend/server.js"]
+RUN yarn install --frozen-lockfile --production
+CMD ["yarn", "start"]

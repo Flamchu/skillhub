@@ -140,7 +140,7 @@ services:
 
   # nginx reverse proxy
   nginx:
-    image: nginx:alpine
+    image: nginx:stable-bookworm
     container_name: skillhub-nginx
     restart: always
     depends_on:

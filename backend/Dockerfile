@@ -1,7 +1,7 @@
 # multi-stage dockerfile for backend (node.js + express + prisma)
 
 # stage 1: dependencies
-FROM node:20-bookworm-slim AS deps
+FROM node:24-bookworm-slim AS deps
 RUN apt-get update && apt-get install -y --no-install-recommends \
     openssl \
     ca-certificates \
@@ -20,7 +20,7 @@ COPY backend/package.json ./backend/
 RUN yarn workspaces focus backend
 
 # stage 2: builder
-FROM node:20-bookworm-slim AS builder
+FROM node:24-bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
     openssl \
     ca-certificates \
@@ -48,7 +48,7 @@ RUN yarn prisma generate
 RUN yarn build
 
 # stage 3: runner
-FROM node:20-bookworm-slim AS runner
+FROM node:24-bookworm-slim AS runner
 RUN apt-get update && apt-get install -y --no-install-recommends \
     openssl \
     ca-certificates \

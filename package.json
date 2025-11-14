@@ -13,6 +13,7 @@
 		"frontend:dev": "yarn workspace frontend run dev",
 		"backend:build": "yarn workspace backend run build",
 		"frontend:build": "yarn workspace frontend run build",
+		"frontend:start": "yarn workspace frontend run start",
 		"seed": "yarn workspace backend run seed"
 	}
 }
