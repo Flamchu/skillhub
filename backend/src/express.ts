@@ -23,7 +23,7 @@ const app = express();
 
 app.use(performanceMonitoring);
 
-const allowedOrigins = [process.env.FRONTEND_URL || "http://localhost:3000"];
+const allowedOrigins = [process.env.FRONTEND_URL];
 
 app.use(
 	cors({
