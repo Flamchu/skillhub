@@ -50,23 +50,26 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
+# enable corepack for pnpm BEFORE creating user
+RUN corepack enable && corepack prepare pnpm@10.22.0 --activate
+
 # create non-root user
 RUN groupadd --system --gid 1001 nodejs && \
     useradd --system --uid 1001 --gid nodejs nextjs
-
-# enable corepack for pnpm
-RUN corepack enable && corepack prepare pnpm@10.22.0 --activate
 
 # copy package files
 COPY --from=builder --chown=nextjs:nodejs /app/package.json /app/pnpm-lock.yaml /app/pnpm-workspace.yaml /app/.npmrc ./
 COPY --from=builder --chown=nextjs:nodejs /app/frontend/package.json ./frontend/
 
-# install production dependencies only
+# install production dependencies only (as root to avoid permission issues)
 RUN pnpm install --frozen-lockfile --prod --filter frontend...
 
 # copy next.js build output
 COPY --from=builder --chown=nextjs:nodejs /app/frontend/.next ./frontend/.next
 COPY --from=builder --chown=nextjs:nodejs /app/frontend/next.config.ts ./frontend/
+
+# fix ownership of all files
+RUN chown -R nextjs:nodejs /app
 
 USER nextjs
 
