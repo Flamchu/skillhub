@@ -26,7 +26,8 @@ RUN corepack enable && corepack prepare pnpm@10.22.0 --activate
 
 # copy source code first (excluding node_modules)
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
-COPY frontend/package.json frontend/src frontend/public frontend/next.config.ts frontend/tailwind.config.js frontend/postcss.config.mjs frontend/eslint.config.mjs frontend/tsconfig.json ./frontend/
+COPY frontend/package.json frontend/next.config.ts frontend/tailwind.config.js frontend/postcss.config.mjs frontend/eslint.config.mjs frontend/tsconfig.json ./frontend/
+COPY frontend/src ./frontend/src
 
 # copy dependencies from deps stage (after source code)
 COPY --from=deps /app/node_modules ./node_modules
@@ -65,7 +66,6 @@ RUN pnpm install --frozen-lockfile --prod --filter frontend...
 
 # copy next.js build output
 COPY --from=builder --chown=nextjs:nodejs /app/frontend/.next ./frontend/.next
-COPY --from=builder --chown=nextjs:nodejs /app/frontend/public ./frontend/public
 COPY --from=builder --chown=nextjs:nodejs /app/frontend/next.config.ts ./frontend/
 
 USER nextjs
