@@ -24,13 +24,13 @@ WORKDIR /app
 # enable corepack for pnpm
 RUN corepack enable && corepack prepare pnpm@10.22.0 --activate
 
-# copy dependencies from deps stage
+# copy source code first (excluding node_modules)
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
+COPY frontend/package.json frontend/src frontend/public frontend/next.config.ts frontend/tailwind.config.js frontend/postcss.config.mjs frontend/eslint.config.mjs frontend/tsconfig.json ./frontend/
+
+# copy dependencies from deps stage (after source code)
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/frontend/node_modules ./frontend/node_modules
-
-# copy source code
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
-COPY frontend ./frontend
 
 WORKDIR /app/frontend
 
