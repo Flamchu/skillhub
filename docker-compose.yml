@@ -31,7 +31,7 @@ services:
     ports:
       - "6379:6379"
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
       interval: 10s
       timeout: 3s
       retries: 5
@@ -80,14 +80,14 @@ services:
       SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
       LOCAL_AI_SERVICE_URL: http://ai-service:5000
       AI_SERVICE_ENABLED: true
-      FRONTEND_URL: ${FRONTEND_URL:-https://skillhub.lopataa.site:3000}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
     dns:
       - 8.8.8.8
       - 8.8.4.4
     ports:
       - "4000:4000"
     healthcheck:
-      test: ["CMD", "node", "-e", "require('http').get('https://skillhub.lopataa.site:4000/api/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      test: ["CMD", "curl", "-f", "http://localhost:4000/api/health"]
       interval: 30s
       timeout: 5s
       retries: 3
@@ -99,7 +99,7 @@ services:
       context: .
       dockerfile: frontend/Dockerfile
       args:
-        NEXT_PUBLIC_BACKEND_URL: ${NEXT_PUBLIC_BACKEND_URL:-https://skillhub.lopataa.site:4000/api}
+        NEXT_PUBLIC_BACKEND_URL: ${NEXT_PUBLIC_BACKEND_URL:-http://localhost:4000/api}
     container_name: skillhub-frontend
     restart: unless-stopped
     depends_on:
@@ -107,11 +107,11 @@ services:
         condition: service_healthy
     environment:
       NODE_ENV: production
-      NEXT_PUBLIC_BACKEND_URL: ${NEXT_PUBLIC_BACKEND_URL:-https://skillhub.lopataa.site:4000/api}
+      NEXT_PUBLIC_BACKEND_URL: ${NEXT_PUBLIC_BACKEND_URL:-http://localhost:4000/api}
     ports:
       - "3000:3000"
     healthcheck:
-      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider https://skillhub.lopataa.site:3000/ || exit 1"]
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000/ || exit 1"]
       interval: 30s
       timeout: 5s
       retries: 3
