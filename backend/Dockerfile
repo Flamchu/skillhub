@@ -31,7 +31,9 @@ RUN corepack enable && corepack prepare pnpm@10.22.0 --activate
 
 # copy source code first (excluding node_modules)
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
-COPY backend/package.json backend/tsconfig.json backend/prisma backend/src ./backend/
+COPY backend/package.json backend/tsconfig.json ./backend/
+COPY backend/prisma ./backend/prisma
+COPY backend/src ./backend/src
 
 # copy dependencies from deps stage (after source code)
 COPY --from=deps /app/node_modules ./node_modules
