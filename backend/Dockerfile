@@ -8,16 +8,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
-# enable corepack for yarn
-RUN corepack enable && corepack prepare yarn@4.9.4 --activate
+# enable corepack for pnpm
+RUN corepack enable && corepack prepare pnpm@10.22.0 --activate
 
 # copy package files
-COPY package.json yarn.lock .yarnrc.yml ./
-COPY .yarn ./.yarn
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 COPY backend/package.json ./backend/
 
-# install dependencies (including dev dependencies)
-RUN yarn workspaces focus backend
+# install dependencies (including dev dependencies for build)
+RUN pnpm install --frozen-lockfile --filter backend...
 
 # stage 2: builder
 FROM node:24-bookworm-slim AS builder
@@ -27,25 +26,23 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
-# enable corepack for yarn
-RUN corepack enable && corepack prepare yarn@4.9.4 --activate
+# enable corepack for pnpm
+RUN corepack enable && corepack prepare pnpm@10.22.0 --activate
 
-# copy dependencies from deps stage (yarn berry with node-modules linker)
+# copy dependencies from deps stage
 COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/.yarn ./.yarn
-COPY --from=deps /app/.pnp.cjs* ./
-COPY --from=deps /app/.pnp.loader.mjs* ./
+COPY --from=deps /app/backend/node_modules ./backend/node_modules
 
 # copy source code
-COPY package.json yarn.lock .yarnrc.yml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 COPY backend ./backend
 
 # generate prisma client
 WORKDIR /app/backend
-RUN yarn prisma generate
+RUN pnpm prisma generate
 
 # build typescript
-RUN yarn build
+RUN pnpm build
 
 # stage 3: runner
 FROM node:24-bookworm-slim AS runner
@@ -59,15 +56,19 @@ WORKDIR /app
 RUN groupadd --system --gid 1001 nodejs && \
     useradd --system --uid 1001 --gid nodejs backend
 
-# copy yarn configuration
-COPY --from=builder --chown=backend:nodejs /app/package.json /app/yarn.lock /app/.yarnrc.yml ./
-COPY --from=builder --chown=backend:nodejs /app/.yarn ./.yarn
-COPY --from=builder --chown=backend:nodejs /app/node_modules ./node_modules
+# enable corepack for pnpm
+RUN corepack enable && corepack prepare pnpm@10.22.0 --activate
+
+# copy package files
+COPY --from=builder --chown=backend:nodejs /app/package.json /app/pnpm-lock.yaml /app/pnpm-workspace.yaml /app/.npmrc ./
+COPY --from=builder --chown=backend:nodejs /app/backend/package.json ./backend/
+
+# install production dependencies only
+RUN pnpm install --frozen-lockfile --prod --filter backend...
 
 # copy backend build output and config
 COPY --from=builder --chown=backend:nodejs /app/backend/dist ./backend/dist
 COPY --from=builder --chown=backend:nodejs /app/backend/prisma ./backend/prisma
-COPY --from=builder --chown=backend:nodejs /app/backend/package.json ./backend/
 
 USER backend
 
