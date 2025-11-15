@@ -32,7 +32,7 @@ docker compose -f docker-compose.prod.yml build --no-cache
 
 # Run DB migrations using service environment
 echo -e "${YELLOW}🔄 Running database migrations...${NC}"
-docker compose -f docker-compose.prod.yml run --rm backend sh -c "yarn prisma:migrate:deploy"
+docker compose -f docker-compose.prod.yml run --rm backend sh -c "pnpm prisma:migrate:deploy"
 
 # Start stack
 echo -e "${YELLOW}🚀 Starting containers...${NC}"

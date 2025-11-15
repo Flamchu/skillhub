@@ -10,13 +10,9 @@ WARP.md
 # Next.js
 .next/*
 
-# Yarn
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
-!.yarn/sdks
+# pnpm
+.pnpm-store/
+.pnpm-debug.log*
 
 # Environment variables
 .env
