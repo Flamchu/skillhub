@@ -36,7 +36,7 @@ services:
     networks:
       - skillhub-network
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
       interval: 10s
       timeout: 3s
       retries: 5
@@ -127,7 +127,7 @@ services:
     networks:
       - skillhub-network
     healthcheck:
-      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider https://skillhub.lopataa.site:3000 || exit 1"]
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://frontend:3000 || exit 1"]
       interval: 30s
       timeout: 5s
       retries: 3
