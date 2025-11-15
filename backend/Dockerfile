@@ -59,7 +59,11 @@ RUN corepack enable && corepack prepare pnpm@10.22.0 --activate
 
 # create non-root user
 RUN groupadd --system --gid 1001 nodejs && \
-    useradd --system --uid 1001 --gid nodejs backend
+    useradd --system --uid 1001 --gid nodejs backend --create-home
+
+# create corepack cache directory with proper permissions
+RUN mkdir -p /home/backend/.cache/node/corepack && \
+    chown -R backend:nodejs /home/backend/.cache
 
 # copy package files
 COPY --from=builder --chown=backend:nodejs /app/package.json /app/pnpm-lock.yaml /app/pnpm-workspace.yaml /app/.npmrc ./
