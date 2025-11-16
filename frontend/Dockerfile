@@ -65,12 +65,14 @@ RUN mkdir -p /home/nextjs/.cache/node/corepack && \
 COPY --from=builder --chown=nextjs:nodejs /app/package.json /app/pnpm-lock.yaml /app/pnpm-workspace.yaml /app/.npmrc ./
 COPY --from=builder --chown=nextjs:nodejs /app/frontend/package.json ./frontend/
 
-# install production dependencies only (as root to avoid permission issues)
-RUN pnpm install --frozen-lockfile --prod --filter frontend...
+# copy next.js standalone build output
+COPY --from=builder --chown=nextjs:nodejs /app/frontend/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/frontend/.next/static ./frontend/.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/frontend/public ./frontend/public
 
-# copy next.js build output
-COPY --from=builder --chown=nextjs:nodejs /app/frontend/.next ./frontend/.next
+# copy next.config and i18n config for next-intl
 COPY --from=builder --chown=nextjs:nodejs /app/frontend/next.config.ts ./frontend/
+COPY --from=builder --chown=nextjs:nodejs /app/frontend/src/i18n.ts ./frontend/src/i18n.ts
 
 # copy messages directory for next-intl runtime
 COPY --from=builder --chown=nextjs:nodejs /app/frontend/src/messages ./frontend/src/messages
@@ -88,4 +90,4 @@ ENV NODE_ENV=production
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-CMD ["pnpm", "start"]
+CMD ["node", "server.js"]
