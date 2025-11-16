@@ -72,7 +72,12 @@ COPY --from=builder --chown=backend:nodejs /app/backend/package.json ./backend/
 # install production dependencies only (as root to avoid permission issues)
 RUN pnpm install --frozen-lockfile --prod --filter backend...
 
+# generate prisma client for production
+WORKDIR /app/backend
+RUN pnpm prisma generate
+
 # copy backend build output and config
+WORKDIR /app
 COPY --from=builder --chown=backend:nodejs /app/backend/dist ./backend/dist
 COPY --from=builder --chown=backend:nodejs /app/backend/prisma ./backend/prisma
 
