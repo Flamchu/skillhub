@@ -56,19 +56,20 @@ services:
       ai-service:
         condition: service_healthy
     environment:
-      NODE_ENV: production
-      PORT: 4000
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: ${PORT:-4000}
       DATABASE_URL: ${DATABASE_URL}
       DIRECT_URL: ${DIRECT_URL}
-      REDIS_ENABLED: true
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
+      REDIS_ENABLED: ${REDIS_ENABLED:-true}
+      REDIS_HOST: ${REDIS_HOST:-redis}
+      REDIS_PORT: ${REDIS_PORT:-6379}
       REDIS_PASSWORD: ${REDIS_PASSWORD}
-      REDIS_DB: 0
+      REDIS_DB: ${REDIS_DB:-0}
       SUPABASE_URL: ${SUPABASE_URL}
+      SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY}
       SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
-      LOCAL_AI_SERVICE_URL: http://ai-service:5000
-      AI_SERVICE_ENABLED: true
+      LOCAL_AI_SERVICE_URL: ${LOCAL_AI_SERVICE_URL:-http://ai-service:5000}
+      AI_SERVICE_ENABLED: ${AI_SERVICE_ENABLED:-true}
       FRONTEND_URL: ${FRONTEND_URL}
     networks:
       - skillhub-network
@@ -97,7 +98,7 @@ services:
       backend:
         condition: service_healthy
     environment:
-      NODE_ENV: production
+      NODE_ENV: ${NODE_ENV:-production}
       NEXT_PUBLIC_BACKEND_URL: ${NEXT_PUBLIC_BACKEND_URL}
     networks:
       - skillhub-network
