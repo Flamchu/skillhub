@@ -758,4 +758,111 @@ router.patch("/:id/restore", authenticateSupabaseToken, requireAdmin, async (req
 	}
 });
 
+// clear user data (protected - fresh start)
+router.post("/:id/clear-data", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
+	try {
+		const { id } = req.params;
+		const currentUser = req.user!;
+
+		// users can only clear their own data
+		if (currentUser.id !== id) {
+			return res.status(403).json({ error: "Access denied" });
+		}
+
+		// delete all user's learning data in a transaction
+		await prisma.$transaction(async (tx) => {
+			// delete user skills
+			await tx.userSkill.deleteMany({
+				where: { userId: id },
+			});
+
+			// delete enrollments
+			await tx.enrollment.deleteMany({
+				where: { userId: id },
+			});
+
+			// delete user progress
+			await tx.userProgress.deleteMany({
+				where: { userId: id },
+			});
+
+			// delete bookmarks
+			await tx.bookmark.deleteMany({
+				where: { userId: id },
+			});
+
+			// delete test attempts
+			await tx.testAttempt.deleteMany({
+				where: { userId: id },
+			});
+
+			// delete skill verification attempts
+			await tx.skillVerificationAttempt.deleteMany({
+				where: { userId: id },
+			});
+
+			// delete recommendations
+			await tx.recommendation.deleteMany({
+				where: { userId: id },
+			});
+		});
+
+		res.json({
+			message: "All learning data cleared successfully",
+			cleared: true,
+		});
+	} catch (error) {
+		console.error("Clear user data error:", error);
+		res.status(500).json({ error: "Failed to clear user data" });
+	}
+});
+
+// delete user account (protected - soft delete)
+router.delete("/:id/account", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
+	try {
+		const { id } = req.params;
+		const currentUser = req.user!;
+
+		// users can only delete their own account
+		if (currentUser.id !== id) {
+			return res.status(403).json({ error: "Access denied" });
+		}
+
+		const user = await prisma.user.findUnique({
+			where: { id },
+			select: { id: true, email: true, supabaseId: true, deletedAt: true },
+		});
+
+		if (!user) {
+			return res.status(404).json({ error: "User not found" });
+		}
+
+		if (user.deletedAt) {
+			return res.status(400).json({ error: "Account already deleted" });
+		}
+
+		// soft delete the user account
+		const deletedUser = await prisma.user.update({
+			where: { id },
+			data: {
+				deletedAt: new Date(),
+				email: user.email ? `deleted_${user.id}@deleted.local` : null,
+			},
+			select: {
+				id: true,
+				email: true,
+				deletedAt: true,
+			},
+		});
+
+		res.json({
+			message: "Account deleted successfully",
+			user: deletedUser,
+		});
+	} catch (error) {
+		console.error("Delete account error:", error);
+		res.status(500).json({ error: "Failed to delete account" });
+	}
+});
+
 export default router;

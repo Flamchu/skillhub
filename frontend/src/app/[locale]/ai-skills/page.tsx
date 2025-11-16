@@ -8,12 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Sparkles, ArrowRight, Target, TrendingUp, Zap } from "lucide-react";
 import type { AISkillSuggestion } from "@/types";
 import Link from "next/link";
-import { 
-	OnboardingOverlay, 
-	PromptTemplates, 
-	GenerationProgress, 
-	SkillProficiencyEditor 
-} from "@/components/ai-skills";
+import { OnboardingOverlay, PromptTemplates, GenerationProgress, SkillProficiencyEditor } from "@/components/ai-skills";
 import { generateAISkills } from "@/lib/recommendations";
 
 type GenerationStage = "input" | "analyzing" | "generating" | "complete" | "editing";
@@ -21,11 +16,11 @@ type GenerationStage = "input" | "analyzing" | "generating" | "complete" | "edit
 export default function AISkillsPage() {
 	const { user, loading } = useAuth();
 	const router = useRouter();
-	
+
 	// onboarding state
 	const [showOnboarding, setShowOnboarding] = useState(true);
 	const [onboardingComplete, setOnboardingComplete] = useState(false);
-	
+
 	// generation state
 	const [prompt, setPrompt] = useState("");
 	const [stage, setStage] = useState<GenerationStage>("input");
@@ -67,19 +62,42 @@ export default function AISkillsPage() {
 		try {
 			setError(null);
 			setStage("analyzing");
-			
-			// simulate progress stages
-			setTimeout(() => setStage("generating"), 1500);
-			
+
+			console.warn("[AI Skills] Starting generation with prompt:", prompt.trim());
+
+			// show analyzing stage for a moment before calling API
+			await new Promise(resolve => setTimeout(resolve, 1000));
+			setStage("generating");
+
 			const response = await generateAISkills({ prompt: prompt.trim() });
-			
-			setTimeout(() => {
-				setSuggestions(response.skills);
-				setStage("editing");
-			}, 1000);
-		} catch (error) {
-			console.error("Failed to generate AI skills:", error);
-			setError("Failed to generate skill suggestions. Please try again.");
+
+			console.warn("[AI Skills] Received response:", response);
+
+			// show generating stage for a moment before transitioning to editing
+			await new Promise(resolve => setTimeout(resolve, 800));
+
+			setSuggestions(response.skills);
+			setStage("editing");
+		} catch (error: unknown) {
+			console.error("[AI Skills] Generation failed:", error);
+			console.error("[AI Skills] Error type:", typeof error);
+			console.error(
+				"[AI Skills] Error keys:",
+				error && typeof error === "object" ? Object.keys(error) : "not an object"
+			);
+
+			// extract error message from various error formats
+			const errorMessage =
+				(error && typeof error === "object" && "message" in error ? error.message : null) ||
+				(error && typeof error === "object" && "error" in error ? (error as { error: string }).error : null) ||
+				(error && typeof error === "object" && "details" in error
+					? String((error as { details: unknown }).details)
+					: null) ||
+				(typeof error === "string" ? error : "Failed to generate skill suggestions. Please try again.");
+
+			console.error("[AI Skills] Extracted error message:", errorMessage);
+
+			setError(String(errorMessage));
 			setStage("input");
 		}
 	};
@@ -87,27 +105,89 @@ export default function AISkillsPage() {
 	const handleSaveSkills = async (skills: AISkillSuggestion[]) => {
 		if (!user?.id) return;
 
+		// check if any skills are selected
+		if (skills.length === 0) {
+			setError("Please select at least one skill to add to your profile");
+			return;
+		}
+
 		try {
 			const { api } = await import("@/lib/http");
+
+			const errors: string[] = [];
+			const skipped: string[] = [];
+			let successCount = 0;
 
 			// add skills to profile
 			for (const skillSuggestion of skills) {
 				try {
 					await api.addUserSkill(user.id, {
-skillId: skillSuggestion.skill.id,
-proficiency:
-skillSuggestion.suggestedProficiency === "NONE" ? "BASIC" : skillSuggestion.suggestedProficiency,
-});
-				} catch (error) {
-					console.error(`Failed to add skill ${skillSuggestion.skill.name}:`, error);
+						skillId: skillSuggestion.skill.id,
+						proficiency:
+							skillSuggestion.suggestedProficiency === "NONE" ? "BASIC" : skillSuggestion.suggestedProficiency,
+					});
+					successCount++;
+				} catch (error: unknown) {
+					// extract error message from axios interceptor format or standard error
+					let errorMessage = "Unknown error";
+
+					if (error && typeof error === "object") {
+						// axios interceptor throws: { status, message, details, path, data }
+						if ("message" in error && error.message) {
+							errorMessage = String(error.message);
+						} else if ("error" in error && (error as { error: unknown }).error) {
+							errorMessage = String((error as { error: unknown }).error);
+						} else if ("details" in error && (error as { details: unknown }).details) {
+							errorMessage = String((error as { details: unknown }).details);
+						}
+					} else if (typeof error === "string") {
+						errorMessage = error;
+					}
+
+					// skip "already has skill" errors silently - this is expected behavior
+					if (errorMessage.toLowerCase().includes("already has this skill")) {
+						console.warn(`[AI Skills] Skipping ${skillSuggestion.skill.name} - already in profile`);
+						skipped.push(skillSuggestion.skill.name);
+						continue;
+					}
+
+					console.error(`[AI Skills] Failed to add skill ${skillSuggestion.skill.name}:`, {
+						error,
+						extractedMessage: errorMessage,
+						errorType: typeof error,
+						errorKeys: error && typeof error === "object" ? Object.keys(error) : [],
+					});
+
+					errors.push(`${skillSuggestion.skill.name}: ${errorMessage}`);
 				}
 			}
 
-			setHasAddedSkills(true);
+			// show appropriate message based on results
+			if (errors.length === 0 && skipped.length === 0) {
+				// all succeeded
+				console.warn(`[AI Skills] Successfully added all ${successCount} skills`);
+			} else if (errors.length === 0 && skipped.length > 0) {
+				// some skipped but no errors
+				console.warn(
+					`[AI Skills] Added ${successCount} new skills, skipped ${skipped.length} existing: ${skipped.join(", ")}`
+				);
+			} else if (errors.length > 0 && successCount > 0) {
+				// partial success
+				console.warn("[AI Skills] Some skills failed to add:", errors);
+				setError(`Added ${successCount} skills. Failed: ${errors.join(", ")}`);
+			} else if (errors.length > 0 && successCount === 0) {
+				// all failed
+				throw new Error(`All skills failed to add: ${errors.join(", ")}`);
+			}
+
+			setHasAddedSkills(successCount > 0);
 			setStage("complete");
-		} catch (error) {
-			console.error("Error processing generated skills:", error);
-			setError("Failed to add skills. Please try again.");
+		} catch (error: unknown) {
+			console.error("[AI Skills] Error processing generated skills:", error);
+			const errorMessage =
+				(error && typeof error === "object" && "message" in error ? String(error.message) : null) ||
+				"Failed to add skills. Please try again.";
+			setError(errorMessage);
 		}
 	};
 
@@ -133,18 +213,19 @@ skillSuggestion.suggestedProficiency === "NONE" ? "BASIC" : skillSuggestion.sugg
 	}
 
 	return (
-<PageLayout>
+		<PageLayout>
 			{/* onboarding overlay */}
-			{showOnboarding && !onboardingComplete && (
-				<OnboardingOverlay onComplete={handleOnboardingComplete} />
-			)}
+			{showOnboarding && !onboardingComplete && <OnboardingOverlay onComplete={handleOnboardingComplete} />}
 
 			{/* hero section */}
 			<div className="relative overflow-hidden">
 				{/* decorative background */}
 				<div className="absolute inset-0 -z-10">
 					<div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse" />
-					<div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1s" }} />
+					<div
+						className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple/10 rounded-full blur-3xl animate-pulse"
+						style={{ animationDelay: "1s" }}
+					/>
 				</div>
 
 				{/* header */}
@@ -215,7 +296,6 @@ skillSuggestion.suggestedProficiency === "NONE" ? "BASIC" : skillSuggestion.sugg
 					<div className="relative">
 						<div className="absolute inset-0 bg-linear-to-br from-primary/5 to-purple/5 rounded-3xl blur-2xl" />
 						<div className="relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-3xl p-8 border border-gray-200/50 dark:border-gray-700/50 shadow-xl">
-							
 							{/* input stage */}
 							{stage === "input" && (
 								<div className="space-y-6">
@@ -225,13 +305,11 @@ skillSuggestion.suggestedProficiency === "NONE" ? "BASIC" : skillSuggestion.sugg
 										</label>
 										<textarea
 											value={prompt}
-											onChange={(e) => setPrompt(e.target.value)}
+											onChange={e => setPrompt(e.target.value)}
 											placeholder="Example: I'm a frontend developer with 3 years of React experience, looking to transition into full-stack development..."
 											className="w-full h-32 px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary focus:border-primary resize-none"
 										/>
-										{error && (
-											<p className="text-sm text-red-500 mt-2">{error}</p>
-										)}
+										{error && <p className="text-sm text-red-500 mt-2">{error}</p>}
 									</div>
 
 									<PromptTemplates onSelectTemplate={handleTemplateSelect} />
@@ -250,9 +328,7 @@ skillSuggestion.suggestedProficiency === "NONE" ? "BASIC" : skillSuggestion.sugg
 							)}
 
 							{/* generating stages */}
-							{(stage === "analyzing" || stage === "generating") && (
-								<GenerationProgress stage={stage} />
-							)}
+							{(stage === "analyzing" || stage === "generating") && <GenerationProgress stage={stage} />}
 
 							{/* editing stage */}
 							{stage === "editing" && suggestions.length > 0 && (
@@ -269,9 +345,7 @@ skillSuggestion.suggestedProficiency === "NONE" ? "BASIC" : skillSuggestion.sugg
 									<div className="w-20 h-20 bg-linear-to-br from-success to-info rounded-full flex items-center justify-center mx-auto">
 										<Zap className="w-10 h-10 text-white" />
 									</div>
-									<h3 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-										🎉 Skills Added Successfully!
-									</h3>
+									<h3 className="text-3xl font-bold text-gray-900 dark:text-gray-100">🎉 Skills Added Successfully!</h3>
 									<p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
 										Your skills have been added to your profile. Ready to see personalized course recommendations?
 									</p>

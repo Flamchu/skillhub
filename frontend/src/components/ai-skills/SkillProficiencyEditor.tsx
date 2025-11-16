@@ -21,7 +21,8 @@ const PROFICIENCY_LEVELS = [
 
 export function SkillProficiencyEditor({ suggestions, onSave, onCancel, className = "" }: SkillProficiencyEditorProps) {
 	const [editedSkills, setEditedSkills] = useState<AISkillSuggestion[]>(suggestions);
-	const [selectedSkills, setSelectedSkills] = useState<Set<string>>(new Set(suggestions.map(s => s.skill.id)));
+	// start with all skills deselected - user must opt-in
+	const [selectedSkills, setSelectedSkills] = useState<Set<string>>(new Set());
 
 	const handleProficiencyChange = (skillId: string, newProficiency: string) => {
 		setEditedSkills(prev =>
@@ -57,10 +58,10 @@ export function SkillProficiencyEditor({ suggestions, onSave, onCancel, classNam
 				<div>
 					<h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
 						<Edit3 className="w-5 h-5 text-primary" />
-						Review & Adjust Your Skills
+						Review & Select Your Skills
 					</h3>
 					<p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
-						Select skills to add and adjust proficiency levels as needed
+						Check the skills you want to add, then adjust proficiency levels
 					</p>
 				</div>
 				<div className="text-sm font-medium text-gray-600 dark:text-gray-300">

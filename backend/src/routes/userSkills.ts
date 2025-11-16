@@ -251,6 +251,31 @@ router.patch("/:userId/skills/:skillId", authenticateSupabaseToken, async (req: 
 			return res.status(404).json({ error: "User skill not found" });
 		}
 
+		// check if proficiency is being upgraded and verification is required
+		if (proficiency && proficiency !== existingUserSkill.proficiency) {
+			const proficiencyOrder = ["NONE", "BASIC", "INTERMEDIATE", "ADVANCED", "EXPERT"];
+			const currentIndex = proficiencyOrder.indexOf(existingUserSkill.proficiency);
+			const newIndex = proficiencyOrder.indexOf(proficiency);
+
+			// if upgrading to intermediate or above, check for verification
+			if (newIndex > currentIndex && proficiency !== ProficiencyLevel.NONE && proficiency !== ProficiencyLevel.BASIC) {
+				const verificationQuestionsCount = await prisma.skillVerificationQuestion.count({
+					where: { skillId },
+				});
+
+				if (verificationQuestionsCount > 0) {
+					// user needs to complete verification first
+					return res.status(428).json({
+						error: "Verification required",
+						message: "Upgrading to this proficiency level requires verification. Please complete the skill verification quiz first.",
+						requiresVerification: true,
+						skillId,
+						requestedProficiency: proficiency,
+					});
+				}
+			}
+		}
+
 		const updateData: any = {};
 		if (proficiency !== undefined) updateData.proficiency = proficiency;
 		if (targetLevel !== undefined) updateData.targetLevel = targetLevel;
