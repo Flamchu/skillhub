@@ -61,26 +61,24 @@ RUN groupadd --system --gid 1001 nodejs && \
 RUN mkdir -p /home/nextjs/.cache/node/corepack && \
     chown -R nextjs:nodejs /home/nextjs/.cache
 
-# copy package files
-COPY --from=builder --chown=nextjs:nodejs /app/package.json /app/pnpm-lock.yaml /app/pnpm-workspace.yaml /app/.npmrc ./
-COPY --from=builder --chown=nextjs:nodejs /app/frontend/package.json ./frontend/
-
-# copy next.js standalone build output
+# copy next.js standalone build output (includes server and dependencies)
 COPY --from=builder --chown=nextjs:nodejs /app/frontend/.next/standalone ./
+
+# copy static assets to the correct location within standalone structure
 COPY --from=builder --chown=nextjs:nodejs /app/frontend/.next/static ./frontend/.next/static
 
-# copy next.config and i18n config for next-intl
-COPY --from=builder --chown=nextjs:nodejs /app/frontend/next.config.ts ./frontend/
-COPY --from=builder --chown=nextjs:nodejs /app/frontend/src/i18n.ts ./frontend/src/i18n.ts
-
-# copy messages directory for next-intl runtime
+# copy messages directory for next-intl runtime  
 COPY --from=builder --chown=nextjs:nodejs /app/frontend/src/messages ./frontend/src/messages
+
+# copy i18n config for next-intl
+COPY --from=builder --chown=nextjs:nodejs /app/frontend/src/i18n.ts ./frontend/src/i18n.ts
 
 # fix ownership of all files
 RUN chown -R nextjs:nodejs /app
 
 USER nextjs
 
+# work from the frontend directory where server.js expects to run
 WORKDIR /app/frontend
 
 EXPOSE 3000
