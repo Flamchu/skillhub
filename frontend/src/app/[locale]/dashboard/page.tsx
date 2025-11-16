@@ -45,7 +45,7 @@ export default function DashboardPage() {
 				<div className="max-w-7xl mx-auto flex justify-between items-center">
 					<Link
 						href="/"
-						className="text-3xl font-bold bg-gradient-to-br from-primary via-purple to-pink text-transparent bg-clip-text hover:scale-105 transition-transform"
+						className="text-3xl font-bold bg-linear-to-br from-primary via-purple to-pink text-transparent bg-clip-text hover:scale-105 transition-transform"
 					>
 						SkillHub ✨
 					</Link>
@@ -77,12 +77,12 @@ export default function DashboardPage() {
 			<main className="py-8 pt-24">
 				<div className="text-center mb-20">
 					<div className="mb-6">
-						<span className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-success-50 to-info-50 dark:from-success-900/20 dark:to-info-900/20 text-success dark:text-success-400 rounded-full text-sm font-semibold border border-success/30 dark:border-success-400/30">
+						<span className="inline-flex items-center px-4 py-2 bg-linear-to-r from-success-50 to-info-50 dark:from-success-900/20 dark:to-info-900/20 text-success dark:text-success-400 rounded-full text-sm font-semibold border border-success/30 dark:border-success-400/30">
 							🎯 {tDashboard("welcome")}
 						</span>
 					</div>
 					<h1 className="text-5xl md:text-6xl font-bold mb-6">
-						<span className="bg-gradient-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
+						<span className="bg-linear-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
 							{tDashboard("title")}
 						</span>
 					</h1>
@@ -155,7 +155,7 @@ export default function DashboardPage() {
 							</div>
 							<Link
 								href="/courses/recommended"
-								className="px-6 py-3 bg-gradient-to-r from-primary to-purple text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-200 hover:scale-105"
+								className="px-6 py-3 bg-linear-to-r from-primary to-purple text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-200 hover:scale-105"
 							>
 								View All Recommendations
 							</Link>
@@ -191,7 +191,7 @@ export default function DashboardPage() {
 							/>
 						</div>
 
-						<div className="mt-6 p-4 bg-gradient-to-r from-primary/10 to-purple/10 rounded-lg border border-primary/20">
+						<div className="mt-6 p-4 bg-linear-to-r from-primary/10 to-purple/10 rounded-lg border border-primary/20">
 							<div className="flex items-center space-x-3">
 								<div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
 									<span className="text-white font-bold text-sm">AI</span>

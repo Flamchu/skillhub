@@ -69,7 +69,7 @@ export function CoursesGrid({
 					<Button
 						variant="outline"
 						onClick={() => refetch()}
-						className="bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 border-0"
+						className="bg-linear-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 border-0"
 					>
 						Try Again
 					</Button>
@@ -92,8 +92,8 @@ export function CoursesGrid({
 								<div
 									className={`px-3 py-1 rounded-full text-sm font-semibold ${
 										course.source === "INTERNAL"
-											? "bg-gradient-to-r from-primary to-purple text-white"
-											: "bg-gradient-to-r from-info to-success text-white"
+											? "bg-linear-to-r from-primary to-purple text-white"
+											: "bg-linear-to-r from-info to-success text-white"
 									}`}
 								>
 									{course.source === "INTERNAL" ? "SkillHub" : course.source.toLowerCase()}
@@ -172,7 +172,7 @@ export function CoursesGrid({
 									size="sm"
 									onClick={() => handleEnrollClick(course.id)}
 									disabled={enrollingCourses.has(course.id)}
-									className="bg-gradient-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+									className="bg-linear-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
 								>
 									{enrollingCourses.has(course.id) ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Enroll Now</>}
 								</Button>
@@ -219,7 +219,7 @@ export function CoursesGrid({
 			{courses.length === 0 && (
 				<div className="text-center py-20">
 					<div className="bg-surface/60 dark:bg-gray-800/60 backdrop-blur-sm border border-border/20 rounded-2xl p-12 max-w-lg mx-auto">
-						<div className="w-20 h-20 bg-gradient-to-br from-primary to-purple rounded-2xl flex items-center justify-center mx-auto mb-6">
+						<div className="w-20 h-20 bg-linear-to-br from-primary to-purple rounded-2xl flex items-center justify-center mx-auto mb-6">
 							<Search className="w-10 h-10 text-white" />
 						</div>
 						<h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">No courses found</h3>
@@ -231,7 +231,7 @@ export function CoursesGrid({
 						<Button
 							variant="outline"
 							onClick={resetFilters}
-							className="bg-gradient-to-r from-primary to-purple text-white hover:from-primary-600 hover:to-purple-600 border-0 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+							className="bg-linear-to-r from-primary to-purple text-white hover:from-primary-600 hover:to-purple-600 border-0 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
 						>
 							Clear All Filters
 						</Button>

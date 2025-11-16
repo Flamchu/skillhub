@@ -131,7 +131,7 @@ export default function ProfilePage() {
 
 	if (loading) {
 		return (
-			<div className="min-h-screen bg-gradient-to-br from-primary-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
+			<div className="min-h-screen bg-linear-to-br from-primary-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
 				<div className="text-center">
 					<div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4" />
 					<p className="text-gray-600 dark:text-gray-300">Loading profile...</p>
@@ -150,13 +150,13 @@ export default function ProfilePage() {
 	];
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-primary-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+		<div className="min-h-screen bg-linear-to-br from-primary-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
 			{/* Navigation */}
 			<nav className="px-6 py-6 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border-b border-primary/20 dark:border-gray-700">
 				<div className="max-w-7xl mx-auto flex justify-between items-center">
 					<Link
 						href="/dashboard"
-						className="text-3xl font-bold bg-gradient-to-br from-primary via-purple to-pink text-transparent bg-clip-text hover:scale-105 transition-transform"
+						className="text-3xl font-bold bg-linear-to-br from-primary via-purple to-pink text-transparent bg-clip-text hover:scale-105 transition-transform"
 					>
 						SkillHub ✨
 					</Link>
@@ -167,7 +167,7 @@ export default function ProfilePage() {
 						</Button>
 						<Button
 							onClick={() => router.push("/courses/recommended")}
-							className="flex items-center space-x-2 bg-gradient-to-r from-primary to-purple text-white"
+							className="flex items-center space-x-2 bg-linear-to-r from-primary to-purple text-white"
 						>
 							<Target className="w-4 h-4" />
 							<span>My Recommendations</span>
@@ -179,7 +179,7 @@ export default function ProfilePage() {
 			<main className="max-w-7xl mx-auto px-6 py-8">
 				{/* Profile Header */}
 				<div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden mb-8">
-					<div className="relative h-48 bg-gradient-to-r from-primary via-purple to-pink">
+					<div className="relative h-48 bg-linear-to-r from-primary via-purple to-pink">
 						<div className="absolute inset-0 bg-black/20" />
 						<div className="absolute bottom-6 left-6 right-6">
 							<div className="flex items-end justify-between">
@@ -369,7 +369,7 @@ export default function ProfilePage() {
 								{/* Current Learning Path */}
 								<div>
 									<h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Current Learning Path</h3>
-									<div className="bg-gradient-to-r from-primary/10 to-purple/10 rounded-xl p-6">
+									<div className="bg-linear-to-r from-primary/10 to-purple/10 rounded-xl p-6">
 										<div className="flex items-center justify-between mb-4">
 											<h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Web Development Track</h4>
 											<span className="text-sm font-medium text-primary bg-primary/10 px-3 py-1 rounded-full">
@@ -378,14 +378,14 @@ export default function ProfilePage() {
 										</div>
 										<div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-4">
 											<div
-												className="bg-gradient-to-r from-primary to-purple h-2 rounded-full"
+												className="bg-linear-to-r from-primary to-purple h-2 rounded-full"
 												style={{ width: "60%" }}
 											/>
 										</div>
 										<p className="text-gray-600 dark:text-gray-300 mb-4">
 											Master modern web development with HTML, CSS, JavaScript, and React.
 										</p>
-										<Button className="bg-gradient-to-r from-primary to-purple text-white">
+										<Button className="bg-linear-to-r from-primary to-purple text-white">
 											Continue Learning <ArrowRight className="w-4 h-4 ml-2" />
 										</Button>
 									</div>
@@ -430,7 +430,7 @@ export default function ProfilePage() {
 													key={recommendation.id}
 													className="bg-white dark:bg-gray-700 rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden"
 												>
-													<div className="relative h-40 bg-gradient-to-br from-primary/10 to-purple/10">
+													<div className="relative h-40 bg-linear-to-br from-primary/10 to-purple/10">
 														{course.thumbnail ? (
 															<Image
 																src={course.thumbnail}
@@ -461,7 +461,7 @@ export default function ProfilePage() {
 															<span className="text-sm font-medium text-primary">
 																{course.isPaid ? `$${((course.priceCents || 0) / 100).toFixed(2)}` : "Free"}
 															</span>
-															<Button size="sm" className="bg-gradient-to-r from-primary to-purple text-white">
+															<Button size="sm" className="bg-linear-to-r from-primary to-purple text-white">
 																Enroll Now
 															</Button>
 														</div>
@@ -481,7 +481,7 @@ export default function ProfilePage() {
 										</p>
 										<Button
 											onClick={() => setActiveTab("ai-skills")}
-											className="bg-gradient-to-r from-primary to-purple text-white"
+											className="bg-linear-to-r from-primary to-purple text-white"
 										>
 											Generate Skills with AI
 										</Button>
@@ -547,7 +547,7 @@ export default function ProfilePage() {
 
 										{isEditing && (
 											<div className="flex space-x-4">
-												<Button className="bg-gradient-to-r from-primary to-purple text-white">Save Changes</Button>
+												<Button className="bg-linear-to-r from-primary to-purple text-white">Save Changes</Button>
 												<Button variant="outline" onClick={() => setIsEditing(false)}>
 													Cancel
 												</Button>

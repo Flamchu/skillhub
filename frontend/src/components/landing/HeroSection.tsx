@@ -1,4 +1,3 @@
-"use client";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 
@@ -9,13 +8,13 @@ export function HeroSection() {
 		<main className="px-6 py-20">
 			<div className="max-w-5xl mx-auto text-center">
 				<div className="mb-8">
-					<span className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-success-50 to-info-50 dark:from-success-900/20 dark:to-info-900/20 text-success dark:text-success-400 rounded-full text-sm font-semibold mb-6 border border-success/30 dark:border-success-400/30">
+					<span className="inline-flex items-center px-4 py-2 bg-linear-to-r from-success-50 to-info-50 dark:from-success-900/20 dark:to-info-900/20 text-success dark:text-success-400 rounded-full text-sm font-semibold mb-6 border border-success/30 dark:border-success-400/30">
 						{t("badge")}
 					</span>
 				</div>
 
 				<h2 className="text-6xl md:text-7xl font-bold mb-6 leading-tight">
-					<span className="bg-gradient-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
+					<span className="bg-linear-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
 						{t("title")}
 					</span>
 					<br />
@@ -29,7 +28,7 @@ export function HeroSection() {
 				<div className="flex flex-col sm:flex-row gap-6 justify-center">
 					<Link
 						href="/auth"
-						className="group px-12 py-5 bg-gradient-to-r from-primary to-purple text-primary-foreground rounded-lg hover:from-primary-600 hover:to-purple-600 dark:hover:from-primary-500 dark:hover:to-purple-500 shadow-xl hover:shadow-2xl transition-all duration-300 text-xl font-bold text-center transform hover:scale-105 hover:-translate-y-1"
+						className="group px-12 py-5 bg-linear-to-r from-primary to-purple text-primary-foreground rounded-lg hover:from-primary-600 hover:to-purple-600 dark:hover:from-primary-500 dark:hover:to-purple-500 shadow-xl hover:shadow-2xl transition-all duration-300 text-xl font-bold text-center transform hover:scale-105 hover:-translate-y-1"
 					>
 						<span className="flex items-center justify-center gap-2">
 							{t("cta.start")}

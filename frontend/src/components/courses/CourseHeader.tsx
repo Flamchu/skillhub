@@ -14,7 +14,7 @@ export function CourseHeader({ course, onBookmark, onShare }: CourseHeaderProps)
 		<div className="mb-8">
 			<div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 mb-6">
 				<div className="flex-1">
-					<h1 className="text-4xl lg:text-5xl font-bold mb-4 bg-gradient-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
+					<h1 className="text-4xl lg:text-5xl font-bold mb-4 bg-linear-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
 						{course.title}
 					</h1>
 					<div className="flex flex-wrap items-center gap-3 text-sm text-foreground-muted mb-4">
@@ -85,7 +85,7 @@ export function CourseHeader({ course, onBookmark, onShare }: CourseHeaderProps)
 							{course.aiSummary ? (
 								<>
 									<div className="flex items-center gap-2 mb-2">
-										<div className="h-2 w-2 bg-gradient-to-r from-primary to-purple rounded-full" />
+										<div className="h-2 w-2 bg-linear-to-r from-primary to-purple rounded-full" />
 										<span className="text-xs font-medium text-foreground-muted uppercase tracking-wider">
 											AI Summary
 										</span>

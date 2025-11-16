@@ -108,7 +108,7 @@ export default function StatsCounter({
 	if (isLoading) {
 		return (
 			<div className="animate-pulse">
-				<div className="h-12 bg-gradient-to-br from-primary/20 to-purple/20 rounded" />
+				<div className="h-12 bg-linear-to-br from-primary/20 to-purple/20 rounded" />
 			</div>
 		);
 	}

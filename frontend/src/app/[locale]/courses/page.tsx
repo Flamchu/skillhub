@@ -96,7 +96,7 @@ export default function CoursesPage() {
 	};
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-primary-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 text-gray-900 dark:text-gray-100">
+		<div className="min-h-screen bg-linear-to-br from-primary-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 text-gray-900 dark:text-gray-100">
 			<CoursesNavigation />
 			<main className="px-6 py-20">
 				<div className="max-w-7xl mx-auto">

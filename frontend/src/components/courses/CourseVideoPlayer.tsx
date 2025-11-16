@@ -18,9 +18,40 @@ export interface VideoPlayerRef {
 }
 
 // YouTube player API types
+interface YTPlayer {
+	seekTo: (seconds: number, allowSeekAhead: boolean) => void;
+	getCurrentTime: () => number;
+	destroy: () => void;
+}
+
+interface YTPlayerState {
+	PLAYING: number;
+}
+
+interface YT {
+	Player: new (element: HTMLElement, config: YTPlayerConfig) => YTPlayer;
+	PlayerState: YTPlayerState;
+}
+
+interface YTPlayerConfig {
+	videoId: string;
+	playerVars: {
+		start?: number;
+		autoplay?: number;
+		controls?: number;
+		modestbranding?: number;
+		rel?: number;
+		iv_load_policy?: number;
+	};
+	events: {
+		onReady: () => void;
+		onStateChange: (event: { data: number }) => void;
+	};
+}
+
 declare global {
 	interface Window {
-		YT: any;
+		YT: YT;
 		onYouTubeIframeAPIReady: () => void;
 	}
 }
@@ -39,7 +70,7 @@ function formatDuration(seconds: number): string {
 
 export const VideoPlayer = forwardRef<VideoPlayerRef, VideoPlayerProps>(
 	({ videoId, title: _title, startTime, selectedLesson, selectedTimestamp, onTimeUpdate }, ref) => {
-		const playerRef = useRef<any>(null);
+		const playerRef = useRef<YTPlayer | null>(null);
 		const containerRef = useRef<HTMLDivElement>(null);
 		const [isPlayerReady, setIsPlayerReady] = useState(false);
 		const timeUpdateIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -113,7 +144,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoPlayerProps>(
 							setIsPlayerReady(true);
 							startTimeTracking();
 						},
-						onStateChange: (event: any) => {
+						onStateChange: (event: { data: number }) => {
 							if (event.data === window.YT.PlayerState.PLAYING) {
 								startTimeTracking();
 							} else {

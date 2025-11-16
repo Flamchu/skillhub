@@ -138,7 +138,7 @@ export function AddSkillModal({ isOpen, onClose, availableSkills, onAddSkill }: 
 
 								{requiresVerification && (
 									<div className="mt-3 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg flex items-start gap-2">
-										<AlertCircle className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+										<AlertCircle className="w-5 h-5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
 										<div className="text-sm text-blue-800 dark:text-blue-200">
 											<p className="font-medium mb-1">Verification Required</p>
 											<p>You&apos;ll need to complete a verification quiz to prove your proficiency at this level.</p>
@@ -161,7 +161,7 @@ export function AddSkillModal({ isOpen, onClose, availableSkills, onAddSkill }: 
 							<Button
 								onClick={handleSubmit}
 								disabled={!selectedSkill || submitting}
-								className="flex-1 bg-gradient-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600"
+								className="flex-1 bg-linear-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600"
 							>
 								{submitting ? "Processing..." : requiresVerification ? "Start Verification" : "Add Skill"}
 							</Button>

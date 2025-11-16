@@ -2,12 +2,12 @@ export function CoursesHero() {
 	return (
 		<div className="text-center mb-20">
 			<div className="mb-6">
-				<span className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-success-50 to-info-50 dark:from-success-900/20 dark:to-info-900/20 text-success dark:text-success-400 rounded-full text-sm font-semibold border border-success/30 dark:border-success-400/30">
+				<span className="inline-flex items-center px-4 py-2 bg-linear-to-r from-success-50 to-info-50 dark:from-success-900/20 dark:to-info-900/20 text-success dark:text-success-400 rounded-full text-sm font-semibold border border-success/30 dark:border-success-400/30">
 					📚 Discover Knowledge
 				</span>
 			</div>
 			<h1 className="text-5xl md:text-6xl font-bold mb-6">
-				<span className="bg-gradient-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
+				<span className="bg-linear-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
 					Expert Courses
 				</span>
 				<br />

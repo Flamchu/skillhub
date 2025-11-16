@@ -114,7 +114,7 @@ export function UpdateSkillModal({ isOpen, onClose, skill, onUpdateSkill }: Upda
 				<div className="mb-6">
 					<h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Current Level</h3>
 					<div className="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
-						<div className={`${currentProficiency?.color || "text-gray-500"} flex-shrink-0`}>
+						<div className={`${currentProficiency?.color || "text-gray-500"} shrink-0`}>
 							{currentProficiency?.icon}
 						</div>
 						<div>
@@ -143,7 +143,7 @@ export function UpdateSkillModal({ isOpen, onClose, skill, onUpdateSkill }: Upda
 								}`}
 							>
 								<div className="flex items-center space-x-3">
-									<div className={`${option.color} flex-shrink-0`}>{option.icon}</div>
+									<div className={`${option.color} shrink-0`}>{option.icon}</div>
 									<div className="flex-1">
 										<div className="flex items-center justify-between">
 											<span className="font-medium text-gray-900 dark:text-white">{option.label}</span>
@@ -153,7 +153,7 @@ export function UpdateSkillModal({ isOpen, onClose, skill, onUpdateSkill }: Upda
 										{/* Progress Bar */}
 										<div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 mt-2">
 											<div
-												className="bg-gradient-to-r from-primary to-purple h-1.5 rounded-full transition-all duration-500"
+												className="bg-linear-to-r from-primary to-purple h-1.5 rounded-full transition-all duration-500"
 												style={{ width: `${option.percentage}%` }}
 											/>
 										</div>
@@ -172,7 +172,7 @@ export function UpdateSkillModal({ isOpen, onClose, skill, onUpdateSkill }: Upda
 					<Button
 						onClick={handleUpdate}
 						disabled={updating || selectedProficiency === skill.proficiency}
-						className="flex-1 bg-gradient-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0"
+						className="flex-1 bg-linear-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0"
 					>
 						{updating ? "Updating..." : "Update Level"}
 					</Button>

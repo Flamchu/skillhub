@@ -1,0 +1,29 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+Allow: /en/
+Allow: /ar/
+Allow: /courses
+Allow: /skills
+Allow: /en/courses
+Allow: /ar/courses
+
+# disallow private/authenticated pages
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /admin
+Disallow: /auth
+Disallow: /register
+Disallow: /*/dashboard
+Disallow: /*/profile
+Disallow: /*/admin
+Disallow: /*/auth
+Disallow: /*/register
+
+# disallow api routes
+Disallow: /api/
+
+# sitemap location
+Sitemap: https://skillhub.com/sitemap.xml
+Sitemap: https://skillhub.com/en/sitemap.xml
+Sitemap: https://skillhub.com/ar/sitemap.xml

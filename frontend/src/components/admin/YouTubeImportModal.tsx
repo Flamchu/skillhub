@@ -332,7 +332,7 @@ export function YouTubeImportModal({ isOpen, onClose, onSuccess }: YouTubeImport
 								<Button
 									type="submit"
 									disabled={loading || !formData.url.trim()}
-									className="flex-1 bg-gradient-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0"
+									className="flex-1 bg-linear-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0"
 								>
 									{loading ? (
 										<>
