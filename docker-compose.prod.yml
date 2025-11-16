@@ -84,7 +84,8 @@ services:
     environment:
       NODE_ENV: production
       PORT: 4000
-      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      DATABASE_URL: ${DATABASE_URL}
+      DIRECT_URL: ${DIRECT_URL}
       REDIS_ENABLED: true
       REDIS_HOST: redis
       REDIS_PORT: 6379
