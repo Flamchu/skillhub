@@ -69,6 +69,9 @@ RUN mkdir -p /home/backend/.cache/node/corepack && \
 COPY --from=builder --chown=backend:nodejs /app/package.json /app/pnpm-lock.yaml /app/pnpm-workspace.yaml /app/.npmrc ./
 COPY --from=builder --chown=backend:nodejs /app/backend/package.json ./backend/
 
+# copy prisma schema BEFORE installing dependencies (needed for prisma generate)
+COPY --from=builder --chown=backend:nodejs /app/backend/prisma ./backend/prisma
+
 # install production dependencies only (as root to avoid permission issues)
 RUN pnpm install --frozen-lockfile --prod --filter backend...
 
@@ -76,10 +79,9 @@ RUN pnpm install --frozen-lockfile --prod --filter backend...
 WORKDIR /app/backend
 RUN pnpm prisma generate
 
-# copy backend build output and config
+# copy backend build output
 WORKDIR /app
 COPY --from=builder --chown=backend:nodejs /app/backend/dist ./backend/dist
-COPY --from=builder --chown=backend:nodejs /app/backend/prisma ./backend/prisma
 
 # fix ownership of all files
 RUN chown -R backend:nodejs /app
