@@ -72,6 +72,9 @@ RUN pnpm install --frozen-lockfile --prod --filter frontend...
 COPY --from=builder --chown=nextjs:nodejs /app/frontend/.next ./frontend/.next
 COPY --from=builder --chown=nextjs:nodejs /app/frontend/next.config.ts ./frontend/
 
+# copy messages directory for next-intl runtime
+COPY --from=builder --chown=nextjs:nodejs /app/frontend/src/messages ./frontend/src/messages
+
 # fix ownership of all files
 RUN chown -R nextjs:nodejs /app
 
