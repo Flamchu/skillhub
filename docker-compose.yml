@@ -1,25 +1,6 @@
 version: "3.9"
 
 services:
-  # postgresql database
-  postgres:
-    image: postgres:16-alpine
-    container_name: skillhub-postgres
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER:-skillhub}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB:-skillhub}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-skillhub}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
   # redis cache
   redis:
     image: redis:7-alpine
@@ -60,8 +41,6 @@ services:
     container_name: skillhub-backend
     restart: unless-stopped
     depends_on:
-      postgres:
-        condition: service_healthy
       redis:
         condition: service_healthy
       ai-service:
@@ -69,8 +48,8 @@ services:
     environment:
       NODE_ENV: production
       PORT: 4000
-      DATABASE_URL: postgresql://${POSTGRES_USER:-skillhub}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-skillhub}
-      DIRECT_URL: postgresql://${POSTGRES_USER:-skillhub}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-skillhub}
+      DATABASE_URL: ${DATABASE_URL}
+      DIRECT_URL: ${DIRECT_URL}
       REDIS_ENABLED: true
       REDIS_HOST: redis
       REDIS_PORT: 6379
@@ -119,7 +98,5 @@ services:
       start_period: 40s
 
 volumes:
-  postgres_data:
-    driver: local
   redis_data:
     driver: local

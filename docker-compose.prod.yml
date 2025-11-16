@@ -1,30 +1,6 @@
 version: "3.9"
 
 services:
-  # postgresql database
-  postgres:
-    image: postgres:16-alpine
-    container_name: skillhub-postgres
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - skillhub-network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    deploy:
-      resources:
-        limits:
-          cpus: "1.0"
-          memory: 512M
-
   # redis cache
   redis:
     image: redis:7-alpine
@@ -75,8 +51,6 @@ services:
     container_name: skillhub-backend
     restart: unless-stopped
     depends_on:
-      postgres:
-        condition: service_healthy
       redis:
         condition: service_healthy
       ai-service:
@@ -140,8 +114,6 @@ services:
           memory: 1024M
 
 volumes:
-  postgres_data:
-    driver: local
   redis_data:
     driver: local
   nginx_cache:
