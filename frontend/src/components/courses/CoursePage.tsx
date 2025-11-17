@@ -3,9 +3,10 @@
 import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { http } from "@/lib/http";
+import { extractYouTubeVideoId, extractYouTubePlaylistId } from "@/lib/youtubeUtils";
 import { CourseNavigation, CourseHeader, VideoPlayer, CourseLessons } from "@/components/courses";
-import { EmptyState } from "@/components/ui/EmptyState";
 import { ErrorState } from "@/components/ui/ErrorState";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { Play } from "lucide-react";
 
 // types
@@ -37,7 +38,14 @@ export default function CoursePage({ courseId }: { courseId: string }) {
 
 	const course = courseData?.course;
 	const selectedLesson = course?.lessons?.find(l => l.id === selectedLessonId);
-	const currentVideoId = selectedLesson?.providerVideoId || course?.externalId;
+
+	// extract video id from lesson or use playlist from course
+	const lessonVideoId = selectedLesson?.providerVideoId ? extractYouTubeVideoId(selectedLesson.providerVideoId) : null;
+	const coursePlaylistId = course?.externalId ? extractYouTubePlaylistId(course.externalId) : null;
+
+	// prioritize: if lesson has video id, use it alone; otherwise use playlist
+	const currentVideoId = lessonVideoId;
+	const playlistId = lessonVideoId ? null : coursePlaylistId; // only use playlist if no specific video
 
 	// auto-select first lesson when course loads
 	useEffect(() => {
@@ -120,26 +128,30 @@ export default function CoursePage({ courseId }: { courseId: string }) {
 				<div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
 					{/* video player */}
 					<div className="lg:col-span-3">
-						{currentVideoId ? (
+						{currentVideoId || playlistId ? (
 							<VideoPlayer
 								ref={videoPlayerRef}
-								videoId={currentVideoId}
+								videoId={currentVideoId ?? undefined}
+								playlistId={playlistId ?? undefined}
 								title={selectedLesson?.title || course.title}
 								selectedLesson={selectedLesson}
 								selectedTimestamp={selectedTimestamp}
 								onTimeUpdate={setCurrentVideoTime}
 							/>
 						) : (
-							<EmptyState
-								icon={<Play className="h-12 w-12" />}
-								title="No video available"
-								description="This course doesn't have a video to display."
-							/>
+							<div className="bg-surface/60 dark:bg-gray-800/60 backdrop-blur-sm border border-border/20 rounded-2xl p-8 shadow-lg">
+								<EmptyState
+									icon={<Play className="h-12 w-12" />}
+									title="No video available"
+									description="This course doesn't have a video to display."
+								/>
+							</div>
 						)}
 					</div>
 
 					{/* sidebar */}
 					<div className="lg:col-span-1">
+						\
 						<CourseLessons
 							course={course}
 							selectedLessonId={selectedLessonId || undefined}

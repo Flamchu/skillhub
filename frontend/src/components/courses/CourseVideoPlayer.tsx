@@ -6,6 +6,7 @@ import type { Lesson } from "@/types";
 
 interface VideoPlayerProps {
 	videoId?: string;
+	playlistId?: string;
 	title: string;
 	startTime?: number;
 	selectedLesson?: Lesson;
@@ -34,7 +35,9 @@ interface YT {
 }
 
 interface YTPlayerConfig {
-	videoId: string;
+	videoId?: string;
+	height?: string | number;
+	width?: string | number;
 	playerVars: {
 		start?: number;
 		autoplay?: number;
@@ -42,10 +45,13 @@ interface YTPlayerConfig {
 		modestbranding?: number;
 		rel?: number;
 		iv_load_policy?: number;
+		listType?: string;
+		list?: string;
 	};
 	events: {
 		onReady: () => void;
 		onStateChange: (event: { data: number }) => void;
+		onError?: (event: { data?: number; target?: unknown } | number) => void;
 	};
 }
 
@@ -68,12 +74,38 @@ function formatDuration(seconds: number): string {
 	return `${minutes}:${String(secs).padStart(2, "0")}`;
 }
 
+function getYouTubeErrorDescription(errorCode: number): string {
+	switch (errorCode) {
+		case 2:
+			return "Invalid video ID parameter";
+		case 4:
+			return "Video cannot be played (wrong format or restricted)";
+		case 5:
+			return "HTML5 player error";
+		case 100:
+			return "Video not found or private";
+		case 101:
+		case 150:
+			return "Video embedding disabled by owner";
+		case 153:
+			return "Missing HTTP Referer header";
+		default:
+			return "Unknown YouTube error. Try disabling browser extensions or using incognito mode.";
+	}
+}
+
 export const VideoPlayer = forwardRef<VideoPlayerRef, VideoPlayerProps>(
-	({ videoId, title: _title, startTime, selectedLesson, selectedTimestamp, onTimeUpdate }, ref) => {
+	({ videoId, playlistId, title: _title, startTime, selectedLesson, selectedTimestamp, onTimeUpdate }, ref) => {
 		const playerRef = useRef<YTPlayer | null>(null);
 		const containerRef = useRef<HTMLDivElement>(null);
 		const [isPlayerReady, setIsPlayerReady] = useState(false);
+		const [playerError, setPlayerError] = useState<number | null>(null);
 		const timeUpdateIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+		// reset error when video/playlist changes
+		useEffect(() => {
+			setPlayerError(null);
+		}, [videoId, playlistId]);
 
 		// expose seekTo method to parent
 		useImperativeHandle(
@@ -94,7 +126,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoPlayerProps>(
 
 		// load YouTube iframe API and initialize player
 		useEffect(() => {
-			if (typeof window === "undefined" || !videoId) return;
+			if (typeof window === "undefined" || (!videoId && !playlistId)) return;
 
 			const startTimeTracking = () => {
 				if (timeUpdateIntervalRef.current) {
@@ -123,36 +155,63 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoPlayerProps>(
 			};
 
 			const initializePlayer = () => {
-				if (!containerRef.current || !videoId || !window.YT) return;
+				if (!containerRef.current) return;
+				if (!window.YT) return;
 
 				if (playerRef.current) {
-					playerRef.current.destroy();
+					try {
+						playerRef.current.destroy();
+					} catch (error) {
+						console.warn("Failed to destroy previous player:", error);
+					}
 				}
 
-				playerRef.current = new window.YT.Player(containerRef.current, {
-					videoId,
-					playerVars: {
-						start: startTime || 0,
-						autoplay: 0,
-						controls: 1,
-						modestbranding: 1,
-						rel: 0,
-						iv_load_policy: 3,
-					},
-					events: {
-						onReady: () => {
-							setIsPlayerReady(true);
-							startTimeTracking();
+				try {
+					const config: YTPlayerConfig = {
+						height: "100%",
+						width: "100%",
+						playerVars: {
+							autoplay: 0,
+							controls: 1,
+							modestbranding: 1,
+							rel: 0,
+							iv_load_policy: 3,
 						},
-						onStateChange: (event: { data: number }) => {
-							if (event.data === window.YT.PlayerState.PLAYING) {
+						events: {
+							onReady: () => {
+								setIsPlayerReady(true);
 								startTimeTracking();
-							} else {
-								stopTimeTracking();
-							}
+							},
+							onStateChange: (event: { data: number }) => {
+								if (event.data === window.YT.PlayerState.PLAYING) {
+									startTimeTracking();
+								} else {
+									stopTimeTracking();
+								}
+							},
+							onError: (event: { data?: number; target?: unknown } | number) => {
+								const errorCode = typeof event === "number" ? event : (event as { data?: number }).data || 0;
+								console.error("YouTube player error:", errorCode);
+								setPlayerError(errorCode);
+							},
 						},
-					},
-				});
+					};
+
+					// configure video/playlist
+					if (videoId) {
+						config.videoId = videoId;
+						if (startTime) {
+							config.playerVars.start = startTime;
+						}
+					} else if (playlistId) {
+						config.playerVars.listType = "playlist";
+						config.playerVars.list = playlistId;
+					}
+
+					playerRef.current = new window.YT.Player(containerRef.current, config);
+				} catch (error) {
+					console.error("failed to initialize youtube player:", error);
+				}
 			};
 
 			// check if API is already loaded
@@ -177,15 +236,31 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoPlayerProps>(
 					clearInterval(timeUpdateIntervalRef.current);
 				}
 			};
-		}, [videoId, onTimeUpdate, startTime]);
-		if (!videoId) {
+		}, [videoId, playlistId, onTimeUpdate, startTime]);
+
+		if (!videoId && !playlistId) {
 			return (
 				<div className="bg-surface/60 dark:bg-gray-800/60 backdrop-blur-sm border border-border/20 rounded-2xl p-8 shadow-lg">
 					<EmptyState
 						icon={<Play className="h-12 w-12" />}
 						title="No video available"
-						description="This course doesn't have a video to display."
+						description="This lesson doesn't have a valid video. Please select another lesson or contact support."
 					/>
+				</div>
+			);
+		}
+
+		if (playerError) {
+			return (
+				<div className="bg-surface/60 dark:bg-gray-800/60 backdrop-blur-sm border border-border/20 rounded-2xl p-8 shadow-lg">
+					<EmptyState
+						icon={<Play className="h-12 w-12" />}
+						title="Video playback error"
+						description={`${getYouTubeErrorDescription(playerError)} (Error ${playerError})`}
+					/>
+					<p className="text-sm text-muted-foreground text-center mt-4">
+						💡 Tip: Try disabling browser extensions or use incognito/private mode
+					</p>
 				</div>
 			);
 		}
