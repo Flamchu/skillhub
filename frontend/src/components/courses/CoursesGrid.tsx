@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/Button";
-import { Search, Star, Clock, Users, Bookmark, Loader2, AlertCircle } from "lucide-react";
+import { CourseCardSkeleton } from "@/components/ui";
+import { Search, Star, Clock, Users, Bookmark, AlertCircle, Loader } from "lucide-react";
 import type { Course, CourseFilters } from "@/types";
 
 interface CoursesGridProps {
@@ -47,11 +48,10 @@ export function CoursesGrid({
 	// Loading State
 	if (isLoading) {
 		return (
-			<div className="flex items-center justify-center py-20">
-				<div className="text-center">
-					<Loader2 className="w-16 h-16 animate-spin text-primary mx-auto mb-4" />
-					<span className="text-xl text-gray-600 dark:text-gray-300 font-medium">Loading amazing courses...</span>
-				</div>
+			<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+				{Array.from({ length: 6 }).map((_, i) => (
+					<CourseCardSkeleton key={i} />
+				))}
 			</div>
 		);
 	}
@@ -174,7 +174,14 @@ export function CoursesGrid({
 									disabled={enrollingCourses.has(course.id)}
 									className="bg-linear-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
 								>
-									{enrollingCourses.has(course.id) ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Enroll Now</>}
+									{enrollingCourses.has(course.id) ? (
+										<>
+											<Loader className="w-4 h-4 animate-spin mr-2" />
+											Enrolling...
+										</>
+									) : (
+										"Enroll Now"
+									)}
 								</Button>
 							</div>
 						</div>

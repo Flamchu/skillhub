@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthProvider";
 import { AuthenticatedLayout } from "@/components/layout";
+import { CardSkeleton, AvatarSkeleton } from "@/components/ui";
 import { ProfileHeader, QuickActionCard, RecentActivityCard, EditProfileModal } from "@/components/profile";
 import { BookOpen, Target, Star, Award, TrendingUp, Settings, Sparkles, GraduationCap, Edit3 } from "lucide-react";
 import type { UserActivity, UserActivityResponse } from "@/types";
@@ -57,12 +58,42 @@ export default function ProfilePage() {
 
 	if (loading) {
 		return (
-			<div className="min-h-screen bg-linear-to-br from-primary-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
-				<div className="text-center">
-					<div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4" />
-					<p className="text-foreground-muted">Loading profile...</p>
+			<AuthenticatedLayout>
+				<div className="min-h-screen bg-linear-to-br from-primary-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+					<main className="py-12 px-6">
+						<div className="max-w-7xl mx-auto">
+							{/* Profile Header Skeleton */}
+							<div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl border-2 border-gray-200/50 dark:border-gray-700/50 p-8 mb-8 shadow-xl">
+								<div className="flex items-start gap-6">
+									<AvatarSkeleton className="w-24 h-24" />
+									<div className="flex-1 space-y-3">
+										<div className="h-8 w-1/3 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+										<div className="h-5 w-1/2 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+										<div className="h-4 w-2/3 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+									</div>
+								</div>
+							</div>
+
+							{/* Quick Actions Skeleton */}
+							<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+								{Array.from({ length: 6 }).map((_, i) => (
+									<CardSkeleton key={i} />
+								))}
+							</div>
+
+							{/* Recent Activity Skeleton */}
+							<div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl border-2 border-gray-200/50 dark:border-gray-700/50 p-8 shadow-xl">
+								<div className="h-6 w-1/4 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse mb-6" />
+								<div className="space-y-4">
+									{Array.from({ length: 3 }).map((_, i) => (
+										<div key={i} className="h-20 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+									))}
+								</div>
+							</div>
+						</div>
+					</main>
 				</div>
-			</div>
+			</AuthenticatedLayout>
 		);
 	}
 

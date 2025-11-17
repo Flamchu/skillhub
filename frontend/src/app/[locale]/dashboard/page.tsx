@@ -2,19 +2,18 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
 import { useAuth } from "@/context/AuthProvider";
-import { PageLayout, LoadingState } from "@/components/ui";
+import { PageLayout, StatsCardSkeleton } from "@/components/ui";
 import { AuthenticatedLayout } from "@/components/layout";
 import { AIWorkflowPrompt, QuickActions, EnrolledCourses, LearningStats, SocialZoneCard } from "@/components/dashboard";
 import { api } from "@/lib/http";
 import type { UserSkill } from "@/types";
 
 export default function DashboardPage() {
-	const tCommon = useTranslations("common");
 	const { user, profile, loading } = useAuth();
 	const router = useRouter();
 	const [skillsCount, setSkillsCount] = useState(0);
+	const [loadingStats, setLoadingStats] = useState(true);
 
 	useEffect(() => {
 		// add a small delay to let authprovider settle after login redirect
@@ -36,24 +35,57 @@ export default function DashboardPage() {
 	useEffect(() => {
 		const fetchSkillsCount = async () => {
 			if (!user) return;
+			setLoadingStats(true);
 			try {
 				const response = await api.getUserSkills(user.id);
 				const skills = response.skills as UserSkill[];
 				setSkillsCount(skills.length);
 			} catch (error) {
 				console.error("Failed to fetch skills count:", error);
+			} finally {
+				setLoadingStats(false);
 			}
 		};
 
 		fetchSkillsCount();
 	}, [user]);
 
-	if (loading) {
-		return <LoadingState message={tCommon("loading")} />;
-	}
+	if (loading || !user) {
+		return (
+			<AuthenticatedLayout>
+				<PageLayout>
+					<main className="py-8">
+						{/* Welcome Header Skeleton */}
+						<div className="mb-8 space-y-3">
+							<div className="h-12 w-3/4 bg-linear-to-r from-gray-200 via-gray-100 to-gray-200 dark:from-gray-800 dark:via-gray-700 dark:to-gray-800 rounded-xl animate-pulse" />
+							<div className="h-6 w-1/2 bg-gray-200 dark:bg-gray-800 rounded-lg animate-pulse" />
+						</div>
 
-	if (!user) {
-		return null; // will redirect
+						{/* AI Workflow Skeleton */}
+						<div className="mb-8">
+							<div className="h-64 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-2xl border-2 border-gray-200/50 dark:border-gray-700/50 animate-pulse" />
+						</div>
+
+						{/* Stats Skeleton */}
+						<div className="mb-8 grid grid-cols-3 gap-4">
+							<StatsCardSkeleton />
+							<StatsCardSkeleton />
+							<StatsCardSkeleton />
+						</div>
+
+						{/* Quick Actions Skeleton */}
+						<div className="mb-8 grid md:grid-cols-3 gap-4">
+							{[1, 2, 3].map(i => (
+								<div
+									key={i}
+									className="h-24 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-xl border-2 border-gray-200/50 dark:border-gray-700/50 animate-pulse"
+								/>
+							))}
+						</div>
+					</main>
+				</PageLayout>
+			</AuthenticatedLayout>
+		);
 	}
 
 	return (
@@ -80,7 +112,15 @@ export default function DashboardPage() {
 
 					{/* Learning Stats */}
 					<div className="mb-8">
-						<LearningStats skillsCount={skillsCount} enrolledCount={0} completedCount={0} />
+						{loadingStats ? (
+							<div className="grid grid-cols-3 gap-4">
+								<StatsCardSkeleton />
+								<StatsCardSkeleton />
+								<StatsCardSkeleton />
+							</div>
+						) : (
+							<LearningStats skillsCount={skillsCount} enrolledCount={0} completedCount={0} />
+						)}
 					</div>
 
 					{/* Quick Actions */}

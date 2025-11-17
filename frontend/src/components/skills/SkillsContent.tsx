@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 
 import { useAuth } from "@/context/AuthProvider";
-import { LoadingState, ErrorState } from "@/components/ui";
+import { ErrorState, CardSkeleton } from "@/components/ui";
 import { SuccessAnimation } from "@/components/ui/SuccessAnimation";
 import { SkillsHeader, SkillsSearch, SkillsGrid, AddSkillModal, UpdateSkillModal, AISkillGenerator } from "./";
 import type { AISkillSuggestion, ProficiencyLevel } from "@/types";
@@ -213,7 +213,27 @@ export function SkillsContent() {
 	);
 
 	if (loading) {
-		return <LoadingState message="Loading your skills..." />;
+		return (
+			<main className="py-8 pt-24">
+				<div className="max-w-7xl mx-auto px-6">
+					{/* Header Skeleton */}
+					<div className="mb-8 space-y-4">
+						<div className="h-12 w-1/3 bg-gray-200 dark:bg-gray-800 rounded-xl animate-pulse" />
+						<div className="h-6 w-1/2 bg-gray-200 dark:bg-gray-800 rounded-lg animate-pulse" />
+					</div>
+
+					{/* Search Skeleton */}
+					<div className="mb-8 h-14 bg-white/50 dark:bg-gray-800/50 rounded-xl border-2 border-gray-200/50 dark:border-gray-700/50 animate-pulse" />
+
+					{/* Grid Skeleton */}
+					<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+						{Array.from({ length: 6 }).map((_, i) => (
+							<CardSkeleton key={i} />
+						))}
+					</div>
+				</div>
+			</main>
+		);
 	}
 
 	if (error) {
