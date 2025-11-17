@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthProvider";
-import { LanguageSwitcher } from "@/components/ui";
+import { LanguageSwitcher, ThemeToggle } from "@/components/ui";
 import XPBar from "@/components/social/XPBar";
 import { useState, useEffect } from "react";
 import { Menu, X, LayoutDashboard, Target, BookOpen, Users, User, LogOut, Crown, ChevronDown } from "lucide-react";
@@ -300,6 +300,11 @@ export function AuthenticatedNavbar() {
 					</div>
 				</div>
 			)}
+
+			{/* Fixed Theme Toggle - Far Right */}
+			<div className="fixed top-4 right-4 z-50">
+				<ThemeToggle />
+			</div>
 		</>
 	);
 }
