@@ -28,26 +28,26 @@ export function DashboardCard({
 }: DashboardCardProps) {
 	const colorClasses = {
 		primary: {
-			bg: "bg-gradient-to-br from-primary/5 to-purple/5 dark:from-primary/10 dark:to-purple/10",
+			bg: "bg-linear-to-br from-primary/5 to-purple/5 dark:from-primary/10 dark:to-purple/10",
 			border: "border-primary/20 dark:border-primary/30",
 			hover: "hover:from-primary/10 hover:to-purple/10 dark:hover:from-primary/15 dark:hover:to-purple/15",
-			iconBg: "bg-gradient-to-br from-primary to-purple",
+			iconBg: "bg-linear-to-br from-primary to-purple",
 			titleHover: "group-hover:text-primary",
 			linkColor: "text-primary",
 		},
 		success: {
-			bg: "bg-gradient-to-br from-success/5 to-info/5 dark:from-success/10 dark:to-info/10",
+			bg: "bg-linear-to-br from-success/5 to-info/5 dark:from-success/10 dark:to-info/10",
 			border: "border-success/20 dark:border-success/30",
 			hover: "hover:from-success/10 hover:to-info/10 dark:hover:from-success/15 dark:hover:to-info/15",
-			iconBg: "bg-gradient-to-br from-success to-info",
+			iconBg: "bg-linear-to-br from-success to-info",
 			titleHover: "group-hover:text-success",
 			linkColor: "text-success",
 		},
 		info: {
-			bg: "bg-gradient-to-br from-info/5 to-primary/5 dark:from-info/10 dark:to-primary/10",
+			bg: "bg-linear-to-br from-info/5 to-primary/5 dark:from-info/10 dark:to-primary/10",
 			border: "border-info/20 dark:border-info/30",
 			hover: "hover:from-info/10 hover:to-primary/10 dark:hover:from-info/15 dark:hover:to-primary/15",
-			iconBg: "bg-gradient-to-br from-info to-primary",
+			iconBg: "bg-linear-to-br from-info to-primary",
 			titleHover: "group-hover:text-info",
 			linkColor: "text-info",
 		},

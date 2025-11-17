@@ -25,7 +25,7 @@ export function Button({
 	// Enhanced variant styles with modern shadows and hover effects
 	const variants = {
 		primary:
-			"bg-gradient-to-r from-primary to-purple text-white hover:from-primary-600 hover:to-purple-600 shadow-lg hover:shadow-xl",
+			"bg-linear-to-r from-primary to-purple text-white hover:from-primary-600 hover:to-purple-600 shadow-lg hover:shadow-xl",
 		secondary:
 			"bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 shadow-sm hover:shadow-md",
 		outline:
@@ -33,7 +33,7 @@ export function Button({
 		ghost:
 			"text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white",
 		danger:
-			"bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 shadow-lg hover:shadow-xl",
+			"bg-linear-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 shadow-lg hover:shadow-xl",
 	};
 
 	// Size styles with better spacing

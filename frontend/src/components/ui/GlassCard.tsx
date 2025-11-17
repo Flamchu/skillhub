@@ -30,7 +30,7 @@ export function GlassCard({
 
 	const hoverClass = hover ? "hover:scale-[1.02] hover:shadow-xl transition-all duration-300" : "";
 	const gradientClass = gradient
-		? "bg-gradient-to-br from-white/80 via-white/70 to-white/60 dark:from-gray-800/80 dark:via-gray-800/70 dark:to-gray-800/60 border-primary/20"
+		? "bg-linear-to-br from-white/80 via-white/70 to-white/60 dark:from-gray-800/80 dark:via-gray-800/70 dark:to-gray-800/60 border-primary/20"
 		: "";
 
 	return (

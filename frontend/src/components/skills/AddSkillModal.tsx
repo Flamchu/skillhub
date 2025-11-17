@@ -161,7 +161,7 @@ export function AddSkillModal({ isOpen, onClose, availableSkills, onAddSkill }: 
 							<Button
 								onClick={handleSubmit}
 								disabled={!selectedSkill || submitting}
-								className="flex-1 bg-gradient-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600"
+								className="flex-1 bg-linear-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600"
 							>
 								{submitting ? "Processing..." : requiresVerification ? "Start Verification" : "Add Skill"}
 							</Button>

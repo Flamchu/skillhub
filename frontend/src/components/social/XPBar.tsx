@@ -31,9 +31,9 @@ export default function XPBar() {
 	const { level, xpInCurrentLevel, xpNeededForNextLevel, progressPercentage, currentStreak } = xpData;
 
 	return (
-		<div className="flex items-center gap-2 px-3 py-2 bg-gradient-to-br from-primary/5 via-purple/5 to-pink/5 dark:from-primary/10 dark:via-purple/10 dark:to-pink/10 border border-primary/20 dark:border-primary/30 rounded-xl shadow-sm hover:shadow-md transition-all duration-200">
+		<div className="flex items-center gap-2 px-3 py-2 bg-linear-to-br from-primary/5 via-purple/5 to-pink/5 dark:from-primary/10 dark:via-purple/10 dark:to-pink/10 border border-primary/20 dark:border-primary/30 rounded-xl shadow-sm hover:shadow-md transition-all duration-200">
 			{/* level badge */}
-			<div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-gradient-to-br from-primary to-purple rounded-lg shadow-sm">
+			<div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-linear-to-br from-primary to-purple rounded-lg shadow-sm">
 				<Zap className="w-3.5 h-3.5 text-white" />
 				<span className="text-xs font-bold text-white">Lv {level}</span>
 			</div>
@@ -48,7 +48,7 @@ export default function XPBar() {
 				</div>
 				<div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden shadow-inner">
 					<div
-						className="h-full bg-gradient-to-r from-primary via-purple to-pink transition-all duration-500 ease-out shadow-sm"
+						className="h-full bg-linear-to-r from-primary via-purple to-pink transition-all duration-500 ease-out shadow-sm"
 						style={{ width: `${progressPercentage}%` }}
 					/>
 				</div>
@@ -56,7 +56,7 @@ export default function XPBar() {
 
 			{/* streak badge */}
 			{currentStreak > 0 && (
-				<div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-gradient-to-br from-orange-400 to-orange-500 rounded-lg shadow-sm">
+				<div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-linear-to-br from-orange-400 to-orange-500 rounded-lg shadow-sm">
 					<Flame className="w-3.5 h-3.5 text-white" />
 					<span className="text-xs font-bold text-white">{currentStreak}</span>
 				</div>

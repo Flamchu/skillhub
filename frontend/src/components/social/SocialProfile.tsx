@@ -142,7 +142,7 @@ export default function SocialProfile() {
 			{/* profile header */}
 			<div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
 				<div className="flex items-start gap-6">
-					<div className="w-20 h-20 bg-gradient-to-br from-primary to-purple rounded-2xl flex items-center justify-center text-3xl font-bold text-white">
+					<div className="w-20 h-20 bg-linear-to-br from-primary to-purple rounded-2xl flex items-center justify-center text-3xl font-bold text-white">
 						{user?.name?.charAt(0).toUpperCase() || "U"}
 					</div>
 					<div className="flex-1">
@@ -166,7 +166,7 @@ export default function SocialProfile() {
 							</div>
 							<div className="h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
 								<div
-									className="h-full bg-gradient-to-r from-primary to-purple transition-all duration-500"
+									className="h-full bg-linear-to-r from-primary to-purple transition-all duration-500"
 									style={{ width: `${progressPercentage}%` }}
 								/>
 							</div>

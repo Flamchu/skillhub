@@ -18,7 +18,7 @@ export function Skeleton({ className, variant = "default" }: SkeletonProps) {
 	return (
 		<div
 			className={cn(
-				"animate-pulse bg-gradient-to-r from-gray-200/60 via-gray-100/60 to-gray-200/60 dark:from-gray-800/60 dark:via-gray-700/60 dark:to-gray-800/60",
+				"animate-pulse bg-linear-to-r from-gray-200/60 via-gray-100/60 to-gray-200/60 dark:from-gray-800/60 dark:via-gray-700/60 dark:to-gray-800/60",
 				"bg-size-[200%_100%] animate-shimmer",
 				variantClasses[variant],
 				className
@@ -40,7 +40,7 @@ export function SkeletonShimmer({ className, variant = "default" }: SkeletonProp
 	return (
 		<div className={cn("relative overflow-hidden", variantClasses[variant], className)}>
 			<div className="absolute inset-0 bg-gray-200/80 dark:bg-gray-800/80" />
-			<div className="absolute inset-0 -translate-x-full animate-shimmer-slide bg-gradient-to-r from-transparent via-white/40 dark:via-gray-600/40 to-transparent" />
+			<div className="absolute inset-0 -translate-x-full animate-shimmer-slide bg-linear-to-r from-transparent via-white/40 dark:via-gray-600/40 to-transparent" />
 		</div>
 	);
 }

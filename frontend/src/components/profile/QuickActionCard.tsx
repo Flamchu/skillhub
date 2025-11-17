@@ -23,12 +23,12 @@ export function QuickActionCard({ title, description, icon: Icon, href, badge, g
 				{/* icon and badge */}
 				<div className="flex items-start justify-between mb-4">
 					<div
-						className={`p-3 rounded-xl bg-gradient-to-br ${bgGradient} shadow-lg ring-2 ring-white/50 dark:ring-gray-700/50`}
+						className={`p-3 rounded-xl bg-linear-to-br ${bgGradient} shadow-lg ring-2 ring-white/50 dark:ring-gray-700/50`}
 					>
 						<Icon className="w-6 h-6 text-primary-700 dark:text-primary-300" />
 					</div>
 					{badge && (
-						<span className="px-3 py-1.5 text-xs font-bold bg-gradient-to-r from-primary/10 to-purple/10 text-primary-700 dark:text-primary-300 rounded-lg border-2 border-primary/20">
+						<span className="px-3 py-1.5 text-xs font-bold bg-linear-to-r from-primary/10 to-purple/10 text-primary-700 dark:text-primary-300 rounded-lg border-2 border-primary/20">
 							{badge}
 						</span>
 					)}
@@ -47,7 +47,7 @@ export function QuickActionCard({ title, description, icon: Icon, href, badge, g
 				</div>
 
 				{/* hover effect gradient */}
-				<div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-purple/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+				<div className="absolute inset-0 bg-linear-to-br from-primary/5 to-purple/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
 			</div>
 		</Link>
 	);

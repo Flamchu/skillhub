@@ -44,7 +44,7 @@ export function RecentActivityCard({ activity }: RecentActivityCardProps) {
 
 	return (
 		<div className="group flex items-start gap-4 p-5 rounded-xl bg-gray-50/80 dark:bg-gray-700/30 border-2 border-gray-200/50 dark:border-gray-700/50 hover:border-primary/30 hover:shadow-lg hover:scale-[1.01] transition-all duration-300">
-			<div className="shrink-0 w-12 h-12 flex items-center justify-center rounded-xl bg-gradient-to-br from-primary/10 to-purple/10 group-hover:from-primary/20 group-hover:to-purple/20 transition-all duration-300">
+			<div className="shrink-0 w-12 h-12 flex items-center justify-center rounded-xl bg-linear-to-br from-primary/10 to-purple/10 group-hover:from-primary/20 group-hover:to-purple/20 transition-all duration-300">
 				<span className="text-2xl">{getActivityIcon(activity.type)}</span>
 			</div>
 			<div className="flex-1 min-w-0">

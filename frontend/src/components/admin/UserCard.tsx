@@ -51,7 +51,7 @@ export function UserCard({ user, onRoleChange, onDelete }: UserCardProps) {
 		<GlassCard>
 			<div className="flex items-center justify-between">
 				<div className="flex items-center space-x-4">
-					<div className="w-12 h-12 bg-gradient-to-br from-primary-100 to-purple-100 dark:from-primary-900/50 dark:to-purple-900/50 rounded-full flex items-center justify-center border border-primary-200 dark:border-primary-700">
+					<div className="w-12 h-12 bg-linear-to-br from-primary-100 to-purple-100 dark:from-primary-900/50 dark:to-purple-900/50 rounded-full flex items-center justify-center border border-primary-200 dark:border-primary-700">
 						<span className="text-lg font-medium text-primary-700 dark:text-primary-300">
 							{user.name?.charAt(0) || user.email?.charAt(0) || "U"}
 						</span>

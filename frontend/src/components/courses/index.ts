@@ -3,6 +3,7 @@ export { CoursesNavigation } from "./CoursesNavigation";
 export { CoursesHero } from "./CoursesHero";
 export { CoursesFilters } from "./CoursesFilters";
 export { CoursesGrid } from "./CoursesGrid";
+export { UdemySearch } from "./UdemySearch";
 export { CourseNavigation } from "./CourseNavigation";
 export { CourseHeader } from "./CourseHeader";
 export { VideoPlayer } from "./CourseVideoPlayer";

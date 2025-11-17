@@ -113,7 +113,7 @@ export function SkillProficiencyEditor({ suggestions, onSave, onCancel, classNam
 													disabled={!isSelected}
 													className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all ${
 														suggestion.suggestedProficiency === level.value
-															? `bg-gradient-to-r ${level.color} text-white shadow-md`
+															? `bg-linear-to-r ${level.color} text-white shadow-md`
 															: isSelected
 																? "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
 																: "bg-gray-50 dark:bg-gray-800 text-gray-400 dark:text-gray-500 cursor-not-allowed"
@@ -149,7 +149,7 @@ export function SkillProficiencyEditor({ suggestions, onSave, onCancel, classNam
 					onClick={handleSave}
 					disabled={selectedSkills.size === 0}
 					size="lg"
-					className="bg-gradient-to-r from-primary to-purple"
+					className="bg-linear-to-r from-primary to-purple"
 				>
 					<Save className="w-4 h-4 mr-2" />
 					Add {selectedSkills.size} Skill{selectedSkills.size !== 1 ? "s" : ""} to Profile

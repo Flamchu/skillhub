@@ -14,7 +14,7 @@ export default function SocialZoneCard() {
 	}
 
 	return (
-		<div className="bg-gradient-to-br from-primary/5 via-purple/5 to-pink/5 border border-primary/20 rounded-2xl p-6 hover:shadow-xl transition-all duration-300">
+		<div className="bg-linear-to-br from-primary/5 via-purple/5 to-pink/5 border border-primary/20 rounded-2xl p-6 hover:shadow-xl transition-all duration-300">
 			<div className="flex items-center gap-2 mb-2">
 				<Sparkles className="w-6 h-6 text-primary" />
 				<h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">Social Zone</h3>
@@ -65,7 +65,7 @@ export default function SocialZoneCard() {
 			<div className="mt-4 pt-4 border-t border-primary/10">
 				<button
 					onClick={() => router.push("/social")}
-					className="w-full px-4 py-2 bg-gradient-to-r from-primary to-purple text-white font-medium rounded-lg hover:shadow-lg hover:scale-[1.02] transition-all"
+					className="w-full px-4 py-2 bg-linear-to-r from-primary to-purple text-white font-medium rounded-lg hover:shadow-lg hover:scale-[1.02] transition-all"
 				>
 					Enter Social Zone →
 				</button>

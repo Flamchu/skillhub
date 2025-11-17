@@ -56,7 +56,7 @@ export function AuthenticatedNavbar() {
 	};
 
 	const UserAvatar = () => (
-		<div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary via-purple to-pink flex items-center justify-center text-white font-semibold text-sm shadow-lg ring-2 ring-white/20 dark:ring-gray-700/50">
+		<div className="w-9 h-9 rounded-full bg-linear-to-br from-primary via-purple to-pink flex items-center justify-center text-white font-semibold text-sm shadow-lg ring-2 ring-white/20 dark:ring-gray-700/50">
 			{profile?.name?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase() || "U"}
 		</div>
 	);
@@ -66,18 +66,18 @@ export function AuthenticatedNavbar() {
 			<nav
 				className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
 					scrolled
-						? "bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl shadow-lg border-b border-gray-200/50 dark:border-gray-700/50"
-						: "bg-transparent backdrop-blur-sm"
+						? "bg-white dark:bg-gray-900 backdrop-blur-xl shadow-lg border-b border-gray-200/50 dark:border-gray-700/50"
+						: "bg-linear-to-br from-primary-50/80 via-purple-50/80 to-pink-50/80 dark:from-gray-900/80 dark:via-gray-800/80 dark:to-gray-900/80 backdrop-blur-sm"
 				}`}
 			>
 				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 					<div className="flex justify-between items-center h-16">
 						{/* Logo */}
 						<Link href="/dashboard" className="flex items-center gap-2 group">
-							<div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary via-purple to-pink flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110">
+							<div className="w-10 h-10 rounded-xl bg-linear-to-br from-primary via-purple to-pink flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110">
 								<span className="text-white font-bold text-lg">S</span>
 							</div>
-							<span className="text-xl font-bold bg-gradient-to-br from-primary via-purple to-pink text-transparent bg-clip-text hidden sm:block">
+							<span className="text-xl font-bold bg-linear-to-br from-primary via-purple to-pink text-transparent bg-clip-text hidden sm:block">
 								SkillHub
 							</span>
 						</Link>
@@ -93,7 +93,7 @@ export function AuthenticatedNavbar() {
 										href={link.href}
 										className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all duration-200 ${
 											active
-												? "bg-gradient-to-br from-primary/10 to-purple/10 text-primary dark:text-primary-400 shadow-sm"
+												? "bg-linear-to-br from-primary/10 to-purple/10 text-primary dark:text-primary-400 shadow-sm"
 												: "text-gray-600 dark:text-gray-300 hover:bg-gray-100/70 dark:hover:bg-gray-800/70 hover:text-gray-900 dark:hover:text-white"
 										}`}
 									>
@@ -145,7 +145,7 @@ export function AuthenticatedNavbar() {
 								{userDropdownOpen && (
 									<div className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
 										{/* User Info */}
-										<div className="p-4 border-b border-gray-100 dark:border-gray-700/50 bg-gradient-to-br from-primary/5 to-purple/5 dark:from-primary/10 dark:to-purple/10">
+										<div className="p-4 border-b border-gray-100 dark:border-gray-700/50 bg-linear-to-br from-primary/5 to-purple/5 dark:from-primary/10 dark:to-purple/10">
 											<div className="flex items-center gap-3 mb-2">
 												<UserAvatar />
 												<div className="flex-1 min-w-0">
@@ -156,7 +156,7 @@ export function AuthenticatedNavbar() {
 												</div>
 											</div>
 											{user.role === "ADMIN" && (
-												<div className="flex items-center gap-1.5 px-2 py-1 bg-gradient-to-br from-yellow-400/20 to-orange-400/20 dark:from-yellow-400/30 dark:to-orange-400/30 rounded-lg w-fit">
+												<div className="flex items-center gap-1.5 px-2 py-1 bg-linear-to-br from-yellow-400/20 to-orange-400/20 dark:from-yellow-400/30 dark:to-orange-400/30 rounded-lg w-fit">
 													<Crown className="w-3 h-3 text-yellow-600 dark:text-yellow-400" />
 													<span className="text-xs font-semibold text-yellow-700 dark:text-yellow-300">
 														Admin Access
@@ -252,7 +252,7 @@ export function AuthenticatedNavbar() {
 											onClick={() => setMobileMenuOpen(false)}
 											className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200 ${
 												active
-													? "bg-gradient-to-br from-primary/10 to-purple/10 text-primary dark:text-primary-400 shadow-sm"
+													? "bg-linear-to-br from-primary/10 to-purple/10 text-primary dark:text-primary-400 shadow-sm"
 													: "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
 											}`}
 										>
@@ -290,7 +290,7 @@ export function AuthenticatedNavbar() {
 								</div>
 								<button
 									onClick={handleLogout}
-									className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-br from-red-500 to-red-600 text-white font-medium shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-200"
+									className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-linear-to-br from-red-500 to-red-600 text-white font-medium shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-200"
 								>
 									<LogOut className="w-5 h-5" />
 									<span>Sign Out</span>

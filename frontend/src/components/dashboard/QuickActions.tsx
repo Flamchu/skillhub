@@ -38,18 +38,18 @@ const quickActions: QuickAction[] = [
 export function QuickActions() {
 	const colorClasses = {
 		primary: {
-			bg: "bg-gradient-to-br from-primary/10 to-purple/10 dark:from-primary/20 dark:to-purple/20",
-			icon: "bg-gradient-to-br from-primary to-purple",
+			bg: "bg-linear-to-br from-primary/10 to-purple/10 dark:from-primary/20 dark:to-purple/20",
+			icon: "bg-linear-to-br from-primary to-purple",
 			hover: "hover:border-primary/40",
 		},
 		success: {
-			bg: "bg-gradient-to-br from-success/10 to-info/10 dark:from-success/20 dark:to-info/20",
-			icon: "bg-gradient-to-br from-success to-info",
+			bg: "bg-linear-to-br from-success/10 to-info/10 dark:from-success/20 dark:to-info/20",
+			icon: "bg-linear-to-br from-success to-info",
 			hover: "hover:border-success/40",
 		},
 		info: {
-			bg: "bg-gradient-to-br from-info/10 to-primary/10 dark:from-info/20 dark:to-primary/20",
-			icon: "bg-gradient-to-br from-info to-primary",
+			bg: "bg-linear-to-br from-info/10 to-primary/10 dark:from-info/20 dark:to-primary/20",
+			icon: "bg-linear-to-br from-info to-primary",
 			hover: "hover:border-info/40",
 		},
 	};

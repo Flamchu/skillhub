@@ -34,7 +34,7 @@ export function GenerationProgress({ stage, className = "" }: GenerationProgress
 	return (
 		<div className={`space-y-6 ${className}`}>
 			<div className="flex items-center justify-center gap-2">
-				<div className="w-8 h-8 bg-gradient-to-br from-primary to-purple rounded-full flex items-center justify-center animate-pulse">
+				<div className="w-8 h-8 bg-linear-to-br from-primary to-purple rounded-full flex items-center justify-center animate-pulse">
 					<Sparkles className="w-5 h-5 text-white" />
 				</div>
 				<h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">Generating Your Skills...</h3>
@@ -52,9 +52,9 @@ export function GenerationProgress({ stage, className = "" }: GenerationProgress
 							<div
 								className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 ${
 									isComplete
-										? "bg-gradient-to-br from-success to-info"
+										? "bg-linear-to-br from-success to-info"
 										: isActive
-											? "bg-gradient-to-br from-primary to-purple animate-pulse"
+											? "bg-linear-to-br from-primary to-purple animate-pulse"
 											: "bg-gray-200 dark:bg-gray-700"
 								}`}
 							>
@@ -84,7 +84,7 @@ export function GenerationProgress({ stage, className = "" }: GenerationProgress
 								{/* progress bar */}
 								{isActive && (
 									<div className="mt-2 h-1 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-										<div className="h-full bg-gradient-to-r from-primary to-purple rounded-full animate-progress-bar" />
+										<div className="h-full bg-linear-to-r from-primary to-purple rounded-full animate-progress-bar" />
 									</div>
 								)}
 							</div>

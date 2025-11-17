@@ -144,13 +144,13 @@ export function ProfileForm({ user, className = "" }: ProfileFormProps) {
 
 			<div className="p-8 lg:p-12">
 				{error && (
-					<div className="mb-8 p-6 bg-gradient-to-r from-red-50 to-red-100 dark:from-red-900/20 dark:to-red-800/20 border border-red-200/50 dark:border-red-800/50 rounded-xl shadow-lg">
+					<div className="mb-8 p-6 bg-linear-to-r from-red-50 to-red-100 dark:from-red-900/20 dark:to-red-800/20 border border-red-200/50 dark:border-red-800/50 rounded-xl shadow-lg">
 						<p className="text-red-700 dark:text-red-300 font-medium">{error}</p>
 					</div>
 				)}
 
 				{success && (
-					<div className="mb-8 p-6 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200/50 dark:border-green-800/50 rounded-xl shadow-lg">
+					<div className="mb-8 p-6 bg-linear-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200/50 dark:border-green-800/50 rounded-xl shadow-lg">
 						<p className="text-green-700 dark:text-green-300 font-medium flex items-center gap-2">
 							<span className="text-lg">✓</span>
 							{success}
@@ -221,7 +221,7 @@ export function ProfileForm({ user, className = "" }: ProfileFormProps) {
 							loading={saving}
 							disabled={saving}
 							size="lg"
-							className="group flex-1 sm:flex-none sm:px-12 py-4 bg-gradient-to-r from-primary to-purple text-white rounded-xl hover:from-primary-600 hover:to-purple-600 dark:hover:from-primary-500 dark:hover:to-purple-500 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 hover:-translate-y-1 text-lg font-bold"
+							className="group flex-1 sm:flex-none sm:px-12 py-4 bg-linear-to-r from-primary to-purple text-white rounded-xl hover:from-primary-600 hover:to-purple-600 dark:hover:from-primary-500 dark:hover:to-purple-500 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 hover:-translate-y-1 text-lg font-bold"
 						>
 							<span className="flex items-center justify-center gap-2">
 								{saving ? t("form.saving") : t("form.save")}
