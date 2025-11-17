@@ -1,13 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import { api } from "@/lib/http";
 import { useAuth } from "@/context/AuthProvider";
 import type { UserProfile, UpdateUserData } from "@/types";
 import { Input, Button } from "@/components/ui";
-import { X, AlertTriangle, Users } from "lucide-react";
+import { X, AlertTriangle, Users, Camera } from "lucide-react";
 
 // region data structure from api
 interface Region {
@@ -26,6 +27,7 @@ export function EditProfileModal({ isOpen, onClose, user }: EditProfileModalProp
 	const t = useTranslations("profile");
 	const router = useRouter();
 	const { refresh, logout } = useAuth();
+	const fileInputRef = useRef<HTMLInputElement>(null);
 
 	// form data state
 	const [formData, setFormData] = useState<UpdateUserData>({
@@ -34,6 +36,10 @@ export function EditProfileModal({ isOpen, onClose, user }: EditProfileModalProp
 		bio: user?.bio || "",
 		regionId: user?.regionId || "",
 	});
+
+	// profile picture state
+	const [profilePicturePreview, setProfilePicturePreview] = useState<string | null>(null);
+	const [profilePictureFile, setProfilePictureFile] = useState<File | null>(null);
 
 	// ui state management
 	const [saving, setSaving] = useState(false);
@@ -107,6 +113,33 @@ export function EditProfileModal({ isOpen, onClose, user }: EditProfileModalProp
 		}
 	};
 
+	// handle profile picture upload
+	const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0];
+		if (!file) return;
+
+		// validate file type
+		if (!file.type.startsWith("image/")) {
+			setError("Please select a valid image file");
+			return;
+		}
+
+		// validate file size (max 5MB)
+		if (file.size > 5 * 1024 * 1024) {
+			setError("Image size must be less than 5MB");
+			return;
+		}
+
+		// create preview
+		const reader = new FileReader();
+		reader.onloadend = () => {
+			setProfilePicturePreview(reader.result as string);
+			setProfilePictureFile(file);
+			setError(""); // clear any previous errors
+		};
+		reader.readAsDataURL(file);
+	};
+
 	// handle form submission
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -124,6 +157,19 @@ export function EditProfileModal({ isOpen, onClose, user }: EditProfileModalProp
 				throw new Error("no user id available");
 			}
 
+			// handle profile picture upload first if there's a new file
+			if (profilePictureFile) {
+				try {
+					await api.uploadProfilePicture(profilePictureFile);
+					// profile picture URL is now stored in database
+				} catch (uploadErr) {
+					console.error("profile picture upload error:", uploadErr);
+					setError("Failed to upload profile picture. Please try again.");
+					setSaving(false);
+					return;
+				}
+			}
+
 			const updateData: UpdateUserData = {};
 
 			// only update changed fields
@@ -132,13 +178,17 @@ export function EditProfileModal({ isOpen, onClose, user }: EditProfileModalProp
 			if (formData.bio !== user.bio) updateData.bio = formData.bio;
 			if (formData.regionId !== user.regionId) updateData.regionId = formData.regionId;
 
-			if (Object.keys(updateData).length === 0) {
+			// if no text fields changed but profile picture was uploaded
+			if (Object.keys(updateData).length === 0 && !profilePictureFile) {
 				setSuccess(t("messages.noChanges"));
 				setTimeout(() => onClose(), 1500);
 				return;
 			}
 
-			await api.updateProfile(updateData);
+			// update profile data if there are changes
+			if (Object.keys(updateData).length > 0) {
+				await api.updateProfile(updateData);
+			}
 
 			// refresh auth context to hydrate updated user data
 			await refresh();
@@ -250,6 +300,72 @@ export function EditProfileModal({ isOpen, onClose, user }: EditProfileModalProp
 						</div>
 					)}
 					<form onSubmit={handleSubmit} className="space-y-6">
+						{/* Profile Picture Upload Section */}
+						<div className="space-y-2">
+							<label className="block text-sm font-semibold text-foreground mb-3">Profile Picture</label>
+							<div className="flex items-center gap-6">
+								{/* Avatar Preview */}
+								<div className="relative group">
+									<div className="w-24 h-24 rounded-xl bg-linear-to-br from-primary via-purple to-pink p-1 shadow-lg ring-2 ring-primary/20">
+										<div className="w-full h-full rounded-lg bg-white dark:bg-gray-800 flex items-center justify-center overflow-hidden relative">
+											{profilePicturePreview ? (
+												<Image src={profilePicturePreview} alt="Profile preview" fill className="object-cover" />
+											) : (
+												<span className="text-3xl font-bold bg-linear-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
+													{user?.name?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase() || "U"}
+												</span>
+											)}
+										</div>
+									</div>
+									{/* Hover overlay for change */}
+									{profilePicturePreview && (
+										<button
+											type="button"
+											onClick={() => {
+												setProfilePicturePreview(null);
+												setProfilePictureFile(null);
+												if (fileInputRef.current) fileInputRef.current.value = "";
+											}}
+											className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+										>
+											<div className="text-center text-white">
+												<X className="w-5 h-5 mx-auto mb-1" />
+												<span className="text-xs font-semibold">Remove</span>
+											</div>
+										</button>
+									)}
+								</div>
+
+								{/* Upload Button */}
+								<div className="flex-1">
+									<input
+										ref={fileInputRef}
+										type="file"
+										accept="image/*"
+										onChange={handleImageChange}
+										className="hidden"
+										id="profile-picture-upload"
+									/>
+									<label
+										htmlFor="profile-picture-upload"
+										className="inline-flex items-center gap-2 px-6 py-3 bg-linear-to-r from-primary to-purple text-white rounded-xl font-bold cursor-pointer hover:shadow-xl hover:scale-105 transition-all duration-300 active:scale-[0.98]"
+									>
+										<Camera className="w-5 h-5" />
+										<span>{profilePictureFile ? "Change Photo" : "Upload Photo"}</span>
+									</label>
+									<p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+										Recommended: Square image, at least 256x256px
+									</p>
+									{profilePictureFile && (
+										<p className="text-sm text-green-600 dark:text-green-400 mt-2 flex items-center gap-1">
+											<span>✓</span>
+											{profilePictureFile.name}
+										</p>
+									)}
+								</div>
+							</div>
+						</div>
+
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 							<Input
 								label={t("form.name")}

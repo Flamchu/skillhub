@@ -5,6 +5,7 @@ export interface UserProfile {
 	name?: string;
 	headline?: string;
 	bio?: string;
+	profilePicture?: string;
 	role: "USER" | "INSTRUCTOR" | "ADMIN";
 	regionId?: string;
 	socialEnabled?: boolean;

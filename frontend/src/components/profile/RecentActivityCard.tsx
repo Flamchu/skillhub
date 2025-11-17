@@ -43,12 +43,14 @@ export function RecentActivityCard({ activity }: RecentActivityCardProps) {
 	};
 
 	return (
-		<div className="flex items-start gap-3 p-4 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700">
-			<span className="text-2xl shrink-0">{getActivityIcon(activity.type)}</span>
+		<div className="group flex items-start gap-4 p-5 rounded-xl bg-gray-50/80 dark:bg-gray-700/30 border-2 border-gray-200/50 dark:border-gray-700/50 hover:border-primary/30 hover:shadow-lg hover:scale-[1.01] transition-all duration-300">
+			<div className="shrink-0 w-12 h-12 flex items-center justify-center rounded-xl bg-linear-to-br from-primary/10 to-purple/10 group-hover:from-primary/20 group-hover:to-purple/20 transition-all duration-300">
+				<span className="text-2xl">{getActivityIcon(activity.type)}</span>
+			</div>
 			<div className="flex-1 min-w-0">
-				<p className="text-sm text-foreground">{activity.description}</p>
-				<div className="flex items-center gap-1.5 mt-1 text-xs text-foreground-subtle">
-					<Clock className="w-3 h-3" />
+				<p className="text-sm font-medium text-gray-900 dark:text-white leading-relaxed">{activity.description}</p>
+				<div className="flex items-center gap-1.5 mt-2 text-xs text-gray-500 dark:text-gray-400 font-medium">
+					<Clock className="w-3.5 h-3.5" />
 					<span>{getRelativeTime(activity.timestamp)}</span>
 				</div>
 			</div>

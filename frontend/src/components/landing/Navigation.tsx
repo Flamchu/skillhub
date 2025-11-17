@@ -31,8 +31,8 @@ export function Navigation({ className = "" }: NavigationProps) {
 				</div>
 			</nav>
 
-			{/* Fixed Theme Toggle - Far Right */}
-			<div className="fixed top-4 right-4 z-50">
+			{/* Fixed Theme Toggle - Far Right, Centered in Navbar Height */}
+			<div className="fixed top-0 right-4 h-[72px] flex items-center z-50">
 				<ThemeToggle />
 			</div>
 		</>
