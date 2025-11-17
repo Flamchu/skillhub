@@ -100,7 +100,7 @@ export default function AuthPage() {
 	const isLogin = mode === "login";
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-primary-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 text-gray-900 dark:text-gray-100">
+		<div className="min-h-screen bg-linear-to-br from-primary-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 text-gray-900 dark:text-gray-100">
 			<Navigation />
 
 			<main className="px-6 py-20">
@@ -108,12 +108,12 @@ export default function AuthPage() {
 					{/* Auth Card */}
 					<GlassCard>
 						{/* Header */}
-						<div className="bg-gradient-to-r from-primary/5 to-purple/5 dark:from-primary/10 dark:to-purple/10 px-8 py-8 text-center border-b border-primary/10 dark:border-gray-700 rounded-t-2xl -m-6 mb-0 pt-12 pb-8">
-							<div className="w-16 h-16 bg-gradient-to-br from-primary to-purple rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+						<div className="bg-linear-to-r from-primary/5 to-purple/5 dark:from-primary/10 dark:to-purple/10 px-8 py-8 text-center border-b border-primary/10 dark:border-gray-700 rounded-t-2xl -m-6 mb-0 pt-12 pb-8">
+							<div className="w-16 h-16 bg-linear-to-br from-primary to-purple rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
 								<span className="text-2xl text-white">{isLogin ? "👋" : "🚀"}</span>
 							</div>
 							<h1 className="text-3xl font-bold mb-2">
-								<span className="bg-gradient-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
+								<span className="bg-linear-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
 									{isLogin ? tLogin("title") : tRegister("title")}
 								</span>
 							</h1>
@@ -184,7 +184,7 @@ export default function AuthPage() {
 								<button
 									type="submit"
 									disabled={loading}
-									className="w-full px-8 py-4 bg-gradient-to-r from-primary to-purple text-white rounded-lg hover:from-primary-600 hover:to-purple-600 dark:hover:from-primary-500 dark:hover:to-purple-500 font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:transform-none disabled:hover:shadow-lg"
+									className="w-full px-8 py-4 bg-linear-to-r from-primary to-purple text-white rounded-lg hover:from-primary-600 hover:to-purple-600 dark:hover:from-primary-500 dark:hover:to-purple-500 font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:transform-none disabled:hover:shadow-lg"
 								>
 									{loading ? (
 										<div className="flex items-center justify-center">
@@ -244,7 +244,7 @@ export default function AuthPage() {
 								</p>
 								<button
 									onClick={toggleMode}
-									className="px-6 py-2 text-primary hover:text-purple font-semibold bg-gradient-to-r from-primary/5 to-purple/5 hover:from-primary/10 hover:to-purple/10 rounded-lg border border-primary/20 hover:border-primary/30 transition-all duration-200 transform hover:scale-105"
+									className="px-6 py-2 text-primary hover:text-purple font-semibold bg-linear-to-r from-primary/5 to-purple/5 hover:from-primary/10 hover:to-purple/10 rounded-lg border border-primary/20 hover:border-primary/30 transition-all duration-200 transform hover:scale-105"
 								>
 									{isLogin ? tRegister("title") : tLogin("title")}
 								</button>

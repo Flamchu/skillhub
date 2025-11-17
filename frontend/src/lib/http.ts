@@ -131,4 +131,8 @@ export const api = {
 		http.post("/courses/import/youtube", data).then(r => r.data),
 	generateCourseSummaries: () => http.post("/courses/generate-summaries").then(r => r.data),
 	generateCourseSummary: (courseId: string) => http.post(`/courses/${courseId}/generate-summary`).then(r => r.data),
+
+	// danger zone api (protected)
+	clearUserData: (userId: string) => http.post(`/users/${userId}/clear-data`).then(r => r.data),
+	deleteAccount: (userId: string) => http.delete(`/users/${userId}/account`).then(r => r.data),
 };

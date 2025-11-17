@@ -256,6 +256,10 @@ router.get("/me", authenticateSupabaseToken, async (req: AuthenticatedRequest, r
 				regionId: true,
 				createdAt: true,
 				updatedAt: true,
+				socialEnabled: true,
+				xp: true,
+				level: true,
+				currentStreak: true,
 			},
 		});
 

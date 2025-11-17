@@ -1,8 +1,8 @@
-# SkillHub Frontend Documentation (Revised – Standalone Client, Updated: 16 September 2025)
+# SkillHub Frontend Documentation (Revised – Standalone Client, Updated: November 2025)
 
-This document defines the architecture, information architecture (IA), component system, data flows, and implementation guidelines for the SkillHub frontend as a **pure standalone client**. It consumes a separately hosted backend (Railway) + Supabase Auth and does **not** expose its own API routes (no Next.js route handlers). All interactions occur over HTTP to the backend REST API.
+This document defines the architecture, information architecture (IA), component system, data flows, and implementation guidelines for the SkillHub frontend as a **pure standalone client**. It consumes a separately hosted backend (Docker + Hetzner Cloud) + Supabase Auth and does **not** expose its own API routes (no Next.js route handlers). All interactions occur over HTTP to the backend REST API.
 
-> Status: Core auth context, minimal layout, and initial pages (`/auth`, `/register`, `/dashboard`, `/skills`, `/courses`) plus primitive ui components (button, input, card, badge, avatar, theme toggle) are implemented. Remaining sections describe target future build-out.
+> Status: Core auth context, minimal layout, and initial pages (`/auth`, `/register`, `/dashboard`, `/skills`, `/courses`) plus primitive ui components (button, input, card, badge, avatar, theme toggle) are implemented. Social/gamification features partially implemented (XP bar, profile toggle). Remaining sections describe target future build-out.
 
 ## 1. High-Level Overview
 
@@ -12,7 +12,7 @@ This document defines the architecture, information architecture (IA), component
 - **Data Layer**: External REST API calls to backend (`/api/*` base path) via centralized axios client with interceptors (auth token injection, error normalization, retry/backoff for idempotent GET)
 - **State Management**: TanStack Query + React Context (auth) + local UI state; forms via React Hook Form + Zod
 - **Rendering Strategy**: Server Components for public/static & SEO surfaces (skills list, courses listing); Client Components for authenticated & interactive flows (dashboards, test runner, forms). No custom Next.js API routes.
-- **Internationalization (Future)**: Next.js i18n routing (phase 2)
+- **Internationalization**: Next.js i18n routing
 
 ### 1.1 Current Implemented Directory Structure
 
@@ -21,14 +21,14 @@ frontend/
 	package.json
 	src/
 		app/
-			layout.tsx
-			providers.tsx
-			page.tsx                  # landing / placeholder
-			auth/page.tsx
-			register/page.tsx
-			dashboard/page.tsx
-			skills/page.tsx
-			courses/page.tsx
+			[locale]/
+				layout.tsx
+				page.tsx                  # landing / placeholder
+				auth/page.tsx
+				register/page.tsx
+				dashboard/page.tsx
+				skills/page.tsx
+				courses/page.tsx
 			globals.css
 		components/
 			ui/
@@ -38,7 +38,20 @@ frontend/
 				Card.tsx
 				Input.tsx
 				ThemeToggle.tsx
+				LanguageSwitcher.tsx
+				PageHeader.tsx
+				PageLayout.tsx
 				index.ts
+			dashboard/
+				AIWorkflowPrompt.tsx
+				QuickActions.tsx
+				EnrolledCourses.tsx
+				LearningStats.tsx
+			profile/
+				EditProfileModal.tsx
+			social/
+				XPBar.tsx
+			(other feature directories)
 		context/
 			AuthProvider.tsx
 		lib/
@@ -50,88 +63,100 @@ frontend/
 			tokens.ts
 			utils.ts
 			validation.ts
+			socialUtils.ts
 		types/
 			index.ts
+		messages/
+			(i18n translations)
 ```
 
 ### 1.2 Implemented vs Planned
 
-| Area          | Implemented                                      | Planned (future)                                     |
-| ------------- | ------------------------------------------------ | ---------------------------------------------------- |
-| auth          | backend token auth context                       | role guard hooks, edge gating                        |
-| data          | axios client, query keys                         | full query hooks per feature, optimistic flows       |
-| ui primitives | button, input, card, badge, avatar, theme toggle | full component library (forms, navigation, feedback) |
-| pages public  | landing placeholder                              | marketing, public skills/courses detail              |
-| pages private | dashboard, skills, courses                       | tests, recommendations, admin, instructor consoles   |
-| theming       | light/dark toggle                                | design tokens + extended palette                     |
-| analytics     | basic analytics module scaffold                  | event taxonomy + providers                           |
-| validation    | shared zod schemas                               | codegen from backend/openapi                         |
+| Area          | Implemented                                                         | Planned (future)                                     |
+| ------------- | ------------------------------------------------------------------- | ---------------------------------------------------- |
+| auth          | backend token auth context, role-based access                       | role guard hooks, edge gating                        |
+| data          | axios client, query keys, http interceptors                         | full query hooks per feature, optimistic flows       |
+| ui primitives | button, input, card, badge, avatar, theme toggle, language switcher | full component library (forms, navigation, feedback) |
+| pages public  | landing placeholder                                                 | marketing, public skills/courses detail              |
+| pages private | dashboard, skills, courses, profile                                 | tests, recommendations, admin, instructor consoles   |
+| social        | XP bar, profile toggle, client-side utils                           | quests panel, leaderboards, social dashboard         |
+| theming       | light/dark toggle                                                   | design tokens + extended palette                     |
+| analytics     | basic analytics module scaffold                                     | event taxonomy + providers                           |
+| validation    | shared zod schemas                                                  | codegen from backend/openapi                         |
+| i18n          | next-intl with locale routing                                       | additional language support                          |
 
 ## 2. Key User Personas & UX Goals
 
-| Persona                 | Goals                                            | Key Screens                                                          |
-| ----------------------- | ------------------------------------------------ | -------------------------------------------------------------------- |
-| Anonymous Visitor       | Understand product, browse public skills/courses | Marketing pages, public skill tree, public user profile minimal view |
-| Learner (USER)          | Track skills, attempt tests, get recommendations | Dashboard, Skill Detail, Course List, Recommendations, Tests         |
-| Instructor (INSTRUCTOR) | Create / manage courses & tests                  | Instructor Console, Course Editor, Test Builder                      |
-| Admin (ADMIN)           | Manage catalog, users, moderation, stats         | Admin Console (Users, Skills CRUD, Courses CRUD, Reports)            |
+| Persona                 | Goals                                                     | Key Screens                                                          |
+| ----------------------- | --------------------------------------------------------- | -------------------------------------------------------------------- |
+| Anonymous Visitor       | Understand product, browse public skills/courses          | Marketing pages, public skill tree, public user profile minimal view |
+| Learner (USER)          | Track skills, attempt tests, get recommendations, earn XP | Dashboard, Skill Detail, Course List, Recommendations, Tests, Social |
+| Instructor (INSTRUCTOR) | Create / manage courses & tests                           | Instructor Console, Course Editor, Test Builder                      |
+| Admin (ADMIN)           | Manage catalog, users, moderation, stats, quests          | Admin Console (Users, Skills CRUD, Courses CRUD, Reports, Quests)    |
 
 ## 3. Information Architecture & Routing Structure
 
-Current implemented routes (subset): `/(root)`, `/auth`, `/register`, `/dashboard`, `/skills`, `/courses`.
+Current implemented routes (subset): `/(root)`, `/[locale]/auth`, `/[locale]/register`, `/[locale]/dashboard`, `/[locale]/skills`, `/[locale]/courses`, `/[locale]/profile`.
 
 The following is the planned expanded architecture (future):
 
 ```
 src/app/
-  (public)/
-    page.tsx                # Landing
-    skills/
-      page.tsx              # Skill list (public)
-      [skillId]/page.tsx    # Skill detail (public + optional stats)
-      hierarchy/page.tsx    # Skill tree view
-    courses/
-      page.tsx              # Public course explorer
-      [courseId]/page.tsx   # Public course detail
-    users/
-      [userId]/page.tsx     # Public user profile (limited fields)
-  (auth)/
-    auth/page.tsx
-    register/page.tsx
-    callback/route.ts       # OAuth provider redirects (if enabled)
-  (app)/                    # Authenticated layout (guards + nav)
-    layout.tsx
-    dashboard/page.tsx
-    recommendations/page.tsx
-    skills/
-      [skillId]/page.tsx          # Extended detail inc. personal progress
-      [skillId]/progression/page.tsx
-    user/
-      profile/page.tsx            # Own profile full
-      skills/page.tsx             # Manage own skills
-      bookmarks/page.tsx
-      tests/page.tsx              # List attempts
-    courses/
-      page.tsx
-      [courseId]/page.tsx
-    tests/
-      [testId]/page.tsx
-      attempts/[attemptId]/page.tsx  # Attempt detail / resume
-    admin/
+  [locale]/
+    (public)/
+      page.tsx                # Landing
+      skills/
+        page.tsx              # Skill list (public)
+        [skillId]/page.tsx    # Skill detail (public + optional stats)
+        hierarchy/page.tsx    # Skill tree view
+      courses/
+        page.tsx              # Public course explorer
+        [courseId]/page.tsx   # Public course detail
+      users/
+        [userId]/page.tsx     # Public user profile (limited fields)
+    (auth)/
+      auth/page.tsx
+      register/page.tsx
+      callback/route.ts       # OAuth provider redirects (if enabled)
+    (app)/                    # Authenticated layout (guards + nav)
       layout.tsx
-      users/page.tsx
-      skills/page.tsx
-      skills/[skillId]/edit/page.tsx
-      courses/page.tsx
-      courses/[courseId]/edit/page.tsx
-      tests/page.tsx
-      regions/page.tsx
-      reports/page.tsx (future)
-    instructor/
-      courses/new/page.tsx
-      courses/[courseId]/edit/page.tsx
-      tests/new/page.tsx
-      tests/[testId]/edit/page.tsx
+      dashboard/page.tsx
+      recommendations/page.tsx
+      skills/
+        [skillId]/page.tsx          # Extended detail inc. personal progress
+        [skillId]/progression/page.tsx
+      user/
+        profile/page.tsx            # Own profile full
+        skills/page.tsx             # Manage own skills
+        bookmarks/page.tsx
+        tests/page.tsx              # List attempts
+      courses/
+        page.tsx
+        [courseId]/page.tsx
+      tests/
+        [testId]/page.tsx
+        attempts/[attemptId]/page.tsx  # Attempt detail / resume
+      social/                       # Social/Gamification features (opt-in)
+        page.tsx                    # Social dashboard with quests + leaderboard preview
+        leaderboard/page.tsx        # Full leaderboard with tabs
+        quests/page.tsx             # All quests with details
+        history/page.tsx            # XP transaction log
+      admin/
+        layout.tsx
+        users/page.tsx
+        skills/page.tsx
+        skills/[skillId]/edit/page.tsx
+        courses/page.tsx
+        courses/[courseId]/edit/page.tsx
+        tests/page.tsx
+        quests/page.tsx             # Manage quests, award XP
+        regions/page.tsx
+        reports/page.tsx (future)
+      instructor/
+        courses/new/page.tsx
+        courses/[courseId]/edit/page.tsx
+        tests/new/page.tsx
+        tests/[testId]/edit/page.tsx
 ```
 
 Route Grouping Strategy (future):
@@ -187,6 +212,10 @@ Query Key Conventions:
 - `['recommendations', userId]`
 - `['tests', params]`, `['test', testId]`
 - `['attempt', attemptId]`
+- `['social', 'profile', userId]`
+- `['social', 'quests', userId]`
+- `['social', 'leaderboard', 'weekly', limit]`
+- `['social', 'leaderboard', 'global', limit]`
 
 Axios Client (`lib/http.ts`):
 
@@ -226,6 +255,138 @@ Patterns:
 - Field components: `TextField`, `SelectField`, `NumberField`, `TagInput`, `SkillSelector`
 - Form states: loading, success toast, error mapping from backend `details[]`
 
+## 7.1. Social/Gamification System (Opt-In)
+
+The frontend implements an opt-in social environment for learners who want gamification features.
+
+### Implementation Status
+
+**✅ Implemented:**
+
+- Social toggle in profile settings (`EditProfileModal.tsx`)
+- XP bar component with level, progress, and streak display (`XPBar.tsx`)
+- Client-side XP calculation utilities (`lib/socialUtils.ts`)
+- localStorage caching for social profile (60s TTL)
+- Optimistic XP updates
+- TypeScript types extended with social fields (`UserProfile`)
+
+**📋 Planned:**
+
+- Social dashboard page (`/[locale]/social`)
+- Daily quests panel with progress tracking
+- Leaderboard pages (weekly/global tabs)
+- XP transaction history page
+- Quest completion animations
+- Level-up notifications
+
+### Architecture
+
+**Opt-In Model:**
+
+- Default state: `user.socialEnabled = false`
+- Toggle location: Profile settings modal (above Danger Zone)
+- API endpoint: `PATCH /api/users/:id/social-toggle`
+- Page reload after toggle to update global UI state
+
+**XP Bar Component:**
+
+- Location: Dashboard navbar (between language switcher and welcome message)
+- Visibility: Only shown when `user.socialEnabled === true`
+- Features:
+  - Level badge with Zap icon
+  - XP progress bar (current/needed XP)
+  - Percentage display
+  - Streak counter with Flame icon
+- Updates: Fetches profile every 5 minutes, cached in component state
+
+**Client-Side Utilities (`lib/socialUtils.ts`):**
+
+```typescript
+// XP calculations (matches backend formula)
+getLevelFromXP(xp: number): number
+getProgressToNextLevel(xp: number): {
+  currentLevel, xpInCurrentLevel,
+  xpNeededForNextLevel, progressPercentage
+}
+getTotalXPForLevel(level: number): number
+getXPForLevel(level: number): number
+
+// localStorage caching
+cacheSocialProfile(userId: string, profile: SocialProfile): void
+getCachedSocialProfile(userId: string, ttl?: number): SocialProfile | null
+updateLocalXP(userId: string, xpGained: number): void
+isSocialEnabled(): boolean
+```
+
+**Level Formula:**
+
+```
+XP for level N = 100 * (1.5 ^ (N - 1))
+```
+
+### API Integration
+
+**Backend Endpoints:**
+
+- `GET /api/social/profile` - User's social profile (cached 60s)
+- `GET /api/social/quests/daily` - Daily quests with progress (cached 5min)
+- `GET /api/social/leaderboard/weekly` - Top learners (cached 5min)
+- `GET /api/social/leaderboard/global` - All-time rankings (cached 30min)
+- `GET /api/social/xp/history` - Transaction log (paginated)
+- `PATCH /api/users/:id/social-toggle` - Enable/disable social features
+
+**Query Keys:**
+
+- `['social', 'profile', userId]`
+- `['social', 'quests', userId]`
+- `['social', 'leaderboard', 'weekly', limit]`
+- `['social', 'leaderboard', 'global', limit]`
+- `['social', 'xp', userId, page]`
+
+### Performance Optimizations
+
+**Caching Strategy:**
+
+- Backend Redis caching (tiered TTLs)
+- Frontend localStorage caching (60s)
+- Client-side XP calculations reduce server calls
+- Optimistic UI updates before API confirmation
+
+**XP Awards (Automatic):**
+
+- Lesson completion: 20 XP
+- Skill verification: 75 XP
+- Course completion: 150 XP
+- Quest completion: 10-150 XP (varies)
+- Streak bonus: 50 XP per week (every 7 days)
+
+### Future Enhancements
+
+**Phase 2:**
+
+- Social dashboard with quests + leaderboard preview
+- Full leaderboard pages with filtering/sorting
+- Quest details modal with rewards
+- XP transaction history with filters
+- Achievement badges system
+
+**Phase 3:**
+
+- Weekly challenges (special high-reward quests)
+- Friend system (follow/compare progress)
+- Team challenges (group competitions)
+- Seasonal events (double XP weekends)
+- Leaderboard tiers (Bronze/Silver/Gold/Platinum)
+
+### UX Considerations
+
+- **Non-intrusive**: Social features completely opt-in, hidden by default
+- **Motivation**: XP and quests encourage consistent daily learning
+- **Competition**: Leaderboards provide healthy competition
+- **Progression**: Level system gives long-term goals
+- **Feedback**: Immediate XP feedback after actions
+- **Accessibility**: All social UI follows WCAG AA guidelines
+
 ## 8. UI Component Library (Planned)
 
 Component Groups:
@@ -255,9 +416,14 @@ Styling Guidelines:
 | Test Attempts         | `/api/tests/:id/attempts`, PATCH attempt | `AttemptProgress`, `AnswerForm`                      | Prevent duplicate incomplete         |
 | Recommendations       | `/api/recommendations` + `/generate`     | `RecommendationList`, `GenerateButton`               | Show algorithm badges                |
 | Regions & Competition | `/api/regions`                           | `RegionSelect`, `CompetitionChart`                   | Charts (Recharts) future             |
+| Social Profile        | `GET /api/social/profile`                | `XPBar` (navbar), `SocialToggle` (profile)           | ✅ Implemented, cached 60s           |
+| Daily Quests          | `GET /api/social/quests/daily`           | `QuestsPanel`, `QuestCard`                           | Planned, cached 5min                 |
+| Leaderboards          | `GET /api/social/leaderboard/*`          | `LeaderboardTabs`, `LeaderboardRow`                  | Planned, cached 5-30min              |
+| XP History            | `GET /api/social/xp/history`             | `XPTransactionList`                                  | Planned, paginated                   |
 | Admin Skill CRUD      | `/api/skills` POST/PATCH                 | `SkillForm`                                          | Slug autogeneration                  |
 | Admin Course CRUD     | `/api/courses` POST/PATCH                | `CourseForm`, `TagSelector`                          | ConnectOrCreate tags                 |
 | Admin Users           | `/api/users`                             | `UserTable`                                          | Pagination, filters by role          |
+| Admin Quests          | `/api/social/admin/quests` CRUD          | `QuestForm`, `QuestList`                             | Planned                              |
 
 ## 10. State & Data Modeling (Frontend)
 
@@ -274,6 +440,45 @@ export interface UserProfile {
 	role: "USER" | "INSTRUCTOR" | "ADMIN";
 	regionId?: string;
 	skills?: UserSkill[];
+	// Social/gamification fields (opt-in)
+	socialEnabled?: boolean;
+	xp?: number;
+	level?: number;
+	currentStreak?: number;
+}
+
+export interface SocialProfile {
+	user: {
+		id: string;
+		name: string | null;
+		xp: number;
+		level: number;
+		currentStreak: number;
+		longestStreak: number;
+		lastActivityDate: string | null;
+		currentLevel: number;
+		xpInCurrentLevel: number;
+		xpNeededForNextLevel: number;
+		progressPercentage: number;
+	};
+}
+
+export interface Quest {
+	id: string;
+	title: string;
+	description: string;
+	type:
+		| "DAILY_LOGIN"
+		| "COMPLETE_LESSON"
+		| "COMPLETE_MULTIPLE_LESSONS"
+		| "ADD_SKILL"
+		| "VERIFY_SKILL"
+		| "BOOKMARK_COURSE"
+		| "COMPLETE_COURSE";
+	xpReward: number;
+	targetCount: number;
+	progress: number;
+	isCompleted: boolean;
 }
 
 export interface Skill {
@@ -329,7 +534,6 @@ export interface Recommendation {
 ```
 @tanstack/react-query
 @tanstack/react-query-devtools
-(@supabase/* packages not required in current frontend model; backend owns integration)
 axios
 axios-retry
 react-hook-form
@@ -337,18 +541,22 @@ zod
 @hookform/resolvers
 clsx
 nprogress
-recharts
+recharts (planned)
 react-hot-toast
 lucide-react
 next-themes
+next-intl
 dayjs
 pluralize
+nanoid
 ```
 
 Notes:
 
-- All listed dependencies already installed unless marked (future).
-- `recharts` and advanced analytics usage are planned but not yet integrated in UI.
+- All core dependencies installed and in use
+- `@supabase/*` packages not required in current frontend model; backend owns integration
+- `recharts` planned for advanced analytics/charts visualization
+- Social features use existing dependencies (no additional packages needed)
 
 Performance considerations (planned):
 
@@ -689,6 +897,86 @@ export function useAuth() {
 - Accessible: semantic, keyboard-first, screen reader aware
 - Incremental: deliver value each phase without over-engineering
 
+## 29. Implementation Status Summary
+
+### ✅ Completed Features
+
+**Core Infrastructure:**
+
+- Next.js 15 with App Router and Turbopack
+- Tailwind CSS v4 with dark/light theme support
+- Supabase Auth integration via backend
+- Axios HTTP client with interceptors
+- TanStack Query for data fetching
+- React Hook Form + Zod validation
+- next-intl for internationalization
+
+**Authentication & User Management:**
+
+- Login/Register flows
+- Token management (access + refresh)
+- AuthProvider context with localStorage persistence
+- Protected route handling
+- Profile management with edit modal
+- Role-based access control (USER, INSTRUCTOR, ADMIN)
+
+**Core Features:**
+
+- Dashboard with learning stats
+- Skills browsing and management
+- Course exploration and enrollment
+- User profile with skills display
+- Bookmark system
+
+**Social/Gamification (Opt-In):**
+
+- Social environment toggle in profile settings
+- XP bar component in navbar (level, progress, streak)
+- Client-side XP calculation utilities
+- localStorage caching with TTL
+- Optimistic UI updates
+- Extended UserProfile types with social fields
+
+**UI Components:**
+
+- Button, Input, Card, Badge, Avatar
+- ThemeToggle, LanguageSwitcher
+- PageHeader, PageLayout
+- XPBar (social component)
+- EditProfileModal with social toggle
+
+### 📋 Planned Features
+
+**Social/Gamification Phase 2:**
+
+- Social dashboard (`/[locale]/social`)
+- Daily quests panel with progress tracking
+- Leaderboard pages (weekly/global tabs)
+- XP transaction history
+- Quest completion animations
+- Level-up notifications
+
+**Advanced Features:**
+
+- Test runner and attempts tracking
+- AI-powered recommendations UI
+- Instructor course/test creation
+- Admin panels (users, skills, courses, quests)
+- Skill verification system UI
+- Region-based competition charts
+
+**Performance & Polish:**
+
+- Server Components for public pages
+- Prefetch strategies
+- Advanced caching with Redis integration
+- Loading skeletons and transitions
+- Error boundaries
+- Comprehensive toast notifications
+
 ---
+
+**Last Updated:** November 17, 2025
+**Version:** 2.0 (Social Features Update)
 
 This document should be version-controlled and updated as implementation decisions are finalized. It serves as a blueprint for the engineering build-out of the SkillHub frontend aligned with the backend contracts.

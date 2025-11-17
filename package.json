@@ -7,6 +7,7 @@
 		"build": "pnpm --workspace-concurrency=1 run build",
 		"backend:dev": "pnpm --filter backend run dev",
 		"frontend:dev": "pnpm --filter frontend run dev",
+		"ai:dev": "cd ai-service && bash start.sh",
 		"backend:build": "pnpm --filter backend run build",
 		"frontend:build": "pnpm --filter frontend run build",
 		"frontend:start": "pnpm --filter frontend run start",

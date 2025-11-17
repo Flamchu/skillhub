@@ -7,6 +7,10 @@ export interface UserProfile {
 	bio?: string;
 	role: "USER" | "INSTRUCTOR" | "ADMIN";
 	regionId?: string;
+	socialEnabled?: boolean;
+	xp?: number;
+	level?: number;
+	currentStreak?: number;
 }
 
 export interface Skill {

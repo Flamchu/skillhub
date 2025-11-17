@@ -113,7 +113,7 @@ export function EnrolledCourses({ limit = 6 }: EnrolledCoursesProps) {
 										</span>
 									</div>
 								</div>
-								<div className="ml-4 flex-shrink-0">
+								<div className="ml-4 shrink-0">
 									<Link href={`/courses/${enrollment.course.id}`}>
 										<Button
 											size="sm"

@@ -104,16 +104,60 @@ export function SkillsContent() {
 	) => {
 		if (!user?.id) return;
 
-		const { api } = await import("@/lib/http");
-		const progress =
-			proficiency === "BASIC" ? 25 : proficiency === "INTERMEDIATE" ? 50 : proficiency === "ADVANCED" ? 75 : 90;
+		try {
+			const { api } = await import("@/lib/http");
+			const progress =
+				proficiency === "BASIC" ? 25 : proficiency === "INTERMEDIATE" ? 50 : proficiency === "ADVANCED" ? 75 : 90;
 
-		await api.updateUserSkill(user.id, skillId, { proficiency, progress });
+			await api.updateUserSkill(user.id, skillId, { proficiency, progress });
 
-		// refresh skills list
-		await loadUserSkills();
-		setShowUpdateModal(false);
-		setSelectedSkill(null);
+			// refresh skills list
+			await loadUserSkills();
+			setShowUpdateModal(false);
+			setSelectedSkill(null);
+			setSuccessMessage("Skill level updated successfully!");
+			setShowSuccess(true);
+		} catch (error: unknown) {
+			// check if verification is required
+			if (error && typeof error === "object" && "status" in error && error.status === 428) {
+				// verification required - redirect to verification page
+				const errorData = error as { data?: { skillId?: string; requiresVerification?: boolean } };
+				if (errorData.data?.requiresVerification && errorData.data?.skillId) {
+					setShowUpdateModal(false);
+					setSelectedSkill(null);
+					router.push(`/skills/${errorData.data.skillId}/verify`);
+					return;
+				}
+			}
+
+			console.error("Failed to update skill:", error);
+			const errorMessage =
+				(error && typeof error === "object" && "message" in error ? String(error.message) : null) ||
+				"Failed to update skill. Please try again.";
+			setSuccessMessage(errorMessage);
+			setShowSuccess(true);
+		}
+	};
+
+	// remove skill from user profile
+	const handleRemoveSkill = async (skillId: string) => {
+		if (!user?.id) return;
+
+		try {
+			const { http } = await import("@/lib/http");
+			await http.delete(`/users/${user.id}/skills/${skillId}`);
+
+			// refresh skills list
+			await loadUserSkills();
+			setShowUpdateModal(false);
+			setSelectedSkill(null);
+			setSuccessMessage("Skill removed from your profile");
+			setShowSuccess(true);
+		} catch (error) {
+			console.error("Failed to remove skill:", error);
+			setSuccessMessage("Failed to remove skill. Please try again.");
+			setShowSuccess(true);
+		}
 	};
 
 	const handleLearnMore = (skillId: string) => {
@@ -207,6 +251,7 @@ export function SkillsContent() {
 				}}
 				skill={selectedSkill}
 				onUpdateSkill={handleUpdateSkillLevel}
+				onRemoveSkill={handleRemoveSkill}
 			/>
 
 			{/* AI Skills Modal */}

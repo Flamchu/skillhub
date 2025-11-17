@@ -66,7 +66,7 @@ function LessonItem({
 			}`}
 		>
 			<div className="flex items-start gap-3">
-				<div className="flex-shrink-0 mt-1">
+				<div className="shrink-0 mt-1">
 					{isCompleted ? (
 						<CheckCircle className="h-5 w-5 text-success" />
 					) : isActive ? (
@@ -111,7 +111,7 @@ function TimestampItem({
 			}`}
 		>
 			<div className="flex items-center gap-3">
-				<div className="flex-shrink-0">
+				<div className="shrink-0">
 					<Clock className="h-4 w-4 text-foreground-muted" />
 				</div>
 

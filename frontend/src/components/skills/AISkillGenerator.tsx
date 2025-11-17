@@ -88,7 +88,7 @@ export function AISkillGenerator({ onSkillsGenerated, className = "" }: AISkillG
 		>
 			{/* Header */}
 			<div className="flex items-center space-x-3 mb-6">
-				<div className="w-12 h-12 bg-gradient-to-br from-purple to-pink rounded-xl flex items-center justify-center">
+				<div className="w-12 h-12 bg-linear-to-br from-purple to-pink rounded-xl flex items-center justify-center">
 					<Sparkles className="w-6 h-6 text-white" />
 				</div>
 				<div>
@@ -139,7 +139,7 @@ export function AISkillGenerator({ onSkillsGenerated, className = "" }: AISkillG
 				<Button
 					onClick={handleGenerate}
 					disabled={isGenerating || prompt.trim().length < 10}
-					className="px-6 py-3 bg-gradient-to-r from-purple to-pink text-white rounded-lg hover:from-purple-600 hover:to-pink-600 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+					className="px-6 py-3 bg-linear-to-r from-purple to-pink text-white rounded-lg hover:from-purple-600 hover:to-pink-600 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
 				>
 					{isGenerating ? (
 						<>
@@ -211,7 +211,7 @@ export function AISkillGenerator({ onSkillsGenerated, className = "" }: AISkillG
 						<div className="flex justify-center">
 							<Button
 								onClick={handleApplySkills}
-								className="px-6 py-3 bg-gradient-to-r from-primary to-purple text-white rounded-lg hover:from-primary-600 hover:to-purple-600 shadow-lg hover:shadow-xl transition-all duration-300"
+								className="px-6 py-3 bg-linear-to-r from-primary to-purple text-white rounded-lg hover:from-primary-600 hover:to-purple-600 shadow-lg hover:shadow-xl transition-all duration-300"
 							>
 								<CheckCircle className="w-4 h-4 mr-2" />
 								Add {selectedSkills.size} Selected Skills

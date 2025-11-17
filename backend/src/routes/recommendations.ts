@@ -3,8 +3,20 @@ import { RecommendationAlgorithm, ProficiencyLevel } from "@prisma/client";
 import { AuthenticatedRequest, authenticateSupabaseToken } from "../middleware/supabaseAuth";
 import { prisma } from "../config/database";
 import { generateAICourseRecommendations } from "../services/aiCourseService";
+import { redis, isRedisAvailable, generateCacheKey, CACHE_TTL, CACHE_KEYS } from "../config/redis";
 
 const router = Router();
+
+// helper function to invalidate user recommendations cache
+async function invalidateUserRecommendationsCache(userId: string) {
+	if (isRedisAvailable && redis) {
+		const cachePattern = generateCacheKey(CACHE_KEYS.RECOMMENDATIONS, userId, "*");
+		const keys = await redis.keys(cachePattern);
+		if (keys.length > 0) {
+			await redis.del(...keys);
+		}
+	}
+}
 
 // get recommendations for a specific user
 router.get("/", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
@@ -18,6 +30,15 @@ router.get("/", authenticateSupabaseToken, async (req: AuthenticatedRequest, res
 		const limit = Math.min(parseInt(req.query.limit as string) || 10, 50);
 		const page = parseInt(req.query.page as string) || 1;
 		const offset = (page - 1) * limit;
+
+		// check cache first
+		const cacheKey = generateCacheKey(CACHE_KEYS.RECOMMENDATIONS, userId, algorithm, String(page), String(limit));
+		if (isRedisAvailable && redis) {
+			const cached = await redis.get(cacheKey);
+			if (cached) {
+				return res.json(JSON.parse(cached));
+			}
+		}
 
 		// get user with skills and bookmarks
 		const user = await prisma.user.findUnique({
@@ -105,12 +126,19 @@ router.get("/", authenticateSupabaseToken, async (req: AuthenticatedRequest, res
 				course: courses.find((c) => c.id === rec.course_id),
 			}));
 
-			return res.json({
+			const result = {
 				recommendations,
 				totalCount: aiRecommendations.courses.length,
 				page,
 				limit,
-			});
+			};
+
+			// cache the result
+			if (isRedisAvailable && redis) {
+				await redis.setex(cacheKey, CACHE_TTL.MEDIUM, JSON.stringify(result));
+			}
+
+			return res.json(result);
 		}
 
 		// skill-based recommendations (fallback)
@@ -184,12 +212,19 @@ router.get("/", authenticateSupabaseToken, async (req: AuthenticatedRequest, res
 			},
 		});
 
-		res.json({
+		const result = {
 			recommendations,
 			totalCount,
 			page,
 			limit,
-		});
+		};
+
+		// cache the result
+		if (isRedisAvailable && redis) {
+			await redis.setex(cacheKey, CACHE_TTL.MEDIUM, JSON.stringify(result));
+		}
+
+		res.json(result);
 	} catch (error) {
 		console.error("Get recommendations error:", error);
 		res.status(500).json({ error: "Internal server error" });
@@ -445,4 +480,5 @@ router.post("/ai-skills", authenticateSupabaseToken, async (req: AuthenticatedRe
 	}
 });
 
+export { invalidateUserRecommendationsCache };
 export default router;

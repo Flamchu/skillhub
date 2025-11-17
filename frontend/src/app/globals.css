@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 /* Tailwind v4 Dark Mode Configuration */
+/* stylelint-disable-next-line at-rule-no-unknown */
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* SkillHub Design System - Professional Color Schema using Tailwind v4 @theme */
@@ -56,6 +57,7 @@
 }
 
 /* Tailwind v4 @theme for custom colors */
+/* stylelint-disable-next-line at-rule-no-unknown */
 @theme {
 	/* Background colors */
 	--color-background: var(--bg-default);
@@ -274,6 +276,7 @@ html {
 	display: -webkit-box;
 	-webkit-box-orient: vertical;
 	-webkit-line-clamp: 1;
+	line-clamp: 1;
 }
 
 .line-clamp-2 {
@@ -281,6 +284,7 @@ html {
 	display: -webkit-box;
 	-webkit-box-orient: vertical;
 	-webkit-line-clamp: 2;
+	line-clamp: 2;
 }
 
 .line-clamp-3 {
@@ -288,4 +292,47 @@ html {
 	display: -webkit-box;
 	-webkit-box-orient: vertical;
 	-webkit-line-clamp: 3;
+	line-clamp: 3;
+}
+
+/* Custom animations for AI skills features */
+@keyframes fade-in {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes scale-in {
+	from {
+		opacity: 0;
+		transform: scale(0.95);
+	}
+	to {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+@keyframes progress-bar {
+	0% {
+		width: 0%;
+	}
+	100% {
+		width: 100%;
+	}
+}
+
+.animate-fade-in {
+	animation: fade-in 0.3s ease-out;
+}
+
+.animate-scale-in {
+	animation: scale-in 0.3s ease-out;
+}
+
+.animate-progress-bar {
+	animation: progress-bar 2s ease-in-out infinite;
 }

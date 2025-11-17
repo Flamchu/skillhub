@@ -19,13 +19,16 @@ interface UpdateSkillModalProps {
 		};
 	} | null;
 	onUpdateSkill: (skillId: string, proficiency: "BASIC" | "INTERMEDIATE" | "ADVANCED" | "EXPERT") => Promise<void>;
+	onRemoveSkill?: (skillId: string) => Promise<void>;
 }
 
 type ProficiencyLevel = "BASIC" | "INTERMEDIATE" | "ADVANCED" | "EXPERT";
 
-export function UpdateSkillModal({ isOpen, onClose, skill, onUpdateSkill }: UpdateSkillModalProps) {
+export function UpdateSkillModal({ isOpen, onClose, skill, onUpdateSkill, onRemoveSkill }: UpdateSkillModalProps) {
 	const [selectedProficiency, setSelectedProficiency] = useState<ProficiencyLevel>("BASIC");
 	const [updating, setUpdating] = useState(false);
+	const [removing, setRemoving] = useState(false);
+	const [showRemoveConfirm, setShowRemoveConfirm] = useState(false);
 
 	// initialize selected proficiency when skill changes
 	useEffect(() => {
@@ -90,6 +93,29 @@ export function UpdateSkillModal({ isOpen, onClose, skill, onUpdateSkill }: Upda
 		}
 	};
 
+	const handleRemove = async () => {
+		if (!onRemoveSkill) return;
+
+		setRemoving(true);
+		try {
+			await onRemoveSkill(skill.skillId);
+			setShowRemoveConfirm(false);
+			onClose();
+		} catch (error) {
+			console.error("Failed to remove skill:", error);
+		} finally {
+			setRemoving(false);
+		}
+	};
+
+	// check if upgrading proficiency (may require verification)
+	const isUpgrading = () => {
+		const levels = ["BASIC", "INTERMEDIATE", "ADVANCED", "EXPERT"];
+		const currentIndex = levels.indexOf(skill.proficiency);
+		const selectedIndex = levels.indexOf(selectedProficiency);
+		return selectedIndex > currentIndex;
+	};
+
 	// get current proficiency display info
 	const currentProficiency = proficiencyOptions.find(option => option.value === skill.proficiency);
 
@@ -114,9 +140,7 @@ export function UpdateSkillModal({ isOpen, onClose, skill, onUpdateSkill }: Upda
 				<div className="mb-6">
 					<h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Current Level</h3>
 					<div className="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
-						<div className={`${currentProficiency?.color || "text-gray-500"} flex-shrink-0`}>
-							{currentProficiency?.icon}
-						</div>
+						<div className={`${currentProficiency?.color || "text-gray-500"} shrink-0`}>{currentProficiency?.icon}</div>
 						<div>
 							<div className="font-medium text-gray-900 dark:text-white">
 								{currentProficiency?.label || skill.proficiency}
@@ -143,7 +167,7 @@ export function UpdateSkillModal({ isOpen, onClose, skill, onUpdateSkill }: Upda
 								}`}
 							>
 								<div className="flex items-center space-x-3">
-									<div className={`${option.color} flex-shrink-0`}>{option.icon}</div>
+									<div className={`${option.color} shrink-0`}>{option.icon}</div>
 									<div className="flex-1">
 										<div className="flex items-center justify-between">
 											<span className="font-medium text-gray-900 dark:text-white">{option.label}</span>
@@ -153,7 +177,7 @@ export function UpdateSkillModal({ isOpen, onClose, skill, onUpdateSkill }: Upda
 										{/* Progress Bar */}
 										<div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 mt-2">
 											<div
-												className="bg-gradient-to-r from-primary to-purple h-1.5 rounded-full transition-all duration-500"
+												className="bg-linear-to-r from-primary to-purple h-1.5 rounded-full transition-all duration-500"
 												style={{ width: `${option.percentage}%` }}
 											/>
 										</div>
@@ -165,17 +189,61 @@ export function UpdateSkillModal({ isOpen, onClose, skill, onUpdateSkill }: Upda
 				</div>
 
 				{/* Actions */}
-				<div className="flex items-center space-x-3">
-					<Button variant="outline" onClick={onClose} className="flex-1" disabled={updating}>
-						Cancel
-					</Button>
-					<Button
-						onClick={handleUpdate}
-						disabled={updating || selectedProficiency === skill.proficiency}
-						className="flex-1 bg-gradient-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0"
-					>
-						{updating ? "Updating..." : "Update Level"}
-					</Button>
+				<div className="space-y-3">
+					{/* Remove Skill Section */}
+					{onRemoveSkill && (
+						<div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+							{!showRemoveConfirm ? (
+								<Button
+									variant="outline"
+									onClick={() => setShowRemoveConfirm(true)}
+									className="w-full text-red-600 dark:text-red-400 border-red-300 dark:border-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
+									disabled={updating || removing}
+								>
+									Remove Skill from Profile
+								</Button>
+							) : (
+								<div className="space-y-3">
+									<p className="text-sm text-gray-600 dark:text-gray-400 text-center">
+										Are you sure you want to remove <strong>{skill.skill.name}</strong> from your profile?
+									</p>
+									<div className="flex items-center space-x-3">
+										<Button
+											variant="outline"
+											onClick={() => setShowRemoveConfirm(false)}
+											className="flex-1"
+											disabled={removing}
+										>
+											Cancel
+										</Button>
+										<Button
+											onClick={handleRemove}
+											disabled={removing}
+											className="flex-1 bg-red-600 hover:bg-red-700 text-white border-0"
+										>
+											{removing ? "Removing..." : "Yes, Remove"}
+										</Button>
+									</div>
+								</div>
+							)}
+						</div>
+					)}
+
+					{/* Update/Cancel Buttons */}
+					{!showRemoveConfirm && (
+						<div className="flex items-center space-x-3">
+							<Button variant="outline" onClick={onClose} className="flex-1" disabled={updating || removing}>
+								Cancel
+							</Button>
+							<Button
+								onClick={handleUpdate}
+								disabled={updating || removing || selectedProficiency === skill.proficiency}
+								className="flex-1 bg-linear-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0"
+							>
+								{updating ? "Updating..." : isUpgrading() ? "Update & Verify" : "Update Level"}
+							</Button>
+						</div>
+					)}
 				</div>
 			</GlassCard>
 		</div>

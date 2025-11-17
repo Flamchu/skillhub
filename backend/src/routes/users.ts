@@ -241,6 +241,43 @@ router.patch("/:id", authenticateSupabaseToken, async (req: AuthenticatedRequest
 	}
 });
 
+// toggle social environment (protected)
+router.patch("/:id/social-toggle", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
+	try {
+		const { id } = req.params;
+		const { enabled } = req.body;
+		const currentUser = req.user!;
+
+		// users can only toggle their own social environment
+		if (currentUser.id !== id && currentUser.role !== "ADMIN") {
+			return res.status(403).json({ error: "Access denied" });
+		}
+
+		if (typeof enabled !== "boolean") {
+			return res.status(400).json({ error: "Enabled must be a boolean value" });
+		}
+
+		const user = await prisma.user.update({
+			where: { id },
+			data: {
+				socialEnabled: enabled,
+			},
+			select: {
+				id: true,
+				socialEnabled: true,
+			},
+		});
+
+		res.json({
+			message: `Social environment ${enabled ? "enabled" : "disabled"} successfully`,
+			socialEnabled: user.socialEnabled,
+		});
+	} catch (error) {
+		console.error("Toggle social environment error:", error);
+		res.status(500).json({ error: "Internal server error" });
+	}
+});
+
 // delete user account (protected, only own account or admin)
 router.delete("/:id", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
 	try {
@@ -755,6 +792,113 @@ router.patch("/:id/restore", authenticateSupabaseToken, requireAdmin, async (req
 	} catch (error) {
 		console.error("Restore user error:", error);
 		res.status(500).json({ error: "Internal server error" });
+	}
+});
+
+// clear user data (protected - fresh start)
+router.post("/:id/clear-data", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
+	try {
+		const { id } = req.params;
+		const currentUser = req.user!;
+
+		// users can only clear their own data
+		if (currentUser.id !== id) {
+			return res.status(403).json({ error: "Access denied" });
+		}
+
+		// delete all user's learning data in a transaction
+		await prisma.$transaction(async (tx) => {
+			// delete user skills
+			await tx.userSkill.deleteMany({
+				where: { userId: id },
+			});
+
+			// delete enrollments
+			await tx.enrollment.deleteMany({
+				where: { userId: id },
+			});
+
+			// delete user progress
+			await tx.userProgress.deleteMany({
+				where: { userId: id },
+			});
+
+			// delete bookmarks
+			await tx.bookmark.deleteMany({
+				where: { userId: id },
+			});
+
+			// delete test attempts
+			await tx.testAttempt.deleteMany({
+				where: { userId: id },
+			});
+
+			// delete skill verification attempts
+			await tx.skillVerificationAttempt.deleteMany({
+				where: { userId: id },
+			});
+
+			// delete recommendations
+			await tx.recommendation.deleteMany({
+				where: { userId: id },
+			});
+		});
+
+		res.json({
+			message: "All learning data cleared successfully",
+			cleared: true,
+		});
+	} catch (error) {
+		console.error("Clear user data error:", error);
+		res.status(500).json({ error: "Failed to clear user data" });
+	}
+});
+
+// delete user account (protected - soft delete)
+router.delete("/:id/account", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
+	try {
+		const { id } = req.params;
+		const currentUser = req.user!;
+
+		// users can only delete their own account
+		if (currentUser.id !== id) {
+			return res.status(403).json({ error: "Access denied" });
+		}
+
+		const user = await prisma.user.findUnique({
+			where: { id },
+			select: { id: true, email: true, supabaseId: true, deletedAt: true },
+		});
+
+		if (!user) {
+			return res.status(404).json({ error: "User not found" });
+		}
+
+		if (user.deletedAt) {
+			return res.status(400).json({ error: "Account already deleted" });
+		}
+
+		// soft delete the user account
+		const deletedUser = await prisma.user.update({
+			where: { id },
+			data: {
+				deletedAt: new Date(),
+				email: user.email ? `deleted_${user.id}@deleted.local` : null,
+			},
+			select: {
+				id: true,
+				email: true,
+				deletedAt: true,
+			},
+		});
+
+		res.json({
+			message: "Account deleted successfully",
+			user: deletedUser,
+		});
+	} catch (error) {
+		console.error("Delete account error:", error);
+		res.status(500).json({ error: "Failed to delete account" });
 	}
 });
 

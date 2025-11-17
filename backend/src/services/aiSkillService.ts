@@ -17,7 +17,7 @@ interface AISkillResponse {
 }
 
 // ai service config
-const LOCAL_AI_SERVICE_URL = env.LOCAL_AI_SERVICE_URL || "http://localhost:8000";
+const LOCAL_AI_SERVICE_URL = env.LOCAL_AI_SERVICE_URL || "http://localhost:5000";
 const AI_SERVICE_ENABLED = env.AI_SERVICE_ENABLED !== "false";
 
 export async function generateAISkillSuggestions(prompt: string, availableSkills: Array<{ name: string; slug: string; description?: string }>): Promise<AISkillResponse> {

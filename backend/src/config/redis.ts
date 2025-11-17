@@ -87,6 +87,14 @@ export const CACHE_KEYS = {
 	SKILL_STATS: "skill:stats",
 	USER_SKILLS: "user:skills",
 	RECOMMENDATIONS: "recommendations",
+	USER_ENROLLMENTS: "user:enrollments",
+	USER_PROGRESS: "user:progress",
+	COURSE_PROGRESS: "course:progress",
+	SOCIAL_PROFILE: "social:profile",
+	DAILY_QUESTS: "social:quests:daily",
+	WEEKLY_LEADERBOARD: "social:leaderboard:weekly",
+	GLOBAL_LEADERBOARD: "social:leaderboard:global",
+	XP_HISTORY: "social:xp:history",
 } as const;
 
 export default redis;

@@ -1,13 +1,14 @@
 import { Router, Request, Response } from "express";
-import { CourseSource, CourseDifficulty } from "@prisma/client";
+import { CourseSource, CourseDifficulty, QuestType, XPSource } from "@prisma/client";
 import { AuthenticatedRequest, authenticateSupabaseToken } from "../middleware/supabaseAuth";
 import { cache, cacheConfigs, invalidateCacheMiddleware } from "../middleware/cache";
-import { CACHE_KEYS } from "../config/redis";
+import { redis, isRedisAvailable, generateCacheKey, CACHE_TTL, CACHE_KEYS } from "../config/redis";
 import { prisma } from "../config/database";
 import { YouTubeService } from "../services/youtubeService";
 import { validate, extractSchemas, ValidatedRequest } from "../middleware/validation";
 import { schemas } from "../schemas";
 import { aiSummaryService } from "../services/aiSummaryService";
+import { checkQuestProgress, awardXP, updateStreak } from "../services/socialService";
 import { generateMissingAiSummaries } from "../scripts/generateAiSummaries";
 
 // combined interface for authenticated and validated requests
@@ -27,6 +28,17 @@ router.get("/enrollments", authenticateSupabaseToken, validate(extractSchemas(sc
 		// use validated query data with defaults
 		const { page = 1, limit = 20 } = req.validatedQuery || {};
 		const offset = (Number(page) - 1) * Number(limit);
+
+		// generate cache key
+		const cacheKey = generateCacheKey(CACHE_KEYS.USER_ENROLLMENTS, userId, String(page), String(limit));
+
+		// try to get from cache
+		if (isRedisAvailable && redis) {
+			const cached = await redis.get(cacheKey);
+			if (cached) {
+				return res.json(JSON.parse(cached));
+			}
+		}
 
 		const enrollments = await prisma.enrollment.findMany({
 			where: {
@@ -58,7 +70,7 @@ router.get("/enrollments", authenticateSupabaseToken, validate(extractSchemas(sc
 
 		const totalPages = Math.ceil(totalCount / Number(limit));
 
-		res.json({
+		const result = {
 			enrollments,
 			pagination: {
 				page: Number(page),
@@ -68,7 +80,14 @@ router.get("/enrollments", authenticateSupabaseToken, validate(extractSchemas(sc
 				hasNext: Number(page) < totalPages,
 				hasPrev: Number(page) > 1,
 			},
-		});
+		};
+
+		// cache the result (5 minutes)
+		if (isRedisAvailable && redis) {
+			await redis.setex(cacheKey, CACHE_TTL.SHORT, JSON.stringify(result));
+		}
+
+		res.json(result);
 	} catch (error) {
 		console.error("Error fetching user enrollments:", error);
 		res.status(500).json({ error: "Failed to fetch user enrollments" });
@@ -603,6 +622,17 @@ router.get("/:courseId/progress", authenticateSupabaseToken, validate(extractSch
 		const { courseId } = req.params;
 		const userId = req.user!.id;
 
+		// generate cache key
+		const cacheKey = generateCacheKey(CACHE_KEYS.COURSE_PROGRESS, userId, courseId);
+
+		// try to get from cache
+		if (isRedisAvailable && redis) {
+			const cached = await redis.get(cacheKey);
+			if (cached) {
+				return res.json(JSON.parse(cached));
+			}
+		}
+
 		// check if course exists
 		const course = await prisma.course.findUnique({
 			where: { id: courseId },
@@ -615,13 +645,20 @@ router.get("/:courseId/progress", authenticateSupabaseToken, validate(extractSch
 
 		const progress = await YouTubeService.getCourseProgress(userId, courseId);
 
-		res.json({
+		const result = {
 			course: {
 				id: course.id,
 				title: course.title,
 			},
 			progress,
-		});
+		};
+
+		// cache the result (5 minutes)
+		if (isRedisAvailable && redis) {
+			await redis.setex(cacheKey, CACHE_TTL.SHORT, JSON.stringify(result));
+		}
+
+		res.json(result);
 	} catch (error) {
 		console.error("Error fetching course progress:", error);
 		res.status(500).json({ error: "Failed to fetch course progress" });
@@ -660,6 +697,31 @@ router.patch("/lessons/:lessonId/progress", authenticateSupabaseToken, validate(
 			progressPercent,
 			watchTimeSeconds,
 		});
+
+		// gamification: award xp and check quests when lesson is completed
+		if (completed) {
+			// award xp for lesson completion (base 20 xp)
+			await awardXP(userId, 20, XPSource.LESSON_COMPLETION, `Completed lesson: ${lesson.title}`);
+
+			// update streak
+			await updateStreak(userId);
+
+			// check quest progress
+			await checkQuestProgress(userId, QuestType.COMPLETE_LESSON);
+			await checkQuestProgress(userId, QuestType.COMPLETE_MULTIPLE_LESSONS);
+		}
+
+		// invalidate course progress cache
+		if (isRedisAvailable && redis) {
+			const progressCacheKey = generateCacheKey(CACHE_KEYS.COURSE_PROGRESS, userId, lesson.courseId);
+			const enrollmentsCacheKey = generateCacheKey(CACHE_KEYS.USER_ENROLLMENTS, userId, "*");
+			await redis.del(progressCacheKey);
+			// delete all enrollment cache pages for this user
+			const enrollmentKeys = await redis.keys(enrollmentsCacheKey);
+			if (enrollmentKeys.length > 0) {
+				await redis.del(...enrollmentKeys);
+			}
+		}
 
 		res.json({
 			message: "Progress updated successfully",
@@ -729,6 +791,15 @@ router.post("/:courseId/enroll", authenticateSupabaseToken, validate(extractSche
 				},
 			},
 		});
+
+		// invalidate enrollments cache
+		if (isRedisAvailable && redis) {
+			const enrollmentsCacheKey = generateCacheKey(CACHE_KEYS.USER_ENROLLMENTS, userId, "*");
+			const enrollmentKeys = await redis.keys(enrollmentsCacheKey);
+			if (enrollmentKeys.length > 0) {
+				await redis.del(...enrollmentKeys);
+			}
+		}
 
 		res.status(201).json({
 			message: "Successfully enrolled in course",

@@ -37,7 +37,9 @@ WORKDIR /app/frontend
 
 # set build-time environment variables
 ARG NEXT_PUBLIC_BACKEND_URL
+ARG NEXT_PUBLIC_SITE_URL
 ENV NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL
+ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
 
 # build next.js app
 RUN pnpm build
