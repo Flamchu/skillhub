@@ -170,9 +170,23 @@ export default function AuthPage() {
 										value={password}
 										onChange={e => setPassword(e.target.value)}
 										required
+										minLength={!isLogin ? 8 : undefined}
+										pattern={!isLogin ? "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$" : undefined}
+										title={
+											!isLogin
+												? "Password must be at least 8 characters and contain at least one uppercase letter, one lowercase letter, and one number"
+												: undefined
+										}
 										className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary dark:focus:border-primary bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 transition-all"
-										placeholder="Enter your password"
+										placeholder={
+											!isLogin ? "At least 8 characters, 1 uppercase, 1 lowercase, 1 number" : "Enter your password"
+										}
 									/>
+									{!isLogin && (
+										<p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+											Password must be at least 8 characters and include uppercase, lowercase, and a number
+										</p>
+									)}
 								</div>
 
 								{error && (
@@ -184,7 +198,7 @@ export default function AuthPage() {
 								<button
 									type="submit"
 									disabled={loading}
-									className="w-full px-8 py-4 bg-linear-to-r from-primary to-purple text-white rounded-lg hover:from-primary-600 hover:to-purple-600 dark:hover:from-primary-500 dark:hover:to-purple-500 font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:transform-none disabled:hover:shadow-lg"
+									className="w-full px-8 py-4 bg-linear-to-r from-primary to-purple text-white rounded-lg hover:from-primary-600 hover:to-purple-600 dark:hover:from-primary-500 dark:hover:to-purple-500 font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:transform-none disabled:hover:shadow-lg"
 								>
 									{loading ? (
 										<div className="flex items-center justify-center">
@@ -244,7 +258,7 @@ export default function AuthPage() {
 								</p>
 								<button
 									onClick={toggleMode}
-									className="px-6 py-2 text-primary hover:text-purple font-semibold bg-linear-to-r from-primary/5 to-purple/5 hover:from-primary/10 hover:to-purple/10 rounded-lg border border-primary/20 hover:border-primary/30 transition-all duration-200 transform hover:scale-105"
+									className="px-6 py-2 text-primary hover:text-purple font-semibold bg-linear-to-r from-primary/5 to-purple/5 hover:from-primary/10 hover:to-purple/10 rounded-lg border border-primary/20 hover:border-primary/30 transition-all duration-200 hover:scale-105"
 								>
 									{isLogin ? tRegister("title") : tLogin("title")}
 								</button>

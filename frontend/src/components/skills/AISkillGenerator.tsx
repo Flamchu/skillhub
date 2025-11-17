@@ -139,7 +139,7 @@ export function AISkillGenerator({ onSkillsGenerated, className = "" }: AISkillG
 				<Button
 					onClick={handleGenerate}
 					disabled={isGenerating || prompt.trim().length < 10}
-					className="px-6 py-3 bg-linear-to-r from-purple to-pink text-white rounded-lg hover:from-purple-600 hover:to-pink-600 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+					className="px-6 py-3 bg-linear-to-r from-purple to-pink text-white rounded-lg hover:from-purple-600 hover:to-pink-600 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
 				>
 					{isGenerating ? (
 						<>

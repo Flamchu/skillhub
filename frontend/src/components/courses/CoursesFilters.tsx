@@ -57,7 +57,7 @@ export function CoursesFilters({
 									setSelectedDifficulty(difficulty);
 									setCurrentPage(1);
 								}}
-								className="transition-all duration-200 transform hover:scale-105"
+								className="transition-all duration-200 hover:scale-105"
 							>
 								{difficulty === "all" ? "All Levels" : difficulty.toLowerCase()}
 							</Button>
@@ -76,7 +76,7 @@ export function CoursesFilters({
 									setSelectedSource(source);
 									setCurrentPage(1);
 								}}
-								className="transition-all duration-200 transform hover:scale-105"
+								className="transition-all duration-200 hover:scale-105"
 							>
 								{source === "all" ? "All Sources" : source === "INTERNAL" ? "SkillHub" : source.toLowerCase()}
 							</Button>
@@ -93,7 +93,7 @@ export function CoursesFilters({
 								setFreeOnly(!freeOnly);
 								setCurrentPage(1);
 							}}
-							className="transition-all duration-200 transform hover:scale-105"
+							className="transition-all duration-200 hover:scale-105"
 						>
 							{freeOnly ? "Free Only" : "All Courses"}
 						</Button>

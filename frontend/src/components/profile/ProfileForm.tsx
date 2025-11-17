@@ -221,7 +221,7 @@ export function ProfileForm({ user, className = "" }: ProfileFormProps) {
 							loading={saving}
 							disabled={saving}
 							size="lg"
-							className="group flex-1 sm:flex-none sm:px-12 py-4 bg-linear-to-r from-primary to-purple text-white rounded-xl hover:from-primary-600 hover:to-purple-600 dark:hover:from-primary-500 dark:hover:to-purple-500 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 text-lg font-bold"
+							className="group flex-1 sm:flex-none sm:px-12 py-4 bg-linear-to-r from-primary to-purple text-white rounded-xl hover:from-primary-600 hover:to-purple-600 dark:hover:from-primary-500 dark:hover:to-purple-500 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 hover:-translate-y-1 text-lg font-bold"
 						>
 							<span className="flex items-center justify-center gap-2">
 								{saving ? t("form.saving") : t("form.save")}
@@ -235,7 +235,7 @@ export function ProfileForm({ user, className = "" }: ProfileFormProps) {
 							onClick={() => router.back()}
 							disabled={saving}
 							size="lg"
-							className="flex-1 sm:flex-none sm:px-12 py-4 bg-white dark:bg-gray-700 border-2 border-primary/30 dark:border-primary/50 text-gray-900 dark:text-gray-100 rounded-xl hover:bg-primary/10 dark:hover:bg-primary/20 hover:border-primary dark:hover:border-primary shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 text-lg font-bold"
+							className="flex-1 sm:flex-none sm:px-12 py-4 bg-white dark:bg-gray-700 border-2 border-primary/30 dark:border-primary/50 text-gray-900 dark:text-gray-100 rounded-xl hover:bg-primary/10 dark:hover:bg-primary/20 hover:border-primary dark:hover:border-primary shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 text-lg font-bold"
 						>
 							{t("form.cancel")}
 						</Button>

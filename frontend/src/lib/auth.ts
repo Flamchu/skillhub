@@ -2,6 +2,7 @@
 // note: if you need supabase client in the future, create it separately
 
 import type { UserProfile } from "@/types";
+import { http } from "./http";
 
 // set cookies with proper security settings
 function setCookie(name: string, value: string, days = 7) {
@@ -131,23 +132,9 @@ export async function handleOAuthCallback(code: string, state: string) {
 
 // fetch user activity
 export async function fetchUserActivity(userId: string, limit = 10) {
-	const token = localStorage.getItem("auth_token");
-
-	if (!token) {
-		throw new Error("No authentication token found");
-	}
-
-	const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/${userId}/activity?limit=${limit}`, {
-		method: "GET",
-		headers: {
-			Authorization: `Bearer ${token}`,
-			"Content-Type": "application/json",
-		},
+	const response = await http.get(`/users/${userId}/activity`, {
+		params: { limit },
 	});
 
-	if (!response.ok) {
-		throw new Error("Failed to fetch user activity");
-	}
-
-	return response.json();
+	return response.data;
 }

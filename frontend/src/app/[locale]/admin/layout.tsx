@@ -118,7 +118,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 											href={item.href}
 											className={`group flex items-center px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 ${
 												isActive
-													? "bg-linear-to-r from-primary to-purple text-white shadow-lg transform scale-105"
+													? "bg-linear-to-r from-primary to-purple text-white shadow-lg scale-105"
 													: "text-gray-600 dark:text-gray-300 hover:text-primary hover:bg-primary/10 dark:hover:bg-primary/20 hover:scale-105"
 											}`}
 										>

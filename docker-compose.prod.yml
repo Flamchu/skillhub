@@ -11,11 +11,6 @@ services:
       - redis_data:/data
     networks:
       - skillhub-network
-    healthcheck:
-      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
-      interval: 10s
-      timeout: 3s
-      retries: 5
     deploy:
       resources:
         limits:
@@ -31,12 +26,6 @@ services:
     restart: unless-stopped
     networks:
       - skillhub-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://ai-service:5000/health"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-      start_period: 60s
     deploy:
       resources:
         limits:
@@ -70,6 +59,9 @@ services:
       SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
       LOCAL_AI_SERVICE_URL: ${LOCAL_AI_SERVICE_URL:-http://ai-service:5000}
       AI_SERVICE_ENABLED: ${AI_SERVICE_ENABLED:-true}
+      UDEMY_CLIENT_ID: ${UDEMY_CLIENT_ID:-}
+      UDEMY_CLIENT_SECRET: ${UDEMY_CLIENT_SECRET:-}
+      UDEMY_AFFILIATE_ID: ${UDEMY_AFFILIATE_ID:-}
       FRONTEND_URL: ${FRONTEND_URL}
     networks:
       - skillhub-network

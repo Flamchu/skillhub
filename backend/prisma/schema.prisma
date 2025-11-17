@@ -20,6 +20,7 @@ model User {
   updatedAt                DateTime                   @updatedAt
   supabaseId               String                     @unique
   deletedAt                DateTime?
+  profilePicture           String?
   xp                       Int                        @default(0)
   level                    Int                        @default(1)
   currentStreak            Int                        @default(0)

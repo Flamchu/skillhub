@@ -8,23 +8,25 @@
 		"seed": "ts-node ./src/seed.ts",
 		"generate-ai-summaries": "ts-node ./src/scripts/generateAiSummaries.ts",
 		"prisma:migrate:deploy": "prisma migrate deploy",
-		"prisma:generate": "prisma generate"
-	},
-	"prisma": {
-		"seed": "ts-node src/seed.ts"
+		"prisma:generate": "prisma generate",
+		"prisma:seed": "prisma db seed"
 	},
 	"postinstall": "prisma generate",
 	"dependencies": {
 		"@prisma/client": "6.19.0",
 		"@supabase/supabase-js": "^2.81.1",
+		"@types/multer": "^2.0.0",
+		"axios": "^1.13.2",
 		"cors": "^2.8.5",
 		"dotenv": "^17.2.3",
 		"express": "^5.1.0",
 		"express-rate-limit": "^8.2.1",
 		"ioredis": "^5.8.2",
+		"multer": "^2.0.2",
 		"openai": "^6.9.0",
 		"prisma": "6.19.0",
 		"response-time": "^2.3.4",
+		"sharp": "^0.34.5",
 		"zod": "^4.1.12"
 	},
 	"devDependencies": {

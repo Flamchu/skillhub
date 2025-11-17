@@ -15,6 +15,8 @@ import statsRoutes from "./routes/stats";
 import skillVerificationRoutes from "./routes/skillVerification";
 import skillVerificationAdminRoutes from "./routes/skillVerificationAdmin";
 import socialRoutes from "./routes/social";
+import chaptersRoutes from "./routes/chapters";
+import udemyRoutes from "./routes/udemy";
 import { performanceMonitoring, performanceEndpoint, healthCheck } from "./middleware/performance";
 import { connectDatabase } from "./config/database";
 import "./config/redis"; // initialize redis connection
@@ -73,6 +75,12 @@ app.use("/api", skillVerificationAdminRoutes);
 
 // social/gamification routes (mixed public/protected)
 app.use("/api/social", socialRoutes);
+
+// youtube chapters routes (public read, protected write)
+app.use("/api/chapters", chaptersRoutes);
+
+// udemy integration routes (public search, admin import)
+app.use("/api/udemy", udemyRoutes);
 
 // error handling middleware (must be last)
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler";

@@ -165,7 +165,7 @@ export default function RecommendedCoursesPage() {
 							<Button
 								onClick={handleGenerateClick("SEMANTIC")}
 								disabled={isGenerating}
-								className="px-8 py-3 bg-linear-to-r from-primary to-purple text-white rounded-lg hover:from-primary-600 hover:to-purple-600 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+								className="px-8 py-3 bg-linear-to-r from-primary to-purple text-white rounded-lg hover:from-primary-600 hover:to-purple-600 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
 							>
 								{isGenerating ? (
 									<>
@@ -243,7 +243,7 @@ export default function RecommendedCoursesPage() {
 									return (
 										<div
 											key={recommendation.id}
-											className="group bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 overflow-hidden border border-gray-100 dark:border-gray-700"
+											className="group bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 overflow-hidden border border-gray-100 dark:border-gray-700"
 										>
 											{/* Course Image */}
 											<div className="relative h-48 bg-linear-to-br from-primary/10 to-purple/10 overflow-hidden">

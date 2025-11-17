@@ -17,3 +17,16 @@ export { GlassCard } from "./GlassCard";
 export { LoadingState } from "./LoadingState";
 export { ErrorState } from "./ErrorState";
 export { EmptyState } from "./EmptyState";
+
+// skeleton components
+export {
+	Skeleton,
+	SkeletonShimmer,
+	CardSkeleton,
+	ListItemSkeleton,
+	CourseCardSkeleton,
+	StatsCardSkeleton,
+	TableRowSkeleton,
+	AvatarSkeleton,
+	TextSkeleton,
+} from "./Skeleton";

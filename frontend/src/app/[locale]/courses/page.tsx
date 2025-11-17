@@ -4,14 +4,8 @@ import React, { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthProvider";
 import { useCourses, enrollInCourse } from "@/lib/courses";
-import { Footer } from "@/components/landing";
-import {
-	CoursesNavigation,
-	CoursesHero,
-	CoursesFilters,
-	CoursesGrid,
-	RecommendationsStrip,
-} from "@/components/courses";
+import { AuthenticatedLayout } from "@/components/layout";
+import { CoursesHero, CoursesFilters, CoursesGrid, RecommendationsStrip } from "@/components/courses";
 import type { CourseFilters } from "@/types";
 
 export default function CoursesPage() {
@@ -96,43 +90,43 @@ export default function CoursesPage() {
 	};
 
 	return (
-		<div className="min-h-screen bg-linear-to-br from-primary-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 text-gray-900 dark:text-gray-100">
-			<CoursesNavigation />
-			<main className="px-6 py-20">
-				<div className="max-w-7xl mx-auto">
-					<CoursesHero />
-					<RecommendationsStrip />
-					<CoursesFilters
-						searchQuery={searchQuery}
-						setSearchQuery={setSearchQuery}
-						selectedDifficulty={selectedDifficulty}
-						setSelectedDifficulty={setSelectedDifficulty}
-						selectedSource={selectedSource}
-						setSelectedSource={setSelectedSource}
-						freeOnly={freeOnly}
-						setFreeOnly={setFreeOnly}
-						setCurrentPage={setCurrentPage}
-					/>
-					<CoursesGrid
-						courses={courses}
-						isLoading={isLoading}
-						error={error}
-						refetch={refetch}
-						pagination={pagination}
-						currentPage={currentPage}
-						setCurrentPage={setCurrentPage}
-						enrollingCourses={enrollingCourses}
-						handleEnrollClick={handleEnrollClick}
-						toggleBookmark={toggleBookmark}
-						resetFilters={resetFilters}
-						searchQuery={searchQuery}
-						selectedDifficulty={selectedDifficulty}
-						selectedSource={selectedSource}
-						freeOnly={freeOnly}
-					/>
-				</div>
-			</main>
-			<Footer />
-		</div>
+		<AuthenticatedLayout>
+			<div className="min-h-screen bg-linear-to-br from-primary-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 text-gray-900 dark:text-gray-100">
+				<main className="px-6 py-12">
+					<div className="max-w-7xl mx-auto">
+						<CoursesHero />
+						<RecommendationsStrip />
+						<CoursesFilters
+							searchQuery={searchQuery}
+							setSearchQuery={setSearchQuery}
+							selectedDifficulty={selectedDifficulty}
+							setSelectedDifficulty={setSelectedDifficulty}
+							selectedSource={selectedSource}
+							setSelectedSource={setSelectedSource}
+							freeOnly={freeOnly}
+							setFreeOnly={setFreeOnly}
+							setCurrentPage={setCurrentPage}
+						/>
+						<CoursesGrid
+							courses={courses}
+							isLoading={isLoading}
+							error={error}
+							refetch={refetch}
+							pagination={pagination}
+							currentPage={currentPage}
+							setCurrentPage={setCurrentPage}
+							enrollingCourses={enrollingCourses}
+							handleEnrollClick={handleEnrollClick}
+							toggleBookmark={toggleBookmark}
+							resetFilters={resetFilters}
+							searchQuery={searchQuery}
+							selectedDifficulty={selectedDifficulty}
+							selectedSource={selectedSource}
+							freeOnly={freeOnly}
+						/>
+					</div>
+				</main>
+			</div>
+		</AuthenticatedLayout>
 	);
 }

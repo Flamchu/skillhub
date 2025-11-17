@@ -83,7 +83,7 @@ export default function Home() {
 						<div className="text-center">
 							<Link
 								href="/courses/recommended"
-								className="inline-flex items-center px-8 py-4 bg-linear-to-r from-primary to-purple text-white font-semibold rounded-lg hover:from-primary-600 hover:to-purple-600 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+								className="inline-flex items-center px-8 py-4 bg-linear-to-r from-primary to-purple text-white font-semibold rounded-lg hover:from-primary-600 hover:to-purple-600 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
 							>
 								<span className="mr-2">🎯</span>
 								Try AI Recommendations

@@ -28,6 +28,7 @@ RUN corepack enable && corepack prepare pnpm@10.22.0 --activate
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 COPY frontend/package.json frontend/next.config.ts frontend/tailwind.config.js frontend/postcss.config.mjs frontend/eslint.config.mjs frontend/tsconfig.json ./frontend/
 COPY frontend/src ./frontend/src
+COPY frontend/public ./frontend/public
 
 # copy dependencies from deps stage (after source code)
 COPY --from=deps /app/node_modules ./node_modules
@@ -68,6 +69,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/frontend/.next/standalone ./
 
 # copy static assets to the correct location within standalone structure
 COPY --from=builder --chown=nextjs:nodejs /app/frontend/.next/static ./frontend/.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/frontend/public ./frontend/public
 
 # copy messages directory for next-intl runtime  
 COPY --from=builder --chown=nextjs:nodejs /app/frontend/src/messages ./frontend/src/messages

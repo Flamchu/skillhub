@@ -112,7 +112,7 @@ export function SkillCard({ skill, onUpdate, onLearnMore }: SkillCardProps) {
 					<Button
 						size="sm"
 						onClick={() => onLearnMore?.(skill.id)}
-						className="flex-1 bg-linear-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+						className="flex-1 bg-linear-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200"
 					>
 						Learn More
 					</Button>

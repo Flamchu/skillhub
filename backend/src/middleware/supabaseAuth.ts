@@ -114,6 +114,7 @@ export const createUserProfile = async (supabaseId: string, email: string, name?
 				id: true,
 				email: true,
 				name: true,
+				profilePicture: true,
 				role: true,
 				headline: true,
 				bio: true,

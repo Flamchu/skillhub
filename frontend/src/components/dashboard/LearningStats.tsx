@@ -48,15 +48,19 @@ export function LearningStats({ enrolledCount = 0, skillsCount = 0, completedCou
 			{stats.map(stat => (
 				<div
 					key={stat.label}
-					className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-xl p-5 border border-gray-200/50 dark:border-gray-700/50"
+					className="group bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border-2 border-gray-200/50 dark:border-gray-700/50 hover:border-primary/30 dark:hover:border-primary/40 hover:shadow-xl hover:scale-[1.02] transition-all duration-300"
 				>
-					<div className="flex items-center space-x-3 mb-2">
-						<div className={`w-10 h-10 rounded-lg flex items-center justify-center ${colorClasses[stat.color]}`}>
+					<div className="flex items-center space-x-4 mb-3">
+						<div
+							className={`w-12 h-12 rounded-xl flex items-center justify-center ${colorClasses[stat.color]} group-hover:scale-110 transition-transform duration-300 shadow-lg`}
+						>
 							{stat.icon}
 						</div>
-						<div className="text-3xl font-bold text-gray-900 dark:text-gray-100">{stat.value}</div>
+						<div className="text-4xl font-bold bg-linear-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
+							{stat.value}
+						</div>
 					</div>
-					<p className="text-sm text-gray-600 dark:text-gray-300 font-medium">{stat.label}</p>
+					<p className="text-sm text-gray-600 dark:text-gray-300 font-bold">{stat.label}</p>
 				</div>
 			))}
 		</div>

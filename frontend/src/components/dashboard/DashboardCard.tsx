@@ -73,20 +73,24 @@ export function DashboardCard({
 
 	const content = (
 		<div
-			className={`group ${colors.bg} ${colors.border} ${colors.hover} backdrop-blur-sm border ${sizing.container} hover:scale-105 transition-all duration-300 cursor-pointer h-full flex flex-col`}
+			className={`group ${colors.bg} ${colors.border} ${colors.hover} backdrop-blur-sm border-2 ${sizing.container} hover:scale-[1.02] hover:shadow-xl active:scale-[0.98] transition-all duration-300 cursor-pointer h-full flex flex-col`}
 		>
 			<div className="flex items-start space-x-4 flex-1">
-				<div className={`${colors.iconBg} ${sizing.iconSize} rounded-xl text-white shadow-lg shrink-0`}>
+				<div
+					className={`${colors.iconBg} ${sizing.iconSize} rounded-xl text-white shadow-lg shrink-0 group-hover:scale-110 transition-transform duration-300`}
+				>
 					<span>{icon}</span>
 				</div>
 				<div className="flex-1 min-w-0 flex flex-col h-full">
 					<h3
-						className={`${sizing.titleSize} font-semibold text-gray-900 dark:text-gray-100 mb-2 ${colors.titleHover} transition-colors`}
+						className={`${sizing.titleSize} font-bold text-gray-900 dark:text-gray-100 mb-2 ${colors.titleHover} transition-colors`}
 					>
 						{title}
 					</h3>
 					<p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed flex-1">{description}</p>
-					<span className={`${colors.linkColor} text-sm font-medium group-hover:underline mt-4`}>{linkText} →</span>
+					<span className={`${colors.linkColor} text-sm font-bold group-hover:underline mt-4 flex items-center gap-1`}>
+						{linkText} <span className="group-hover:translate-x-1 transition-transform">→</span>
+					</span>
 				</div>
 			</div>
 		</div>

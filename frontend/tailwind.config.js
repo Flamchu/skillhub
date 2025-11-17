@@ -1,6 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-	content: ["./src/pages/**/*.{js,ts,jsx,tsx,mdx}", "./src/components/**/*.{js,ts,jsx,tsx,mdx}", "./src/app/**/*.{js,ts,jsx,tsx,mdx}"],
+	content: [
+		"./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+		"./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+		"./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+	],
 	// Note: darkMode is handled by @custom-variant in globals.css for Tailwind v4
 	theme: {
 		extend: {
@@ -40,18 +44,18 @@ module.exports = {
 			},
 			// Custom border radius using CSS variables
 			borderRadius: {
-				"xs": "var(--radius-xs)",
-				"sm": "var(--radius-sm)",
-				"md": "var(--radius-md)",
-				"lg": "var(--radius-lg)",
-				"xl": "var(--radius-xl)",
+				xs: "var(--radius-xs)",
+				sm: "var(--radius-sm)",
+				md: "var(--radius-md)",
+				lg: "var(--radius-lg)",
+				xl: "var(--radius-xl)",
 				"2xl": "var(--radius-2xl)",
-				"full": "var(--radius-full)",
+				full: "var(--radius-full)",
 				// aliases for common use cases
-				"button": "var(--radius-md)",
-				"card": "var(--radius-lg)",
-				"input": "var(--radius-md)",
-				"badge": "var(--radius-full)",
+				button: "var(--radius-md)",
+				card: "var(--radius-lg)",
+				input: "var(--radius-md)",
+				badge: "var(--radius-full)",
 			},
 			// Custom box shadows using CSS variables
 			boxShadow: {
@@ -60,6 +64,21 @@ module.exports = {
 				md: "var(--shadow-md)",
 				lg: "var(--shadow-lg)",
 				xl: "var(--shadow-xl)",
+			},
+			// Custom animations for skeletons
+			keyframes: {
+				shimmer: {
+					"0%": { backgroundPosition: "-200% 0" },
+					"100%": { backgroundPosition: "200% 0" },
+				},
+				"shimmer-slide": {
+					"0%": { transform: "translateX(-100%)" },
+					"100%": { transform: "translateX(100%)" },
+				},
+			},
+			animation: {
+				shimmer: "shimmer 2s infinite linear",
+				"shimmer-slide": "shimmer-slide 2s infinite linear",
 			},
 		},
 	},

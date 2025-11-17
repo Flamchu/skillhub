@@ -41,7 +41,7 @@ export function SkillsGrid({ skills, searchQuery, onAddSkill, onUpdateSkill, onL
 				</p>
 				<Button
 					onClick={onAddSkill}
-					className="bg-linear-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+					className="bg-linear-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200"
 				>
 					<Plus className="w-4 h-4 mr-2" />
 					{searchQuery ? "Add This Skill" : "Add Your First Skill"}

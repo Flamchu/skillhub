@@ -122,6 +122,19 @@ export const api = {
 		});
 	},
 
+	// profile picture upload api (protected)
+	uploadProfilePicture: async (file: File): Promise<{ profilePicture: string }> => {
+		const formData = new FormData();
+		formData.append("profilePicture", file);
+		return http
+			.post("/users/profile-picture", formData, {
+				headers: {
+					"Content-Type": "multipart/form-data",
+				},
+			})
+			.then(r => r.data);
+	},
+
 	// enrollment api (protected)
 	enrollInCourse: (courseId: string) => http.post(`/courses/${courseId}/enroll`).then(r => r.data),
 	getUserEnrollments: (params?: QueryParams) => http.get("/courses/enrollments", { params }).then(r => r.data),

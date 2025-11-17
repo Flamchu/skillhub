@@ -80,6 +80,11 @@
 			"cancel": "Cancel",
 			"saving": "Saving..."
 		},
+		"messages": {
+			"noChanges": "No changes to save",
+			"saveSuccess": "Profile updated successfully!",
+			"saveError": "Failed to update profile. Please try again."
+		},
 		"success": "Profile updated successfully!",
 		"error": "Failed to update profile. Please try again.",
 		"validation": {

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthProvider";
 import { Button } from "@/components/ui/Button";
+import { SkeletonShimmer } from "@/components/ui";
 import { getTopRecommendedCourses } from "@/lib/recommendations";
 import { enrollInCourse } from "@/lib/courses";
 import { Star, Clock, BookOpen, ChevronRight, Sparkles, ArrowRight } from "lucide-react";
@@ -58,8 +59,72 @@ export function RecommendationsStrip() {
 		}
 	};
 
-	// don't render if user not logged in or no recommendations
-	if (!user || isLoading || recommendations.length === 0) {
+	// don't render if user not logged in
+	if (!user) {
+		return null;
+	}
+
+	// show skeleton while loading
+	if (isLoading) {
+		return (
+			<div className="mb-12">
+				{/* Header */}
+				<div className="flex items-center justify-between mb-6">
+					<div className="flex items-center space-x-3">
+						<div className="w-10 h-10 bg-linear-to-br from-primary to-purple rounded-lg flex items-center justify-center">
+							<Sparkles className="w-5 h-5 text-white" />
+						</div>
+						<div>
+							<h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Recommended for You</h2>
+							<p className="text-gray-600 dark:text-gray-300">Loading personalized recommendations...</p>
+						</div>
+					</div>
+				</div>
+
+				{/* Skeleton Cards */}
+				<div className="relative">
+					<div className="flex space-x-6 overflow-x-auto pb-4 scrollbar-hide">
+						{Array.from({ length: 5 }).map((_, i) => (
+							<div
+								key={i}
+								className="flex-none w-80 bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden border-2 border-gray-100 dark:border-gray-700"
+							>
+								{/* Image Skeleton */}
+								<SkeletonShimmer className="w-full h-40" variant="default" />
+
+								{/* Content Skeleton */}
+								<div className="p-5 space-y-3">
+									<SkeletonShimmer className="h-6 w-full" />
+									<SkeletonShimmer className="h-6 w-3/4" />
+
+									<div className="flex items-center space-x-4">
+										<SkeletonShimmer className="h-4 w-16" />
+										<SkeletonShimmer className="h-4 w-16" />
+										<SkeletonShimmer className="h-6 w-20" variant="rounded" />
+									</div>
+
+									<SkeletonShimmer className="h-6 w-2/3" variant="rounded" />
+
+									<div className="flex gap-2">
+										<SkeletonShimmer className="h-6 w-16" variant="rounded" />
+										<SkeletonShimmer className="h-6 w-20" variant="rounded" />
+									</div>
+
+									<div className="flex items-center justify-between pt-2">
+										<SkeletonShimmer className="h-6 w-16" />
+										<SkeletonShimmer className="h-10 w-24" variant="rounded" />
+									</div>
+								</div>
+							</div>
+						))}
+					</div>
+				</div>
+			</div>
+		);
+	}
+
+	// don't render if no recommendations
+	if (recommendations.length === 0) {
 		return null;
 	}
 

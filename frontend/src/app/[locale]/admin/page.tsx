@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthProvider";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { XPManager } from "@/components/admin";
 import { Users, BookOpen, Target, BarChart3, Plus, TrendingUp, Loader2, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { api } from "@/lib/http";
@@ -206,6 +207,19 @@ export default function AdminDashboard() {
 						</div>
 					</Link>
 				</div>
+			</div>
+
+			{/* XP Manager Section */}
+			<div className="mb-12">
+				<div className="text-center mb-8">
+					<h2 className="text-3xl font-bold mb-2">
+						<span className="bg-linear-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
+							Social Zone Tools
+						</span>
+					</h2>
+					<p className="text-gray-600 dark:text-gray-300">Manage XP and gamification features</p>
+				</div>
+				<XPManager />
 			</div>
 
 			{/* Recent Activity */}

@@ -24,7 +24,7 @@ export function SkillsHeader({ onAddSkill, onAISkills }: SkillsHeaderProps) {
 					<Button
 						onClick={onAISkills}
 						variant="outline"
-						className="border-primary text-primary hover:bg-primary hover:text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+						className="border-primary text-primary hover:bg-primary hover:text-white shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200"
 					>
 						<Sparkles className="w-4 h-4 mr-2" />
 						AI Skills
@@ -32,7 +32,7 @@ export function SkillsHeader({ onAddSkill, onAISkills }: SkillsHeaderProps) {
 				)}
 				<Button
 					onClick={onAddSkill}
-					className="bg-linear-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+					className="bg-linear-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200"
 				>
 					<Plus className="w-4 h-4 mr-2" />
 					Add New Skill

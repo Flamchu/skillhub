@@ -709,6 +709,43 @@ router.patch("/lessons/:lessonId/progress", authenticateSupabaseToken, validate(
 			// check quest progress
 			await checkQuestProgress(userId, QuestType.COMPLETE_LESSON);
 			await checkQuestProgress(userId, QuestType.COMPLETE_MULTIPLE_LESSONS);
+
+			// check if course is now completed
+			const courseProgress = await YouTubeService.getCourseProgress(userId, lesson.courseId);
+
+			if (courseProgress.completedLessons === courseProgress.totalLessons && courseProgress.totalLessons > 0) {
+				// all lessons completed - mark course as completed
+				const enrollment = await prisma.enrollment.findUnique({
+					where: {
+						userId_courseId: {
+							userId,
+							courseId: lesson.courseId,
+						},
+					},
+				});
+
+				// only update if not already marked as completed
+				if (enrollment && !enrollment.isCompleted) {
+					await prisma.enrollment.update({
+						where: {
+							userId_courseId: {
+								userId,
+								courseId: lesson.courseId,
+							},
+						},
+						data: {
+							isCompleted: true,
+							completedAt: new Date(),
+						},
+					});
+
+					// award xp for course completion (100 xp)
+					await awardXP(userId, 100, XPSource.COURSE_COMPLETION, `Completed course: ${lesson.course.title}`);
+
+					// check course completion quest
+					await checkQuestProgress(userId, QuestType.COMPLETE_COURSE);
+				}
+			}
 		}
 
 		// invalidate course progress cache

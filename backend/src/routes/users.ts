@@ -1,4 +1,6 @@
 import { Router, Request, Response } from "express";
+import multer from "multer";
+import sharp from "sharp";
 import { AuthenticatedRequest, authenticateSupabaseToken, requireAdmin } from "../middleware/supabaseAuth";
 import { validate, extractSchemas } from "../middleware/validation";
 import { catchAsync, createError } from "../middleware/errorHandler";
@@ -7,6 +9,22 @@ import { cache, cacheConfigs } from "../middleware/cache";
 import { prisma } from "../config/database";
 
 const router = Router();
+
+// configure multer for memory storage
+const upload = multer({
+	storage: multer.memoryStorage(),
+	limits: {
+		fileSize: 5 * 1024 * 1024, // 5mb max
+	},
+	fileFilter: (_req, file, cb) => {
+		// only allow images
+		if (file.mimetype.startsWith("image/")) {
+			cb(null, true);
+		} else {
+			cb(new Error("Only image files are allowed"));
+		}
+	},
+});
 
 // get user by id (public route for basic profile info)
 router.get(
@@ -238,6 +256,61 @@ router.patch("/:id", authenticateSupabaseToken, async (req: AuthenticatedRequest
 	} catch (error) {
 		console.error("Update user error:", error);
 		res.status(500).json({ error: "Internal server error" });
+	}
+});
+
+// upload profile picture (protected)
+router.post("/profile-picture", authenticateSupabaseToken, upload.single("profilePicture"), async (req: AuthenticatedRequest, res: Response) => {
+	try {
+		const currentUser = req.user!;
+		const file = req.file;
+
+		if (!file) {
+			return res.status(400).json({ error: "No file uploaded" });
+		}
+
+		// optimize image with sharp
+		// resize to 512x512, convert to webp, quality 80
+		const optimizedImageBuffer = await sharp(file.buffer)
+			.resize(512, 512, {
+				fit: "cover",
+				position: "center",
+			})
+			.webp({ quality: 80 })
+			.toBuffer();
+
+		// convert to base64 data url (for simplicity, store in db)
+		// in production, you'd upload to s3/cloudinary/supabase storage
+		const base64Image = `data:image/webp;base64,${optimizedImageBuffer.toString("base64")}`;
+
+		// update user's profile picture
+		const updatedUser = await prisma.user.update({
+			where: { id: currentUser.id },
+			data: { profilePicture: base64Image },
+			select: {
+				id: true,
+				name: true,
+				email: true,
+				headline: true,
+				bio: true,
+				profilePicture: true,
+				role: true,
+				regionId: true,
+				socialEnabled: true,
+				xp: true,
+				level: true,
+				currentStreak: true,
+			},
+		});
+
+		res.json({
+			message: "Profile picture uploaded successfully",
+			profilePicture: updatedUser.profilePicture,
+			user: updatedUser,
+		});
+	} catch (error) {
+		console.error("Upload profile picture error:", error);
+		res.status(500).json({ error: "Failed to upload profile picture" });
 	}
 });
 

@@ -5,7 +5,6 @@ import { getMessages } from "next-intl/server";
 import { locales } from "@/i18n";
 import { notFound } from "next/navigation";
 import { AppProviders } from "./providers";
-import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import "../globals.css";
 
 const geistSans = Geist({
@@ -108,13 +107,7 @@ export default async function LocaleLayout({
 			<head />
 			<body className="antialiased min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors">
 				<NextIntlClientProvider messages={messages}>
-					<AppProviders>
-						{children}
-						{/* Fixed Theme Toggle - appears on all pages */}
-						<div className="fixed top-6 right-6 z-50">
-							<ThemeToggle />
-						</div>
-					</AppProviders>
+					<AppProviders>{children}</AppProviders>
 				</NextIntlClientProvider>
 			</body>
 		</html>

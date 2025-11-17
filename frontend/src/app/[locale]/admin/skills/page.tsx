@@ -265,7 +265,7 @@ export default function AdminSkillsPage() {
 					</div>
 					<Button
 						onClick={() => setShowCreateForm(true)}
-						className="bg-linear-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+						className="bg-linear-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200"
 					>
 						<Plus className="h-4 w-4 mr-2" />
 						Add Skill
@@ -405,7 +405,7 @@ export default function AdminSkillsPage() {
 								{!searchQuery && (
 									<Button
 										onClick={() => setShowCreateForm(true)}
-										className="bg-linear-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+										className="bg-linear-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200"
 									>
 										<Plus className="h-4 w-4 mr-2" />
 										Add First Skill

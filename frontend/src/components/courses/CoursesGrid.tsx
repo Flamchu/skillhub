@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/Button";
-import { Search, Star, Clock, Users, Bookmark, Loader2, AlertCircle } from "lucide-react";
+import { CourseCardSkeleton } from "@/components/ui";
+import { Search, Star, Clock, Users, Bookmark, AlertCircle, Loader, ExternalLink } from "lucide-react";
 import type { Course, CourseFilters } from "@/types";
 
 interface CoursesGridProps {
@@ -47,11 +48,10 @@ export function CoursesGrid({
 	// Loading State
 	if (isLoading) {
 		return (
-			<div className="flex items-center justify-center py-20">
-				<div className="text-center">
-					<Loader2 className="w-16 h-16 animate-spin text-primary mx-auto mb-4" />
-					<span className="text-xl text-gray-600 dark:text-gray-300 font-medium">Loading amazing courses...</span>
-				</div>
+			<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+				{Array.from({ length: 6 }).map((_, i) => (
+					<CourseCardSkeleton key={i} />
+				))}
 			</div>
 		);
 	}
@@ -168,14 +168,33 @@ export function CoursesGrid({
 								<span className="text-2xl font-bold text-primary">
 									{course.isPaid && course.priceCents ? `$${(course.priceCents / 100).toFixed(2)}` : "Free"}
 								</span>
-								<Button
-									size="sm"
-									onClick={() => handleEnrollClick(course.id)}
-									disabled={enrollingCourses.has(course.id)}
-									className="bg-linear-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-								>
-									{enrollingCourses.has(course.id) ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Enroll Now</>}
-								</Button>
+								{course.source === "INTERNAL" ? (
+									<Button
+										size="sm"
+										onClick={() => handleEnrollClick(course.id)}
+										disabled={enrollingCourses.has(course.id)}
+										className="bg-linear-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+									>
+										{enrollingCourses.has(course.id) ? (
+											<>
+												<Loader className="w-4 h-4 animate-spin mr-2" />
+												Enrolling...
+											</>
+										) : (
+											"Enroll Now"
+										)}
+									</Button>
+								) : (
+									<a
+										href={course.url}
+										target="_blank"
+										rel="noopener noreferrer"
+										className="inline-flex items-center gap-2 px-4 py-2 bg-linear-to-r from-info to-success hover:from-info-600 hover:to-success-600 text-white text-sm font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
+									>
+										View Course
+										<ExternalLink className="w-4 h-4" />
+									</a>
+								)}
 							</div>
 						</div>
 					</div>
@@ -195,7 +214,7 @@ export function CoursesGrid({
 							size="sm"
 							onClick={() => setCurrentPage(currentPage - 1)}
 							disabled={!pagination.hasPrev}
-							className="transition-all duration-200 transform hover:scale-105"
+							className="transition-all duration-200 hover:scale-105"
 						>
 							← Previous
 						</Button>
@@ -207,7 +226,7 @@ export function CoursesGrid({
 							size="sm"
 							onClick={() => setCurrentPage(currentPage + 1)}
 							disabled={!pagination.hasNext}
-							className="transition-all duration-200 transform hover:scale-105"
+							className="transition-all duration-200 hover:scale-105"
 						>
 							Next →
 						</Button>
@@ -231,7 +250,7 @@ export function CoursesGrid({
 						<Button
 							variant="outline"
 							onClick={resetFilters}
-							className="bg-linear-to-r from-primary to-purple text-white hover:from-primary-600 hover:to-purple-600 border-0 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+							className="bg-linear-to-r from-primary to-purple text-white hover:from-primary-600 hover:to-purple-600 border-0 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
 						>
 							Clear All Filters
 						</Button>

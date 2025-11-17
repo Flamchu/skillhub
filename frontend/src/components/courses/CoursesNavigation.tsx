@@ -34,7 +34,7 @@ export function CoursesNavigation({ className = "" }: CoursesNavigationProps) {
 					</Link>
 					<Link
 						href="/auth"
-						className="px-6 py-3 bg-linear-to-r from-primary to-purple text-primary-foreground rounded-lg hover:from-primary-600 hover:to-purple-600 dark:hover:from-primary-500 dark:hover:to-purple-500 font-semibold shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+						className="px-6 py-3 bg-linear-to-r from-primary to-purple text-primary-foreground rounded-lg hover:from-primary-600 hover:to-purple-600 dark:hover:from-primary-500 dark:hover:to-purple-500 font-semibold shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
 					>
 						Get Started 🚀
 					</Link>

@@ -49,7 +49,7 @@ export function CourseHeader({ course, onBookmark, onShare }: CourseHeaderProps)
 						variant="ghost"
 						size="sm"
 						onClick={onBookmark}
-						className="transition-all duration-200 transform hover:scale-105"
+						className="transition-all duration-200 hover:scale-105"
 					>
 						<Bookmark className="h-4 w-4 mr-2" />
 						Save
@@ -58,7 +58,7 @@ export function CourseHeader({ course, onBookmark, onShare }: CourseHeaderProps)
 						variant="ghost"
 						size="sm"
 						onClick={onShare}
-						className="transition-all duration-200 transform hover:scale-105"
+						className="transition-all duration-200 hover:scale-105"
 					>
 						<Share2 className="h-4 w-4 mr-2" />
 						Share
@@ -68,7 +68,7 @@ export function CourseHeader({ course, onBookmark, onShare }: CourseHeaderProps)
 							variant="ghost"
 							size="sm"
 							onClick={() => window.open(course.url, "_blank")}
-							className="transition-all duration-200 transform hover:scale-105"
+							className="transition-all duration-200 hover:scale-105"
 						>
 							<ExternalLink className="h-4 w-4 mr-2" />
 							Original

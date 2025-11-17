@@ -27,15 +27,19 @@ function formatDuration(seconds: number): string {
 function parseYouTubeTimestamps(description: string): Array<{ time: number; title: string }> {
 	if (!description) return [];
 
-	const timestampRegex = /(\d{1,2}):(\d{2})(?::(\d{2}))?\s+(.+?)(?=\n\d|\n$|$)/g;
+	// matches both formats: "0:00 Title" and "(0:00:00) Title"
+	const timestampRegex = /\(?(\d{1,2}):(\d{2})(?::(\d{2}))?\)?\s+(.+?)(?=\n|$)/g;
 	const timestamps: Array<{ time: number; title: string }> = [];
 	let match;
 
 	while ((match = timestampRegex.exec(description)) !== null) {
-		const hours = parseInt(match[3]) ? parseInt(match[1]) : 0;
-		const minutes = parseInt(match[3]) ? parseInt(match[2]) : parseInt(match[1]);
-		const seconds = parseInt(match[3]) ? parseInt(match[3]) : parseInt(match[2]);
+		const hours = match[3] ? parseInt(match[1]) : 0;
+		const minutes = match[3] ? parseInt(match[2]) : parseInt(match[1]);
+		const seconds = match[3] ? parseInt(match[3]) : parseInt(match[2]);
 		const title = match[4].trim();
+
+		// skip if title is empty or just whitespace
+		if (!title || title.length === 0) continue;
 
 		const timeInSeconds = hours * 3600 + minutes * 60 + seconds;
 		timestamps.push({ time: timeInSeconds, title });
@@ -143,7 +147,8 @@ export function CourseLessons({
 
 	const currentLesson = selectedLessonId && sortedLessons ? sortedLessons.find(l => l.id === selectedLessonId) : null;
 	const timestamps = currentLesson ? parseYouTubeTimestamps(currentLesson.description || course.description || "") : [];
-	const hasMultipleLessons = course.lessons ? course.lessons.length > 1 : false;
+	// check if course is a playlist (multiple lessons with different videos) or single video
+	const isPlaylistCourse = course.lessons && course.lessons.length > 1;
 	const hasHiddenLessons = sortedLessons.length > 7;
 
 	function getVisibleLessons() {
@@ -194,12 +199,12 @@ export function CourseLessons({
 
 	// auto-select appropriate tab
 	useEffect(() => {
-		if (hasMultipleLessons) {
+		if (isPlaylistCourse) {
 			setActiveTab("lessons");
 		} else if (timestamps.length > 0) {
 			setActiveTab("timestamps");
 		}
-	}, [hasMultipleLessons, timestamps.length]);
+	}, [isPlaylistCourse, timestamps.length]);
 
 	return (
 		<Card className="h-full flex flex-col bg-surface/60 dark:bg-gray-800/60 backdrop-blur-sm border border-border/20 shadow-lg">
@@ -207,9 +212,9 @@ export function CourseLessons({
 				<h2 className="font-bold text-lg mb-4 text-foreground">Course Content</h2>
 
 				{/* tab switcher */}
-				{hasMultipleLessons || timestamps.length > 0 ? (
+				{isPlaylistCourse || timestamps.length > 0 ? (
 					<div className="flex rounded-lg bg-surface-muted p-1">
-						{hasMultipleLessons && (
+						{isPlaylistCourse && (
 							<button
 								onClick={() => setActiveTab("lessons")}
 								className={`flex-1 px-3 py-2 text-sm font-medium rounded-md transition-colors ${
@@ -245,7 +250,7 @@ export function CourseLessons({
 			</div>
 
 			<div className="flex-1 overflow-auto p-6">
-				{activeTab === "lessons" && hasMultipleLessons && (
+				{activeTab === "lessons" && isPlaylistCourse && (
 					<div className="space-y-2">
 						{/* show a small indicator when we're not showing all lessons */}
 						{hasHiddenLessons && !showAllLessons && (
@@ -318,7 +323,7 @@ export function CourseLessons({
 					</div>
 				)}
 
-				{activeTab === "lessons" && !hasMultipleLessons && (
+				{activeTab === "lessons" && !isPlaylistCourse && (
 					<div className="text-center py-8 text-foreground-muted">
 						<List className="h-8 w-8 mx-auto mb-2 opacity-50" />
 						<p className="text-sm">This is a single video course</p>
