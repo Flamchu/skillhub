@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthProvider";
-import { PageLayout, LoadingState } from "@/components/ui";
+import { AuthenticatedLayout } from "@/components/layout";
+import { LoadingState } from "@/components/ui";
 import { Button } from "@/components/ui/Button";
 import { Sparkles, ArrowRight, Target, TrendingUp, Zap } from "lucide-react";
 import type { AISkillSuggestion } from "@/types";
@@ -213,23 +214,25 @@ export default function AISkillsPage() {
 	}
 
 	return (
-		<PageLayout>
-			{/* onboarding overlay */}
-			{showOnboarding && !onboardingComplete && <OnboardingOverlay onComplete={handleOnboardingComplete} />}
+		<AuthenticatedLayout>
+			<div className="min-h-screen bg-linear-to-br from-primary-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+				<div className="max-w-7xl mx-auto p-6">
+					{/* onboarding overlay */}
+					{showOnboarding && !onboardingComplete && <OnboardingOverlay onComplete={handleOnboardingComplete} />}
 
-			{/* hero section */}
-			<div className="relative overflow-hidden">
-				{/* decorative background */}
-				<div className="absolute inset-0 -z-10">
-					<div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse" />
-					<div
-						className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple/10 rounded-full blur-3xl animate-pulse"
-						style={{ animationDelay: "1s" }}
-					/>
-				</div>
+					{/* hero section */}
+					<div className="relative overflow-hidden">
+						{/* decorative background */}
+						<div className="absolute inset-0 -z-10">
+							<div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse" />
+							<div
+								className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple/10 rounded-full blur-3xl animate-pulse"
+								style={{ animationDelay: "1s" }}
+							/>
+						</div>
 
-				{/* header */}
-				<div className="text-center mb-12 pt-8">
+						{/* header */}
+						<div className="text-center mb-12 pt-8">
 					<div className="inline-flex items-center gap-2 px-4 py-2 bg-linear-to-r from-primary/10 to-purple/10 rounded-full border border-primary/20 mb-6">
 						<Sparkles className="w-5 h-5 text-primary" />
 						<span className="text-sm font-semibold text-primary">AI-Powered Skill Generation</span>
@@ -429,7 +432,8 @@ export default function AISkillsPage() {
 						</div>
 					</div>
 				)}
+				</div>
 			</div>
-		</PageLayout>
+		</AuthenticatedLayout>
 	);
 }

@@ -170,9 +170,17 @@ export default function AuthPage() {
 										value={password}
 										onChange={e => setPassword(e.target.value)}
 										required
+										minLength={!isLogin ? 8 : undefined}
+										pattern={!isLogin ? "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$" : undefined}
+										title={!isLogin ? "Password must be at least 8 characters and contain at least one uppercase letter, one lowercase letter, and one number" : undefined}
 										className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary dark:focus:border-primary bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 transition-all"
-										placeholder="Enter your password"
+										placeholder={!isLogin ? "At least 8 characters, 1 uppercase, 1 lowercase, 1 number" : "Enter your password"}
 									/>
+									{!isLogin && (
+										<p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+											Password must be at least 8 characters and include uppercase, lowercase, and a number
+										</p>
+									)}
 								</div>
 
 								{error && (

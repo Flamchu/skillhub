@@ -6,18 +6,7 @@ import { useAuth } from "@/context/AuthProvider";
 import { LanguageSwitcher } from "@/components/ui";
 import XPBar from "@/components/social/XPBar";
 import { useState, useEffect } from "react";
-import { 
-	Menu, 
-	X, 
-	LayoutDashboard, 
-	Target, 
-	BookOpen, 
-	Users, 
-	User, 
-	LogOut, 
-	Crown,
-	ChevronDown 
-} from "lucide-react";
+import { Menu, X, LayoutDashboard, Target, BookOpen, Users, User, LogOut, Crown, ChevronDown } from "lucide-react";
 
 export function AuthenticatedNavbar() {
 	const { user, profile, logout } = useAuth();
@@ -84,10 +73,7 @@ export function AuthenticatedNavbar() {
 				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 					<div className="flex justify-between items-center h-16">
 						{/* Logo */}
-						<Link
-							href="/dashboard"
-							className="flex items-center gap-2 group"
-						>
+						<Link href="/dashboard" className="flex items-center gap-2 group">
 							<div className="w-10 h-10 rounded-xl bg-linear-to-br from-primary via-purple to-pink flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110">
 								<span className="text-white font-bold text-lg">S</span>
 							</div>
@@ -98,7 +84,7 @@ export function AuthenticatedNavbar() {
 
 						{/* Desktop Navigation */}
 						<div className="hidden lg:flex items-center gap-1">
-							{navLinks.map((link) => {
+							{navLinks.map(link => {
 								const Icon = link.icon;
 								const active = isActive(link.href);
 								return (
@@ -133,7 +119,7 @@ export function AuthenticatedNavbar() {
 							{/* User Menu - Desktop */}
 							<div className="hidden lg:block relative">
 								<button
-									onClick={(e) => {
+									onClick={e => {
 										e.stopPropagation();
 										setUserDropdownOpen(!userDropdownOpen);
 									}}
@@ -150,7 +136,9 @@ export function AuthenticatedNavbar() {
 											{user.role === "USER" && "Member"}
 										</span>
 									</div>
-									<ChevronDown className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${userDropdownOpen ? "rotate-180" : ""}`} />
+									<ChevronDown
+										className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${userDropdownOpen ? "rotate-180" : ""}`}
+									/>
 								</button>
 
 								{/* Dropdown Menu */}
@@ -164,15 +152,15 @@ export function AuthenticatedNavbar() {
 													<p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
 														{profile?.name || "User"}
 													</p>
-													<p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-														{user.email}
-													</p>
+													<p className="text-xs text-gray-500 dark:text-gray-400 truncate">{user.email}</p>
 												</div>
 											</div>
 											{user.role === "ADMIN" && (
 												<div className="flex items-center gap-1.5 px-2 py-1 bg-linear-to-br from-yellow-400/20 to-orange-400/20 dark:from-yellow-400/30 dark:to-orange-400/30 rounded-lg w-fit">
 													<Crown className="w-3 h-3 text-yellow-600 dark:text-yellow-400" />
-													<span className="text-xs font-semibold text-yellow-700 dark:text-yellow-300">Admin Access</span>
+													<span className="text-xs font-semibold text-yellow-700 dark:text-yellow-300">
+														Admin Access
+													</span>
 												</div>
 											)}
 										</div>
@@ -233,12 +221,8 @@ export function AuthenticatedNavbar() {
 								<div className="flex items-center gap-3">
 									<UserAvatar />
 									<div>
-										<p className="text-sm font-semibold text-gray-900 dark:text-white">
-											{profile?.name || "User"}
-										</p>
-										<p className="text-xs text-gray-500 dark:text-gray-400">
-											{user.email}
-										</p>
+										<p className="text-sm font-semibold text-gray-900 dark:text-white">{profile?.name || "User"}</p>
+										<p className="text-xs text-gray-500 dark:text-gray-400">{user.email}</p>
 									</div>
 								</div>
 								<button
@@ -258,7 +242,7 @@ export function AuthenticatedNavbar() {
 
 							{/* Mobile Navigation Links */}
 							<div className="flex-1 overflow-y-auto p-4 space-y-2">
-								{navLinks.map((link) => {
+								{navLinks.map(link => {
 									const Icon = link.icon;
 									const active = isActive(link.href);
 									return (
