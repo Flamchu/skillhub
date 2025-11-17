@@ -155,14 +155,14 @@ export default function ProfilePage() {
 					{/* Modern Profile Header Card */}
 					<div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-xl overflow-hidden mb-8 border-2 border-gray-200/50 dark:border-gray-700/50">
 						{/* Cover Banner with Gradient */}
-						<div className="relative h-48 bg-linear-to-r from-primary via-purple to-pink">
+						<div className="relative h-32 bg-linear-to-r from-primary via-purple to-pink">
 							<div className="absolute inset-0 bg-black/10" />
 							<div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(120,119,198,0.3),rgba(255,255,255,0))]" />
 
 							{/* Edit Button - Top Right */}
 							<button
 								onClick={() => setIsEditModalOpen(true)}
-								className="absolute top-6 right-6 flex items-center gap-2 px-5 py-2.5 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm text-gray-900 dark:text-gray-100 rounded-xl hover:bg-white dark:hover:bg-gray-800 hover:shadow-xl hover:scale-105 transition-all duration-300 font-semibold border-2 border-white/20 dark:border-gray-700/50"
+								className="absolute top-4 right-4 flex items-center gap-2 px-4 py-2 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm text-gray-900 dark:text-gray-100 rounded-xl hover:bg-white dark:hover:bg-gray-800 hover:shadow-xl hover:scale-105 transition-all duration-300 font-semibold border-2 border-white/20 dark:border-gray-700/50"
 							>
 								<Edit3 className="w-4 h-4" />
 								<span>Edit Profile</span>
@@ -171,8 +171,8 @@ export default function ProfilePage() {
 
 						<div className="px-6 sm:px-8 pb-6">
 							{/* Avatar and Basic Info */}
-							<div className="flex flex-col sm:flex-row items-start sm:items-end gap-6 -mt-20 mb-6">
-								<div className="relative group">
+							<div className="flex flex-col sm:flex-row items-start sm:items-end gap-6 -mt-16 mb-6">
+								<div className="relative group shrink-0">
 									<div className="w-32 h-32 rounded-2xl bg-linear-to-br from-primary via-purple to-pink p-1 shadow-2xl ring-4 ring-white dark:ring-gray-800">
 										<div className="w-full h-full rounded-xl bg-white dark:bg-gray-800 flex items-center justify-center overflow-hidden relative">
 											{profile?.profilePicture ? (
@@ -202,7 +202,7 @@ export default function ProfilePage() {
 									</button>
 								</div>
 
-								<div className="flex-1 min-w-0 pt-4">
+								<div className="flex-1 min-w-0 sm:pt-16">
 									<h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
 										{profile?.name || "No name set"}
 									</h1>
