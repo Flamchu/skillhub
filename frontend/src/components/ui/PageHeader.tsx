@@ -22,7 +22,7 @@ export function PageHeader({ title, description, action, centered = false, class
 		<div className={`${containerClass} ${className}`}>
 			<div className={centered ? "" : "text-center sm:text-left"}>
 				<h1 className="text-4xl md:text-5xl font-bold mb-4">
-					<span className="bg-linear-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
+					<span className="bg-gradient-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
 						{title}
 					</span>
 				</h1>

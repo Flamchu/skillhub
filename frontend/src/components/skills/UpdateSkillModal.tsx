@@ -177,7 +177,7 @@ export function UpdateSkillModal({ isOpen, onClose, skill, onUpdateSkill, onRemo
 										{/* Progress Bar */}
 										<div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 mt-2">
 											<div
-												className="bg-linear-to-r from-primary to-purple h-1.5 rounded-full transition-all duration-500"
+												className="bg-gradient-to-r from-primary to-purple h-1.5 rounded-full transition-all duration-500"
 												style={{ width: `${option.percentage}%` }}
 											/>
 										</div>
@@ -238,7 +238,7 @@ export function UpdateSkillModal({ isOpen, onClose, skill, onUpdateSkill, onRemo
 							<Button
 								onClick={handleUpdate}
 								disabled={updating || removing || selectedProficiency === skill.proficiency}
-								className="flex-1 bg-linear-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0"
+								className="flex-1 bg-gradient-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0"
 							>
 								{updating ? "Updating..." : isUpgrading() ? "Update & Verify" : "Update Level"}
 							</Button>

@@ -8,10 +8,8 @@
 		"seed": "ts-node ./src/seed.ts",
 		"generate-ai-summaries": "ts-node ./src/scripts/generateAiSummaries.ts",
 		"prisma:migrate:deploy": "prisma migrate deploy",
-		"prisma:generate": "prisma generate"
-	},
-	"prisma": {
-		"seed": "ts-node src/seed.ts"
+		"prisma:generate": "prisma generate",
+		"prisma:seed": "prisma db seed"
 	},
 	"postinstall": "prisma generate",
 	"dependencies": {

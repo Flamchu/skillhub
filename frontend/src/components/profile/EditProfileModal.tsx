@@ -306,12 +306,12 @@ export function EditProfileModal({ isOpen, onClose, user }: EditProfileModalProp
 							<div className="flex items-center gap-6">
 								{/* Avatar Preview */}
 								<div className="relative group">
-									<div className="w-24 h-24 rounded-xl bg-linear-to-br from-primary via-purple to-pink p-1 shadow-lg ring-2 ring-primary/20">
+									<div className="w-24 h-24 rounded-xl bg-gradient-to-br from-primary via-purple to-pink p-1 shadow-lg ring-2 ring-primary/20">
 										<div className="w-full h-full rounded-lg bg-white dark:bg-gray-800 flex items-center justify-center overflow-hidden relative">
 											{profilePicturePreview ? (
 												<Image src={profilePicturePreview} alt="Profile preview" fill className="object-cover" />
 											) : (
-												<span className="text-3xl font-bold bg-linear-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
+												<span className="text-3xl font-bold bg-gradient-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
 													{user?.name?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase() || "U"}
 												</span>
 											)}
@@ -348,7 +348,7 @@ export function EditProfileModal({ isOpen, onClose, user }: EditProfileModalProp
 									/>
 									<label
 										htmlFor="profile-picture-upload"
-										className="inline-flex items-center gap-2 px-6 py-3 bg-linear-to-r from-primary to-purple text-white rounded-xl font-bold cursor-pointer hover:shadow-xl hover:scale-105 transition-all duration-300 active:scale-[0.98]"
+										className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary to-purple text-white rounded-xl font-bold cursor-pointer hover:shadow-xl hover:scale-105 transition-all duration-300 active:scale-[0.98]"
 									>
 										<Camera className="w-5 h-5" />
 										<span>{profilePictureFile ? "Change Photo" : "Upload Photo"}</span>
@@ -425,7 +425,7 @@ export function EditProfileModal({ isOpen, onClose, user }: EditProfileModalProp
 								type="submit"
 								loading={saving}
 								disabled={saving}
-								className="flex-1 bg-linear-to-r from-primary to-purple text-white"
+								className="flex-1 bg-gradient-to-r from-primary to-purple text-white"
 							>
 								{saving ? t("form.saving") : t("form.save")}
 							</Button>

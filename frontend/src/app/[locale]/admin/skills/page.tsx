@@ -185,7 +185,7 @@ export default function AdminSkillsPage() {
 		return (
 			<div key={node.id} className="select-none">
 				<div
-					className={`flex items-center space-x-3 p-3 rounded-xl hover:bg-linear-to-r hover:from-primary-50 hover:to-purple-50 dark:hover:from-primary-900/20 dark:hover:to-purple-900/20 transition-all duration-200 ${
+					className={`flex items-center space-x-3 p-3 rounded-xl hover:bg-gradient-to-r hover:from-primary-50 hover:to-purple-50 dark:hover:from-primary-900/20 dark:hover:to-purple-900/20 transition-all duration-200 ${
 						depth === 0
 							? "font-medium border border-gray-200/50 dark:border-gray-700/50 bg-white/50 dark:bg-gray-800/50"
 							: ""
@@ -251,13 +251,13 @@ export default function AdminSkillsPage() {
 	};
 
 	return (
-		<div className="min-h-screen bg-linear-to-br from-primary-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+		<div className="min-h-screen bg-gradient-to-br from-primary-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
 			<div className="max-w-7xl mx-auto p-6 space-y-6">
 				{/* Header */}
 				<div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-12">
 					<div className="text-center sm:text-left">
 						<h1 className="text-4xl md:text-5xl font-bold mb-4">
-							<span className="bg-linear-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
+							<span className="bg-gradient-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
 								Skills Management
 							</span>
 						</h1>
@@ -265,7 +265,7 @@ export default function AdminSkillsPage() {
 					</div>
 					<Button
 						onClick={() => setShowCreateForm(true)}
-						className="bg-linear-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+						className="bg-gradient-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200"
 					>
 						<Plus className="h-4 w-4 mr-2" />
 						Add Skill
@@ -341,7 +341,7 @@ export default function AdminSkillsPage() {
 							<div className="flex space-x-3">
 								<Button
 									type="submit"
-									className="bg-linear-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0"
+									className="bg-gradient-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0"
 								>
 									{editingSkill ? "Update Skill" : "Create Skill"}
 								</Button>
@@ -405,7 +405,7 @@ export default function AdminSkillsPage() {
 								{!searchQuery && (
 									<Button
 										onClick={() => setShowCreateForm(true)}
-										className="bg-linear-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+										className="bg-gradient-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200"
 									>
 										<Plus className="h-4 w-4 mr-2" />
 										Add First Skill

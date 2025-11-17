@@ -11,26 +11,26 @@ interface FeatureCardProps {
 function FeatureCard({ icon, title, description, linkText, colorScheme }: FeatureCardProps) {
 	const colorClasses = {
 		primary: {
-			bg: "bg-linear-to-br from-primary/5 to-purple/5 dark:from-primary/10 dark:to-purple/10",
+			bg: "bg-gradient-to-br from-primary/5 to-purple/5 dark:from-primary/10 dark:to-purple/10",
 			border: "border-primary/20 dark:border-primary/30",
 			hover: "hover:from-primary/10 hover:to-purple/10 dark:hover:from-primary/15 dark:hover:to-purple/15",
-			iconBg: "bg-linear-to-br from-primary to-purple",
+			iconBg: "bg-gradient-to-br from-primary to-purple",
 			titleHover: "group-hover:text-primary",
 			linkColor: "text-primary",
 		},
 		success: {
-			bg: "bg-linear-to-br from-success/5 to-info/5 dark:from-success/10 dark:to-info/10",
+			bg: "bg-gradient-to-br from-success/5 to-info/5 dark:from-success/10 dark:to-info/10",
 			border: "border-success/20 dark:border-success/30",
 			hover: "hover:from-success/10 hover:to-info/10 dark:hover:from-success/15 dark:hover:to-info/15",
-			iconBg: "bg-linear-to-br from-success to-info",
+			iconBg: "bg-gradient-to-br from-success to-info",
 			titleHover: "group-hover:text-success",
 			linkColor: "text-success",
 		},
 		warning: {
-			bg: "bg-linear-to-br from-warning/5 to-pink/5 dark:from-warning/10 dark:to-pink/10",
+			bg: "bg-gradient-to-br from-warning/5 to-pink/5 dark:from-warning/10 dark:to-pink/10",
 			border: "border-warning/20 dark:border-warning/30",
 			hover: "hover:from-warning/10 hover:to-pink/10 dark:hover:from-warning/15 dark:hover:to-pink/15",
-			iconBg: "bg-linear-to-br from-warning to-pink",
+			iconBg: "bg-gradient-to-br from-warning to-pink",
 			titleHover: "group-hover:text-warning",
 			linkColor: "text-warning",
 		},
@@ -40,7 +40,7 @@ function FeatureCard({ icon, title, description, linkText, colorScheme }: Featur
 
 	return (
 		<div
-			className={`group ${colors.bg} border ${colors.border} rounded-xl p-8 ${colors.hover} transition-all duration-300 transform hover:scale-105 hover:shadow-2xl`}
+			className={`group ${colors.bg} border ${colors.border} rounded-xl p-8 ${colors.hover} transition-all duration-300 hover:scale-105 hover:shadow-2xl`}
 		>
 			<div
 				className={`w-16 h-16 ${colors.iconBg} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg`}
@@ -67,7 +67,7 @@ export function FeaturesSection() {
 		<div className="max-w-7xl mx-auto mt-32">
 			<div className="text-center mb-20">
 				<h3 className="text-4xl md:text-5xl font-bold mb-4">
-					<span className="bg-linear-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
+					<span className="bg-gradient-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
 						{t("title")}
 					</span>
 				</h3>

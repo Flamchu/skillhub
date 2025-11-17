@@ -114,7 +114,7 @@ export default function SocialDashboard() {
 						</div>
 						<div className="h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
 							<div
-								className="h-full bg-linear-to-r from-primary to-purple transition-all duration-500"
+								className="h-full bg-gradient-to-r from-primary to-purple transition-all duration-500"
 								style={{ width: `${progressPercentage}%` }}
 							/>
 						</div>
@@ -133,7 +133,7 @@ export default function SocialDashboard() {
 						</div>
 					</div>
 					<div className="text-center">
-						<div className="text-4xl font-bold bg-linear-to-r from-purple to-pink text-transparent bg-clip-text">
+						<div className="text-4xl font-bold bg-gradient-to-r from-purple to-pink text-transparent bg-clip-text">
 							{xp.toLocaleString()}
 						</div>
 						<p className="text-sm text-gray-500 dark:text-gray-400 mt-1">experience points earned</p>

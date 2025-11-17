@@ -215,7 +215,7 @@ export default function AISkillsPage() {
 
 	return (
 		<AuthenticatedLayout>
-			<div className="min-h-screen bg-linear-to-br from-primary-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+			<div className="min-h-screen bg-gradient-to-br from-primary-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
 				<div className="max-w-7xl mx-auto p-6">
 					{/* onboarding overlay */}
 					{showOnboarding && !onboardingComplete && <OnboardingOverlay onComplete={handleOnboardingComplete} />}
@@ -233,13 +233,13 @@ export default function AISkillsPage() {
 
 						{/* header */}
 						<div className="text-center mb-12 pt-8">
-							<div className="inline-flex items-center gap-2 px-4 py-2 bg-linear-to-r from-primary/10 to-purple/10 rounded-full border border-primary/20 mb-6">
+							<div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary/10 to-purple/10 rounded-full border border-primary/20 mb-6">
 								<Sparkles className="w-5 h-5 text-primary" />
 								<span className="text-sm font-semibold text-primary">AI-Powered Skill Generation</span>
 							</div>
 
 							<h1 className="text-5xl md:text-6xl font-bold mb-6">
-								<span className="bg-linear-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
+								<span className="bg-gradient-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
 									Discover Your Skills
 								</span>
 							</h1>
@@ -253,9 +253,9 @@ export default function AISkillsPage() {
 							{stage === "input" && (
 								<div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-12">
 									<div className="relative group">
-										<div className="absolute inset-0 bg-linear-to-br from-primary/20 to-purple/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all" />
+										<div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-purple/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all" />
 										<div className="relative bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50 dark:border-gray-700/50">
-											<div className="w-12 h-12 bg-linear-to-br from-primary to-purple rounded-xl flex items-center justify-center mb-4 mx-auto">
+											<div className="w-12 h-12 bg-gradient-to-br from-primary to-purple rounded-xl flex items-center justify-center mb-4 mx-auto">
 												<Target className="w-6 h-6 text-white" />
 											</div>
 											<h3 className="font-bold text-gray-900 dark:text-gray-100 mb-2">1. Describe Yourself</h3>
@@ -266,9 +266,9 @@ export default function AISkillsPage() {
 									</div>
 
 									<div className="relative group">
-										<div className="absolute inset-0 bg-linear-to-br from-purple/20 to-pink/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all" />
+										<div className="absolute inset-0 bg-gradient-to-br from-purple/20 to-pink/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all" />
 										<div className="relative bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50 dark:border-gray-700/50">
-											<div className="w-12 h-12 bg-linear-to-br from-purple to-pink rounded-xl flex items-center justify-center mb-4 mx-auto">
+											<div className="w-12 h-12 bg-gradient-to-br from-purple to-pink rounded-xl flex items-center justify-center mb-4 mx-auto">
 												<Sparkles className="w-6 h-6 text-white" />
 											</div>
 											<h3 className="font-bold text-gray-900 dark:text-gray-100 mb-2">2. AI Analyzes</h3>
@@ -279,9 +279,9 @@ export default function AISkillsPage() {
 									</div>
 
 									<div className="relative group">
-										<div className="absolute inset-0 bg-linear-to-br from-pink/20 to-success/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all" />
+										<div className="absolute inset-0 bg-gradient-to-br from-pink/20 to-success/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all" />
 										<div className="relative bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50 dark:border-gray-700/50">
-											<div className="w-12 h-12 bg-linear-to-br from-pink to-success rounded-xl flex items-center justify-center mb-4 mx-auto">
+											<div className="w-12 h-12 bg-gradient-to-br from-pink to-success rounded-xl flex items-center justify-center mb-4 mx-auto">
 												<TrendingUp className="w-6 h-6 text-white" />
 											</div>
 											<h3 className="font-bold text-gray-900 dark:text-gray-100 mb-2">3. Get Recommendations</h3>
@@ -297,7 +297,7 @@ export default function AISkillsPage() {
 						{/* main content area */}
 						<div className="max-w-4xl mx-auto mb-12">
 							<div className="relative">
-								<div className="absolute inset-0 bg-linear-to-br from-primary/5 to-purple/5 rounded-3xl blur-2xl" />
+								<div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-purple/5 rounded-3xl blur-2xl" />
 								<div className="relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-3xl p-8 border border-gray-200/50 dark:border-gray-700/50 shadow-xl">
 									{/* input stage */}
 									{stage === "input" && (
@@ -321,7 +321,7 @@ export default function AISkillsPage() {
 												onClick={handleGenerate}
 												disabled={prompt.trim().length < 10}
 												size="lg"
-												className="w-full bg-linear-to-r from-primary to-purple text-white text-lg font-semibold py-6"
+												className="w-full bg-gradient-to-r from-primary to-purple text-white text-lg font-semibold py-6"
 											>
 												<Sparkles className="w-5 h-5 mr-2" />
 												Generate My Skills
@@ -345,7 +345,7 @@ export default function AISkillsPage() {
 									{/* success stage */}
 									{stage === "complete" && hasAddedSkills && (
 										<div className="text-center space-y-6">
-											<div className="w-20 h-20 bg-linear-to-br from-success to-info rounded-full flex items-center justify-center mx-auto">
+											<div className="w-20 h-20 bg-gradient-to-br from-success to-info rounded-full flex items-center justify-center mx-auto">
 												<Zap className="w-10 h-10 text-white" />
 											</div>
 											<h3 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
@@ -356,7 +356,7 @@ export default function AISkillsPage() {
 											</p>
 											<div className="flex flex-wrap justify-center gap-4 pt-4">
 												<Link href="/courses/recommended">
-													<Button variant="primary" size="lg" className="bg-linear-to-r from-primary to-purple">
+													<Button variant="primary" size="lg" className="bg-gradient-to-r from-primary to-purple">
 														View Recommendations
 														<ArrowRight className="w-5 h-5 ml-2" />
 													</Button>
@@ -381,7 +381,7 @@ export default function AISkillsPage() {
 						{/* benefits section - only show on input stage */}
 						{stage === "input" && (
 							<div className="max-w-4xl mx-auto mb-12">
-								<div className="bg-linear-to-r from-primary/10 via-purple/10 to-pink/10 rounded-2xl p-8 border border-primary/20">
+								<div className="bg-gradient-to-r from-primary/10 via-purple/10 to-pink/10 rounded-2xl p-8 border border-primary/20">
 									<h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6 text-center">
 										Why Use AI Skill Generation?
 									</h2>

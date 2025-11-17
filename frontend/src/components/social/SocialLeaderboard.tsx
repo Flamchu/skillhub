@@ -110,7 +110,7 @@ export default function SocialLeaderboard() {
 							<div
 								key={entry.user.id}
 								className={`p-4 hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors ${
-									entry.rank <= 3 ? "bg-linear-to-r from-primary/5 to-transparent dark:from-primary/10" : ""
+									entry.rank <= 3 ? "bg-gradient-to-r from-primary/5 to-transparent dark:from-primary/10" : ""
 								}`}
 							>
 								<div className="flex items-center gap-4">

@@ -93,7 +93,7 @@ export default function SkillVerificationResults({
 					{/* score summary */}
 					<div className="grid grid-cols-2 gap-4">
 						<div className="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg text-center border border-gray-200 dark:border-gray-600">
-							<div className="text-3xl font-bold bg-linear-to-br from-primary to-purple text-transparent bg-clip-text">
+							<div className="text-3xl font-bold bg-gradient-to-br from-primary to-purple text-transparent bg-clip-text">
 								{testResults.scorePercentage}%
 							</div>
 							<div className="text-sm text-gray-600 dark:text-gray-300 mt-1">Score</div>
@@ -191,7 +191,7 @@ export default function SkillVerificationResults({
 						<button
 							onClick={handleApply}
 							disabled={applying}
-							className="px-8 py-2 bg-linear-to-r from-success to-green-600 text-white rounded-lg hover:from-success-600 hover:to-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 font-medium shadow-lg hover:shadow-xl"
+							className="px-8 py-2 bg-gradient-to-r from-success to-green-600 text-white rounded-lg hover:from-success-600 hover:to-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 font-medium shadow-lg hover:shadow-xl"
 						>
 							{applying ? "Applying..." : "Apply to Profile"}
 						</button>

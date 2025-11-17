@@ -56,7 +56,7 @@ export function LearningStats({ enrolledCount = 0, skillsCount = 0, completedCou
 						>
 							{stat.icon}
 						</div>
-						<div className="text-4xl font-bold bg-linear-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
+						<div className="text-4xl font-bold bg-gradient-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
 							{stat.value}
 						</div>
 					</div>

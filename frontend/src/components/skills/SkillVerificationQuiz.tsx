@@ -258,7 +258,7 @@ export default function SkillVerificationQuiz({
 				<div className="flex gap-3">
 					<button
 						onClick={handleResumeAttempt}
-						className="flex-1 px-4 py-2 bg-linear-to-r from-primary to-purple text-primary-foreground rounded-lg hover:from-primary-600 hover:to-purple-600 dark:hover:from-primary-500 dark:hover:to-purple-500 transition-colors font-medium shadow-lg hover:shadow-xl"
+						className="flex-1 px-4 py-2 bg-gradient-to-r from-primary to-purple text-primary-foreground rounded-lg hover:from-primary-600 hover:to-purple-600 dark:hover:from-primary-500 dark:hover:to-purple-500 transition-colors font-medium shadow-lg hover:shadow-xl"
 					>
 						Resume Attempt
 					</button>
@@ -343,7 +343,7 @@ export default function SkillVerificationQuiz({
 					</div>
 					<div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
 						<div
-							className="bg-linear-to-r from-primary to-purple h-2 rounded-full transition-all duration-300"
+							className="bg-gradient-to-r from-primary to-purple h-2 rounded-full transition-all duration-300"
 							style={{ width: `${getProgressPercentage()}%` }}
 						/>
 					</div>
@@ -353,8 +353,8 @@ export default function SkillVerificationQuiz({
 			{/* question */}
 			<div className="bg-white dark:bg-gray-800 p-6 border-b border-gray-200 dark:border-gray-700">
 				<div className="flex items-start gap-4 mb-6">
-					<div className="shrink-0 w-12 h-12 bg-linear-to-br from-primary/20 to-purple/20 dark:from-primary/30 dark:to-purple/30 rounded-full flex items-center justify-center border border-primary/30 dark:border-primary/40">
-						<span className="text-lg font-bold bg-linear-to-br from-primary to-purple text-transparent bg-clip-text">
+					<div className="shrink-0 w-12 h-12 bg-gradient-to-br from-primary/20 to-purple/20 dark:from-primary/30 dark:to-purple/30 rounded-full flex items-center justify-center border border-primary/30 dark:border-primary/40">
+						<span className="text-lg font-bold bg-gradient-to-br from-primary to-purple text-transparent bg-clip-text">
 							{currentQuestionIndex + 1}
 						</span>
 					</div>
@@ -428,14 +428,14 @@ export default function SkillVerificationQuiz({
 						<button
 							onClick={handleSubmit}
 							disabled={!allAnswered || submitting}
-							className="px-8 py-2 bg-linear-to-r from-success to-green-600 text-white rounded-lg hover:from-success-600 hover:to-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 font-medium shadow-lg hover:shadow-xl"
+							className="px-8 py-2 bg-gradient-to-r from-success to-green-600 text-white rounded-lg hover:from-success-600 hover:to-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 font-medium shadow-lg hover:shadow-xl"
 						>
 							{submitting ? "Submitting..." : "Submit Quiz"}
 						</button>
 					) : (
 						<button
 							onClick={handleNext}
-							className="px-6 py-2 bg-linear-to-r from-primary to-purple text-primary-foreground rounded-lg hover:from-primary-600 hover:to-purple-600 dark:hover:from-primary-500 dark:hover:to-purple-500 transition-all duration-300 shadow-lg hover:shadow-xl"
+							className="px-6 py-2 bg-gradient-to-r from-primary to-purple text-primary-foreground rounded-lg hover:from-primary-600 hover:to-purple-600 dark:hover:from-primary-500 dark:hover:to-purple-500 transition-all duration-300 shadow-lg hover:shadow-xl"
 						>
 							Next
 						</button>

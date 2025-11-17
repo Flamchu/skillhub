@@ -29,7 +29,7 @@ export function ThemeToggle() {
 			type="button"
 			aria-label={`Switch to ${isLight ? "dark" : "light"} mode`}
 			onClick={toggleTheme}
-			className="relative p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-gray-600 dark:text-gray-300 hover:text-primary hover:border-primary hover:bg-primary/5 dark:hover:bg-primary/10 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900"
+			className="relative p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-gray-600 dark:text-gray-300 hover:text-primary hover:border-primary hover:bg-primary/5 dark:hover:bg-primary/10 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-110 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900"
 		>
 			{isLight ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
 		</button>

@@ -8,9 +8,9 @@ interface SocialLinkProps {
 
 function SocialLink({ href, colorScheme, children }: SocialLinkProps) {
 	const colorClasses = {
-		primary: "bg-linear-to-br from-primary to-purple",
-		success: "bg-linear-to-br from-success to-info",
-		warning: "bg-linear-to-br from-warning to-pink",
+		primary: "bg-gradient-to-br from-primary to-purple",
+		success: "bg-gradient-to-br from-success to-info",
+		warning: "bg-gradient-to-br from-warning to-pink",
 	};
 
 	return (
@@ -27,17 +27,17 @@ export function Footer() {
 	const t = useTranslations("footer");
 
 	return (
-		<footer className="relative bg-linear-to-br from-primary/5 via-purple/5 to-pink/5 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 border-t border-primary/20 dark:border-gray-700 py-20 px-6 mt-32 overflow-hidden">
+		<footer className="relative bg-gradient-to-br from-primary/5 via-purple/5 to-pink/5 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 border-t border-primary/20 dark:border-gray-700 py-20 px-6 mt-32 overflow-hidden">
 			{/* Decorative Background */}
 			<div className="absolute inset-0 opacity-20">
-				<div className="absolute top-10 left-10 w-20 h-20 bg-linear-to-br from-primary to-purple rounded-full blur-xl" />
-				<div className="absolute top-32 right-20 w-32 h-32 bg-linear-to-br from-success to-info rounded-full blur-xl" />
-				<div className="absolute bottom-20 left-1/3 w-24 h-24 bg-linear-to-br from-warning to-pink rounded-full blur-xl" />
+				<div className="absolute top-10 left-10 w-20 h-20 bg-gradient-to-br from-primary to-purple rounded-full blur-xl" />
+				<div className="absolute top-32 right-20 w-32 h-32 bg-gradient-to-br from-success to-info rounded-full blur-xl" />
+				<div className="absolute bottom-20 left-1/3 w-24 h-24 bg-gradient-to-br from-warning to-pink rounded-full blur-xl" />
 			</div>
 
 			<div className="relative max-w-6xl mx-auto text-center">
 				<div className="flex items-center justify-center space-x-3 mb-6">
-					<div className="w-12 h-12 bg-linear-to-br from-primary to-purple rounded-2xl flex items-center justify-center shadow-lg">
+					<div className="w-12 h-12 bg-gradient-to-br from-primary to-purple rounded-2xl flex items-center justify-center shadow-lg">
 						<svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5z" />
 							<path
@@ -56,19 +56,19 @@ export function Footer() {
 				<div className="flex justify-center gap-8 text-gray-600 dark:text-gray-300 mb-12">
 					<a
 						href="#"
-						className="group hover:text-primary transition-all duration-300 rounded-xl px-6 py-3 hover:bg-primary/10 dark:hover:bg-primary/20 hover:scale-105 transform font-medium"
+						className="group hover:text-primary transition-all duration-300 rounded-xl px-6 py-3 hover:bg-primary/10 dark:hover:bg-primary/20 hover:scale-105 font-medium"
 					>
 						{t("about")}
 					</a>
 					<a
 						href="#"
-						className="group hover:text-success transition-all duration-300 rounded-xl px-6 py-3 hover:bg-success/10 dark:hover:bg-success/20 hover:scale-105 transform font-medium"
+						className="group hover:text-success transition-all duration-300 rounded-xl px-6 py-3 hover:bg-success/10 dark:hover:bg-success/20 hover:scale-105 font-medium"
 					>
 						{t("contact")}
 					</a>
 					<a
 						href="#"
-						className="group hover:text-info transition-all duration-300 rounded-xl px-6 py-3 hover:bg-info/10 dark:hover:bg-info/20 hover:scale-105 transform font-medium"
+						className="group hover:text-info transition-all duration-300 rounded-xl px-6 py-3 hover:bg-info/10 dark:hover:bg-info/20 hover:scale-105 font-medium"
 					>
 						Privacy
 					</a>

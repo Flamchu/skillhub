@@ -64,7 +64,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 	// show loading while checking auth
 	if (loading) {
 		return (
-			<div className="min-h-screen bg-linear-to-br from-primary-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
+			<div className="min-h-screen bg-gradient-to-br from-primary-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
 				<div className="text-center">
 					<div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-6" />
 					<p className="text-gray-600 dark:text-gray-300 text-lg font-medium">Loading Admin Panel...</p>
@@ -79,18 +79,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 	}
 
 	return (
-		<div className="min-h-screen bg-linear-to-br from-primary-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+		<div className="min-h-screen bg-gradient-to-br from-primary-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
 			{/* Navigation */}
 			<nav className="px-6 py-6 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border-b border-primary/20 dark:border-gray-700">
 				<div className="max-w-7xl mx-auto flex justify-between items-center">
 					<Link
 						href="/"
-						className="text-3xl font-bold bg-linear-to-br from-primary via-purple to-pink text-transparent bg-clip-text hover:scale-105 transition-transform"
+						className="text-3xl font-bold bg-gradient-to-br from-primary via-purple to-pink text-transparent bg-clip-text hover:scale-105 transition-transform"
 					>
 						SkillHub ✨
 					</Link>
 					<div className="flex items-center gap-6">
-						<span className="text-sm font-medium text-gray-600 dark:text-gray-300 bg-linear-to-r from-warning/20 to-pink/20 px-3 py-1 rounded-full border border-warning/30">
+						<span className="text-sm font-medium text-gray-600 dark:text-gray-300 bg-gradient-to-r from-warning/20 to-pink/20 px-3 py-1 rounded-full border border-warning/30">
 							Admin Panel
 						</span>
 						<LanguageSwitcher />
@@ -118,7 +118,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 											href={item.href}
 											className={`group flex items-center px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 ${
 												isActive
-													? "bg-linear-to-r from-primary to-purple text-white shadow-lg transform scale-105"
+													? "bg-gradient-to-r from-primary to-purple text-white shadow-lg scale-105"
 													: "text-gray-600 dark:text-gray-300 hover:text-primary hover:bg-primary/10 dark:hover:bg-primary/20 hover:scale-105"
 											}`}
 										>
@@ -152,7 +152,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 						{/* User info */}
 						<div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
 							<div className="flex items-center space-x-3">
-								<div className="w-10 h-10 bg-linear-to-br from-primary to-purple rounded-xl flex items-center justify-center shadow-lg">
+								<div className="w-10 h-10 bg-gradient-to-br from-primary to-purple rounded-xl flex items-center justify-center shadow-lg">
 									<span className="text-white font-bold text-sm">
 										{user.name?.charAt(0) || user.email?.charAt(0) || "A"}
 									</span>

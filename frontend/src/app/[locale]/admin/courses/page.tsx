@@ -75,7 +75,7 @@ export default function AdminCoursesPage() {
 							YouTube Import
 						</Button>
 						<Link href="/admin/courses/new">
-							<Button className="bg-linear-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
+							<Button className="bg-gradient-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200">
 								<Plus className="h-4 w-4 mr-2" />
 								Add Course
 							</Button>
@@ -202,7 +202,7 @@ export default function AdminCoursesPage() {
 									Import from YouTube
 								</Button>
 								<Link href="/admin/courses/new">
-									<Button className="bg-linear-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
+									<Button className="bg-gradient-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200">
 										<Plus className="h-4 w-4 mr-2" />
 										Add Course
 									</Button>

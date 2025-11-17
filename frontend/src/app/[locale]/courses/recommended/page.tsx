@@ -97,7 +97,7 @@ export default function RecommendedCoursesPage() {
 
 	if (loading) {
 		return (
-			<div className="min-h-screen bg-linear-to-br from-primary-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
+			<div className="min-h-screen bg-gradient-to-br from-primary-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
 				<div className="text-center">
 					<div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mb-4" />
 					<p className="text-gray-600 dark:text-gray-300">Loading...</p>
@@ -109,20 +109,20 @@ export default function RecommendedCoursesPage() {
 	if (!user) return null;
 
 	return (
-		<div className="min-h-screen bg-linear-to-br from-primary-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 text-gray-900 dark:text-gray-100">
+		<div className="min-h-screen bg-gradient-to-br from-primary-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 text-gray-900 dark:text-gray-100">
 			<CoursesNavigation />
 			<main className="px-6 py-20">
 				<div className="max-w-7xl mx-auto">
 					{/* Hero Section */}
 					<div className="text-center mb-20">
 						<div className="mb-6">
-							<span className="inline-flex items-center px-4 py-2 bg-linear-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 text-purple dark:text-purple-400 rounded-full text-sm font-semibold border border-purple/30 dark:border-purple-400/30">
+							<span className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 text-purple dark:text-purple-400 rounded-full text-sm font-semibold border border-purple/30 dark:border-purple-400/30">
 								<Sparkles className="w-4 h-4 mr-2" />
 								Personalized for You
 							</span>
 						</div>
 						<h1 className="text-5xl md:text-6xl font-bold mb-6">
-							<span className="bg-linear-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
+							<span className="bg-gradient-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
 								Recommended Courses
 							</span>
 							<br />
@@ -138,7 +138,7 @@ export default function RecommendedCoursesPage() {
 							<Button
 								onClick={handleGenerateClick("SEMANTIC")}
 								disabled={isGenerating}
-								className="px-4 py-2 bg-linear-to-r from-info to-info-600 text-white rounded-lg hover:from-info-600 hover:to-info-700 shadow-md hover:shadow-lg transition-all duration-300"
+								className="px-4 py-2 bg-gradient-to-r from-info to-info-600 text-white rounded-lg hover:from-info-600 hover:to-info-700 shadow-md hover:shadow-lg transition-all duration-300"
 							>
 								<Sparkles className="w-4 h-4 mr-2" />
 								AI Semantic
@@ -146,7 +146,7 @@ export default function RecommendedCoursesPage() {
 							<Button
 								onClick={handleGenerateClick("RULES")}
 								disabled={isGenerating}
-								className="px-4 py-2 bg-linear-to-r from-primary to-primary-600 text-white rounded-lg hover:from-primary-600 hover:to-primary-700 shadow-md hover:shadow-lg transition-all duration-300"
+								className="px-4 py-2 bg-gradient-to-r from-primary to-primary-600 text-white rounded-lg hover:from-primary-600 hover:to-primary-700 shadow-md hover:shadow-lg transition-all duration-300"
 							>
 								<Target className="w-4 h-4 mr-2" />
 								Smart Match
@@ -154,7 +154,7 @@ export default function RecommendedCoursesPage() {
 							<Button
 								onClick={handleGenerateClick("COLLAB_FILTER")}
 								disabled={isGenerating}
-								className="px-4 py-2 bg-linear-to-r from-warning to-warning-600 text-white rounded-lg hover:from-warning-600 hover:to-warning-700 shadow-md hover:shadow-lg transition-all duration-300"
+								className="px-4 py-2 bg-gradient-to-r from-warning to-warning-600 text-white rounded-lg hover:from-warning-600 hover:to-warning-700 shadow-md hover:shadow-lg transition-all duration-300"
 							>
 								<Target className="w-4 h-4 mr-2" />
 								Community
@@ -165,7 +165,7 @@ export default function RecommendedCoursesPage() {
 							<Button
 								onClick={handleGenerateClick("SEMANTIC")}
 								disabled={isGenerating}
-								className="px-8 py-3 bg-linear-to-r from-primary to-purple text-white rounded-lg hover:from-primary-600 hover:to-purple-600 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+								className="px-8 py-3 bg-gradient-to-r from-primary to-purple text-white rounded-lg hover:from-primary-600 hover:to-purple-600 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
 							>
 								{isGenerating ? (
 									<>
@@ -200,7 +200,7 @@ export default function RecommendedCoursesPage() {
 					) : recommendations.length === 0 ? (
 						/* Empty State */
 						<div className="text-center py-20">
-							<div className="w-24 h-24 mx-auto mb-6 bg-linear-to-br from-primary/10 to-purple/10 rounded-full flex items-center justify-center">
+							<div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-primary/10 to-purple/10 rounded-full flex items-center justify-center">
 								<BookOpen className="w-12 h-12 text-primary" />
 							</div>
 							<h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">No Recommendations Yet</h3>
@@ -212,7 +212,7 @@ export default function RecommendedCoursesPage() {
 								<Button
 									onClick={handleGenerateClick("SEMANTIC")}
 									disabled={isGenerating}
-									className="px-6 py-3 bg-linear-to-r from-primary to-purple text-white rounded-lg"
+									className="px-6 py-3 bg-gradient-to-r from-primary to-purple text-white rounded-lg"
 								>
 									<TrendingUp className="w-4 h-4 mr-2" />
 									Generate Recommendations
@@ -243,10 +243,10 @@ export default function RecommendedCoursesPage() {
 									return (
 										<div
 											key={recommendation.id}
-											className="group bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 overflow-hidden border border-gray-100 dark:border-gray-700"
+											className="group bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 overflow-hidden border border-gray-100 dark:border-gray-700"
 										>
 											{/* Course Image */}
-											<div className="relative h-48 bg-linear-to-br from-primary/10 to-purple/10 overflow-hidden">
+											<div className="relative h-48 bg-gradient-to-br from-primary/10 to-purple/10 overflow-hidden">
 												{course.thumbnail ? (
 													<Image
 														src={course.thumbnail}
@@ -358,7 +358,7 @@ export default function RecommendedCoursesPage() {
 													<Button
 														onClick={() => handleEnrollClick(course.id)}
 														disabled={enrollingCourses.has(course.id)}
-														className="px-4 py-2 bg-linear-to-r from-primary to-purple text-white rounded-lg hover:from-primary-600 hover:to-purple-600 transition-all duration-300 text-sm"
+														className="px-4 py-2 bg-gradient-to-r from-primary to-purple text-white rounded-lg hover:from-primary-600 hover:to-purple-600 transition-all duration-300 text-sm"
 													>
 														{enrollingCourses.has(course.id) ? "Enrolling..." : "Enroll Now"}
 													</Button>

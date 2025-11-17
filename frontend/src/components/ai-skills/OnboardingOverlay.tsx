@@ -89,7 +89,7 @@ export function OnboardingOverlay({ onComplete, className = "" }: OnboardingOver
 					{/* icon */}
 					<div className="mb-6">
 						<div
-							className={`w-20 h-20 rounded-2xl bg-linear-to-br ${currentStepData.color} flex items-center justify-center mx-auto shadow-lg`}
+							className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${currentStepData.color} flex items-center justify-center mx-auto shadow-lg`}
 						>
 							<Icon className="w-10 h-10 text-white" />
 						</div>
@@ -113,7 +113,7 @@ export function OnboardingOverlay({ onComplete, className = "" }: OnboardingOver
 								onClick={() => setCurrentStep(index)}
 								className={`w-2 h-2 rounded-full transition-all ${
 									index === currentStep
-										? "w-8 bg-linear-to-r from-primary to-purple"
+										? "w-8 bg-gradient-to-r from-primary to-purple"
 										: index < currentStep
 											? "bg-success"
 											: "bg-gray-300 dark:bg-gray-600"
@@ -128,7 +128,7 @@ export function OnboardingOverlay({ onComplete, className = "" }: OnboardingOver
 						<Button variant="ghost" onClick={handleSkip} className="text-gray-600 dark:text-gray-300">
 							Skip Tutorial
 						</Button>
-						<Button variant="primary" onClick={handleNext} size="lg" className="bg-linear-to-r from-primary to-purple">
+						<Button variant="primary" onClick={handleNext} size="lg" className="bg-gradient-to-r from-primary to-purple">
 							{currentStep < steps.length - 1 ? (
 								<>
 									Next

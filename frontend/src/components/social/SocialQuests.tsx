@@ -81,7 +81,7 @@ export default function SocialQuests() {
 				<div className="mt-4">
 					<div className="h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
 						<div
-							className="h-full bg-linear-to-r from-primary to-purple transition-all duration-500"
+							className="h-full bg-gradient-to-r from-primary to-purple transition-all duration-500"
 							style={{ width: `${quests.length > 0 ? (completedQuests.length / quests.length) * 100 : 0}%` }}
 						/>
 					</div>

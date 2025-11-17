@@ -32,28 +32,28 @@ export function SkillCard({ skill, onUpdate, onLearnMore }: SkillCardProps) {
 			case "BASIC":
 				return {
 					percentage: 25,
-					color: "bg-linear-to-r from-blue-400 to-cyan-400",
+					color: "bg-gradient-to-r from-blue-400 to-cyan-400",
 					variant: "info" as const,
 					icon: <BookOpen className="h-4 w-4" />,
 				};
 			case "INTERMEDIATE":
 				return {
 					percentage: 50,
-					color: "bg-linear-to-r from-yellow-400 to-orange-400",
+					color: "bg-gradient-to-r from-yellow-400 to-orange-400",
 					variant: "warning" as const,
 					icon: <TrendingUp className="h-4 w-4" />,
 				};
 			case "ADVANCED":
 				return {
 					percentage: 75,
-					color: "bg-linear-to-r from-primary to-purple",
+					color: "bg-gradient-to-r from-primary to-purple",
 					variant: "primary" as const,
 					icon: <TrendingUp className="h-4 w-4" />,
 				};
 			case "EXPERT":
 				return {
 					percentage: 90,
-					color: "bg-linear-to-r from-green-400 to-emerald-400",
+					color: "bg-gradient-to-r from-green-400 to-emerald-400",
 					variant: "success" as const,
 					icon: <Award className="h-4 w-4" />,
 				};
@@ -75,7 +75,7 @@ export function SkillCard({ skill, onUpdate, onLearnMore }: SkillCardProps) {
 				{/* Header */}
 				<div className="flex items-center justify-between">
 					<div className="flex items-center space-x-3">
-						<div className="w-10 h-10 min-w-10 min-h-10 bg-linear-to-br from-primary-100 to-purple-100 dark:from-primary-900/50 dark:to-purple-900/50 rounded-full flex items-center justify-center border border-primary-200 dark:border-primary-700 shrink-0">
+						<div className="w-10 h-10 min-w-10 min-h-10 bg-gradient-to-br from-primary-100 to-purple-100 dark:from-primary-900/50 dark:to-purple-900/50 rounded-full flex items-center justify-center border border-primary-200 dark:border-primary-700 shrink-0">
 							{proficiencyData.icon}
 						</div>
 						<div>
@@ -112,7 +112,7 @@ export function SkillCard({ skill, onUpdate, onLearnMore }: SkillCardProps) {
 					<Button
 						size="sm"
 						onClick={() => onLearnMore?.(skill.id)}
-						className="flex-1 bg-linear-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+						className="flex-1 bg-gradient-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200"
 					>
 						Learn More
 					</Button>

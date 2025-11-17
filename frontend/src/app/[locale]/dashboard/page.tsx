@@ -57,7 +57,7 @@ export default function DashboardPage() {
 					<main className="py-8">
 						{/* Welcome Header Skeleton */}
 						<div className="mb-8 space-y-3">
-							<div className="h-12 w-3/4 bg-linear-to-r from-gray-200 via-gray-100 to-gray-200 dark:from-gray-800 dark:via-gray-700 dark:to-gray-800 rounded-xl animate-pulse" />
+							<div className="h-12 w-3/4 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 dark:from-gray-800 dark:via-gray-700 dark:to-gray-800 rounded-xl animate-pulse" />
 							<div className="h-6 w-1/2 bg-gray-200 dark:bg-gray-800 rounded-lg animate-pulse" />
 						</div>
 
@@ -96,7 +96,7 @@ export default function DashboardPage() {
 					{/* Welcome Header */}
 					<div className="mb-8">
 						<h1 className="text-4xl md:text-5xl font-bold mb-3">
-							<span className="bg-linear-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
+							<span className="bg-gradient-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
 								Welcome back, {profile?.name?.split(" ")[0] || "Learner"}! 👋
 							</span>
 						</h1>

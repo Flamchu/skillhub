@@ -67,7 +67,7 @@ export function XPManager() {
 	return (
 		<div className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm border border-primary/20 dark:border-gray-700 rounded-2xl p-8">
 			<div className="flex items-center gap-3 mb-6">
-				<div className="w-12 h-12 bg-linear-to-br from-primary to-purple rounded-2xl flex items-center justify-center">
+				<div className="w-12 h-12 bg-gradient-to-br from-primary to-purple rounded-2xl flex items-center justify-center">
 					<Zap className="h-6 w-6 text-white" />
 				</div>
 				<div>
@@ -128,7 +128,7 @@ export function XPManager() {
 					<Button
 						onClick={() => handleAwardXP(false)}
 						disabled={loading}
-						className="flex-1 bg-linear-to-r from-success to-success-600 hover:from-success-600 hover:to-success-700 text-white"
+						className="flex-1 bg-gradient-to-r from-success to-success-600 hover:from-success-600 hover:to-success-700 text-white"
 					>
 						{loading ? (
 							<Loader2 className="h-5 w-5 animate-spin" />

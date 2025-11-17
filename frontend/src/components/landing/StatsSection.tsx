@@ -15,25 +15,25 @@ interface StatCardProps {
 function StatCard({ icon, value, suffix, label, description, apiKey, colorScheme }: StatCardProps) {
 	const colorClasses = {
 		primary: {
-			bg: "bg-linear-to-br from-primary/10 to-purple/5 dark:from-primary/15 dark:to-purple/10",
+			bg: "bg-gradient-to-br from-primary/10 to-purple/5 dark:from-primary/15 dark:to-purple/10",
 			border: "border-primary/20 dark:border-primary/30",
 			hover: "hover:from-primary/15 hover:to-purple/10 dark:hover:from-primary/20 dark:hover:to-purple/15",
-			iconBg: "bg-linear-to-br from-primary to-purple",
-			textGradient: "bg-linear-to-br from-primary via-purple to-pink text-transparent bg-clip-text",
+			iconBg: "bg-gradient-to-br from-primary to-purple",
+			textGradient: "bg-gradient-to-br from-primary via-purple to-pink text-transparent bg-clip-text",
 		},
 		success: {
-			bg: "bg-linear-to-br from-success-50 to-info-50 dark:from-success-900/20 dark:to-info-900/20",
+			bg: "bg-gradient-to-br from-success-50 to-info-50 dark:from-success-900/20 dark:to-info-900/20",
 			border: "border-success/20 dark:border-success/30",
 			hover: "hover:from-success-100 hover:to-info-100 dark:hover:from-success-800/30 dark:hover:to-info-800/30",
-			iconBg: "bg-linear-to-br from-success-500 to-info-500",
-			textGradient: "bg-linear-to-br from-success via-info-600 to-success-600 text-transparent bg-clip-text",
+			iconBg: "bg-gradient-to-br from-success-500 to-info-500",
+			textGradient: "bg-gradient-to-br from-success via-info-600 to-success-600 text-transparent bg-clip-text",
 		},
 		warning: {
-			bg: "bg-linear-to-br from-warning/10 to-pink/5 dark:from-warning/15 dark:to-pink/10",
+			bg: "bg-gradient-to-br from-warning/10 to-pink/5 dark:from-warning/15 dark:to-pink/10",
 			border: "border-warning/20 dark:border-warning/30",
 			hover: "hover:from-warning/15 hover:to-pink/10 dark:hover:from-warning/20 dark:hover:to-pink/15",
-			iconBg: "bg-linear-to-br from-warning to-pink",
-			textGradient: "bg-linear-to-br from-warning via-pink to-warning text-transparent bg-clip-text",
+			iconBg: "bg-gradient-to-br from-warning to-pink",
+			textGradient: "bg-gradient-to-br from-warning via-pink to-warning text-transparent bg-clip-text",
 		},
 	};
 
@@ -41,7 +41,7 @@ function StatCard({ icon, value, suffix, label, description, apiKey, colorScheme
 
 	return (
 		<div
-			className={`group ${colors.bg} border ${colors.border} rounded-2xl p-8 ${colors.hover} transition-all duration-300 transform hover:scale-105 hover:shadow-xl text-center`}
+			className={`group ${colors.bg} border ${colors.border} rounded-2xl p-8 ${colors.hover} transition-all duration-300 hover:scale-105 hover:shadow-xl text-center`}
 		>
 			<div
 				className={`w-16 h-16 ${colors.iconBg} rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg`}
@@ -64,7 +64,7 @@ export function StatsSection() {
 		<div className="max-w-6xl mx-auto mt-32">
 			<div className="text-center mb-16">
 				<h3 className="text-3xl md:text-4xl font-bold mb-4">
-					<span className="bg-linear-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
+					<span className="bg-gradient-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
 						{t("title")}
 					</span>
 				</h3>
