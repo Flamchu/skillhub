@@ -31,34 +31,34 @@ export default function XPBar() {
 	const { level, xpInCurrentLevel, xpNeededForNextLevel, progressPercentage, currentStreak } = xpData;
 
 	return (
-		<div className="flex items-center gap-3 px-3 py-2 bg-primary/5 border border-primary/20 rounded-lg">
-			{/* level */}
-			<div className="flex items-center gap-1.5 px-2 py-1 bg-primary/10 rounded-md">
-				<Zap className="w-3.5 h-3.5 text-primary" />
-				<span className="text-xs font-bold text-primary">Lv {level}</span>
+		<div className="flex items-center gap-2 px-3 py-2 bg-linear-to-br from-primary/5 via-purple/5 to-pink/5 dark:from-primary/10 dark:via-purple/10 dark:to-pink/10 border border-primary/20 dark:border-primary/30 rounded-xl shadow-sm hover:shadow-md transition-all duration-200">
+			{/* level badge */}
+			<div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-linear-to-br from-primary to-purple rounded-lg shadow-sm">
+				<Zap className="w-3.5 h-3.5 text-white" />
+				<span className="text-xs font-bold text-white">Lv {level}</span>
 			</div>
 
 			{/* xp progress bar */}
 			<div className="flex flex-col gap-1 min-w-[120px]">
 				<div className="flex items-center justify-between text-xs">
-					<span className="font-medium text-foreground-muted">
+					<span className="font-medium text-gray-600 dark:text-gray-400">
 						{xpInCurrentLevel}/{xpNeededForNextLevel} XP
 					</span>
-					<span className="text-primary font-semibold">{progressPercentage}%</span>
+					<span className="text-primary dark:text-primary-400 font-bold">{progressPercentage}%</span>
 				</div>
-				<div className="h-1.5 bg-background-tertiary rounded-full overflow-hidden">
+				<div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden shadow-inner">
 					<div
-						className="h-full bg-linear-to-r from-primary to-purple transition-all duration-300"
+						className="h-full bg-linear-to-r from-primary via-purple to-pink transition-all duration-500 ease-out shadow-sm"
 						style={{ width: `${progressPercentage}%` }}
 					/>
 				</div>
 			</div>
 
-			{/* streak */}
+			{/* streak badge */}
 			{currentStreak > 0 && (
-				<div className="flex items-center gap-1 px-2 py-1 bg-orange-500/10 rounded-md">
-					<Flame className="w-3.5 h-3.5 text-orange-500" />
-					<span className="text-xs font-bold text-orange-500">{currentStreak}</span>
+				<div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-linear-to-br from-orange-400 to-orange-500 rounded-lg shadow-sm">
+					<Flame className="w-3.5 h-3.5 text-white" />
+					<span className="text-xs font-bold text-white">{currentStreak}</span>
 				</div>
 			)}
 		</div>
