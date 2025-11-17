@@ -38,15 +38,23 @@ router.get("/search", async (req: Request, res: Response) => {
 			return res.status(400).json({ error: "Search query required" });
 		}
 
-		const results = await udemyService.searchCourses(query, {
-			page: page ? parseInt(page as string) : undefined,
-			pageSize: pageSize ? parseInt(pageSize as string) : undefined,
-			category: category as string,
-			level: level as string,
-			language: language as string,
-			price: price as "paid" | "free",
-			orderBy: orderBy as string,
-		});
+		const results = await udemyService
+			.searchCourses(query, {
+				page: page ? parseInt(page as string) : undefined,
+				pageSize: pageSize ? parseInt(pageSize as string) : undefined,
+				category: category as string,
+				level: level as string,
+				language: language as string,
+				price: price as "paid" | "free",
+				orderBy: orderBy as string,
+			})
+			.catch((error) => {
+				// if udemy api not configured, return empty results instead of error
+				if (error.message === "Udemy API not configured") {
+					return { count: 0, next: null, previous: null, results: [] };
+				}
+				throw error;
+			});
 
 		res.json(results);
 	} catch (error) {
@@ -64,7 +72,17 @@ router.get("/course/:courseId", async (req: Request, res: Response) => {
 			return res.status(400).json({ error: "Invalid course ID" });
 		}
 
-		const course = await udemyService.getCourseDetails(courseId);
+		const course = await udemyService.getCourseDetails(courseId).catch(error => {
+			if (error.message === "Udemy API not configured") {
+				return null;
+			}
+			throw error;
+		});
+
+		if (!course) {
+			return res.status(404).json({ error: "Course not found or Udemy API not configured" });
+		}
+
 		res.json(course);
 	} catch (error) {
 		console.error("Udemy course details error:", error);

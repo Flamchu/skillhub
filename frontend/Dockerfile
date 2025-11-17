@@ -28,6 +28,7 @@ RUN corepack enable && corepack prepare pnpm@10.22.0 --activate
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 COPY frontend/package.json frontend/next.config.ts frontend/tailwind.config.js frontend/postcss.config.mjs frontend/eslint.config.mjs frontend/tsconfig.json ./frontend/
 COPY frontend/src ./frontend/src
+COPY frontend/public ./frontend/public
 
 # copy dependencies from deps stage (after source code)
 COPY --from=deps /app/node_modules ./node_modules
@@ -70,6 +71,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/frontend/package.json ./frontend/
 # copy next.js standalone build output
 COPY --from=builder --chown=nextjs:nodejs /app/frontend/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/frontend/.next/static ./frontend/.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/frontend/public ./frontend/public
 
 # copy next.config and i18n config for next-intl
 COPY --from=builder --chown=nextjs:nodejs /app/frontend/next.config.ts ./frontend/
