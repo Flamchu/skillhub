@@ -20,6 +20,12 @@ model User {
   updatedAt                DateTime                   @updatedAt
   supabaseId               String                     @unique
   deletedAt                DateTime?
+  xp                       Int                        @default(0)
+  level                    Int                        @default(1)
+  currentStreak            Int                        @default(0)
+  longestStreak            Int                        @default(0)
+  lastActivityDate         DateTime?
+  socialEnabled            Boolean                    @default(false)
   bookmarks                Bookmark[]
   enrollments              Enrollment[]
   recommendations          Recommendation[]
@@ -29,10 +35,17 @@ model User {
   userProgress             UserProgress[]
   skills                   UserSkill[]
   verificationAttempts     SkillVerificationAttempt[]
+  questCompletions         QuestCompletion[]
+  xpTransactions           XPTransaction[]
 
   @@index([regionId])
   @@index([supabaseId])
   @@index([deletedAt])
+  @@index([xp])
+  @@index([level])
+  @@index([currentStreak])
+  @@index([lastActivityDate])
+  @@index([socialEnabled])
 }
 
 model Skill {
@@ -400,4 +413,77 @@ enum RecommendationAlgorithm {
   COLLAB_FILTER
   HYBRID
   SEMANTIC
+}
+
+model Quest {
+  id               String            @id @default(uuid())
+  title            String
+  description      String
+  type             QuestType
+  xpReward         Int               @default(50)
+  targetCount      Int               @default(1)
+  isActive         Boolean           @default(true)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  completions      QuestCompletion[]
+
+  @@index([type])
+  @@index([isActive])
+}
+
+model QuestCompletion {
+  id               String    @id @default(uuid())
+  userId           String
+  questId          String
+  completedAt      DateTime  @default(now())
+  progress         Int       @default(0)
+  isCompleted      Boolean   @default(false)
+  xpAwarded        Int       @default(0)
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quest            Quest     @relation(fields: [questId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, questId, completedAt])
+  @@index([userId])
+  @@index([questId])
+  @@index([completedAt])
+  @@index([isCompleted])
+}
+
+model XPTransaction {
+  id          String            @id @default(uuid())
+  userId      String
+  amount      Int
+  source      XPSource
+  description String?
+  metadata    Json?
+  createdAt   DateTime          @default(now())
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([source])
+  @@index([createdAt])
+}
+
+enum QuestType {
+  DAILY_LOGIN
+  COMPLETE_LESSON
+  COMPLETE_COURSE
+  ADD_SKILL
+  VERIFY_SKILL
+  BOOKMARK_COURSE
+  COMPLETE_TEST
+  STUDY_TIME
+  COMPLETE_MULTIPLE_LESSONS
+  PERFECT_SCORE
+}
+
+enum XPSource {
+  QUEST_COMPLETION
+  LESSON_COMPLETION
+  COURSE_COMPLETION
+  SKILL_VERIFICATION
+  DAILY_LOGIN
+  STREAK_BONUS
+  ACHIEVEMENT
+  ADMIN_GRANT
 }

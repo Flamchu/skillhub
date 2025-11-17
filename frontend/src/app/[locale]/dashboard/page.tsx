@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useAuth } from "@/context/AuthProvider";
 import { PageLayout, LoadingState, LanguageSwitcher } from "@/components/ui";
 import { AIWorkflowPrompt, QuickActions, EnrolledCourses, LearningStats } from "@/components/dashboard";
+import XPBar from "@/components/social/XPBar";
 import { api } from "@/lib/http";
 import type { UserSkill } from "@/types";
 
@@ -69,6 +70,8 @@ export default function DashboardPage() {
 					</Link>
 					<div className="flex items-center gap-6">
 						<LanguageSwitcher />
+						{/* xp bar - only shows if social enabled */}
+						<XPBar />
 						<span className="text-gray-600 dark:text-gray-300 font-medium hidden md:block">
 							Welcome, <span className="text-primary font-semibold">{profile?.name || user?.email}</span>
 						</span>

@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 /* Tailwind v4 Dark Mode Configuration */
+/* stylelint-disable-next-line at-rule-no-unknown */
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* SkillHub Design System - Professional Color Schema using Tailwind v4 @theme */
@@ -56,6 +57,7 @@
 }
 
 /* Tailwind v4 @theme for custom colors */
+/* stylelint-disable-next-line at-rule-no-unknown */
 @theme {
 	/* Background colors */
 	--color-background: var(--bg-default);
@@ -274,6 +276,7 @@ html {
 	display: -webkit-box;
 	-webkit-box-orient: vertical;
 	-webkit-line-clamp: 1;
+	line-clamp: 1;
 }
 
 .line-clamp-2 {
@@ -281,6 +284,7 @@ html {
 	display: -webkit-box;
 	-webkit-box-orient: vertical;
 	-webkit-line-clamp: 2;
+	line-clamp: 2;
 }
 
 .line-clamp-3 {
@@ -288,6 +292,7 @@ html {
 	display: -webkit-box;
 	-webkit-box-orient: vertical;
 	-webkit-line-clamp: 3;
+	line-clamp: 3;
 }
 
 /* Custom animations for AI skills features */

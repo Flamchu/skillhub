@@ -1,7 +1,10 @@
 import { Router, Request, Response } from "express";
-import { ProficiencyLevel } from "@prisma/client";
+import { ProficiencyLevel, QuestType } from "@prisma/client";
 import { AuthenticatedRequest, authenticateSupabaseToken } from "../middleware/supabaseAuth";
+import { redis, isRedisAvailable, generateCacheKey, CACHE_TTL, CACHE_KEYS } from "../config/redis";
 import { prisma } from "../config/database";
+import { invalidateUserRecommendationsCache } from "./recommendations";
+import { checkQuestProgress } from "../services/socialService";
 
 const router = Router();
 
@@ -10,6 +13,17 @@ router.get("/:userId/skills", async (req: Request, res: Response) => {
 	try {
 		const { userId } = req.params;
 		const { includeProgress = "false", skillId } = req.query;
+
+		// generate cache key
+		const cacheKey = generateCacheKey(CACHE_KEYS.USER_SKILLS, userId, includeProgress as string, (skillId as string) || "all");
+
+		// try to get from cache
+		if (isRedisAvailable && redis) {
+			const cached = await redis.get(cacheKey);
+			if (cached) {
+				return res.json(JSON.parse(cached));
+			}
+		}
 
 		// check if user exists
 		const user = await prisma.user.findUnique({
@@ -90,12 +104,32 @@ router.get("/:userId/skills", async (req: Request, res: Response) => {
 			);
 		}
 
-		res.json({ skills: enrichedSkills });
+		const result = { skills: enrichedSkills };
+
+		// cache the result (5 minutes)
+		if (isRedisAvailable && redis) {
+			await redis.setex(cacheKey, CACHE_TTL.SHORT, JSON.stringify(result));
+		}
+
+		res.json(result);
 	} catch (error) {
 		console.error("Get user skills error:", error);
 		res.status(500).json({ error: "Internal server error" });
 	}
 });
+
+// helper function to invalidate user skills cache
+async function invalidateUserSkillsCache(userId: string) {
+	if (isRedisAvailable && redis) {
+		const cachePattern = generateCacheKey(CACHE_KEYS.USER_SKILLS, userId, "*");
+		const keys = await redis.keys(cachePattern);
+		if (keys.length > 0) {
+			await redis.del(...keys);
+		}
+	}
+	// also invalidate recommendations cache since they depend on user skills
+	await invalidateUserRecommendationsCache(userId);
+}
 
 // add skill to user profile (protected)
 router.post("/:userId/skills", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
@@ -193,6 +227,12 @@ router.post("/:userId/skills", authenticateSupabaseToken, async (req: Authentica
 				},
 			},
 		});
+
+		// check quest progress for adding a skill
+		await checkQuestProgress(userId, QuestType.ADD_SKILL);
+
+		// invalidate cache
+		await invalidateUserSkillsCache(userId);
 
 		res.status(201).json({
 			message: "Skill added successfully",
@@ -302,6 +342,9 @@ router.patch("/:userId/skills/:skillId", authenticateSupabaseToken, async (req: 
 			},
 		});
 
+		// invalidate cache
+		await invalidateUserSkillsCache(userId);
+
 		res.json({
 			message: "User skill updated successfully",
 			userSkill: updatedUserSkill,
@@ -345,6 +388,9 @@ router.delete("/:userId/skills/:skillId", authenticateSupabaseToken, async (req:
 				},
 			},
 		});
+
+		// invalidate cache
+		await invalidateUserSkillsCache(userId);
 
 		res.json({ message: "Skill removed successfully" });
 	} catch (error) {

@@ -1,6 +1,9 @@
 import { Router, Response } from "express";
 import { AuthenticatedRequest, authenticateSupabaseToken } from "../middleware/supabaseAuth";
 import { prisma } from "../config/database";
+import { invalidateUserRecommendationsCache } from "./recommendations";
+import { QuestType } from "@prisma/client";
+import { checkQuestProgress } from "../services/socialService";
 
 const router = Router();
 
@@ -158,6 +161,9 @@ router.post("/", authenticateSupabaseToken, async (req: AuthenticatedRequest, re
 			},
 		});
 
+		// check quest progress for bookmarking a course
+		await checkQuestProgress(userId, QuestType.BOOKMARK_COURSE);
+
 		res.status(201).json({
 			bookmark: {
 				id: bookmark.id,
@@ -168,6 +174,9 @@ router.post("/", authenticateSupabaseToken, async (req: AuthenticatedRequest, re
 				},
 			},
 		});
+
+		// invalidate recommendations cache since bookmarks affect recommendations
+		await invalidateUserRecommendationsCache(userId);
 	} catch (error) {
 		console.error("Error creating bookmark:", error);
 		res.status(500).json({ error: "Internal server error" });
@@ -202,6 +211,9 @@ router.delete("/:bookmarkId", authenticateSupabaseToken, async (req: Authenticat
 		});
 
 		res.json({ message: "Bookmark removed successfully" });
+
+		// invalidate recommendations cache since bookmarks affect recommendations
+		await invalidateUserRecommendationsCache(userId);
 	} catch (error) {
 		console.error("Error deleting bookmark:", error);
 		res.status(500).json({ error: "Internal server error" });
@@ -241,6 +253,9 @@ router.delete("/course/:courseId", authenticateSupabaseToken, async (req: Authen
 		});
 
 		res.json({ message: "Bookmark removed successfully" });
+
+		// invalidate recommendations cache since bookmarks affect recommendations
+		await invalidateUserRecommendationsCache(userId);
 	} catch (error) {
 		console.error("Error deleting bookmark:", error);
 		res.status(500).json({ error: "Internal server error" });

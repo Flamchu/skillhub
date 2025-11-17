@@ -7,7 +7,7 @@ import { api } from "@/lib/http";
 import { useAuth } from "@/context/AuthProvider";
 import type { UserProfile, UpdateUserData } from "@/types";
 import { Input, Button } from "@/components/ui";
-import { X, AlertTriangle } from "lucide-react";
+import { X, AlertTriangle, Users } from "lucide-react";
 
 // region data structure from api
 interface Region {
@@ -241,7 +241,6 @@ export function EditProfileModal({ isOpen, onClose, user }: EditProfileModalProp
 							<p className="text-red-700 dark:text-red-300 font-medium">{error}</p>
 						</div>
 					)}
-
 					{success && (
 						<div className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
 							<p className="text-green-700 dark:text-green-300 font-medium flex items-center gap-2">
@@ -250,7 +249,6 @@ export function EditProfileModal({ isOpen, onClose, user }: EditProfileModalProp
 							</p>
 						</div>
 					)}
-
 					<form onSubmit={handleSubmit} className="space-y-6">
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 							<Input
@@ -320,7 +318,64 @@ export function EditProfileModal({ isOpen, onClose, user }: EditProfileModalProp
 							</Button>
 						</div>
 					</form>
+					{/* social environment toggle */}
+					<div className="mt-8 pt-8 border-t border-border">
+						<div className="flex items-center gap-2 mb-4">
+							<Users className="w-5 h-5 text-primary" />
+							<h3 className="text-xl font-bold text-foreground">Social Environment</h3>
+						</div>
+						<p className="text-sm text-foreground-muted mb-6">
+							Enable the social environment to compete on leaderboards, complete daily quests, earn XP, track your
+							learning streak, and level up! You can disable this at any time.
+						</p>
 
+						<div className="flex items-center justify-between p-4 bg-primary/5 border border-primary/20 rounded-lg">
+							<div>
+								<h4 className="font-semibold text-foreground">
+									{user?.socialEnabled ? "Social Environment Enabled" : "Enable Social Environment"}
+								</h4>
+								<p className="text-sm text-foreground-muted">
+									{user?.socialEnabled
+										? "You're participating in the social features. Disable to hide XP, quests, and leaderboards."
+										: "Join the community! Track your progress and compete with other learners."}
+								</p>
+							</div>
+							<label className="relative inline-flex items-center cursor-pointer">
+								<input
+									type="checkbox"
+									checked={user?.socialEnabled || false}
+									onChange={async e => {
+										const enabled = e.target.checked;
+										try {
+											const res = await fetch(
+												`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/${user?.id}/social-toggle`,
+												{
+													method: "PATCH",
+													headers: {
+														"Content-Type": "application/json",
+														Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+													},
+													body: JSON.stringify({ enabled }),
+												}
+											);
+
+											if (res.ok) {
+												// update local user state
+												const updatedUser = JSON.parse(localStorage.getItem("user") || "{}");
+												updatedUser.socialEnabled = enabled;
+												localStorage.setItem("user", JSON.stringify(updatedUser));
+												window.location.reload(); // reload to show/hide XP bar
+											}
+										} catch (error) {
+											console.error("Failed to toggle social environment:", error);
+										}
+									}}
+									className="sr-only peer"
+								/>
+								<div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 dark:peer-focus:ring-primary/40 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary" />
+							</label>
+						</div>
+					</div>{" "}
 					{/* danger zone */}
 					<div className="mt-12 pt-8 border-t-2 border-red-200 dark:border-red-900">
 						<div className="flex items-center gap-2 mb-4">

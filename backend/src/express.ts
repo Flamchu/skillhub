@@ -14,6 +14,7 @@ import dashboardRoutes from "./routes/dashboard";
 import statsRoutes from "./routes/stats";
 import skillVerificationRoutes from "./routes/skillVerification";
 import skillVerificationAdminRoutes from "./routes/skillVerificationAdmin";
+import socialRoutes from "./routes/social";
 import { performanceMonitoring, performanceEndpoint, healthCheck } from "./middleware/performance";
 import { connectDatabase } from "./config/database";
 import "./config/redis"; // initialize redis connection
@@ -69,6 +70,9 @@ app.use("/api", skillVerificationRoutes);
 
 // skill verification admin routes (admin only)
 app.use("/api", skillVerificationAdminRoutes);
+
+// social/gamification routes (mixed public/protected)
+app.use("/api/social", socialRoutes);
 
 // error handling middleware (must be last)
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler";

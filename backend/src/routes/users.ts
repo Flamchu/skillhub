@@ -241,6 +241,43 @@ router.patch("/:id", authenticateSupabaseToken, async (req: AuthenticatedRequest
 	}
 });
 
+// toggle social environment (protected)
+router.patch("/:id/social-toggle", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
+	try {
+		const { id } = req.params;
+		const { enabled } = req.body;
+		const currentUser = req.user!;
+
+		// users can only toggle their own social environment
+		if (currentUser.id !== id && currentUser.role !== "ADMIN") {
+			return res.status(403).json({ error: "Access denied" });
+		}
+
+		if (typeof enabled !== "boolean") {
+			return res.status(400).json({ error: "Enabled must be a boolean value" });
+		}
+
+		const user = await prisma.user.update({
+			where: { id },
+			data: {
+				socialEnabled: enabled,
+			},
+			select: {
+				id: true,
+				socialEnabled: true,
+			},
+		});
+
+		res.json({
+			message: `Social environment ${enabled ? "enabled" : "disabled"} successfully`,
+			socialEnabled: user.socialEnabled,
+		});
+	} catch (error) {
+		console.error("Toggle social environment error:", error);
+		res.status(500).json({ error: "Internal server error" });
+	}
+});
+
 // delete user account (protected, only own account or admin)
 router.delete("/:id", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
 	try {
