@@ -148,13 +148,21 @@ cache keys are generated per user for personalized data.
 
 all xp calculations use identical formulas on:
 
-- backend (authoritative, handles awards)
-- frontend (display, reduces server load)
+- backend (authoritative, handles awards and persistence)
+- frontend (client-side display only, zero server load)
 
 formulas in:
 
 - backend: `/services/socialService.ts`
 - frontend: `/lib/socialUtils.ts`
+
+**performance optimization:**
+
+- xp bar is **100% client-side** - calculates from user data in localStorage
+- no api calls on page load or navigation
+- uses `useMemo` to recalculate only when xp/streak changes
+- instant display with no loading state
+- updates optimistically after xp-awarding actions via `updateLocalXP()`
 
 #### course completion
 

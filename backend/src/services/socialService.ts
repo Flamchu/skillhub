@@ -40,7 +40,7 @@ export function getProgressToNextLevel(xp: number): { currentLevel: number; xpIn
 	};
 }
 
-// award xp to user
+// award xp to user (supports negative amounts for removal)
 export async function awardXP(userId: string, amount: number, source: XPSource, description?: string, metadata?: any) {
 	// create xp transaction
 	const transaction = await prisma.xPTransaction.create({
@@ -63,11 +63,11 @@ export async function awardXP(userId: string, amount: number, source: XPSource, 
 		},
 	});
 
-	// calculate new level
-	const newLevel = getLevelFromXP(user.xp);
+	// calculate new level (handles both increases and decreases)
+	const newLevel = getLevelFromXP(Math.max(0, user.xp)); // ensure xp doesn't go below 0
 
 	// update level if it changed
-	if (newLevel > user.level) {
+	if (newLevel !== user.level) {
 		await prisma.user.update({
 			where: { id: userId },
 			data: { level: newLevel },

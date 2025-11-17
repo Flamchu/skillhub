@@ -229,18 +229,19 @@ router.post("/xp/award", authenticateSupabaseToken, requireAdmin, async (req: Au
 	try {
 		const { userId, amount, description } = req.body;
 
-		if (!userId || !amount) {
+		if (!userId || amount === undefined || amount === null) {
 			return res.status(400).json({ error: "userId and amount are required" });
 		}
 
-		if (amount <= 0) {
-			return res.status(400).json({ error: "Amount must be positive" });
+		if (amount === 0) {
+			return res.status(400).json({ error: "Amount cannot be zero" });
 		}
 
-		const result = await awardXP(userId, amount, XPSource.ADMIN_GRANT, description || "Admin granted XP");
+		// allow negative amounts for removing xp
+		const result = await awardXP(userId, amount, XPSource.ADMIN_GRANT, description || `Admin ${amount > 0 ? "granted" : "removed"} ${Math.abs(amount)} XP`);
 
 		res.json({
-			message: "XP awarded successfully",
+			message: `XP ${amount > 0 ? "awarded" : "removed"} successfully`,
 			...result,
 		});
 	} catch (error) {

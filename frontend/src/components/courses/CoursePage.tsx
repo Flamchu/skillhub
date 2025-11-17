@@ -151,7 +151,6 @@ export default function CoursePage({ courseId }: { courseId: string }) {
 
 					{/* sidebar */}
 					<div className="lg:col-span-1">
-						\
 						<CourseLessons
 							course={course}
 							selectedLessonId={selectedLessonId || undefined}
