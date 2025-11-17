@@ -3,8 +3,9 @@
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { Shield, GraduationCap, Users, Trash2 } from "lucide-react";
+import { Shield, GraduationCap, Users, Trash2, Copy, Check } from "lucide-react";
 import type { UserProfile } from "@/types";
+import { useState } from "react";
 
 interface UserCardProps {
 	user: UserProfile;
@@ -16,6 +17,14 @@ interface UserCardProps {
  * Admin user management card component
  */
 export function UserCard({ user, onRoleChange, onDelete }: UserCardProps) {
+	const [copied, setCopied] = useState(false);
+
+	const copyUUID = () => {
+		navigator.clipboard.writeText(user.id);
+		setCopied(true);
+		setTimeout(() => setCopied(false), 2000);
+	};
+
 	const getRoleIcon = (role: string) => {
 		switch (role) {
 			case "ADMIN":
@@ -59,6 +68,22 @@ export function UserCard({ user, onRoleChange, onDelete }: UserCardProps) {
 
 						<p className="text-gray-600 dark:text-gray-400">{user.email}</p>
 						{user.headline && <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{user.headline}</p>}
+
+						{/* UUID Display with Copy */}
+						<div className="flex items-center mt-2 space-x-2">
+							<span className="text-xs text-gray-500 dark:text-gray-400 font-mono">UUID: {user.id}</span>
+							<button
+								onClick={copyUUID}
+								className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
+								title="Copy UUID"
+							>
+								{copied ? (
+									<Check className="h-3 w-3 text-green-500" />
+								) : (
+									<Copy className="h-3 w-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" />
+								)}
+							</button>
+						</div>
 
 						{user.regionId && (
 							<div className="flex items-center mt-2 text-sm text-gray-500 dark:text-gray-400">
