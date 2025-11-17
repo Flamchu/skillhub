@@ -251,6 +251,7 @@ export async function getWeeklyLeaderboard(limit: number = 50) {
 				in: userIds,
 			},
 			deletedAt: null,
+			socialEnabled: true,
 		},
 		select: {
 			id: true,

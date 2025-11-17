@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthProvider";
 import { PageLayout, LoadingState, LanguageSwitcher } from "@/components/ui";
-import { AIWorkflowPrompt, QuickActions, EnrolledCourses, LearningStats } from "@/components/dashboard";
+import { AIWorkflowPrompt, QuickActions, EnrolledCourses, LearningStats, SocialZoneCard } from "@/components/dashboard";
 import XPBar from "@/components/social/XPBar";
 import { api } from "@/lib/http";
 import type { UserSkill } from "@/types";
@@ -117,9 +117,15 @@ export default function DashboardPage() {
 				<div className="mb-8">
 					<LearningStats skillsCount={skillsCount} enrolledCount={0} completedCount={0} />
 				</div>
+
 				{/* Quick Actions */}
 				<div className="mb-8">
 					<QuickActions />
+				</div>
+
+				{/* Social Zone Card - only visible if social enabled */}
+				<div className="mb-8">
+					<SocialZoneCard />
 				</div>
 
 				{/* Enrolled Courses Section */}

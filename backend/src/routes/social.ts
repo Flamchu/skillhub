@@ -1,5 +1,6 @@
 import { Router, Response } from "express";
 import { AuthenticatedRequest, authenticateSupabaseToken, requireAdmin } from "../middleware/supabaseAuth";
+import { requireSocialEnabled } from "../middleware/socialEnabled";
 import { prisma } from "../config/database";
 import { redis, isRedisAvailable, generateCacheKey, CACHE_TTL, CACHE_KEYS } from "../config/redis";
 import { awardXP, checkQuestProgress, getLevelFromXP, getProgressToNextLevel, getUserDailyQuests, getWeeklyLeaderboard, getXPForLevel, seedQuests, updateStreak } from "../services/socialService";
@@ -8,7 +9,7 @@ import { XPSource, QuestType } from "@prisma/client";
 const router = Router();
 
 // get user's gamification profile
-router.get("/profile", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
+router.get("/profile", authenticateSupabaseToken, requireSocialEnabled, async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		const userId = req.user!.id;
 
@@ -60,7 +61,7 @@ router.get("/profile", authenticateSupabaseToken, async (req: AuthenticatedReque
 });
 
 // get user's daily quests
-router.get("/quests/daily", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
+router.get("/quests/daily", authenticateSupabaseToken, requireSocialEnabled, async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		const userId = req.user!.id;
 
@@ -136,6 +137,7 @@ router.get("/leaderboard/global", async (req, res: Response) => {
 		const users = await prisma.user.findMany({
 			where: {
 				deletedAt: null,
+				socialEnabled: true,
 			},
 			select: {
 				id: true,
@@ -185,7 +187,7 @@ router.get("/leaderboard/global", async (req, res: Response) => {
 });
 
 // get user's xp history
-router.get("/xp/history", authenticateSupabaseToken, async (req: AuthenticatedRequest, res: Response) => {
+router.get("/xp/history", authenticateSupabaseToken, requireSocialEnabled, async (req: AuthenticatedRequest, res: Response) => {
 	try {
 		const userId = req.user!.id;
 		const limit = Math.min(parseInt(req.query.limit as string) || 50, 100);
