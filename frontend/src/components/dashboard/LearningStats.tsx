@@ -18,16 +18,16 @@ interface LearningStatsProps {
 export function LearningStats({ enrolledCount = 0, skillsCount = 0, completedCount = 0 }: LearningStatsProps) {
 	const stats: Stat[] = [
 		{
-			label: "Enrolled Courses",
-			value: enrolledCount,
-			icon: <BookOpen className="w-5 h-5" />,
-			color: "primary",
-		},
-		{
 			label: "Skills Tracked",
 			value: skillsCount,
 			icon: <Zap className="w-5 h-5" />,
 			color: "success",
+		},
+		{
+			label: "Enrolled Courses",
+			value: enrolledCount,
+			icon: <BookOpen className="w-5 h-5" />,
+			color: "primary",
 		},
 		{
 			label: "Hours Learning",

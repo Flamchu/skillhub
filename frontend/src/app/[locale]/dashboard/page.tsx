@@ -127,7 +127,7 @@ export default function DashboardPage() {
 							<p className="text-gray-600 dark:text-gray-300">Pick up where you left off</p>
 						</div>
 					</div>
-					<EnrolledCourses limit={6} />
+					<EnrolledCourses limit={3} />
 				</div>
 			</main>
 		</PageLayout>
