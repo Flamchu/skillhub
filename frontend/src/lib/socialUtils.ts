@@ -3,45 +3,27 @@
  * keeps xp calculations on the client to reduce server load
  */
 
-// social profile structure
-interface SocialProfile {
-	user: {
-		id: string;
-		name: string | null;
-		xp: number;
-		level: number;
-		currentStreak: number;
-		longestStreak: number;
-		lastActivityDate: string | null;
-		currentLevel: number;
-		xpInCurrentLevel: number;
-		xpNeededForNextLevel: number;
-		progressPercentage: number;
-	};
-}
-
 // xp required for each level (matches backend logic)
 const XP_PER_LEVEL = 100;
 const XP_MULTIPLIER = 1.5;
 
 /**
- * calculate level from total xp
+ * calculate level from total xp (matches backend logic exactly)
  */
 export function getLevelFromXP(xp: number): number {
 	let level = 1;
-	let xpNeeded = XP_PER_LEVEL;
+	let totalXPNeeded = 0;
 
-	while (xp >= xpNeeded) {
-		xp -= xpNeeded;
+	while (totalXPNeeded + getXPForLevel(level) <= xp) {
+		totalXPNeeded += getXPForLevel(level);
 		level++;
-		xpNeeded = Math.floor(XP_PER_LEVEL * Math.pow(XP_MULTIPLIER, level - 1));
 	}
 
 	return level;
 }
 
 /**
- * calculate xp progress in current level
+ * calculate xp progress in current level (matches backend logic exactly)
  */
 export function getProgressToNextLevel(xp: number): {
 	currentLevel: number;
@@ -52,16 +34,16 @@ export function getProgressToNextLevel(xp: number): {
 	const currentLevel = getLevelFromXP(xp);
 
 	// calculate total xp needed to reach current level
-	let totalXPForCurrentLevel = 0;
+	let totalXPForPreviousLevels = 0;
 	for (let i = 1; i < currentLevel; i++) {
-		totalXPForCurrentLevel += Math.floor(XP_PER_LEVEL * Math.pow(XP_MULTIPLIER, i - 1));
+		totalXPForPreviousLevels += getXPForLevel(i);
 	}
 
 	// xp earned in current level
-	const xpInCurrentLevel = xp - totalXPForCurrentLevel;
+	const xpInCurrentLevel = xp - totalXPForPreviousLevels;
 
 	// xp needed for next level
-	const xpNeededForNextLevel = Math.floor(XP_PER_LEVEL * Math.pow(XP_MULTIPLIER, currentLevel - 1));
+	const xpNeededForNextLevel = getXPForLevel(currentLevel);
 
 	// percentage progress
 	const progressPercentage = Math.floor((xpInCurrentLevel / xpNeededForNextLevel) * 100);
@@ -93,60 +75,64 @@ export function getXPForLevel(level: number): number {
 }
 
 /**
- * cache social profile in localStorage
+ * optimistically update xp in localStorage and user data
+ * call this after actions that award xp (lesson completion, etc)
  */
-export function cacheSocialProfile(userId: string, profile: SocialProfile): void {
-	const cacheKey = `social:profile:${userId}`;
-	const cacheData = {
-		profile,
-		timestamp: Date.now(),
-	};
-	localStorage.setItem(cacheKey, JSON.stringify(cacheData));
-}
-
-/**
- * get cached social profile from localStorage
- * returns null if cache is older than ttl (in seconds)
- */
-export function getCachedSocialProfile(userId: string, ttl: number = 60): SocialProfile | null {
-	const cacheKey = `social:profile:${userId}`;
-	const cached = localStorage.getItem(cacheKey);
-
-	if (!cached) return null;
+export function updateLocalXP(userId: string, xpGained: number): void {
+	// update user object in localStorage
+	const userStr = localStorage.getItem("user");
+	if (!userStr) return;
 
 	try {
-		const { profile, timestamp } = JSON.parse(cached);
-		const age = (Date.now() - timestamp) / 1000; // age in seconds
+		const user = JSON.parse(userStr);
+		user.xp = (user.xp || 0) + xpGained;
 
-		if (age > ttl) {
-			// cache expired
-			localStorage.removeItem(cacheKey);
-			return null;
-		}
+		// recalculate level
+		const progress = getProgressToNextLevel(user.xp);
+		user.level = progress.currentLevel;
 
-		return profile;
-	} catch {
-		return null;
+		// save back to localStorage
+		localStorage.setItem("user", JSON.stringify(user));
+
+		// trigger storage event for auth provider to refresh
+		window.dispatchEvent(
+			new StorageEvent("storage", {
+				key: "user",
+				newValue: JSON.stringify(user),
+				storageArea: localStorage,
+			})
+		);
+	} catch (error) {
+		console.warn("Failed to update local XP:", error);
 	}
 }
 
 /**
- * optimistically update xp in localStorage
+ * update streak data in localStorage
  */
-export function updateLocalXP(userId: string, xpGained: number): void {
-	const cached = getCachedSocialProfile(userId, Infinity); // get regardless of ttl
-	if (!cached) return;
+export function updateLocalStreak(currentStreak: number, longestStreak: number): void {
+	const userStr = localStorage.getItem("user");
+	if (!userStr) return;
 
-	cached.user.xp += xpGained;
+	try {
+		const user = JSON.parse(userStr);
+		user.currentStreak = currentStreak;
+		user.longestStreak = longestStreak;
+		user.lastActivityDate = new Date().toISOString();
 
-	// recalculate level progress
-	const progress = getProgressToNextLevel(cached.user.xp);
-	cached.user.level = progress.currentLevel;
-	cached.user.xpInCurrentLevel = progress.xpInCurrentLevel;
-	cached.user.xpNeededForNextLevel = progress.xpNeededForNextLevel;
-	cached.user.progressPercentage = progress.progressPercentage;
+		localStorage.setItem("user", JSON.stringify(user));
 
-	cacheSocialProfile(userId, cached);
+		// trigger storage event
+		window.dispatchEvent(
+			new StorageEvent("storage", {
+				key: "user",
+				newValue: JSON.stringify(user),
+				storageArea: localStorage,
+			})
+		);
+	} catch (error) {
+		console.warn("Failed to update local streak:", error);
+	}
 }
 
 /**

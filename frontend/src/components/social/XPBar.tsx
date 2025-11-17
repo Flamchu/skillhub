@@ -1,72 +1,34 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { Zap, Flame } from "lucide-react";
 import { useAuth } from "@/context/AuthProvider";
-
-interface SocialProfile {
-	user: {
-		id: string;
-		name: string | null;
-		xp: number;
-		level: number;
-		currentStreak: number;
-		longestStreak: number;
-		lastActivityDate: string | null;
-		currentLevel: number;
-		xpInCurrentLevel: number;
-		xpNeededForNextLevel: number;
-		progressPercentage: number;
-	};
-}
+import { getProgressToNextLevel } from "@/lib/socialUtils";
 
 export default function XPBar() {
 	const { user } = useAuth();
-	const [profile, setProfile] = useState<SocialProfile | null>(null);
-	const [loading, setLoading] = useState(true);
 
-	useEffect(() => {
-		// only fetch if user has social enabled
-		if (!user?.socialEnabled) {
-			setLoading(false);
-			return;
-		}
+	// calculate xp progress client-side from user data
+	const xpData = useMemo(() => {
+		if (!user?.socialEnabled) return null;
 
-		const fetchProfile = async () => {
-			try {
-				const token = localStorage.getItem("auth_token");
-				if (!token) return;
+		const progress = getProgressToNextLevel(user.xp || 0);
 
-				const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/social/profile`, {
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-				});
-
-				if (res.ok) {
-					const data = await res.json();
-					setProfile(data);
-				}
-			} catch (error) {
-				console.error("Failed to fetch social profile:", error);
-			} finally {
-				setLoading(false);
-			}
+		return {
+			level: progress.currentLevel,
+			xpInCurrentLevel: progress.xpInCurrentLevel,
+			xpNeededForNextLevel: progress.xpNeededForNextLevel,
+			progressPercentage: progress.progressPercentage,
+			currentStreak: user.currentStreak || 0,
 		};
+	}, [user?.socialEnabled, user?.xp, user?.currentStreak]);
 
-		fetchProfile();
-
-		// refresh every 5 minutes
-		const interval = setInterval(fetchProfile, 5 * 60 * 1000);
-		return () => clearInterval(interval);
-	}, [user?.socialEnabled]);
-
-	// don't show if user doesn't have social enabled
-	if (!user?.socialEnabled || loading || !profile) {
+	// don't show if user doesn't have social enabled or no data
+	if (!xpData) {
 		return null;
 	}
 
-	const { level, xpInCurrentLevel, xpNeededForNextLevel, progressPercentage, currentStreak } = profile.user;
+	const { level, xpInCurrentLevel, xpNeededForNextLevel, progressPercentage, currentStreak } = xpData;
 
 	return (
 		<div className="flex items-center gap-3 px-3 py-2 bg-primary/5 border border-primary/20 rounded-lg">

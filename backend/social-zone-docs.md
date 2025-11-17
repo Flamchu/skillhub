@@ -15,11 +15,17 @@ the social zone is a completely separate gamification environment within skillhu
 
 ### frontend structure
 
+#### shared navigation
+
+- `/components/layout/AuthenticatedNavbar.tsx` - shared navbar for all authenticated pages
+- `/components/layout/AuthenticatedLayout.tsx` - layout wrapper with navbar
+- xp bar displayed in navbar on all authenticated pages (only visible if social enabled)
+- responsive design with mobile-friendly breakpoints
+
 #### dashboard integration
 
 - `/dashboard` shows `SocialZoneCard` component (only visible if social enabled)
 - card provides quick access to all social tabs
-- xp bar in navbar shows live progress (only visible if social enabled)
 
 #### social page structure
 
@@ -30,6 +36,15 @@ the social zone is a completely separate gamification environment within skillhu
 - `/social?tab=profile` - user's social profile and xp history
 
 ### components
+
+#### `/components/social/XPBar.tsx`
+
+- **100% client-side** - no API calls, zero server load
+- calculates xp progress from user data in localStorage
+- uses `useMemo` for efficient recalculation only when xp/streak changes
+- shows: level badge, xp progress bar, percentage, current streak
+- visible in navbar on all authenticated pages (only if social enabled)
+- instant loading - no spinner or delay
 
 #### `/components/dashboard/SocialZoneCard.tsx`
 
@@ -114,8 +129,8 @@ cache keys are generated per user for personalized data.
 #### sources
 
 - `QUEST_COMPLETION` - completing daily quests
-- `COURSE_COMPLETION` - finishing a course
-- `LESSON_COMPLETION` - completing a lesson
+- `COURSE_COMPLETION` - finishing all lessons in a course (awards 100 xp)
+- `LESSON_COMPLETION` - completing a lesson (awards 20 xp)
 - `SKILL_VERIFICATION` - passing skill verification
 - `DAILY_LOGIN` - logging in daily
 - `STREAK_BONUS` - maintaining activity streak
@@ -131,7 +146,7 @@ cache keys are generated per user for personalized data.
 
 #### calculations
 
-all xp calculations happen on both:
+all xp calculations use identical formulas on:
 
 - backend (authoritative, handles awards)
 - frontend (display, reduces server load)
@@ -140,6 +155,14 @@ formulas in:
 
 - backend: `/services/socialService.ts`
 - frontend: `/lib/socialUtils.ts`
+
+#### course completion
+
+when a user completes the last lesson in a course:
+
+1. enrollment record updated: `isCompleted=true`, `completedAt=now()`
+2. 100 xp awarded via `COURSE_COMPLETION` source
+3. `COMPLETE_COURSE` quest progress checked and updated
 
 ### quest system
 
