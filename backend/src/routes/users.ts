@@ -7,6 +7,7 @@ import { catchAsync, createError } from "../middleware/errorHandler";
 import { schemas } from "../schemas";
 import { cache, cacheConfigs } from "../middleware/cache";
 import { prisma } from "../config/database";
+import { objectStorage } from "../services/objectStorage";
 
 const router = Router();
 
@@ -269,6 +270,12 @@ router.post("/profile-picture", authenticateSupabaseToken, upload.single("profil
 			return res.status(400).json({ error: "No file uploaded" });
 		}
 
+		// fetch existing picture so we can delete stale objects when storage is enabled
+		const existingUser = await prisma.user.findUnique({
+			where: { id: currentUser.id },
+			select: { profilePicture: true },
+		});
+
 		// optimize image with sharp
 		// resize to 512x512, convert to webp, quality 80
 		const optimizedImageBuffer = await sharp(file.buffer)
@@ -279,14 +286,19 @@ router.post("/profile-picture", authenticateSupabaseToken, upload.single("profil
 			.webp({ quality: 80 })
 			.toBuffer();
 
-		// convert to base64 data url (for simplicity, store in db)
-		// in production, you'd upload to s3/cloudinary/supabase storage
-		const base64Image = `data:image/webp;base64,${optimizedImageBuffer.toString("base64")}`;
+		let storedImage: string;
+		if (objectStorage.isEnabled) {
+			const { url } = await objectStorage.uploadProfilePicture(currentUser.id, optimizedImageBuffer);
+			storedImage = url;
+		} else {
+			// convert to base64 data url (for simplicity, store in db)
+			storedImage = `data:image/webp;base64,${optimizedImageBuffer.toString("base64")}`;
+		}
 
 		// update user's profile picture
 		const updatedUser = await prisma.user.update({
 			where: { id: currentUser.id },
-			data: { profilePicture: base64Image },
+			data: { profilePicture: storedImage },
 			select: {
 				id: true,
 				name: true,
@@ -302,6 +314,10 @@ router.post("/profile-picture", authenticateSupabaseToken, upload.single("profil
 				currentStreak: true,
 			},
 		});
+
+		if (objectStorage.isEnabled) {
+			await objectStorage.deleteByUrl(existingUser?.profilePicture);
+		}
 
 		res.json({
 			message: "Profile picture uploaded successfully",

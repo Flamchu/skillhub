@@ -72,7 +72,7 @@ router.get("/course/:courseId", async (req: Request, res: Response) => {
 			return res.status(400).json({ error: "Invalid course ID" });
 		}
 
-		const course = await udemyService.getCourseDetails(courseId).catch(error => {
+		const course = await udemyService.getCourseDetails(courseId).catch((error) => {
 			if (error.message === "Udemy API not configured") {
 				return null;
 			}

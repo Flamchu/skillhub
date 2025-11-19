@@ -30,6 +30,32 @@ Important env vars used by the code:
 - `SUPABASE_ANON_KEY` (Supabase anonymous/public key)
 - `SUPABASE_SERVICE_ROLE_KEY` (Supabase service role key for server-side operations)
 - `REDIS_URL` (Redis connection string for caching)
+- `MINIO_SERVER_URL`, `MINIO_BROWSER_REDIRECT_URL`, `S3_ENDPOINT`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`, `S3_BUCKET`, `S3_PUBLIC_URL`, `S3_REGION`, `S3_FORCE_PATH_STYLE` (optional MinIO/S3 block for profile picture uploads; falls back to base64 when omitted)
+
+When routing MinIO through the Hetzner nginx reverse proxy, point a subdomain (e.g., `storage.example.com`) at ports 9000/9001 and set:
+
+```
+MINIO_SERVER_URL=https://storage.example.com
+MINIO_BROWSER_REDIRECT_URL=https://storage-console.example.com
+S3_PUBLIC_URL=https://storage.example.com/skillhub-media
+NEXT_PUBLIC_MEDIA_URL=https://storage.example.com/skillhub-media
+```
+
+A minimal nginx block looks like:
+
+```
+server {
+    listen 443 ssl;
+    server_name storage.example.com;
+
+    location / {
+        proxy_set_header Host $host;
+        proxy_pass http://127.0.0.1:9000;
+    }
+}
+```
+
+Expose a second hostname for the console (port 9001) if you need the MinIO UI; otherwise keep it internal.
 - Any other Supabase connection variables for deployment
 
 Ensure these are set locally (`.env`) before running the app.
