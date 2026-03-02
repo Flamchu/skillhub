@@ -7,6 +7,7 @@ node_modules/
 .github/*
 WARP.md
 AGENTS.md
+the docs/
 
 # Next.js
 .next/*
