@@ -10,16 +10,22 @@ if [ -d "venv" ]; then
     echo "✓ Activated virtual environment"
 fi
 
+# install pip if it's missing
+python -c "import pip" 2>/dev/null || {
+    echo "Installing pip..."
+    python -m ensurepip --upgrade
+}
+
 # Install requirements if they don't exist
 python -c "import sentence_transformers" 2>/dev/null || {
     echo "Installing requirements..."
-    pip install -r requirements.txt
+    python -m pip install -r requirements.txt
 }
 
 # Start the service
-echo "🚀 Starting AI service on http://localhost:8000"
-echo "📊 Health check: http://localhost:8000/health"
-echo "📖 API docs: http://localhost:8000/docs"
+echo "🚀 Starting AI service on http://localhost:5000"
+echo "📊 Health check: http://localhost:5000/health"
+echo "📖 API docs: http://localhost:5000/docs"
 echo ""
 
 python app.py
