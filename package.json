@@ -1,10 +1,10 @@
 {
 	"name": "skillhub",
 	"private": true,
-	"packageManager": "pnpm@10.22.0",
+	"packageManager": "pnpm@10.30.3",
 	"scripts": {
 		"dev": "pnpm --parallel --stream run dev",
-		"build": "pnpm --workspace-concurrency=1 run build",
+		"build": "pnpm --filter backend run build && pnpm --filter frontend run build",
 		"backend:dev": "pnpm --filter backend run dev",
 		"frontend:dev": "pnpm --filter frontend run dev",
 		"ai:dev": "cd ai-service && bash start.sh",
@@ -12,5 +12,11 @@
 		"frontend:build": "pnpm --filter frontend run build",
 		"frontend:start": "pnpm --filter frontend run start",
 		"seed": "pnpm --filter backend run seed"
+	},
+	"pnpm": {
+		"overrides": {
+			"@types/express": "5.0.5",
+			"@types/express-serve-static-core": "5.1.0"
+		}
 	}
 }
