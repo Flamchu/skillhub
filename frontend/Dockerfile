@@ -1,14 +1,14 @@
 # multi-stage dockerfile for frontend (next.js)
 
 # stage 1: dependencies
-FROM node:24-bookworm-slim AS deps
+FROM node:25-bookworm-slim AS deps
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
-# enable corepack for pnpm
-RUN corepack enable && corepack prepare pnpm@10.22.0 --activate
+# install pnpm
+RUN npm install -g pnpm@10.30.3
 
 # copy package files
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
@@ -18,11 +18,11 @@ COPY frontend/package.json ./frontend/
 RUN pnpm install --frozen-lockfile --filter frontend...
 
 # stage 2: builder
-FROM node:24-bookworm-slim AS builder
+FROM node:25-bookworm-slim AS builder
 WORKDIR /app
 
-# enable corepack for pnpm
-RUN corepack enable && corepack prepare pnpm@10.22.0 --activate
+# install pnpm
+RUN npm install -g pnpm@10.30.3
 
 # copy source code first (excluding node_modules)
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
@@ -46,15 +46,15 @@ ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
 RUN pnpm build
 
 # stage 3: runner
-FROM node:24-bookworm-slim AS runner
+FROM node:25-bookworm-slim AS runner
 RUN apt-get update && apt-get install -y --no-install-recommends \
     wget \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
-# enable corepack for pnpm BEFORE creating user
-RUN corepack enable && corepack prepare pnpm@10.22.0 --activate
+# install pnpm BEFORE creating user
+RUN npm install -g pnpm@10.30.3
 
 # create non-root user
 RUN groupadd --system --gid 1001 nodejs && \

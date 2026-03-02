@@ -1,37 +1,39 @@
 # multi-stage dockerfile for backend (node.js + express + prisma)
 
 # stage 1: dependencies
-FROM node:24-bookworm-slim AS deps
+FROM node:25-bookworm-slim AS deps
 RUN apt-get update && apt-get install -y --no-install-recommends \
     openssl \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
-# enable corepack for pnpm
-RUN corepack enable && corepack prepare pnpm@10.22.0 --activate
+# install pnpm
+RUN npm install -g pnpm@10.30.3
 
 # copy package files
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 COPY backend/package.json ./backend/
+COPY backend/prisma ./backend/prisma
+COPY backend/prisma.config.ts ./backend/
 
 # install dependencies (including dev dependencies for build)
 RUN pnpm install --frozen-lockfile --filter backend...
 
 # stage 2: builder
-FROM node:24-bookworm-slim AS builder
+FROM node:25-bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
     openssl \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
-# enable corepack for pnpm
-RUN corepack enable && corepack prepare pnpm@10.22.0 --activate
+# install pnpm
+RUN npm install -g pnpm@10.30.3
 
 # copy source code first (excluding node_modules)
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
-COPY backend/package.json backend/tsconfig.json ./backend/
+COPY backend/package.json backend/tsconfig.json backend/prisma.config.ts ./backend/
 COPY backend/prisma ./backend/prisma
 COPY backend/src ./backend/src
 
@@ -47,27 +49,24 @@ RUN pnpm prisma generate
 RUN pnpm build
 
 # stage 3: runner
-FROM node:24-bookworm-slim AS runner
+FROM node:25-bookworm-slim AS runner
 RUN apt-get update && apt-get install -y --no-install-recommends \
     openssl \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
-# enable corepack for pnpm BEFORE creating user
-RUN corepack enable && corepack prepare pnpm@10.22.0 --activate
+# install pnpm BEFORE creating user
+RUN npm install -g pnpm@10.30.3
 
 # create non-root user
 RUN groupadd --system --gid 1001 nodejs && \
     useradd --system --uid 1001 --gid nodejs backend --create-home
 
-# create corepack cache directory with proper permissions
-RUN mkdir -p /home/backend/.cache/node/corepack && \
-    chown -R backend:nodejs /home/backend/.cache
-
 # copy package files
 COPY --from=builder --chown=backend:nodejs /app/package.json /app/pnpm-lock.yaml /app/pnpm-workspace.yaml /app/.npmrc ./
 COPY --from=builder --chown=backend:nodejs /app/backend/package.json ./backend/
+COPY --from=builder --chown=backend:nodejs /app/backend/prisma.config.ts ./backend/
 
 # copy prisma schema BEFORE installing dependencies (needed for prisma generate)
 COPY --from=builder --chown=backend:nodejs /app/backend/prisma ./backend/prisma

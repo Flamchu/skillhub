@@ -1,6 +1,6 @@
 # dockerfile for ai service (sentence-transformer)
 
-FROM python:3.14-slim
+FROM python:3.14-slim-bookworm
 
 WORKDIR /app
 
