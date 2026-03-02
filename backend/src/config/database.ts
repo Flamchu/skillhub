@@ -1,8 +1,31 @@
 import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+import dotenv from "dotenv";
+import { resolve } from "node:path";
+
+dotenv.config({ path: resolve(__dirname, "../../.env") });
+dotenv.config();
 
 // create prisma client with optimized settings
+const connectionString = process.env.DATABASE_URL || process.env.DIRECT_URL;
+
+if (!connectionString) {
+	throw new Error("DATABASE_URL or DIRECT_URL must be set");
+}
+
+const adapter = new PrismaPg({ connectionString });
+
 export const prisma = new PrismaClient({
-	log: process.env.NODE_ENV === "development" ? ["query", "info", "warn", "error"] : ["warn", "error"],
+	adapter,
+	log:
+		process.env.NODE_ENV === "development"
+			? [
+					{ emit: "event", level: "query" },
+					{ emit: "stdout", level: "info" },
+					{ emit: "stdout", level: "warn" },
+					{ emit: "stdout", level: "error" },
+				]
+			: [{ emit: "stdout", level: "warn" }, { emit: "stdout", level: "error" }],
 });
 
 // query performance monitoring

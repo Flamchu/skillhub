@@ -3,10 +3,8 @@
  * run with: npx tsx src/scripts/updateVideoChapters.ts
  */
 
-import { PrismaClient } from "@prisma/client";
 import { batchUpdateChapters } from "../services/youtubeChaptersService";
-
-const prisma = new PrismaClient();
+import { prisma } from "../config/database";
 
 async function main() {
 	console.log("🎬 fetching all single-video courses...\n");

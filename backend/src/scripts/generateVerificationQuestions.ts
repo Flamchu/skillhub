@@ -1,9 +1,7 @@
 // script to generate verification questions for all major skills
 // run with: yarn ts-node src/scripts/generateVerificationQuestions.ts
 
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { prisma } from "../config/database";
 
 interface QuestionData {
 	questionText: string;

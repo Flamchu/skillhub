@@ -1,7 +1,6 @@
-import { PrismaClient, Role } from "@prisma/client";
+import { Role } from "@prisma/client";
 import { supabase } from "./config/supabase";
-
-const prisma = new PrismaClient();
+import { prisma } from "./config/database";
 
 async function main() {
 	console.log("🌱 Starting database seeding...");

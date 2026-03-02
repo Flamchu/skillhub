@@ -1,7 +1,5 @@
 import { redis } from "../config/redis";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { prisma } from "../config/database";
 
 interface Chapter {
 	time: number;

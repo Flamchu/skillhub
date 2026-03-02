@@ -1,10 +1,9 @@
 import { Router } from "express";
 import { authenticateSupabaseToken } from "../middleware/supabaseAuth";
 import { getVideoChapters, updateCourseChapters, batchUpdateChapters } from "../services/youtubeChaptersService";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../config/database";
 
 const router = Router();
-const prisma = new PrismaClient();
 
 /**
  * get chapters for a specific video (cached)
