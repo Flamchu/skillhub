@@ -90,7 +90,7 @@ export function UdemySearch({ initialQuery = "", maxResults = 12, showTitle = tr
 			{showTitle && (
 				<div className="text-center">
 					<h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">Explore Udemy Courses</h2>
-					<p className="text-gray-600 dark:text-gray-300">Discover thousands of courses from Udemy's platform</p>
+					<p className="text-gray-600 dark:text-gray-300">Discover thousands of courses from Udemy&apos;s platform</p>
 				</div>
 			)}
 
