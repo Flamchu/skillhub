@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   # s3-compatible storage (minio)
   minio:
@@ -40,6 +38,11 @@ services:
       - redis_data:/data
     networks:
       - skillhub-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
     deploy:
       resources:
         limits:
@@ -48,13 +51,18 @@ services:
 
   # local ai service (sentence-transformer)
   ai-service:
-    build:
-      context: ./ai-service
-      dockerfile: Dockerfile
+    image: ${GHCR_NAMESPACE:?GHCR_NAMESPACE is required}/ai-service:${IMAGE_TAG:-master}
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
     container_name: skillhub-ai-service
     restart: unless-stopped
     networks:
       - skillhub-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
     deploy:
       resources:
         limits:
@@ -63,15 +71,17 @@ services:
 
   # backend api
   backend:
-    build:
-      context: .
-      dockerfile: backend/Dockerfile
+    image: ${GHCR_NAMESPACE:?GHCR_NAMESPACE is required}/backend:${IMAGE_TAG:-master}
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
     container_name: skillhub-backend
     restart: unless-stopped
     depends_on:
-      - redis
-      - ai-service
-      - minio
+      redis:
+        condition: service_healthy
+      ai-service:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
     ports:
       - "4000:4000"
     environment:
@@ -102,6 +112,12 @@ services:
       S3_FORCE_PATH_STYLE: ${S3_FORCE_PATH_STYLE:-true}
     networks:
       - skillhub-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
     deploy:
       resources:
         limits:
@@ -110,24 +126,30 @@ services:
 
   # frontend web app
   frontend:
-    build:
-      context: .
-      dockerfile: frontend/Dockerfile
-      args:
-        NEXT_PUBLIC_BACKEND_URL: ${NEXT_PUBLIC_BACKEND_URL}
-        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL}
+    image: ${GHCR_NAMESPACE:?GHCR_NAMESPACE is required}/frontend:${IMAGE_TAG:-master}
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
     container_name: skillhub-frontend
     restart: unless-stopped
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     ports:
       - "3000:3000"
     environment:
       NODE_ENV: ${NODE_ENV:-production}
       NEXT_PUBLIC_BACKEND_URL: ${NEXT_PUBLIC_BACKEND_URL}
       NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL}
+      NEXT_PUBLIC_MEDIA_URL: ${NEXT_PUBLIC_MEDIA_URL}
+      NEXT_PUBLIC_DEFAULT_THEME: ${NEXT_PUBLIC_DEFAULT_THEME:-system}
+      NEXT_PUBLIC_ENABLE_ANALYTICS: ${NEXT_PUBLIC_ENABLE_ANALYTICS:-false}
     networks:
       - skillhub-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
     deploy:
       resources:
         limits:
