@@ -115,7 +115,7 @@ jobs:
           script_stop: true
           script: |
             set -euo pipefail
-            cd /home/${{ secrets.HETZNER_USER }}/skillhub
+            cd /root/skillhub
             git fetch origin master
             git checkout master
             git pull --ff-only origin master
