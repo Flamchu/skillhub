@@ -17,6 +17,15 @@ import time
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+for noisy_logger in (
+    "httpx",
+    "httpcore",
+    "huggingface_hub",
+    "huggingface_hub.utils._http",
+    "sentence_transformers",
+    "transformers",
+):
+    logging.getLogger(noisy_logger).setLevel(logging.ERROR)
 
 app = FastAPI(title="SkillHub AI Service", version="1.0.0")
 
