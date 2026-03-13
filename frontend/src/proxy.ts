@@ -2,7 +2,7 @@ import createMiddleware from "next-intl/middleware";
 import { NextRequest, NextResponse } from "next/server";
 import { locales } from "./i18n";
 
-// create the intl middleware
+// create the intl proxy
 const intlMiddleware = createMiddleware({
 	// list of all locales that are supported
 	locales,
@@ -39,7 +39,7 @@ function getUserRole(request: NextRequest): string | null {
 	return null;
 }
 
-export default function middleware(request: NextRequest) {
+export default function proxy(request: NextRequest) {
 	const { pathname } = request.nextUrl;
 
 	// extract locale and clean pathname
@@ -63,7 +63,7 @@ export default function middleware(request: NextRequest) {
 		return NextResponse.redirect(new URL(redirectPath, request.url));
 	}
 
-	// run the intl middleware for all other requests
+	// run the intl proxy for all other requests
 	return intlMiddleware(request);
 }
 

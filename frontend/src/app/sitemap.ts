@@ -51,9 +51,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
 	// optionally fetch dynamic routes from api
 	// example: courses and skills
-	try {
-		const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:4000/api";
+	const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+	if (!backendUrl) {
+		return routes;
+	}
 
+	try {
 		// fetch courses
 		const coursesResponse = await fetch(`${backendUrl}/courses?limit=100`, {
 			next: { revalidate: 3600 }, // revalidate every hour
@@ -78,8 +81,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 				});
 			});
 		}
-	} catch (error) {
-		console.error("Failed to fetch dynamic routes for sitemap:", error);
+	} catch {
+		// skip dynamic routes when the backend is unavailable during build
 	}
 
 	return routes;

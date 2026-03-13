@@ -1,6 +1,6 @@
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { Sparkles, Rocket, Target, TrendingUp } from "lucide-react";
+import { Sparkles, Rocket, Target } from "lucide-react";
 
 export function HeroSection() {
 	const t = useTranslations("hero");

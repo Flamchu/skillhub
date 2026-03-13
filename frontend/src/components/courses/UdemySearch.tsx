@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import Image from "next/image";
+import { useCallback, useEffect, useState } from "react";
 import { http } from "@/lib/http";
 import { Button } from "@/components/ui/Button";
 import { Search, Star, Clock, ExternalLink, Loader, AlertCircle } from "lucide-react";
@@ -39,16 +40,18 @@ export function UdemySearch({ initialQuery = "", maxResults = 12, showTitle = tr
 	const [error, setError] = useState<string | null>(null);
 	const [results, setResults] = useState<UdemyCourse[]>([]);
 
-	const handleSearch = async () => {
-		if (!searchQuery.trim()) return;
+	const handleSearch = useCallback(async (nextQuery: string) => {
+		const trimmedQuery = nextQuery.trim();
+		if (!trimmedQuery) return;
 
 		setIsLoading(true);
 		setError(null);
+		setSearchQuery(trimmedQuery);
 
 		try {
 			const response = await http.get<UdemySearchResponse>("/udemy/search", {
 				params: {
-					query: searchQuery,
+					query: trimmedQuery,
 					pageSize: maxResults,
 					orderBy: "-rating",
 				},
@@ -61,13 +64,14 @@ export function UdemySearch({ initialQuery = "", maxResults = 12, showTitle = tr
 		} finally {
 			setIsLoading(false);
 		}
-	};
+	}, [maxResults]);
 
 	useEffect(() => {
-		if (initialQuery) {
-			handleSearch();
+		if (initialQuery.trim()) {
+			setQuery(initialQuery);
+			void handleSearch(initialQuery);
 		}
-	}, []);
+	}, [handleSearch, initialQuery]);
 
 	const formatDuration = (seconds: number) => {
 		const hours = Math.floor(seconds / 3600);
@@ -102,15 +106,18 @@ export function UdemySearch({ initialQuery = "", maxResults = 12, showTitle = tr
 						type="text"
 						value={query}
 						onChange={e => setQuery(e.target.value)}
-						onKeyDown={e => e.key === "Enter" && (setSearchQuery(query), handleSearch())}
+						onKeyDown={e => {
+							if (e.key === "Enter") {
+								void handleSearch(query);
+							}
+						}}
 						placeholder="Search Udemy courses..."
 						className="w-full pl-12 pr-4 py-3 bg-surface/80 dark:bg-gray-800/80 backdrop-blur-sm border border-border/20 rounded-xl text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
 					/>
 				</div>
 				<Button
 					onClick={() => {
-						setSearchQuery(query);
-						handleSearch();
+						void handleSearch(query);
 					}}
 					disabled={isLoading || !query.trim()}
 					className="bg-linear-to-r from-info to-success hover:from-info-600 hover:to-success-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
@@ -146,9 +153,12 @@ export function UdemySearch({ initialQuery = "", maxResults = 12, showTitle = tr
 						>
 							{/* thumbnail */}
 							<div className="relative aspect-video overflow-hidden">
-								<img
+								<Image
 									src={course.image_480x270}
 									alt={course.title}
+									fill
+									unoptimized
+									sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
 									className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
 								/>
 								<div className="absolute top-3 left-3 px-3 py-1 bg-linear-to-r from-info to-success text-white text-xs font-semibold rounded-full">

@@ -10,6 +10,11 @@ const imageConfig: NextConfig["images"] = {
 			hostname: "i.ytimg.com",
 			pathname: "/**",
 		},
+		{
+			protocol: "https",
+			hostname: "**.udemycdn.com",
+			pathname: "/**",
+		},
 	],
 };
 
