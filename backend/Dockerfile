@@ -51,6 +51,7 @@ RUN pnpm build
 # stage 3: runner
 FROM node:25.8.1-bookworm-slim AS runner
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
     openssl \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
