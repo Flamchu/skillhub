@@ -5,9 +5,12 @@ node_modules/
 
 # Github
 .github/*
+!.github/workflows/
+!.github/workflows/*.yml
 WARP.md
 AGENTS.md
-the docs/
+how-to_docs/
+docs/
 
 # Next.js
 .next/*
