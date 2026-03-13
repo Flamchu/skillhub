@@ -15,7 +15,7 @@
 	},
 	"pnpm": {
 		"overrides": {
-			"@types/express": "5.0.5",
+			"@types/express": "5.0.6",
 			"@types/express-serve-static-core": "5.1.0"
 		}
 	}
