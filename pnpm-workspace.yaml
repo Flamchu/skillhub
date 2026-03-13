@@ -2,6 +2,10 @@ packages:
   - "backend"
   - "frontend"
 onlyBuiltDependencies:
+  - "@parcel/watcher"
   - "@prisma/engines"
+  - "@swc/core"
   - "esbuild"
   - "prisma"
+  - "sharp"
+  - "unrs-resolver"
