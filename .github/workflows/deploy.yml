@@ -116,9 +116,9 @@ jobs:
           script: |
             set -euo pipefail
             cd /root/skillhub
-            git fetch origin master
-            git checkout master
-            git pull --ff-only origin master
+            git fetch origin dev
+            git checkout dev
+            git pull --ff-only origin dev
             export IMAGE_TAG=master
             export GHCR_NAMESPACE=${{ steps.image-meta.outputs.ghcr_namespace }}
             docker compose --env-file .env.production -f docker-compose.prod.yml pull
