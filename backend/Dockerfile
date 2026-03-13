@@ -1,7 +1,7 @@
 # multi-stage dockerfile for backend (node.js + express + prisma)
 
 # stage 1: dependencies
-FROM node:25-bookworm-slim AS deps
+FROM node:25.8.1-bookworm-slim AS deps
 RUN apt-get update && apt-get install -y --no-install-recommends \
     openssl \
     ca-certificates \
@@ -21,7 +21,7 @@ COPY backend/prisma.config.ts ./backend/
 RUN pnpm install --frozen-lockfile --filter backend...
 
 # stage 2: builder
-FROM node:25-bookworm-slim AS builder
+FROM node:25.8.1-bookworm-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
     openssl \
     ca-certificates \
@@ -49,7 +49,7 @@ RUN pnpm prisma generate
 RUN pnpm build
 
 # stage 3: runner
-FROM node:25-bookworm-slim AS runner
+FROM node:25.8.1-bookworm-slim AS runner
 RUN apt-get update && apt-get install -y --no-install-recommends \
     openssl \
     ca-certificates \
