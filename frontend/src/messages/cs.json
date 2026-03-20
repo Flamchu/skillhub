@@ -2,542 +2,558 @@
 	"metadata": {
 		"layout": {
 			"title": {
-				"default": "SkillHub | Platforma pro vzdelavani s podporou AI",
+				"default": "SkillHub | Platforma pro vzdělávání s podporou AI",
 				"template": "%s | SkillHub"
 			},
-			"description": "Prochazejte dovednosti, kurzy, AI doporuceni a socialni studijni pokrok na jednom miste.",
-			"keywords": ["vzdelavaci platforma", "online kurzy", "dovednosti", "AI doporuceni", "profesni rozvoj"],
+			"description": "Procházejte dovednosti, kurzy, AI doporučení a sociální studijní pokrok na jednom místě.",
+			"keywords": [
+				"vzdělávací platforma",
+				"online kurzy",
+				"dovednosti",
+				"AI doporučení",
+				"profesní rozvoj"
+			],
 			"openGraph": {
-				"title": "SkillHub | Platforma pro vzdelavani s podporou AI",
-				"description": "Prochazejte dovednosti, kurzy, AI doporuceni a socialni studijni pokrok na jednom miste.",
-				"imageAlt": "Nahled platformy SkillHub"
+				"title": "SkillHub | Platforma pro vzdělávání s podporou AI",
+				"description": "Procházejte dovednosti, kurzy, AI doporučení a sociální studijní pokrok na jednom místě.",
+				"imageAlt": "Náhled platformy SkillHub"
 			},
 			"twitter": {
-				"title": "SkillHub | Platforma pro vzdelavani s podporou AI",
-				"description": "Prochazejte dovednosti, kurzy, AI doporuceni a socialni studijni pokrok na jednom miste."
+				"title": "SkillHub | Platforma pro vzdělávání s podporou AI",
+				"description": "Procházejte dovednosti, kurzy, AI doporučení a sociální studijní pokrok na jednom místě."
 			}
 		},
 		"manifest": {
-			"name": "SkillHub - platforma pro vzdelavani s podporou AI",
-			"description": "Objevujte dovednosti, kurzy a personalizovana AI doporuceni pro vzdelavani.",
-			"categories": ["vzdelavani", "produktivita", "technologie"]
+			"name": "SkillHub - platforma pro vzdělávání s podporou AI",
+			"description": "Objevujte dovednosti, kurzy a personalizovaná AI doporučení pro vzdělávání.",
+			"categories": [
+				"vzdělávání",
+				"produktivita",
+				"technologie"
+			]
 		},
 		"home": {
-			"title": "Ucte se. Rozvijejte se. Uspejte.",
-			"description": "Budujte prakticke dovednosti pomoci interaktivnich kurzu, AI doporuceni a socialniho studijniho prostredi.",
+			"title": "Učte se. Rozvíjejte se. Uspějte.",
+			"description": "Budujte praktické dovednosti pomocí interaktivních kurzů, AI doporučení a sociálního studijního prostředí.",
 			"openGraph": {
-				"title": "Ucte se. Rozvijejte se. Uspejte.",
-				"description": "Budujte prakticke dovednosti pomoci interaktivnich kurzu, AI doporuceni a socialniho studijniho prostredi.",
-				"imageAlt": "Domovska stranka SkillHub"
+				"title": "Učte se. Rozvíjejte se. Uspějte.",
+				"description": "Budujte praktické dovednosti pomocí interaktivních kurzů, AI doporučení a sociálního studijního prostředí.",
+				"imageAlt": "Domovská stránka SkillHub"
 			}
 		},
 		"dashboard": {
-			"title": "Prehled - vase centrum vzdelavani",
-			"description": "Otevrete si svuj prehled, sledujte studijni pokrok, spravujte dovednosti a ziskejte personalizovana doporuceni."
+			"title": "Přehled - vaše centrum vzdělávání",
+			"description": "Otevřete si svůj přehled, sledujte studijní pokrok, spravujte dovednosti a získejte personalizovaná doporučení."
 		},
 		"skills": {
-			"title": "Dovednosti - sledujte svuj profesni rust",
-			"description": "Spravujte svuj profil dovednosti, pridavejte nove dovednosti a overujte svou aktualni uroven.",
+			"title": "Dovednosti - sledujte svůj profesní růst",
+			"description": "Spravujte svůj profil dovedností, přidávejte nové dovednosti a ověřujte svou aktuální úroveň.",
 			"keywords": [
-				"sledovani dovednosti",
-				"profesni dovednosti",
-				"profil dovednosti",
-				"overeni dovednosti",
-				"karierni rust"
+				"sledování dovedností",
+				"profesní dovednosti",
+				"profil dovedností",
+				"ověření dovedností",
+				"kariérní růst"
 			],
 			"openGraph": {
-				"title": "Dovednosti - sledujte svuj profesni rust",
-				"description": "Spravujte svuj profil dovednosti, pridavejte nove dovednosti a overujte svou aktualni uroven.",
-				"imageAlt": "Stranka dovednosti ve SkillHubu"
+				"title": "Dovednosti - sledujte svůj profesní růst",
+				"description": "Spravujte svůj profil dovedností, přidávejte nové dovednosti a ověřujte svou aktuální úroveň.",
+				"imageAlt": "Stránka dovedností ve SkillHubu"
 			}
 		},
 		"aiSkills": {
-			"title": "AI generator dovednosti",
-			"description": "Popiste sve zkusenosti a nechte AI vygenerovat personalizovany profil dovednosti s doporucenou urovni znalosti.",
+			"title": "AI generátor dovedností",
+			"description": "Popište své zkušenosti a nechte AI vygenerovat personalizovaný profil dovedností s doporučenou úrovní znalostí.",
 			"openGraph": {
-				"title": "AI generator dovednosti",
-				"description": "Vygenerujte si s AI personalizovany profil dovednosti a ziskejte lepsi doporuceni kurzu."
+				"title": "AI generátor dovedností",
+				"description": "Vygenerujte si s AI personalizovaný profil dovedností a získejte lepší doporučení kurzů."
 			}
 		},
 		"courses": {
-			"title": "Kurzy - objevujte studijni cesty",
-			"description": "Prochazejte kurzy, filtrujte je podle urovne a zdroje a objevujte AI doporuceni prizpusobena vasim dovednostem.",
-			"keywords": ["kurzy", "studijni cesty", "online vzdelavani", "katalog kurzu", "profesni rozvoj"],
+			"title": "Kurzy - objevujte studijní cesty",
+			"description": "Procházejte kurzy, filtrujte je podle úrovně a zdroje a objevujte AI doporučení přizpůsobená vašim dovednostem.",
+			"keywords": [
+				"kurzy",
+				"studijní cesty",
+				"online vzdělávání",
+				"katalog kurzů",
+				"profesní rozvoj"
+			],
 			"openGraph": {
-				"title": "Kurzy - objevujte studijni cesty",
-				"description": "Prochazejte kurzy, filtrujte je podle urovne a zdroje a objevujte AI doporuceni prizpusobena vasim dovednostem.",
-				"imageAlt": "Stranka kurzu ve SkillHubu"
+				"title": "Kurzy - objevujte studijní cesty",
+				"description": "Procházejte kurzy, filtrujte je podle úrovně a zdroje a objevujte AI doporučení přizpůsobená vašim dovednostem.",
+				"imageAlt": "Stránka kurzu ve SkillHubu"
 			}
 		}
 	},
 	"navigation": {
-		"login": "Prihlasit se",
+		"login": "Přihlásit se",
 		"register": "Registrovat se"
 	},
 	"hero": {
-		"badge": "Pripojte se k vice nez 50 000 studujicim po celem svete",
-		"title": "Ucte se. Rozvijejte se. Uspejte.",
-		"subtitle": "Vase dalsi dovednost zacina tady.",
-		"description": "Odemknete svuj potencial s interaktivnimi kurzy, praktickymi studijnimi cestami a doporucenimi, ktera se prizpusobuji vasim cilum.",
+		"badge": "Připojte se k více než 50 000 studujícím po celém světě",
+		"title": "Učte se. Rozvíjejte se. Uspějte.",
+		"subtitle": "Vaše další dovednost začíná tady.",
+		"description": "Odemknete svůj potenciál s interaktivními kurzy, praktickými studijními cestami a doporučeními, která se přizpůsobují vašim cílům.",
 		"cta": {
-			"start": "Zacnete se ucit jeste dnes",
-			"browse": "Prochazet kurzy"
+			"start": "Začněte se učit ještě dnes",
+			"browse": "Procházet kurzy"
 		},
 		"features": {
-			"interactive": "Interaktivni vyuka",
-			"goalOriented": "Zamereno na cile",
+			"interactive": "Interaktivní výuka",
+			"goalOriented": "Zaměřeno na cíle",
 			"community": "Podpora komunity",
-			"certified": "Overeny pokrok"
+			"certified": "Ověřený pokrok"
 		}
 	},
 	"features": {
-		"title": "Proc si vybrat SkillHub?",
-		"subtitle": "Prakticke studijni prostredi postavene na rustu, prehlednosti a tempu.",
+		"title": "Proč si vybrat SkillHub?",
+		"subtitle": "Praktické studijní prostředí postavené na růstu, přehlednosti a tempu.",
 		"lightningFast": {
-			"title": "Rychle odhaleni dovednosti",
-			"description": "Pomoci AI rozpoznate sve soucasne silne stranky a behem nekolika minut je promenite v jasny studijni plan.",
-			"link": "Zjistit vice"
+			"title": "Rychlé odhalení dovedností",
+			"description": "Pomocí AI rozpoznáte své současné silné stránky a během několika minut je proměníte v jasný studijní plán.",
+			"link": "Zjistit více"
 		},
 		"industryRecognized": {
-			"title": "Vyuka zamerena na karieru",
-			"description": "Budujte dovednosti, ktere maji vyznam pro skutecne projekty, profesni rust a lepsi prilezitosti.",
-			"link": "Podivat se jak"
+			"title": "Výuka zaměřená na kariéru",
+			"description": "Budujte dovednosti, které mají význam pro skutečné projekty, profesní růst a lepší příležitosti.",
+			"link": "Podívat se jak"
 		},
 		"globalCommunity": {
-			"title": "Socialni pokrok",
-			"description": "Sledujte XP, plnte ukoly a udrzujte si motivaci ve studijnim prostredi, ktere pusobi aktivne a viditelne.",
-			"link": "Prozkoumat socialni zonu"
+			"title": "Sociální pokrok",
+			"description": "Sledujte XP, plňte úkoly a udržujte si motivaci ve studijním prostředí, které působí aktivně a viditelně.",
+			"link": "Prozkoumat sociální zónu"
 		}
 	},
 	"stats": {
-		"title": "Pripojte se k tempu vzdelavani",
-		"subtitle": "Studujici pouzivaji SkillHub k budovani praktickych dovednosti, sledovani pokroku a udrzeni pravidelnosti.",
+		"title": "Připojte se k tempu vzdělávání",
+		"subtitle": "Studující používají SkillHub k budování praktických dovedností, sledování pokroku a udržení pravidelnosti.",
 		"activeLearners": {
-			"label": "Aktivni studujici",
-			"description": "Kazdy den jich pribyva"
+			"label": "Aktivní studující",
+			"description": "Každý den jich přibývá"
 		},
 		"expertCourses": {
-			"label": "Odborne kurzy",
-			"description": "Zamerene na skutecne dovednosti"
+			"label": "Odborné kurzy",
+			"description": "Zaměřené na skutečné dovednosti"
 		},
 		"successRate": {
-			"label": "Mira dokonceni",
-			"description": "Navrzeno pro pokrok"
+			"label": "Míra dokončení",
+			"description": "Navrženo pro pokrok"
 		}
 	},
 	"footer": {
-		"description": "SkillHub pomaha profesionalum i studujicim promenit ambice v meritelny pokrok pomoci dovednosti, kurzu a AI vedeni.",
-		"about": "O nas",
+		"description": "SkillHub pomáhá profesionálům i studujícím proměnit ambice v měřitelný pokrok pomocí dovedností, kurzů a AI vedení.",
+		"about": "O nás",
 		"contact": "Kontakt",
-		"privacy": "Soukromi",
-		"madeWithCare": "Vytvoreno s peci pro zvidave studujici",
-		"copyright": "© {year} SkillHub. Vsechna prava vyhrazena."
+		"privacy": "Soukromí",
+		"madeWithCare": "Vytvořeno s péčí pro zvídavé studující",
+		"copyright": "© {year} SkillHub. Všechna práva vyhrazena."
 	},
 	"home": {
 		"aiSection": {
-			"badge": "AI doporuceni",
-			"title": "Chytrejsi studijni cesty",
-			"description": "Nechte AI propojit vase soucasne dovednosti s nejlepsimi dalsimi kurzy a prilezitostmi k rustu.",
+			"badge": "AI doporučení",
+			"title": "Chytřejší studijní cesty",
+			"description": "Nechte AI propojit vaše současné dovednosti s nejlepšími dalšími kurzy a příležitostmi k růstu.",
 			"cards": {
 				"matching": {
-					"title": "Parovani podle dovednosti",
-					"description": "Najdete kurzy, ktere odpovidaji tomu, co uz umite, a kam se chcete posunout."
+					"title": "Párování podle dovedností",
+					"description": "Najdete kurzy, které odpovídají tomu, co už umíte, a kam se chcete posunout."
 				},
 				"progression": {
-					"title": "Jasny postup",
-					"description": "Uvidite, co se ucit dal, aniz byste museli hadat spravne tema nebo uroven."
+					"title": "Jasný postup",
+					"description": "Uvidíte, co se učit dál, aniž byste museli hádat správné téma nebo úroveň."
 				},
 				"generator": {
-					"title": "AI generator dovednosti",
-					"description": "Popiste sve zkusenosti a vytvorte profil, ktery okamzite zlepsi doporuceni."
+					"title": "AI generátor dovedností",
+					"description": "Popište své zkušenosti a vytvořte profil, který okamžitě zlepší doporučení."
 				}
 			},
-			"cta": "Zobrazit doporucene kurzy"
+			"cta": "Zobrazit doporučené kurzy"
 		}
 	},
 	"auth": {
 		"login": {
-			"title": "Vitejte zpet",
-			"subtitle": "Prihlaste se a pokracujte ve studiu.",
+			"title": "Vítejte zpět",
+			"subtitle": "Přihlaste se a pokračujte ve studiu.",
 			"email": "E-mail",
 			"password": "Heslo",
-			"submit": "Prihlasit se",
-			"noAccount": "Nemate ucet?",
+			"submit": "Přihlásit se",
+			"noAccount": "Nemáte účet?",
 			"or": "nebo",
-			"continueWithGoogle": "Pokracovat pres Google"
+			"continueWithGoogle": "Pokračovat přes Google"
 		},
 		"register": {
-			"title": "Vytvorit ucet",
-			"subtitle": "Zacnete rozvijet sve dovednosti se SkillHubem.",
-			"name": "Cele jmeno",
+			"title": "Vytvořit účet",
+			"subtitle": "Začněte rozvíjet své dovednosti se SkillHubem.",
+			"name": "Celé jméno",
 			"email": "E-mail",
 			"password": "Heslo",
-			"hasAccount": "Uz mate ucet?",
-			"signIn": "Prihlasit se",
-			"submit": "Vytvorit ucet"
+			"hasAccount": "Už máte účet?",
+			"signIn": "Přihlásit se",
+			"submit": "Vytvořit účet"
 		},
 		"page": {
-			"backToHome": "Zpet na uvod",
+			"backToHome": "Zpět na úvod",
 			"errors": {
-				"googleLogin": "Nepodarilo se spustit prihlaseni pres Google. Zkuste to prosim znovu.",
-				"invalidCredentials": "Neplatny e-mail nebo heslo.",
-				"registrationFailed": "Registrace se nezdarila. Zkuste to prosim znovu."
+				"googleLogin": "Nepodařilo se spustit přihlášení přes Google. Zkuste to prosím znovu.",
+				"invalidCredentials": "Neplatný e-mail nebo heslo.",
+				"registrationFailed": "Registrace se nezdařila. Zkuste to prosím znovu."
 			},
 			"placeholders": {
-				"name": "Zadejte sve cele jmeno",
-				"email": "Zadejte svuj e-mail",
-				"password": "Zadejte sve heslo"
+				"name": "Zadejte své celé jméno",
+				"email": "Zadejte svůj e-mail",
+				"password": "Zadejte své heslo"
 			},
 			"passwordRules": {
-				"title": "Heslo musi obsahovat alespon 8 znaku, jedno velke pismeno, jedno male pismeno a jedno cislo.",
-				"placeholder": "Vytvorte silne heslo",
-				"hint": "Pouzijte alespon 8 znaku vcetne velkeho pismena, maleho pismena a cisla."
+				"title": "Heslo musí obsahovat alespoň 8 znaků, jedno velké písmeno, jedno malé písmeno a jedno číslo.",
+				"placeholder": "Vytvořte silné heslo",
+				"hint": "Použijte alespoň 8 znaků včetně velkého písmena, malého písmena a čísla."
 			},
 			"submitting": {
-				"login": "Prihlasovani...",
-				"register": "Vytvareni uctu..."
+				"login": "Přihlašování...",
+				"register": "Vytváření účtu..."
 			}
 		},
-		"completing_login": "Dokoncuje se prihlaseni",
-		"processing_authentication": "Zpracovava se vase overeni...",
-		"login_successful": "Prihlaseni bylo uspesne",
-		"redirecting_to_dashboard": "Presmerovani na vas prehled...",
-		"login_failed": "Prihlaseni selhalo",
-		"redirecting_to_login": "Presmerovani zpet na prihlaseni...",
-		"oauth_authentication_failed": "OAuth overeni selhalo.",
-		"failed_to_get_user_profile": "Nepodarilo se nacist vas uzivatelsky profil.",
-		"no_authentication_tokens_received": "Nebyly prijaty zadne overovaci tokeny.",
-		"authentication_failed": "Overeni selhalo."
+		"completing_login": "Dokončuje se přihlášení",
+		"processing_authentication": "Zpracovává se vaše ověření...",
+		"login_successful": "Přihlášení bylo úspěšné",
+		"redirecting_to_dashboard": "Přesměrování na váš přehled...",
+		"login_failed": "Přihlášení selhalo",
+		"redirecting_to_login": "Přesměrování zpět na přihlášení...",
+		"oauth_authentication_failed": "OAuth ověření selhalo.",
+		"failed_to_get_user_profile": "Nepodařilo se načíst váš uživatelský profil.",
+		"no_authentication_tokens_received": "Nebyly přijaty žádné ověřovací tokeny.",
+		"authentication_failed": "Ověření selhalo."
 	},
 	"common": {
-		"loading": "Nacitani...",
+		"loading": "Načítání...",
 		"error": "Chyba",
-		"success": "Uspech",
-		"save": "Ulozit",
-		"cancel": "Zrusit",
-		"close": "Zavrit",
+		"success": "Úspěch",
+		"save": "Uložit",
+		"cancel": "Zrušit",
+		"close": "Zavřít",
 		"edit": "Upravit",
 		"delete": "Smazat",
 		"search": "Hledat",
 		"tryAgain": "Zkusit znovu",
-		"previous": "Predchozi",
-		"next": "Dalsi",
+		"previous": "Předchozí",
+		"next": "Další",
 		"roles": {
-			"user": "Uzivatel",
-			"member": "Clen",
+			"user": "Uživatel",
+			"member": "Člen",
 			"instructor": "Lektor",
-			"admin": "Administrator"
+			"admin": "Administrátor"
 		},
 		"sources": {
-			"internal": "Interni",
+			"internal": "Interní",
 			"youtube": "YouTube",
 			"udemy": "Udemy",
-			"other": "Jine",
-			"questCompletion": "Splneni ukolu",
-			"courseCompletion": "Dokonceni kurzu",
-			"lessonCompletion": "Dokonceni lekce",
-			"skillVerification": "Overeni dovednosti",
-			"dailyLogin": "Denni prihlaseni",
-			"streakBonus": "Bonus za serii"
+			"other": "Jiné",
+			"questCompletion": "Splnění úkolu",
+			"courseCompletion": "Dokončení kurzu",
+			"lessonCompletion": "Dokončení lekce",
+			"skillVerification": "Ověření dovednosti",
+			"dailyLogin": "Denní přihlášení",
+			"streakBonus": "Bonus za sérii"
 		},
 		"difficulties": {
-			"allLevels": "Vsechny urovne",
-			"beginner": "Zacatecnik",
-			"intermediate": "Stredne pokrocily",
-			"advanced": "Pokrocily"
+			"allLevels": "Všechny úrovně",
+			"beginner": "Začátečník",
+			"intermediate": "Středně pokročilý",
+			"advanced": "Pokročilý"
 		},
 		"proficiency": {
-			"none": "Zadna",
-			"basic": "Zakladni",
-			"intermediate": "Stredne pokrocila",
-			"advanced": "Pokrocila",
-			"expert": "Expertni"
+			"none": "Žádná",
+			"basic": "Základní",
+			"intermediate": "Středně pokročilá",
+			"advanced": "Pokročilá",
+			"expert": "Expertní"
 		},
 		"units": {
 			"hourShort": "h",
 			"minuteShort": "min"
 		},
 		"time": {
-			"justNow": "prave ted"
+			"justNow": "právě teď"
 		},
 		"languageSwitcher": {
 			"label": "Vyberte jazyk",
 			"locales": {
-				"en": "Anglictina",
-				"cs": "Cestina"
+				"en": "Angličtina",
+				"cs": "Čeština"
 			}
 		},
 		"theme": {
-			"light": "svetly",
-			"dark": "tmavy",
-			"switchTo": "Prepnout na {theme} rezim"
+			"light": "světlý",
+			"dark": "tmavý",
+			"switchTo": "Přepnout na {theme} režim"
 		},
 		"errorState": {
-			"title": "Neco se pokazilo",
+			"title": "Něco se pokazilo",
 			"retry": "Zkusit znovu"
 		}
 	},
 	"layout": {
 		"authenticatedNavbar": {
 			"links": {
-				"dashboard": "Prehled",
+				"dashboard": "Přehled",
 				"skills": "Dovednosti",
 				"courses": "Kurzy",
-				"social": "Socialni zona"
+				"social": "Sociální zóna"
 			},
 			"fallbackName": "Student",
-			"adminAccess": "Pristup administratora",
+			"adminAccess": "Přístup administrátora",
 			"menu": {
-				"profileSettings": "Nastaveni profilu",
+				"profileSettings": "Nastavení profilu",
 				"adminPanel": "Administrace",
-				"signOut": "Odhlasit se"
+				"signOut": "Odhlásit se"
 			}
 		}
 	},
 	"dashboard": {
 		"page": {
-			"welcomeTitle": "Vitejte zpet, {name}",
+			"welcomeTitle": "Vítejte zpět, {name}",
 			"learnerFallback": "Studente",
-			"welcomeDescription": "Navazte tam, kde jste skoncili, aktualizujte sve dovednosti a posunte svuj pokrok dal.",
-			"continueLearningTitle": "Pokracujte ve studiu",
-			"continueLearningDescription": "Vase nejrelevantnejsi aktivni kurzy na jednom miste."
+			"welcomeDescription": "Navažte tam, kde jste skončili, aktualizujte své dovednosti a posuňte svůj pokrok dál.",
+			"continueLearningTitle": "Pokračujte ve studiu",
+			"continueLearningDescription": "Vaše nejrelevantnější aktivní kurzy na jednom místě."
 		},
 		"learningStats": {
-			"skillsTracked": "Sledovane dovednosti",
-			"enrolledCourses": "Zapsane kurzy",
+			"skillsTracked": "Sledované dovednosti",
+			"enrolledCourses": "Zapsané kurzy",
 			"hoursLearning": "Hodin studia"
 		},
 		"quickActions": {
 			"skills": {
 				"title": "Spravovat dovednosti",
-				"description": "Zkontrolujte sve aktualni dovednosti a upravte jejich uroven."
+				"description": "Zkontrolujte své aktuální dovednosti a upravte jejich úroveň."
 			},
 			"courses": {
-				"title": "Prochazet kurzy",
-				"description": "Objevte nove studijni cesty, ktere odpovidaji vasim cilum."
+				"title": "Procházet kurzy",
+				"description": "Objevte nové studijní cesty, které odpovídají vašim cílům."
 			},
 			"profile": {
 				"title": "Profil",
-				"description": "Upravte profil a osobni nastaveni studia."
+				"description": "Upravte profil a osobní nastavení studia."
 			}
 		},
 		"aiWorkflow": {
-			"title": "AI pracovni postup",
-			"subtitle": "Promente sve zkusenosti v lepsi doporuceni.",
-			"description": "Popiste svou praxi jen jednou a nechte SkillHub vytvorit jasnejsi profil dovednosti a studijni smer.",
-			"learnMore": "Zjistit vice",
-			"showLess": "Zobrazit mene",
+			"title": "AI pracovní postup",
+			"subtitle": "Proměňte své zkušenosti v lepší doporučení.",
+			"description": "Popište svou praxi jen jednou a nechte SkillHub vytvořit jasnější profil dovedností a studijní směr.",
+			"learnMore": "Zjistit více",
+			"showLess": "Zobrazit méně",
 			"steps": {
 				"generate": {
 					"title": "Vygenerujte dovednosti",
-					"description": "Popiste svou praci, projekty nebo cile a nechte AI navrhnout relevantni dovednosti."
+					"description": "Popište svou práci, projekty nebo cíle a nechte AI navrhnout relevantní dovednosti."
 				},
 				"recommend": {
-					"title": "Ziskejte doporuceni",
-					"description": "Vyuzijte vygenerovany profil dovednosti a ziskejte relevantnejsi navrhy kurzu."
+					"title": "Získejte doporučení",
+					"description": "Využijte vygenerovaný profil dovedností a získejte relevantnější návrhy kurzů."
 				},
 				"learn": {
-					"title": "Pokracujte ve studiu",
-					"description": "Budujte tempo tim, ze se budete ucit spravne tema na spravne urovni."
+					"title": "Pokračujte ve studiu",
+					"description": "Budujte tempo tím, že se budete učit správné téma na správné úrovni."
 				}
 			},
 			"howItWorks": {
 				"title": "Jak to funguje",
 				"items": {
 					"detection": {
-						"label": "Rozpoznani dovednosti:",
-						"description": "AI precte vas popis a odhali dovednosti skryte ve vasich zkusenostech."
+						"label": "Rozpoznání dovedností:",
+						"description": "AI přečte váš popis a odhalí dovednosti skryté ve vašich zkušenostech."
 					},
 					"matching": {
-						"label": "Parovani doporuceni:",
-						"description": "Vas profil dovednosti pomaha SkillHubu uprednostnit relevantnejsi kurzy."
+						"label": "Párování doporučení:",
+						"description": "Váš profil dovedností pomáhá SkillHubu upřednostnit relevantnější kurzy."
 					},
 					"learning": {
-						"label": "Studijni vedeni:",
-						"description": "Ziskate jasnejsi vychozi bod a lepsi predstavu o tom, co se ucit dal."
+						"label": "Studijní vedení:",
+						"description": "Získáte jasnější výchozí bod a lepší představu o tom, co se učit dál."
 					}
 				}
 			},
 			"cta": {
 				"generate": "Vygenerovat AI dovednosti",
-				"browse": "Prochazet kurzy"
+				"browse": "Procházet kurzy"
 			}
 		},
 		"enrolledCourses": {
-			"title": "Zapsane kurzy",
-			"loading": "Nacitani kurzu...",
+			"title": "Zapsané kurzy",
+			"loading": "Načítání kurzů...",
 			"error": {
-				"title": "Nepodarilo se nacist zapsane kurzy",
-				"description": "Zkuste to prosim za chvili znovu."
+				"title": "Nepodařilo se načíst zapsané kurzy",
+				"description": "Zkuste to prosím za chvíli znovu."
 			},
 			"empty": {
-				"title": "Zatim zadne zapsane kurzy",
-				"description": "Zacnete s nekterym kurzem a vas pokrok se zobrazi zde.",
-				"cta": "Prochazet kurzy"
+				"title": "Zatím žádné zapsané kurzy",
+				"description": "Začněte některým kurzem a váš pokrok se zobrazí zde.",
+				"cta": "Procházet kurzy"
 			},
 			"status": {
-				"completed": "Dokonceno",
-				"inProgress": "Probiha"
+				"completed": "Dokončeno",
+				"inProgress": "Probíhá"
 			},
-			"enrolledOn": "Zapsano dne {date}",
-			"continue": "Pokracovat",
-			"viewAll": "Zobrazit vse",
-			"viewAllCount": "Zobrazit vse ({count})"
+			"enrolledOn": "Zapsáno dne {date}",
+			"continue": "Pokračovat",
+			"viewAll": "Zobrazit vše",
+			"viewAllCount": "Zobrazit vše ({count})"
 		},
 		"socialZone": {
-			"title": "Socialni zona",
-			"description": "Sledujte XP, ukoly, postup v zebricku a svou studijni serii.",
+			"title": "Sociální zóna",
+			"description": "Sledujte XP, úkoly, postup v žebříčku a svou studijní sérii.",
 			"tabs": {
-				"dashboard": "Prehled",
-				"leaderboard": "Zebricek",
-				"quests": "Ukoly",
+				"dashboard": "Přehled",
+				"leaderboard": "Žebříček",
+				"quests": "Úkoly",
 				"profile": "Profil"
 			},
-			"cta": "Otevrit socialni zonu"
+			"cta": "Otevřít sociální zónu"
 		}
 	},
 	"profile": {
-		"title": "Nastaveni profilu",
+		"title": "Nastavení profilu",
 		"form": {
-			"name": "Cele jmeno",
-			"namePlaceholder": "Zadejte sve cele jmeno",
+			"name": "Celé jméno",
+			"namePlaceholder": "Zadejte své celé jméno",
 			"headline": "Titulek",
-			"headlinePlaceholder": "Pridejte kratky profesionalni titulek",
+			"headlinePlaceholder": "Přidejte krátký profesionální titulek",
 			"region": "Region",
 			"regionPlaceholder": "Vyberte region",
-			"bio": "O mne",
-			"bioPlaceholder": "Reknete ostatnim neco o sve praxi a cilech",
-			"save": "Ulozit zmeny",
-			"saving": "Ukladani...",
-			"cancel": "Zrusit"
+			"bio": "O mně",
+			"bioPlaceholder": "Řekněte ostatním něco o své praxi a cílech",
+			"save": "Uložit změny",
+			"saving": "Ukládání...",
+			"cancel": "Zrušit"
 		},
 		"messages": {
-			"noChanges": "Nejsou zadne zmeny k ulozeni.",
-			"saveSuccess": "Profil byl uspesne aktualizovan.",
-			"saveError": "Profil se nepodarilo aktualizovat. Zkuste to prosim znovu."
+			"noChanges": "Nejsou žádné změny k uložení.",
+			"saveSuccess": "Profil byl úspěšně aktualizován.",
+			"saveError": "Profil se nepodařilo aktualizovat. Zkuste to prosím znovu."
 		},
 		"errors": {
-			"userNotFound": "Uzivatelsky profil se nepodarilo nacist."
+			"userNotFound": "Uživatelský profil se nepodařilo načíst."
 		},
 		"validation": {
-			"nameRequired": "Zadejte prosim sve jmeno.",
-			"bioTooLong": "Pole O mne muze mit maximalne 500 znaku."
+			"nameRequired": "Zadejte prosím své jméno.",
+			"bioTooLong": "Pole O mně může mít maximálně 500 znaků."
 		},
 		"header": {
-			"fallbackName": "Uzivatel",
-			"noName": "Bez jmena"
+			"fallbackName": "Uživatel",
+			"noName": "Bez jména"
 		},
 		"editModal": {
 			"title": "Upravit profil",
-			"bioLength": "{count}/{max} znaku",
+			"bioLength": "{count}/{max} znaků",
 			"errors": {
-				"userNotAvailable": "Uzivatelske udaje nejsou k dispozici."
+				"userNotAvailable": "Uživatelské údaje nejsou k dispozici."
 			},
 			"image": {
-				"label": "Profilova fotka",
-				"previewAlt": "Nahled profilove fotky",
-				"uploadPhoto": "Nahrat fotku",
-				"changePhoto": "Zmenit fotku",
+				"label": "Profilová fotka",
+				"previewAlt": "Náhled profilové fotky",
+				"uploadPhoto": "Nahrát fotku",
+				"changePhoto": "Změnit fotku",
 				"remove": "Odstranit",
-				"recommendation": "Nejlepe funguje ctvercovy obrazek. PNG nebo JPG do 5 MB.",
+				"recommendation": "Nejlépe funguje čtvercový obrázek. PNG nebo JPG do 5 MB.",
 				"errors": {
-					"invalidFile": "Vyberte prosim platny obrazkovy soubor.",
-					"fileTooLarge": "Obrazek musi byt mensi nez 5 MB.",
-					"uploadFailed": "Nahrani profilove fotky selhalo."
+					"invalidFile": "Vyberte prosím platný obrázkový soubor.",
+					"fileTooLarge": "Obrázek musí být menší než 5 MB.",
+					"uploadFailed": "Nahrání profilové fotky selhalo."
 				}
 			},
 			"social": {
-				"title": "Socialni funkce",
-				"description": "Zapnete socialni vrstvu, aby se zobrazovaly XP, ukoly, postup v zebricku a vas socialni profil.",
+				"title": "Sociální funkce",
+				"description": "Zapněte sociální vrstvu, aby se zobrazovaly XP, úkoly, postup v žebříčku a váš sociální profil.",
 				"enabled": {
-					"title": "Socialni funkce jsou zapnute",
-					"description": "XP, ukoly a funkce zebricku jsou momentalne viditelne."
+					"title": "Sociální funkce jsou zapnuté",
+					"description": "XP, úkoly a funkce žebříčku jsou momentálně viditelné."
 				},
 				"disabled": {
-					"title": "Socialni funkce jsou vypnute",
-					"description": "Vase XP a socialni funkce jsou momentalne skryte."
+					"title": "Sociální funkce jsou vypnuté",
+					"description": "Vaše XP a sociální funkce jsou momentálně skryté."
 				},
-				"toggleFailed": "Nepodarilo se aktualizovat nastaveni socialnich funkci."
+				"toggleFailed": "Nepodařilo se aktualizovat nastavení sociálních funkcí."
 			},
 			"danger": {
-				"title": "Nebezpecna zona",
-				"description": "Tyto akce ovlivni ulozeny pokrok a data vaseho uctu. Nez budete pokracovat, peclive je zkontrolujte.",
+				"title": "Nebezpečná zóna",
+				"description": "Tyto akce ovlivní uložený pokrok a data vašeho účtu. Než budete pokračovat, pečlivě je zkontrolujte.",
 				"freshStart": {
-					"title": "Novy zacatek",
-					"description": "Vymazte sve dovednosti, pokrok v kurzech a souvisejici studijni data, ale ucet ponechte.",
-					"button": "Zacit znovu",
-					"confirmTitle": "Potvrdit novy zacatek",
-					"confirmDescription": "Timto odstranite svuj studijni pokrok, pokrok v dovednostech a souvisejici aktivitu. Vas ucet zustane aktivni.",
+					"title": "Nový začátek",
+					"description": "Vymažte své dovednosti, pokrok v kurzech a související studijní data, ale účet ponechte.",
+					"button": "Začít znovu",
+					"confirmTitle": "Potvrdit nový začátek",
+					"confirmDescription": "Tímto odstraníte svůj studijní pokrok, pokrok v dovednostech a související aktivitu. Váš účet zůstane aktivní.",
 					"confirmationToken": "RESET",
-					"confirmPlaceholder": "Pro potvrzeni napiste {token}",
-					"confirmationError": "Pro pokracovani napiste {token}.",
-					"confirmButton": "Resetovat studijni data",
-					"processing": "Probiha reset...",
-					"success": "Vase studijni data byla uspesne vymazana.",
-					"failed": "Novy zacatek se nepodarilo dokoncit."
+					"confirmPlaceholder": "Pro potvrzení napište {token}",
+					"confirmationError": "Pro pokračování napište {token}.",
+					"confirmButton": "Resetovat studijní data",
+					"processing": "Probíhá reset...",
+					"success": "Vaše studijní data byla úspěšně vymazána.",
+					"failed": "Nový začátek se nepodařilo dokončit."
 				},
 				"delete": {
-					"title": "Smazat ucet",
-					"description": "Deaktivujte svuj ucet a odhlaste se. Tuto akci je potreba brat jako trvalou.",
-					"button": "Smazat ucet",
-					"confirmTitle": "Potvrdit smazani uctu",
-					"confirmDescription": "Tim deaktivujete svuj ucet a ztratite pristup. Po uspesnem dokonceni pozadavku budete okamzite odhlaseni.",
+					"title": "Smazat účet",
+					"description": "Deaktivujte svůj účet a odhlašte se. Tuto akci je potřeba brát jako trvalou.",
+					"button": "Smazat účet",
+					"confirmTitle": "Potvrdit smazání účtu",
+					"confirmDescription": "Tím deaktivujete svůj účet a ztratíte přístup. Po úspěšném dokončení požadavků budete okamžitě odhlášení.",
 					"confirmationToken": "DELETE",
-					"confirmPlaceholder": "Pro potvrzeni napiste {token}",
-					"confirmationError": "Pro pokracovani napiste {token}.",
-					"confirmButton": "Smazat ucet",
-					"processing": "Mazani...",
-					"success": "Vas ucet byl uspesne smazan.",
-					"failed": "Smazani uctu se nepodarilo dokoncit."
+					"confirmPlaceholder": "Pro potvrzení napište {token}",
+					"confirmationError": "Pro pokračování napište {token}.",
+					"confirmButton": "Smazat účet",
+					"processing": "Mazání...",
+					"success": "Váš účet byl úspěšně smazán.",
+					"failed": "Smazání účtu se nepodařilo dokončit."
 				}
 			}
 		},
 		"page": {
 			"editProfile": "Upravit profil",
-			"upload": "Nahrat",
-			"profileImageAlt": "Profilova fotka",
-			"noName": "Bez jmena",
+			"upload": "Nahrát",
+			"profileImageAlt": "Profilová fotka",
+			"noName": "Bez jména",
 			"stats": {
 				"skills": "Dovednosti",
 				"courses": "Kurzy",
-				"certificates": "Certifikaty"
+				"certificates": "Certifikáty"
 			},
 			"quickActions": {
-				"title": "Rychle akce",
+				"title": "Rychlé akce",
 				"skills": {
 					"title": "Spravovat dovednosti",
-					"description": "Zkontrolujte sve aktualni dovednosti a aktualizujte svuj profil.",
+					"description": "Zkontrolujte své aktuální dovednosti a aktualizujte svůj profil.",
 					"badge": "Dovednosti: {count}"
 				},
 				"aiSkills": {
-					"title": "Generovat dovednosti pomoci AI",
-					"description": "Promente sve zkusenosti v navrzeny profil dovednosti.",
-					"badge": "Pohaneno AI"
+					"title": "Generovat dovednosti pomocí AI",
+					"description": "Proměňte své zkušenosti v navržený profil dovedností.",
+					"badge": "Poháněno AI"
 				},
 				"recommendations": {
-					"title": "Doporucene kurzy",
-					"description": "Podivejte se na navrhy kurzu prizpusobene vasemu profilu dovednosti."
+					"title": "Doporučené kurzy",
+					"description": "Podívejte se na návrhy kurzů přizpůsobené vašemu profilu dovedností."
 				},
 				"browseCourses": {
-					"title": "Prochazet kurzy",
-					"description": "Prozkoumejte cely katalog kurzu a nove studijni cesty."
+					"title": "Procházet kurzy",
+					"description": "Prozkoumejte celý katalog kurzů a nové studijní cesty."
 				},
 				"learning": {
-					"title": "Pokracovat ve studiu",
-					"description": "Vratte se do sveho aktivniho studijniho toku.",
-					"badge": "Aktivni kurzy: {count}"
+					"title": "Pokračovat ve studiu",
+					"description": "Vraťte se do svého aktivního studijního toku.",
+					"badge": "Aktivní kurzy: {count}"
 				},
 				"settings": {
-					"title": "Nastaveni",
-					"description": "Upravte ucet, preference a nastaveni zabezpeceni."
+					"title": "Nastavení",
+					"description": "Upravte účet, preference a nastavení zabezpečení."
 				}
 			},
 			"recentActivity": {
-				"title": "Nedavna aktivita",
+				"title": "Nedávná aktivita",
 				"empty": {
-					"title": "Zatim zadna nedavna aktivita",
-					"description": "Zacnete se ucit, pridejte dovednosti nebo dokoncete kurz a vase aktivita se zobrazi zde.",
-					"cta": "Prochazet kurzy"
+					"title": "Zatím žádná nedávná aktivita",
+					"description": "Začněte se učit, přidejte dovednosti nebo dokončete kurz a vaše aktivita se zobrazí zde.",
+					"cta": "Procházet kurzy"
 				}
 			}
 		},
@@ -547,47 +563,47 @@
 	},
 	"settings": {
 		"page": {
-			"loading": "Nacitani nastaveni...",
-			"backToProfile": "Zpet na profil",
-			"title": "Nastaveni",
-			"description": "Spravujte profil, preference, oznameni a zabezpeceni uctu.",
+			"loading": "Načítání nastavení...",
+			"backToProfile": "Zpět na profil",
+			"title": "Nastavení",
+			"description": "Spravujte profil, preference, oznámení a zabezpečení účtu.",
 			"sections": {
 				"profile": "Profil",
-				"notifications": "Oznameni",
-				"security": "Zabezpeceni",
+				"notifications": "Oznámení",
+				"security": "Zabezpečení",
 				"preferences": "Preference"
 			},
 			"profile": {
 				"title": "Informace o profilu"
 			},
 			"notifications": {
-				"title": "Oznameni",
+				"title": "Oznámení",
 				"items": {
 					"recommendations": {
-						"title": "Doporuceni kurzu",
-						"description": "Dostavejte upozorneni, kdyz nove kurzy odpovidaji vasim dovednostem."
+						"title": "Doporučení kurzů",
+						"description": "Dostávejte upozornění, když nové kurzy odpovídají vašim dovednostem."
 					},
 					"reminders": {
-						"title": "Studijni pripominky",
-						"description": "Udrzte si tempo pomoci pripominek, abyste pokracovali ve studiu."
+						"title": "Studijní připomínky",
+						"description": "Udržte si tempo pomocí připomínek, abyste pokračovali ve studiu."
 					},
 					"summary": {
-						"title": "Tydenni souhrn",
-						"description": "Ziskejte kazdy tyden souhrn sveho pokroku a aktivity."
+						"title": "Týdenní souhrn",
+						"description": "Získejte každý týden souhrn svého pokroku a aktivity."
 					}
 				}
 			},
 			"security": {
-				"title": "Zabezpeceni",
+				"title": "Zabezpečení",
 				"password": {
 					"title": "Heslo",
-					"description": "Aktualizujte heslo, aby vas ucet zustal v bezpeci.",
-					"action": "Zmenit heslo"
+					"description": "Aktualizujte heslo, aby váš účet zůstal v bezpečí.",
+					"action": "Změnit heslo"
 				},
 				"twoFactor": {
-					"title": "Dvoufaktorove overeni",
-					"description": "Pridejte k uctu dalsi vrstvu zabezpeceni.",
-					"action": "Jiz brzy"
+					"title": "Dvoufaktorové ověření",
+					"description": "Přidejte k účtu další vrstvu zabezpečení.",
+					"action": "Již brzy"
 				}
 			},
 			"preferences": {
@@ -596,7 +612,7 @@
 					"title": "Jazyk"
 				},
 				"timezone": {
-					"title": "Casove pasmo",
+					"title": "Časové pásmo",
 					"options": {
 						"utc": "UTC",
 						"est": "EST",
@@ -612,98 +628,98 @@
 	},
 	"social": {
 		"page": {
-			"loading": "Nacitani socialnich dat...",
-			"title": "Socialni zona",
-			"description": "Sledujte XP, ukoly, postup v zebricku a svuj socialni profil na jednom miste.",
+			"loading": "Načítání sociálních dat...",
+			"title": "Sociální zóna",
+			"description": "Sledujte XP, úkoly, postup v žebříčku a svůj sociální profil na jednom místě.",
 			"tabs": {
-				"dashboard": "Prehled",
-				"leaderboard": "Zebricek",
-				"quests": "Ukoly",
+				"dashboard": "Přehled",
+				"leaderboard": "Žebříček",
+				"quests": "Úkoly",
 				"profile": "Profil"
 			}
 		},
 		"dashboard": {
-			"loadFailed": "Nepodarilo se nacist data socialniho prehledu.",
+			"loadFailed": "Nepodařilo se načíst data sociálního přehledu.",
 			"level": {
-				"title": "Postup urovne",
-				"badge": "Uroven {level}",
-				"progress": "Postup aktualni urovne",
+				"title": "Postup úrovně",
+				"badge": "Úroveň {level}",
+				"progress": "Postup aktuální úrovně",
 				"progressDetail": "{current}/{total} XP"
 			},
 			"xp": {
-				"title": "Celkove XP",
-				"description": "XP ziskane ze vsech socialnich aktivit"
+				"title": "Celkem XP",
+				"description": "XP získané ze všech sociálních aktivit"
 			},
 			"streak": {
-				"title": "Serie",
-				"current": "Aktualni serie",
-				"longest": "Nejdelsi serie"
+				"title": "Série",
+				"current": "Aktuální série",
+				"longest": "Nejdelší série"
 			},
 			"quests": {
-				"title": "Aktivni ukoly",
-				"completedCount": "{completed}/{total} splneno",
+				"title": "Aktivní úkoly",
+				"completedCount": "{completed}/{total} splněno",
 				"reward": "+{amount} XP",
-				"more": "+{count} dalsich",
-				"allCompleted": "Vsechny dostupne ukoly jsou splnene."
+				"more": "+{count} dalších",
+				"allCompleted": "Všechny dostupné úkoly jsou splněné."
 			}
 		},
 		"leaderboard": {
 			"filters": {
-				"weekly": "Tydenni",
-				"global": "Globalni"
+				"weekly": "Týdenní",
+				"global": "Globální"
 			},
 			"weekly": {
-				"title": "Tydenni zebricek",
-				"description": "Podivejte se, kdo tento tyden ziskal nejvic XP.",
-				"scoreLabel": "XP tento tyden"
+				"title": "Týdenní žebříček",
+				"description": "Podívejte se, kdo tento týden získal nejvíc XP.",
+				"scoreLabel": "XP tento týden"
 			},
 			"global": {
-				"title": "Globalni zebricek",
-				"description": "Podivejte se na nejlepsi studujici napric vsemi zaznamenanymi aktivitami.",
+				"title": "Globální žebříček",
+				"description": "Podívejte se na nejlepší studující napříč všemi zaznamenanými aktivitami.",
 				"scoreLabel": "Celkem XP"
 			},
 			"levelBadge": "Ur. {level}",
-			"empty": "Data pro zebricek zatim nejsou k dispozici."
+			"empty": "Data pro žebříček zatím nejsou k dispozici."
 		},
 		"profile": {
-			"loadFailed": "Nepodarilo se nacist socialni profil.",
-			"anonymous": "Anonymni student",
-			"welcome": "Zacnete se ucit a budujte svou historii XP.",
-			"lastActive": "Naposledy aktivni {time}",
+			"loadFailed": "Nepodařilo se načíst sociální profil.",
+			"anonymous": "Anonymní student",
+			"welcome": "Začněte se učit a budujte svou historii XP.",
+			"lastActive": "Naposledy aktivní {time}",
 			"level": {
-				"badge": "Uroven {level}",
-				"progress": "Postup aktualni urovne",
+				"badge": "Úroveň {level}",
+				"progress": "Postup aktuální úrovně",
 				"progressDetail": "{current}/{total} XP • {percentage} %"
 			},
 			"stats": {
-				"level": "Uroven",
+				"level": "Úroveň",
 				"totalXp": "Celkem XP",
-				"currentStreak": "Aktualni serie",
-				"longestStreak": "Nejdelsi serie"
+				"currentStreak": "Aktuální série",
+				"longestStreak": "Nejdelší série"
 			},
 			"history": {
 				"title": "Historie XP",
-				"description": "Vase nejnovejsi transakce XP a socialni aktivita.",
-				"empty": "Historie XP zatim neni k dispozici."
+				"description": "Vaše nejnovější transakce XP a sociální aktivita.",
+				"empty": "Historie XP zatím není k dispozici."
 			}
 		},
 		"quests": {
-			"title": "Ukoly",
-			"description": "Udrzte svou serii a plnte ukoly, abyste ziskali vice XP.",
-			"activeTitle": "Aktivni ukoly",
-			"completedTitle": "Splnene ukoly",
-			"progressLabel": "{current}/{total} splneno",
+			"title": "Úkoly",
+			"description": "Udržte svou sérii a plňte úkoly, abyste získali více XP.",
+			"activeTitle": "Aktivní úkoly",
+			"completedTitle": "Splněné úkoly",
+			"progressLabel": "{current}/{total} splněno",
 			"reward": "+{amount} XP",
-			"completed": "Splneno",
-			"empty": "Momentalne nejsou k dispozici zadne ukoly."
+			"completed": "Splněno",
+			"empty": "Momentálně nejsou k dispozici žádné úkoly."
 		}
 	},
 	"skills": {
 		"header": {
-			"title": "Vase dovednosti",
-			"description": "Sledujte, co umite, zlepsujte svou uroven a objevujte, co se ucit dal.",
-			"addSkill": "Pridat dovednost",
-			"aiSkills": "AI generator dovednosti"
+			"title": "Vaše dovednosti",
+			"description": "Sledujte, co umíte, zlepšujte svou úroveň a objevujte, co se učit dál.",
+			"addSkill": "Přidat dovednost",
+			"aiSkills": "AI generátor dovedností"
 		},
 		"search": {
 			"label": "Hledat dovednosti",
@@ -712,371 +728,371 @@
 		"grid": {
 			"uncategorized": "Bez kategorie",
 			"empty": {
-				"defaultTitle": "Zatim zadne dovednosti",
-				"defaultDescription": "Zacnete pridanim prvni dovednosti a vytvorte si profil.",
-				"defaultAction": "Pridat prvni dovednost",
-				"searchTitle": "Zadne odpovidajici dovednosti",
-				"searchDescription": "Zkuste jiny vyhledavaci vyraz nebo upravte filtry.",
-				"searchAction": "Vymazat hledani"
+				"defaultTitle": "Zatím žádné dovednosti",
+				"defaultDescription": "Začněte přidáním první dovednosti a vytvořte si profil.",
+				"defaultAction": "Přidat první dovednost",
+				"searchTitle": "Žádné odpovídající dovednosti",
+				"searchDescription": "Zkuste jiný vyhledávací výraz nebo upravte filtry.",
+				"searchAction": "Vymazat hledání"
 			}
 		},
 		"card": {
 			"progress": "Pokrok",
-			"updateLevel": "Aktualizovat uroven",
-			"learnMore": "Zjistit vice"
+			"updateLevel": "Aktualizovat úroveň",
+			"learnMore": "Zjistit více"
 		},
 		"content": {
-			"aiModalTitle": "AI generator dovednosti",
-			"closeAiModal": "Zavrit AI generator dovednosti",
+			"aiModalTitle": "AI generátor dovedností",
+			"closeAiModal": "Zavřít AI generátor dovedností",
 			"success": {
-				"updated": "Uroven dovednosti byla uspesne aktualizovana.",
-				"removed": "Dovednost byla uspesne odstranena.",
-				"aiAdded": "Bylo pridano {count} dovednosti vygenerovanych AI."
+				"updated": "Úroveň dovednosti byla úspěšně aktualizována.",
+				"removed": "Dovednost byla úspěšně odstraněna.",
+				"aiAdded": "Bylo přidáno {count} dovedností vygenerovaných AI."
 			},
 			"errors": {
-				"load": "Nepodarilo se nacist vase dovednosti.",
-				"loadTitle": "Nacteni dovednosti se nezdarilo",
-				"update": "Nepodarilo se aktualizovat uroven dovednosti.",
-				"remove": "Dovednost se nepodarilo odstranit.",
-				"aiAdd": "Nepodarilo se pridat AI vygenerovane dovednosti."
+				"load": "Nepodařilo se načíst vaše dovednosti.",
+				"loadTitle": "Načtení dovedností se nezdařilo",
+				"update": "Nepodařilo se aktualizovat úroveň dovednosti.",
+				"remove": "Dovednost se nepodařilo odstranit.",
+				"aiAdd": "Nepodařilo se přidat AI vygenerované dovednosti."
 			}
 		},
 		"addModal": {
-			"title": "Pridat dovednost",
+			"title": "Přidat dovednost",
 			"skillLabel": "Dovednost",
 			"skillPlaceholder": "Vyberte dovednost",
-			"proficiencyLabel": "Uroven znalosti",
+			"proficiencyLabel": "Úroveň znalostí",
 			"levels": {
-				"basic": "Zakladni",
-				"intermediate": "Stredne pokrocila",
-				"advanced": "Pokrocila",
-				"expert": "Expertni"
+				"basic": "Základní",
+				"intermediate": "Středně pokročilá",
+				"advanced": "Pokročilá",
+				"expert": "Expertní"
 			},
 			"verification": {
-				"title": "Je vyzadovano overeni",
-				"description": "Pred pridanim teto dovednosti na urovni {level} je potreba absolvovat overovaci kviz."
+				"title": "Je vyžadováno ověření",
+				"description": "Před přidáním této dovednosti na úrovni {level} je potřeba absolvovat ověřovací kvíz."
 			},
 			"actions": {
-				"addSkill": "Pridat dovednost",
-				"startVerification": "Spustit overeni",
-				"processing": "Zpracovava se..."
+				"addSkill": "Přidat dovednost",
+				"startVerification": "Spustit ověření",
+				"processing": "Zpracovává se..."
 			},
 			"errors": {
-				"add": "Dovednost se nepodarilo pridat."
+				"add": "Dovednost se nepodařilo přidat."
 			}
 		},
 		"updateModal": {
 			"title": "Aktualizovat dovednost",
-			"description": "Upravte uroven znalosti pro {skill}.",
-			"currentLevel": "Aktualni uroven",
-			"selectLevel": "Vyberte novou uroven",
-			"noDescription": "Popis neni k dispozici.",
+			"description": "Upravte úroveň znalostí pro {skill}.",
+			"currentLevel": "Aktuální úroveň",
+			"selectLevel": "Vyberte novou úroveň",
+			"noDescription": "Popis není k dispozici.",
 			"levels": {
-				"basic": "Zakladni porozumeni a omezena prakticka zkusenost.",
-				"intermediate": "Pohodlna samostatna prace na beznych ukolech.",
-				"advanced": "Silna prakticka zkusenost a jiste rozhodovani.",
-				"expert": "Hluboka expertiza s pokrocilym usudkem a vedenim."
+				"basic": "Základní porozumění a omezená praktická zkušenost.",
+				"intermediate": "Pohodlná samostatná práce na běžných úkolech.",
+				"advanced": "Silná praktická zkušenost a jisté rozhodování.",
+				"expert": "Hluboká expertiza s pokročilým úsudkem a vedením."
 			},
 			"actions": {
-				"update": "Aktualizovat uroven",
-				"updateAndVerify": "Overit a aktualizovat",
+				"update": "Aktualizovat úroveň",
+				"updateAndVerify": "Ověřit a aktualizovat",
 				"updating": "Aktualizace..."
 			},
 			"remove": {
 				"button": "Odstranit dovednost",
-				"confirmation": "Odstranit <strong>{skill}</strong> z vaseho profilu?",
+				"confirmation": "Odstranit <strong>{skill}</strong> z vašeho profilu?",
 				"confirmButton": "Odstranit",
-				"removing": "Odstranovani..."
+				"removing": "Odstraňování..."
 			}
 		},
 		"aiGenerator": {
-			"title": "AI generator dovednosti",
-			"description": "Popiste sve zkusenosti a nechte AI navrhnout dovednosti s doporucenymi urovnemi znalosti.",
-			"promptLabel": "Popiste sve zkusenosti",
-			"promptPlaceholder": "Priklad: Pracuji jako frontend developer, tvorim aplikace v Reactu, spolupracuji s designery a nedavno jsem zacal pracovat s testovanim a pristupnosti.",
-			"examplesTitle": "Vyzkousejte nektery z techto prikladu",
+			"title": "AI generátor dovedností",
+			"description": "Popište své zkušenosti a nechte AI navrhnout dovednosti s doporučenými úrovněmi znalostí.",
+			"promptLabel": "Popište své zkušenosti",
+			"promptPlaceholder": "Příklad: Pracuji jako frontend vývojář, tvořím aplikace v Reactu, spolupracuji s designéry a nedávno jsem začal pracovat s testováním a přístupností.",
+			"examplesTitle": "Vyzkoušejte některý z těchto příkladů",
 			"examples": {
-				"beginner": "S produktovym designem teprve zacinam a chci porozumet UX vyzkumu, wireframum a prototypovani.",
-				"dataScience": "Analyzuji data v Pythonu, denne pouzivam pandas a chci se posunout smerem ke strojnimu uceni.",
-				"fullStack": "Vytvarim full-stack webove aplikace s Reactem, Node.js, PostgreSQL a REST API.",
-				"mobileUx": "Navrhuji rozhrani mobilnich aplikaci, delam testovani pouzitelnosti a uzce spolupracuji s produktovymi tymy.",
-				"devOps": "Spravuji CI/CD pipeline, sluzby v Dockeru, cloudova nasazeni a automatizaci infrastruktury."
+				"beginner": "S produktovým designem teprve začínám a chci porozumět UX výzkumu, wireframům a prototypování.",
+				"dataScience": "Analyzuji data v Pythonu, denně používám pandas a chci se posunout směrem ke strojovému učení.",
+				"fullStack": "Vytvářím full-stack webové aplikace s Reactem, Node.js, PostgreSQL a REST API.",
+				"mobileUx": "Navrhuji rozhraní mobilních aplikací, dělám testování použitelnosti a úzce spolupracuji s produktovými týmy.",
+				"devOps": "Spravuji CI/CD pipeline, služby v Dockeru, cloudová nasazení a automatizaci infrastruktury."
 			},
 			"actions": {
 				"generate": "Vygenerovat dovednosti",
-				"generating": "Generovani...",
-				"addSelected": "Pridat vybrane ({count})"
+				"generating": "Generování...",
+				"addSelected": "Přidat vybrané ({count})"
 			},
 			"results": {
-				"title": "Vygenerovane navrhy",
-				"subtitle": "Vyberte dovednosti, ktere chcete pridat."
+				"title": "Vygenerované návrhy",
+				"subtitle": "Vyberte dovednosti, které chcete přidat."
 			},
 			"errors": {
-				"promptTooShort": "Pred generovanim dovednosti prosim zadejte podrobnejsi popis.",
-				"generate": "Nepodarilo se vygenerovat AI dovednosti."
+				"promptTooShort": "Před generováním dovedností prosím zadejte podrobnější popis.",
+				"generate": "Nepodařilo se vygenerovat AI dovednosti."
 			}
 		},
 		"verificationQuiz": {
-			"title": "Overovaci kviz dovednosti",
-			"loading": "Nacitani overovaciho kvizu...",
-			"timeElapsed": "Uplynuly cas",
-			"goBack": "Zpet",
-			"incompleteWarning": "Odpovedeli jste na {answered} z {total} otazek. Pred odeslanim odpovezte na vsechny otazky.",
+			"title": "Ověřovací kvíz dovednosti",
+			"loading": "Načítání ověřovacího kvízu...",
+			"timeElapsed": "Uplynulý čas",
+			"goBack": "Zpět",
+			"incompleteWarning": "Odpověděli jste na {answered} z {total} otázek. Před odesláním odpovězte na všechny otázky.",
 			"resume": {
-				"title": "Pokracovat v predchozim pokusu",
-				"description": "Pro tuto dovednost uz mate nedokoneny overovaci pokus. Muzete v nem pokracovat, nebo zacit znovu.",
-				"resume": "Pokracovat v pokusu",
-				"startOver": "Zacit znovu"
+				"title": "Pokračovat v předchozím pokusu",
+				"description": "Pro tuto dovednost už máte nedokončený ověřovací pokus. Můžete v něm pokračovat, nebo začít znovu.",
+				"resume": "Pokračovat v pokusu",
+				"startOver": "Začít znovu"
 			},
 			"progress": {
-				"question": "Otazka {current} z {total}",
-				"answered": "{percentage} % zodpovezeno"
+				"question": "Otázka {current} z {total}",
+				"answered": "{percentage} % zodpovězeno"
 			},
 			"question": {
 				"points": "{count} b.",
-				"help": "Vyberte vsechny odpovedi, ktere plati."
+				"help": "Vyberte všechny odpovědi, které platí."
 			},
 			"actions": {
-				"previous": "Predchozi",
-				"next": "Dalsi",
-				"submit": "Odeslat kviz",
-				"submitting": "Odesilani..."
+				"previous": "Předchozí",
+				"next": "Další",
+				"submit": "Odeslat kvíz",
+				"submitting": "Odesílání..."
 			},
 			"errors": {
-				"load": "Nepodarilo se nacist overovaci kviz.",
-				"noQuestions": "Pro tuto dovednost zatim nejsou dostupne zadne overovaci otazky.",
-				"invalidRequest": "Pozadavek na overeni neni platny.",
-				"authRequired": "Pro spusteni overeni musite byt prihlaseni.",
-				"incompleteAttempt": "Uz existuje nedokoneny overovaci pokus.",
-				"network": "Chyba site ({code}). Zkuste to prosim znovu.",
-				"submit": "Kviz se nepodarilo odeslat.",
-				"startOver": "Nepodarilo se spustit novy overovaci pokus."
+				"load": "Nepodařilo se načíst ověřovací kvíz.",
+				"noQuestions": "Pro tuto dovednost zatím nejsou dostupné žádné ověřovací otázky.",
+				"invalidRequest": "Požadavek na ověření není platný.",
+				"authRequired": "Pro spuštění ověření musíte být přihlášení.",
+				"incompleteAttempt": "Už existuje nedokončený ověřovací pokus.",
+				"network": "Chyba sítě ({code}). Zkuste to prosím znovu.",
+				"submit": "Kvíz se nepodařilo odeslat.",
+				"startOver": "Nepodařilo se spustit nový ověřovací pokus."
 			}
 		},
 		"verificationResults": {
-			"passedTitle": "Overeni uspesne",
-			"failedTitle": "Overeni neuspesne",
+			"passedTitle": "Ověření úspěšné",
+			"failedTitle": "Ověření neúspěšné",
 			"messages": {
-				"expert": "Vyborny vysledek. Prokazali jste expertni uroven znalosti.",
-				"advanced": "Silny vysledek. Prokazali jste pokrocilou uroven znalosti.",
-				"intermediate": "Solidni vysledek. Dosahli jste stredne pokrocile urovne.",
-				"keepLearning": "Pokracujte dal. S trochou dalsi praxe se vas vysledek zlepsi."
+				"expert": "Výborný výsledek. Prokázali jste expertní úroveň znalostí.",
+				"advanced": "Silný výsledek. Prokázali jste pokročilou úroveň znalostí.",
+				"intermediate": "Solidní výsledek. Dosáhli jste středně pokročilé úrovně.",
+				"keepLearning": "Pokračujte dál. S trochou další praxe se váš výsledek zlepší."
 			},
 			"summary": {
-				"score": "Skore",
+				"score": "Skóre",
 				"points": "Body"
 			},
 			"stats": {
-				"questionsAnswered": "Zodpovezene otazky",
-				"correctAnswers": "Spravne odpovedi",
-				"incorrectAnswers": "Nespravne odpovedi"
+				"questionsAnswered": "Zodpovězené otázky",
+				"correctAnswers": "Správné odpovědi",
+				"incorrectAnswers": "Nesprávné odpovědi"
 			},
 			"achievedLevel": {
-				"title": "Dosazena uroven",
-				"passedDescription": "Tuto uroven lze nyni pouzit ve vasem profilu dovednosti.",
-				"failedDescription": "Nedosahli jste minimalni hranice pro pouziti teto urovne."
+				"title": "Dosažená úroveň",
+				"passedDescription": "Tuto úroveň lze nyní použít ve vašem profilu dovedností.",
+				"failedDescription": "Nedosáhli jste minimální hranice pro použití této úrovně."
 			},
 			"guide": {
-				"title": "Pruvodce hodnocenim",
-				"expert": "90 % a vice: Expertni",
-				"advanced": "75 % az 89 %: Pokrocila",
-				"intermediate": "60 % az 74 %: Stredne pokrocila",
-				"none": "Pod 60 %: Bez overene urovne"
+				"title": "Průvodce hodnocením",
+				"expert": "90 % a více: Expertní",
+				"advanced": "75 % až 89 %: Pokročilá",
+				"intermediate": "60 % až 74 %: Středně pokročilá",
+				"none": "Pod 60 %: Bez ověřené úrovně"
 			},
 			"actions": {
-				"retake": "Opakovat kviz",
-				"apply": "Pouzit overenou uroven",
-				"applying": "Pouziva se..."
+				"retake": "Opakovat kvíz",
+				"apply": "Použít ověřenou úroveň",
+				"applying": "Používá se..."
 			},
 			"errors": {
-				"apply": "Nepodarilo se pouzit overenou uroven."
+				"apply": "Nepodařilo se použít ověřenou úroveň."
 			}
 		}
 	},
 	"aiSkills": {
 		"page": {
-			"badge": "AI generator dovednosti",
-			"title": "Vygenerujte si profil dovednosti",
-			"description": "Popiste sve zkusenosti, cile nebo nedavnou praci a nechte AI vytvorit jasnejsi obrazek o vasich soucasnych dovednostech.",
+			"badge": "AI generátor dovedností",
+			"title": "Vygenerujte si profil dovedností",
+			"description": "Popište své zkušenosti, cíle nebo nedávnou práci a nechte AI vytvořit jasnější obrázek o vašich současných dovednostech.",
 			"steps": {
 				"describe": {
-					"title": "Popiste sve zkusenosti",
-					"description": "Sdilejte, co delate, co jste vytvorili a kam se chcete posunout."
+					"title": "Popište své zkušenosti",
+					"description": "Sdílejte, co děláte, co jste vytvořili a kam se chcete posunout."
 				},
 				"analyze": {
-					"title": "AI analyzuje vase zkusenosti",
-					"description": "SkillHub identifikuje relevantni dovednosti a navrhne uroven jejich znalosti."
+					"title": "AI analyzuje vaše zkušenosti",
+					"description": "SkillHub identifikuje relevantní dovednosti a navrhne úroveň jejich znalostí."
 				},
 				"recommend": {
-					"title": "Zkontrolujte a ulozte",
-					"description": "Vyberte dovednosti, ktere si chcete ponechat, a zlepsete sva doporuceni."
+					"title": "Zkontrolujte a uložte",
+					"description": "Vyberte dovednosti, které si chcete ponechat, a zlepšete svá doporučení."
 				}
 			},
 			"form": {
-				"label": "Na cem jste v posledni dobe pracovali?",
-				"placeholder": "Popiste svou roli, projekty, nastroje a cile. Cim vice kontextu poskytnete, tim lepsi budou navrhy."
+				"label": "Na čem jste v poslední době pracovali?",
+				"placeholder": "Popište svou roli, projekty, nástroje a cíle. Čím více kontextu poskytnete, tím lepší budou návrhy."
 			},
 			"actions": {
 				"generate": "Vygenerovat dovednosti"
 			},
 			"benefits": {
-				"title": "Proc to pouzivat?",
+				"title": "Proč to používat?",
 				"saveTime": {
-					"title": "Usetrite cas",
-					"description": "Preskocite rucni zadavani dovednosti a zacnete s navrhy vygenerovanymi AI."
+					"title": "Ušetříte čas",
+					"description": "Přeskočíte ruční zadávání dovedností a začnete s návrhy vygenerovanými AI."
 				},
 				"accurateProficiency": {
-					"title": "Zkontrolujete urovne znalosti",
-					"description": "Pred pridanim kazde dovednosti do profilu si overte navrzenou uroven."
+					"title": "Zkontrolujete úrovně znalostí",
+					"description": "Před přidáním každé dovednosti do profilu si ověřte navrženou úroveň."
 				},
 				"betterRecommendations": {
-					"title": "Ziskate lepsi doporuceni",
-					"description": "Silnejsi profil dovednosti vede k relevantnejsim navrhum kurzu."
+					"title": "Získáte lepší doporučení",
+					"description": "Silnější profil dovedností vede k relevantnějším návrhům kurzů."
 				},
 				"hiddenSkills": {
-					"title": "Odhalite skryte dovednosti",
-					"description": "AI casto rozpozna dovednosti, ktere pravidelne pouzivate, ale nikdy vas nenapadlo je pridat."
+					"title": "Odhalíte skryté dovednosti",
+					"description": "AI často rozpozná dovednosti, které pravidelně používáte, ale nikdy vás nenapadlo je přidat."
 				}
 			},
 			"success": {
-				"title": "Dovednosti byly uspesne pridany",
-				"description": "Vas profil byl aktualizovan a budouci doporuceni mohou tyto dovednosti hned vyuzit.",
+				"title": "Dovednosti byly úspěšně přidány",
+				"description": "Váš profil byl aktualizován a budoucí doporučení mohou tyto dovednosti hned využít.",
 				"actions": {
-					"recommendations": "Zobrazit doporuceni",
-					"skills": "Otevrit dovednosti",
-					"generateMore": "Generovat dalsi"
+					"recommendations": "Zobrazit doporučení",
+					"skills": "Otevřít dovednosti",
+					"generateMore": "Generovat další"
 				}
 			},
 			"errors": {
-				"promptTooShort": "Pred generovanim dovednosti prosim pridejte delsi popis.",
-				"generate": "AI dovednosti nyni neni mozne vygenerovat.",
-				"selectSkills": "Pred ulozenim vyberte alespon jednu dovednost.",
-				"partialAdd": "Bylo pridano {count} dovednosti, ale nektere polozky selhaly: {errors}",
-				"addSkills": "Vybrane dovednosti se nepodarilo pridat."
+				"promptTooShort": "Před generováním dovedností prosím přidejte delší popis.",
+				"generate": "AI dovednosti nyní není možné vygenerovat.",
+				"selectSkills": "Před uložením vyberte alespoň jednu dovednost.",
+				"partialAdd": "Bylo přidáno {count} dovedností, ale některé položky selhaly: {errors}",
+				"addSkills": "Vybrané dovednosti se nepodařilo přidat."
 			}
 		},
 		"onboarding": {
-			"close": "Zavrit pruvodce",
-			"skip": "Preskocit",
-			"next": "Dalsi",
-			"getStarted": "Zacit",
-			"goToStep": "Prejit na krok {step}",
+			"close": "Zavřít průvodce",
+			"skip": "Přeskočit",
+			"next": "Další",
+			"getStarted": "Začít",
+			"goToStep": "Přejít na krok {step}",
 			"steps": {
 				"welcome": {
-					"title": "Seznamte se s AI generatorem dovednosti",
-					"description": "Staci jednou popsat sve zkusenosti a SkillHub je promeni v jasnejsi profil dovednosti."
+					"title": "Seznamte se s AI generátorem dovedností",
+					"description": "Stačí jednou popsat své zkušenosti a SkillHub je promění v jasnější profil dovedností."
 				},
 				"describe": {
-					"title": "Doplnte kontext",
-					"description": "Uvedte nastroje, projekty, odpovednosti i typ prace, kam se chcete posunout."
+					"title": "Doplňte kontext",
+					"description": "Uveďte nástroje, projekty, odpovědnosti i typ práce, kam se chcete posunout."
 				},
 				"review": {
-					"title": "Pred ulozenim zkontrolujte",
-					"description": "Vse mate pod kontrolou. Vyberte jen dovednosti a urovne, ktere odpovidaji vasim skutecnym zkusenostem."
+					"title": "Před uložením zkontrolujte",
+					"description": "Vše máte pod kontrolou. Vyberte jen dovednosti a úrovně, které odpovídají vašim skutečným zkušenostem."
 				}
 			}
 		},
 		"progress": {
-			"title": "Generujeme vas profil dovednosti",
+			"title": "Generujeme váš profil dovedností",
 			"stages": {
 				"analyzing": {
-					"label": "Analyzujeme vas vstup",
-					"description": "Cteme vas popis a identifikujeme relevantni zkusenosti."
+					"label": "Analyzujeme váš vstup",
+					"description": "Čteme váš popis a identifikujeme relevantní zkušenosti."
 				},
 				"generating": {
-					"label": "Vytvarime navrhy",
-					"description": "Sestavujeme seznam navrzenych dovednosti a doporucenych urovni."
+					"label": "Vytváříme návrhy",
+					"description": "Sestavujeme seznam navržených dovedností a doporučených úrovní."
 				},
 				"complete": {
-					"label": "Pripraveno ke kontrole",
-					"description": "Navrhy dovednosti jsou pripravene k uprave a vyberu."
+					"label": "Připraveno ke kontrole",
+					"description": "Návrhy dovedností jsou připravené k úpravě a výběru."
 				}
 			}
 		},
 		"templates": {
-			"title": "Ukazkova zadani",
-			"description": "Pokud si nejste jisti, co napsat, pouzijte nektere z techto zadani jako vychozi bod.",
+			"title": "Ukázková zadání",
+			"description": "Pokud si nejste jisti, co napsat, použijte některé z těchto zadání jako výchozí bod.",
 			"refresh": "Obnovit",
 			"items": {
-				"frontend": "Pracuji jako frontend developer hlavne s Reactem, TypeScriptem, komponentovymi knihovnami, pristupnosti a optimalizaci vykonu.",
-				"csGraduate": "Nedavno jsem dokoncil studium informatiky a vytvarel projekty v Jave, algoritmech, SQL a zakladech cloudu.",
-				"marketing": "Pracuji v digitalnim marketingu, spravuji placene kampane, analyzuji vykon funnelu a spolupracuji na landing pages a e-mailove automatizaci.",
-				"businessAnalyst": "Pracuji jako business analytik, sbiram pozadavky, pisu dokumentaci, mapuji procesy a uzce spolupracuji s delivery tymy.",
-				"selfTaught": "Jsem samouk, vytvoril jsem nekolik webovych aplikaci a JavaScript, API, databaze i deployment jsem se naucil pri realnem dodavani projektu.",
-				"uxDesigner": "Navrhuji rozhrani, vedu testy pouzitelnosti, vytvarim wireframy a spolupracuji s produktem a vyvojem na uzivatelskych tocich.",
-				"productManager": "Rizim product discovery, planovani roadmapy, sladeni stakeholderu a navrh experimentu napric multidisciplinarnimi tymy.",
-				"careerChange": "Menim karieru z operations do technologii a ucim se tabulky, SQL, Python, dashboardy a business intelligence.",
-				"javaDeveloper": "Jsem Java developer a pracuji se Spring Bootem, REST API, SQL databazemi, testovanim a backendovou architekturou.",
-				"devops": "Pracuji s CI/CD pipeline, Dockerem, cloudovou infrastrukturou, monitoringem a infrastrukturou jako kodem.",
-				"mobile": "Vytvarim mobilni aplikace, navrhuji responzivni uzivatelske toky, integruji API a zlepsuji vykon na iOS i Androidu.",
-				"dataAnalyst": "Analyzuji business data, tvorim dashboardy, pisu SQL dotazy a pouzivam Python pro cisteni a interpretaci dat."
+				"frontend": "Pracuji jako frontend vývojář hlavně s Reactem, TypeScriptem, komponentovými knihovnami, přístupností a optimalizací výkonu.",
+				"csGraduate": "Nedávno jsem dokončil studium informatiky a vytvářel projekty v Javě, s algoritmy, SQL a základy cloudu.",
+				"marketing": "Pracuji v digitálním marketingu, spravuji placené kampaně, analyzuji výkon funnelu a spolupracuji na landing pages a e-mailové automatizaci.",
+				"businessAnalyst": "Pracuji jako business analytik, sbírám požadavky, píšu dokumentaci, mapuji procesy a úzce spolupracuji s delivery týmy.",
+				"selfTaught": "Jsem samouk, vytvořil jsem několik webových aplikací a JavaScript, API, databáze i deployment jsem se naučil při reálné práci na projektech.",
+				"uxDesigner": "Navrhuji rozhraní, vedu testy použitelnosti, vytvářím wireframy a spolupracuji s produktovým a vývojovým týmem na uživatelských tocích.",
+				"productManager": "Řídím product discovery, plánování roadmapy, sladění stakeholderů a návrh experimentů napříč multidisciplinárními týmy.",
+				"careerChange": "Měním kariéru z operations do technologií a učím se tabulky, SQL, Python, dashboardy a business intelligence.",
+				"javaDeveloper": "Jsem Java vývojář a pracuji se Spring Bootem, REST API, SQL databázemi, testováním a backendovou architekturou.",
+				"devops": "Pracuji s CI/CD pipeline, Dockerem, cloudovou infrastrukturou, monitoringem a infrastrukturou jako kódem.",
+				"mobile": "Vytvářím mobilní aplikace, navrhuji responzivní uživatelské toky, integruji API a zlepšuji výkon na iOS i Androidu.",
+				"dataAnalyst": "Analyzuji business data, tvořím dashboardy, píšu SQL dotazy a používám Python pro čištění a interpretaci dat."
 			}
 		},
 		"editor": {
-			"title": "Zkontrolujte vygenerovane dovednosti",
-			"description": "Vyberte dovednosti, ktere si chcete ponechat, a tam, kde je to potreba, upravte navrzenou uroven.",
-			"selectedCount": "Vybrano {selected} z {total}",
-			"proficiencyLabel": "Navrzena uroven",
-			"reasonPrefix": "Duvod:",
-			"save": "Pridat vybrane ({count})"
+			"title": "Zkontrolujte vygenerované dovednosti",
+			"description": "Vyberte dovednosti, které si chcete ponechat, a tam, kde je to potřeba, upravte navrženou úroveň.",
+			"selectedCount": "Vybráno {selected} z {total}",
+			"proficiencyLabel": "Navržená úroveň",
+			"reasonPrefix": "Důvod:",
+			"save": "Přidat vybrané ({count})"
 		}
 	},
 	"courses": {
 		"navigation": {
-			"dashboard": "Prehled",
-			"recommendations": "Doporuceni",
-			"getStarted": "Zacit"
+			"dashboard": "Přehled",
+			"recommendations": "Doporučení",
+			"getStarted": "Začít"
 		},
 		"courseNavigation": {
-			"backToCourses": "Zpet na kurzy",
-			"dashboard": "Prehled",
-			"getStarted": "Zacit"
+			"backToCourses": "Zpět na kurzy",
+			"dashboard": "Přehled",
+			"getStarted": "Začít"
 		},
 		"hero": {
-			"badge": "Katalog kurzu",
-			"title": "Prochazejte kurzy",
-			"subtitle": "Najdete dalsi dovednost, kterou si osvojite",
-			"description": "Prochazejte studijni cesty, porovnejte urovne a najdete kurz, ktery odpovida vasim zkusenostem."
+			"badge": "Katalog kurzů",
+			"title": "Procházejte kurzy",
+			"subtitle": "Najděte další dovednost, kterou si osvojíte",
+			"description": "Procházejte studijní cesty, porovnávejte úrovně a najděte kurz, který odpovídá vašim zkušenostem."
 		},
 		"filters": {
 			"searchPlaceholder": "Hledat kurzy...",
-			"difficulty": "Obtiznost",
+			"difficulty": "Obtížnost",
 			"source": "Zdroj",
 			"price": "Cena",
-			"allSources": "Vsechny zdroje",
-			"allCourses": "Vsechny kurzy",
+			"allSources": "Všechny zdroje",
+			"allCourses": "Všechny kurzy",
 			"freeOnly": "Pouze zdarma"
 		},
 		"grid": {
 			"errors": {
-				"title": "Nepodarilo se nacist kurzy",
-				"description": "Kurzy ted nelze nacist."
+				"title": "Nepodařilo se načíst kurzy",
+				"description": "Kurzy teď nelze načíst."
 			},
-			"enrolled": "Zapsano: {count}",
+			"enrolled": "Zapsáno: {count}",
 			"free": "Zdarma",
-			"enrolling": "Zapisovani...",
+			"enrolling": "Zapisování...",
 			"enrollNow": "Zapsat se",
 			"viewCourse": "Zobrazit kurz",
 			"pagination": {
-				"summary": "Zobrazeno {from} az {to} z {total} kurzu",
+				"summary": "Zobrazeno {from} až {to} z {total} kurzů",
 				"page": "Strana {page} z {total}",
-				"previous": "Predchozi",
-				"next": "Dalsi"
+				"previous": "Předchozí",
+				"next": "Další"
 			},
 			"empty": {
-				"title": "Nebyly nalezeny zadne kurzy",
-				"defaultDescription": "Momentalne nejsou k dispozici zadne kurzy.",
-				"filteredDescription": "Zkuste zmenit vyhledavani nebo filtry.",
+				"title": "Nebyly nalezeny žádné kurzy",
+				"defaultDescription": "Momentálně nejsou k dispozici žádné kurzy.",
+				"filteredDescription": "Zkuste změnit vyhledávání nebo filtry.",
 				"clearFilters": "Vymazat filtry"
 			}
 		},
 		"courseHeader": {
 			"actions": {
-				"save": "Ulozit",
-				"share": "Sdilet",
-				"original": "Original"
+				"save": "Uložit",
+				"share": "Sdílet",
+				"original": "Originál"
 			},
-			"aiSummary": "AI shrnuti"
+			"aiSummary": "AI shrnutí"
 		},
 		"lessons": {
 			"title": "Obsah kurzu",
@@ -1084,119 +1100,119 @@
 				"lessons": "Lekce ({count})",
 				"chapters": "Kapitoly ({count})"
 			},
-			"showingLessons": "Zobrazeno {visible} z {total} lekci",
-			"showAll": "Zobrazit vse ({count})",
-			"showLess": "Zobrazit mene",
+			"showingLessons": "Zobrazeno {visible} z {total} lekcí",
+			"showAll": "Zobrazit vše ({count})",
+			"showLess": "Zobrazit méně",
 			"showingChapters": "Zobrazeno {visible} z {total} kapitol",
-			"singleVideoCourse": "Jde o kurz s jednim videem.",
-			"noTimestamps": "Casove znacky nejsou k dispozici."
+			"singleVideoCourse": "Jde o kurz s jedním videem.",
+			"noTimestamps": "Časové značky nejsou k dispozici."
 		},
 		"videoPlayer": {
 			"empty": {
-				"title": "Video neni k dispozici",
-				"description": "Tato lekce nema platne video. Zkuste jinou lekci nebo kontaktujte podporu."
+				"title": "Video není k dispozici",
+				"description": "Tato lekce nemá platné video. Zkuste jinou lekci nebo kontaktujte podporu."
 			},
 			"errors": {
-				"title": "Chyba prehravani videa",
-				"tip": "Tip: zkuste vypnout rozsireni prohlizece nebo pouzit anonymni nebo privatni okno."
+				"title": "Chyba přehrávání videa",
+				"tip": "Tip: zkuste vypnout rozšíření prohlížeče nebo použít anonymní nebo privátní okno."
 			},
 			"codes": {
-				"invalidVideoId": "Neplatny identifikator videa.",
-				"unplayable": "Toto video nelze v aktualnim kontextu prehrat.",
-				"html5": "Prehravac YouTube nahlasil chybu prehravani HTML5.",
-				"notFound": "Video nebylo nalezeno nebo je soukrome.",
-				"embeddingDisabled": "Vlastnik videa zakazal vkladani tohoto obsahu.",
-				"missingReferrer": "Chybi pozadovana hlavicka referrer.",
-				"unknown": "Doslo k nezname chybe YouTube."
+				"invalidVideoId": "Neplatný identifikátor videa.",
+				"unplayable": "Toto video nelze v aktuálním kontextu přehrát.",
+				"html5": "Přehrávač YouTube nahlásil chybu přehrávání HTML5.",
+				"notFound": "Video nebylo nalezeno nebo je soukromé.",
+				"embeddingDisabled": "Vlastník videa zakázal vkládání tohoto obsahu.",
+				"missingReferrer": "Chybí požadovaná hlavička referrer.",
+				"unknown": "Došlo k neznámé chybě YouTube."
 			},
 			"currentLesson": {
-				"startingAt": "Zacatek v {time}"
+				"startingAt": "Začátek v {time}"
 			}
 		},
 		"coursePage": {
 			"errors": {
 				"notFoundTitle": "Kurz nebyl nalezen",
-				"notFoundDescription": "Pozadovany kurz se nepodarilo nacist."
+				"notFoundDescription": "Požadovaný kurz se nepodařilo načíst."
 			},
 			"emptyVideo": {
-				"title": "Video neni k dispozici",
-				"description": "Tento kurz nema video, ktere by bylo mozne zobrazit."
+				"title": "Video není k dispozici",
+				"description": "Tento kurz nemá video, které by bylo možné zobrazit."
 			}
 		},
 		"recommendationsStrip": {
 			"loading": {
-				"title": "Doporuceno pro vas",
-				"description": "Nacitame personalizovana doporuceni..."
+				"title": "Doporučeno pro vás",
+				"description": "Načítáme personalizovaná doporučení..."
 			},
-			"title": "Doporuceno pro vas",
-			"description": "Kurzy prizpusobene vasim dovednostem a zajmum",
-			"viewAll": "Zobrazit vse",
+			"title": "Doporučeno pro vás",
+			"description": "Kurzy přizpůsobené vašim dovednostem a zájmům",
+			"viewAll": "Zobrazit vše",
 			"match": "{score}% shoda",
 			"free": "Zdarma",
 			"actions": {
 				"enroll": "Zapsat",
-				"enrolling": "Zapisovani..."
+				"enrolling": "Zapisování..."
 			}
 		},
 		"recommendedPage": {
 			"hero": {
-				"badge": "Personalizovano pro vas",
-				"title": "Doporucene kurzy",
-				"subtitle": "Prizpusobene vasim dovednostem",
-				"description": "Objevte kurzy vybrane pro vasi soucasnou uroven a cile pomoci doporucovaciho systemu SkillHub."
+				"badge": "Personalizováno pro vás",
+				"title": "Doporučené kurzy",
+				"subtitle": "Přizpůsobené vašim dovednostem",
+				"description": "Objevte kurzy vybrané pro vaši současnou úroveň a cíle pomocí doporučovacího systému SkillHub."
 			},
 			"algorithms": {
 				"actions": {
-					"semantic": "Semanticka AI",
-					"rules": "Chytre parovani",
+					"semantic": "Sémantická AI",
+					"rules": "Chytré párování",
 					"community": "Komunita"
 				},
 				"badges": {
-					"semantic": "Semanticka AI",
-					"rules": "Chytre parovani",
+					"semantic": "Sémantická AI",
+					"rules": "Chytré párování",
 					"contentBased": "Podle obsahu",
 					"community": "Komunita",
-					"aiPowered": "Pohaneno AI"
+					"aiPowered": "Poháněno AI"
 				}
 			},
 			"actions": {
-				"refresh": "Obnovit doporuceni",
-				"generating": "Generovani...",
+				"refresh": "Obnovit doporučení",
+				"generating": "Generování...",
 				"enrollNow": "Zapsat se",
-				"enrolling": "Zapisovani..."
+				"enrolling": "Zapisování..."
 			},
 			"errors": {
-				"load": "Nepodarilo se nacist doporuceni. Zkuste to prosim znovu.",
-				"generate": "Nepodarilo se vygenerovat doporuceni. Zkuste to prosim znovu."
+				"load": "Nepodařilo se načíst doporučení. Zkuste to prosím znovu.",
+				"generate": "Nepodařilo se vygenerovat doporučení. Zkuste to prosím znovu."
 			},
-			"loadingRecommendations": "Nacitani doporuceni...",
+			"loadingRecommendations": "Načítání doporučení...",
 			"empty": {
-				"title": "Zatim nejsou zadna doporuceni",
-				"description": "Zacnete pridanim dovednosti do profilu nebo vygenerujte nova doporuceni.",
+				"title": "Zatím nejsou žádná doporučení",
+				"description": "Začněte přidáním dovednosti do profilu nebo vygenerováním nových doporučení.",
 				"actions": {
-					"generate": "Vygenerovat doporuceni",
-					"addSkills": "Pridat dovednosti"
+					"generate": "Vygenerovat doporučení",
+					"addSkills": "Přidat dovednosti"
 				}
 			},
-			"resultsTitle": "Doporucene kurzy ({count})",
+			"resultsTitle": "Doporučené kurzy ({count})",
 			"score": "{score}%",
-			"whyRecommended": "Proc je doporuceno:",
-			"moreSkills": "+{count} dalsich",
+			"whyRecommended": "Proč je doporučeno:",
+			"moreSkills": "+{count} dalších",
 			"free": "Zdarma"
 		},
 		"udemySearch": {
 			"title": "Prozkoumejte kurzy z Udemy",
-			"description": "Prohledavejte katalog kurzu Udemy, aniz byste opustili SkillHub.",
+			"description": "Prohledávejte katalog kurzů Udemy, aniž byste opustili SkillHub.",
 			"searchPlaceholder": "Hledat kurzy na Udemy...",
 			"byInstructor": "Od {name}",
 			"free": "Zdarma",
 			"viewCourse": "Zobrazit kurz",
 			"errors": {
-				"search": "Kurzy z Udemy se nepodarilo vyhledat. Zkuste to prosim znovu."
+				"search": "Kurzy z Udemy se nepodařilo vyhledat. Zkuste to prosím znovu."
 			},
 			"empty": {
-				"title": "Nebyly nalezeny zadne kurzy",
-				"description": "Zkuste jiny vyhledavaci vyraz."
+				"title": "Nebyly nalezeny žádné kurzy",
+				"description": "Zkuste jiný vyhledávací výraz."
 			},
 			"duration": {
 				"hours": "{hours} h",
@@ -1207,319 +1223,319 @@
 	},
 	"admin": {
 		"layout": {
-			"loading": "Nacitani administrace...",
+			"loading": "Načítání administrace...",
 			"badge": "Administrace",
-			"backToDashboard": "Zpet na prehled",
-			"adminUser": "Administrator",
+			"backToDashboard": "Zpět na přehled",
+			"adminUser": "Administrátor",
 			"navigation": {
-				"dashboard": "Prehled",
-				"users": "Uzivatele",
+				"dashboard": "Přehled",
+				"users": "Uživatelé",
 				"courses": "Kurzy",
-				"allCourses": "Vsechny kurzy",
-				"addCourse": "Pridat kurz",
+				"allCourses": "Všechny kurzy",
+				"addCourse": "Přidat kurz",
 				"skills": "Dovednosti",
-				"allSkills": "Vsechny dovednosti",
-				"addSkill": "Pridat dovednost",
+				"allSkills": "Všechny dovednosti",
+				"addSkill": "Přidat dovednost",
 				"analytics": "Analytika",
-				"settings": "Nastaveni"
+				"settings": "Nastavení"
 			}
 		},
 		"dashboard": {
 			"badge": "Administrace",
-			"title": "Prehled administrace",
-			"fallbackAdmin": "Administrator",
-			"welcome": "Vitejte zpet, {name}. Tady je prehled toho, co se deje na vasi platforme.",
+			"title": "Přehled administrace",
+			"fallbackAdmin": "Administrátor",
+			"welcome": "Vítejte zpět, {name}. Tady je přehled toho, co se děje na vaší platformě.",
 			"loading": {
-				"title": "Nacitani prehledu",
-				"description": "Shromazdujeme nejnovejsi statistiky..."
+				"title": "Načítání přehledu",
+				"description": "Shromažďujeme nejnovější statistiky..."
 			},
 			"errors": {
-				"title": "Nepodarilo se nacist prehled",
-				"loadStats": "Statistiky prehledu se nepodarilo nacist."
+				"title": "Nepodařilo se načíst přehled",
+				"loadStats": "Statistiky přehledu se nepodařilo načíst."
 			},
 			"stats": {
-				"totalUsers": "Celkem uzivatelu",
-				"totalCourses": "Celkem kurzu",
-				"totalSkills": "Celkem dovednosti",
-				"totalTests": "Celkem testu",
-				"thisWeek": "+{count} tento tyden",
-				"testsDescription": "Pokryti testu a overovani"
+				"totalUsers": "Celkem uživatelů",
+				"totalCourses": "Celkem kurzů",
+				"totalSkills": "Celkem dovedností",
+				"totalTests": "Celkem testů",
+				"thisWeek": "+{count} tento týden",
+				"testsDescription": "Pokrytí testů a ověřování"
 			},
 			"quickActions": {
-				"title": "Rychle akce",
-				"description": "Bezne administrativni ukony.",
+				"title": "Rychlé akce",
+				"description": "Běžné administrativní úkony.",
 				"cards": {
 					"createCourse": {
-						"title": "Vytvorit kurz",
-						"description": "Pridat na platformu novy kurz."
+						"title": "Vytvořit kurz",
+						"description": "Přidat na platformu nový kurz."
 					},
 					"createSkill": {
-						"title": "Vytvorit dovednost",
-						"description": "Pridat novou dovednost do katalogu."
+						"title": "Vytvořit dovednost",
+						"description": "Přidat novou dovednost do katalogu."
 					},
 					"manageUsers": {
-						"title": "Spravovat uzivatele",
-						"description": "Zkontrolujte ucty, role a pristupy."
+						"title": "Spravovat uživatele",
+						"description": "Zkontrolujte účty, role a přístupy."
 					}
 				}
 			},
 			"socialTools": {
-				"title": "Nastroje socialni zony",
-				"description": "Spravujte XP a gamifikacni funkce."
+				"title": "Nástroje sociální zóny",
+				"description": "Spravujte XP a gamifikační funkce."
 			},
 			"recentActivity": {
-				"title": "Nedavna aktivita",
-				"description": "Nejnovejsi zmeny na platforme.",
-				"empty": "Zadna nedavna aktivita",
+				"title": "Nedávná aktivita",
+				"description": "Nejnovější změny na platformě.",
+				"empty": "Žádná nedávná aktivita",
 				"types": {
-					"user": "Uzivatel",
+					"user": "Uživatel",
 					"course": "Kurz",
 					"skill": "Dovednost"
 				}
 			},
 			"testResults": {
-				"title": "Vysledky testu",
-				"description": "System hodnoceni a overovani"
+				"title": "Výsledky testů",
+				"description": "Systém hodnocení a ověřování"
 			}
 		},
 		"xpManager": {
-			"title": "Spravce XP",
-			"description": "Pridavejte nebo odebirejte uzivatelum XP pro testovaci ucely.",
+			"title": "Správce XP",
+			"description": "Přidávejte nebo odebírejte uživatelům XP pro testovací účely.",
 			"fields": {
 				"userId": {
-					"label": "ID uzivatele",
-					"placeholder": "Zadejte UUID uzivatele"
+					"label": "ID uživatele",
+					"placeholder": "Zadejte UUID uživatele"
 				},
 				"amount": {
-					"label": "Mnozstvi XP",
-					"placeholder": "Zadejte mnozstvi XP (napriklad 100)"
+					"label": "Množství XP",
+					"placeholder": "Zadejte množství XP (například 100)"
 				},
 				"description": {
 					"label": "Popis",
-					"optional": "(volitelne)",
-					"placeholder": "Duvod upravy XP"
+					"optional": "(volitelné)",
+					"placeholder": "Důvod úpravy XP"
 				}
 			},
 			"validation": {
-				"userIdRequired": "Zadejte prosim ID uzivatele.",
-				"amountRequired": "Zadejte prosim platnou kladnou hodnotu."
+				"userIdRequired": "Zadejte prosím ID uživatele.",
+				"amountRequired": "Zadejte prosím platnou kladnou hodnotu."
 			},
 			"actions": {
-				"addXp": "Pridat XP",
+				"addXp": "Přidat XP",
 				"removeXp": "Odebrat XP"
 			},
 			"result": {
-				"summary": "Nove XP: {xp} | Uroven: {level}"
+				"summary": "Nové XP: {xp} | Úroveň: {level}"
 			},
 			"errors": {
-				"award": "Nepodarilo se aktualizovat XP."
+				"award": "Nepodařilo se aktualizovat XP."
 			},
 			"help": {
-				"text": "Tip: ID uzivatelu najdete v sekci Uzivatele nebo v databazi. Pouzijte to k testovani vypoctu XP, postupu urovni a listy XP."
+				"text": "Tip: ID uživatelů najdete v sekci Uživatelé nebo v databázi. Použijte je k testování výpočtu XP, postupu úrovní a historie XP."
 			}
 		},
 		"youtubeImport": {
 			"title": "Import kurzu z YouTube",
 			"description": "Importujte video nebo playlist z YouTube jako kurz.",
 			"success": {
-				"title": "Import probehl uspesne",
+				"title": "Import proběhl úspěšně",
 				"details": {
 					"lessonsLabel": "Lekce:",
-					"durationLabel": "Delka:",
-					"difficultyLabel": "Obtiznost:",
-					"aiSummaryLabel": "AI shrnuti:"
+					"durationLabel": "Délka:",
+					"difficultyLabel": "Obtížnost:",
+					"aiSummaryLabel": "AI shrnutí:"
 				}
 			},
 			"fields": {
 				"url": {
 					"label": "YouTube URL *",
 					"placeholder": "https://www.youtube.com/watch?v=... nebo https://www.youtube.com/playlist?list=...",
-					"help": "Podporuji se jednotlivá videa i playlisty."
+					"help": "Podporována jsou jednotlivá videa i playlisty."
 				},
 				"difficulty": {
-					"label": "Uroven obtiznosti"
+					"label": "Úroveň obtížnosti"
 				},
 				"skills": {
-					"label": "Dovednosti (volitelne)",
+					"label": "Dovednosti (volitelné)",
 					"searchPlaceholder": "Hledat dovednosti...",
-					"loading": "Nacitani dovednosti...",
-					"limitNotice": "Zobrazeno 20 z {total} dovednosti. Pro zuzeni vysledku pokracujte v psani.",
-					"noMatch": "Pro \"{query}\" nebyly nalezeny zadne dovednosti.",
-					"empty": "Nejsou k dispozici zadne dovednosti."
+					"loading": "Načítání dovedností...",
+					"limitNotice": "Zobrazeno 20 z {total} dovedností. Pro zúžení výsledku pokračujte v psaní.",
+					"noMatch": "Pro \"{query}\" nebyly nalezeny žádné dovednosti.",
+					"empty": "Nejsou k dispozici žádné dovednosti."
 				},
 				"overrides": {
-					"title": "Rucni prepsani (volitelne)",
-					"customTitleLabel": "Vlastni nazev",
-					"customTitlePlaceholder": "Nechte prazdne, pokud chcete pouzit nazev z YouTube",
-					"customDescriptionLabel": "Vlastni popis",
-					"customDescriptionPlaceholder": "Nechte prazdne, pokud chcete pouzit popis z YouTube"
+					"title": "Ruční přepsání (volitelné)",
+					"customTitleLabel": "Vlastní název",
+					"customTitlePlaceholder": "Nechte prázdné, pokud chcete použít název z YouTube",
+					"customDescriptionLabel": "Vlastní popis",
+					"customDescriptionPlaceholder": "Nechte prázdné, pokud chcete použít popis z YouTube"
 				}
 			},
 			"actions": {
 				"importCourse": "Importovat kurz",
-				"importing": "Importovani...",
-				"importAnother": "Importovat dalsi"
+				"importing": "Importování...",
+				"importAnother": "Importovat další"
 			},
 			"validation": {
-				"urlRequired": "YouTube URL je povinne.",
-				"urlInvalid": "Zadejte prosim platne YouTube URL videa nebo playlistu.",
-				"importFailed": "Kurz z YouTube se nepodarilo importovat."
+				"urlRequired": "YouTube URL je povinné.",
+				"urlInvalid": "Zadejte prosím platné YouTube URL videa nebo playlistu.",
+				"importFailed": "Kurz z YouTube se nepodařilo importovat."
 			}
 		},
 		"userCard": {
-			"unnamedUser": "Uzivatel bez jmena",
-			"unknownUser": "Neznamy uzivatel",
-			"copyUuid": "Kopirovat UUID",
-			"copiedUuid": "UUID zkopirovano",
+			"unnamedUser": "Uživatel bez jména",
+			"unknownUser": "Neznámý uživatel",
+			"copyUuid": "Kopírovat UUID",
+			"copiedUuid": "UUID zkopírováno",
 			"region": "Region: {region}"
 		},
 		"courseCard": {
-			"bookmarks": "Ulozeno: {count}",
-			"moreSkills": "+{count} dalsich",
+			"bookmarks": "Uloženo: {count}",
+			"moreSkills": "+{count} dalších",
 			"actions": {
 				"view": "Zobrazit kurz",
-				"deleting": "Mazani..."
+				"deleting": "Mazání..."
 			}
 		},
 		"usersPage": {
-			"title": "Sprava uzivatelu",
-			"description": "Spravujte uzivatelske ucty a opravneni na cele platforme.",
+			"title": "Správa uživatelů",
+			"description": "Spravujte uživatelské účty a oprávnění na celé platformě.",
 			"filters": {
-				"searchLabel": "Hledat uzivatele",
-				"searchPlaceholder": "Hledat podle jmena nebo e-mailu...",
+				"searchLabel": "Hledat uživatele",
+				"searchPlaceholder": "Hledat podle jména nebo e-mailu...",
 				"roleLabel": "Filtrovat podle role",
 				"roleOptions": {
-					"all": "Vsechny role",
-					"user": "Uzivatele",
-					"instructor": "Lektori",
-					"admin": "Administratori"
+					"all": "Všechny role",
+					"user": "Uživatelé",
+					"instructor": "Lektoři",
+					"admin": "Administrátoři"
 				}
 			},
-			"loading": "Nacitani uzivatelu...",
+			"loading": "Načítání uživatelů...",
 			"errors": {
-				"load": "Uzivatele se nepodarilo nacist.",
-				"loadTitle": "Nacteni uzivatelu se nezdarilo"
+				"load": "Uživatele se nepodařilo načíst.",
+				"loadTitle": "Načtení uživatelů se nezdařilo"
 			},
 			"pagination": {
-				"summary": "Zobrazeno {from} az {to} z {total} uzivatelu",
+				"summary": "Zobrazeno {from} až {to} z {total} uživatelů",
 				"page": "Strana {page} z {totalPages}"
 			},
 			"empty": {
-				"title": "Nebyl nalezen zadny uzivatel",
-				"description": "Zatim se nezaregistroval zadny uzivatel.",
-				"filteredDescription": "Zkuste upravit vyhledavani nebo filtry."
+				"title": "Nebyl nalezen žádný uživatel",
+				"description": "Zatím se nezaregistroval žádný uživatel.",
+				"filteredDescription": "Zkuste upravit vyhledávání nebo filtry."
 			},
 			"alerts": {
-				"confirmDelete": "Opravdu chcete smazat uzivatele \"{userName}\"? Tuto akci nelze vratit zpet.",
-				"updateRoleFailed": "Nepodarilo se aktualizovat roli uzivatele: {message}",
-				"deleteFailed": "Nepodarilo se smazat uzivatele: {message}",
-				"unknownError": "Neznama chyba"
+				"confirmDelete": "Opravdu chcete smazat uživatele \"{userName}\"? Tuto akci nelze vrátit zpět.",
+				"updateRoleFailed": "Nepodařilo se aktualizovat roli uživatele: {message}",
+				"deleteFailed": "Nepodařilo se smazat uživatele: {message}",
+				"unknownError": "Neznámá chyba"
 			}
 		},
 		"skillsPage": {
-			"title": "Sprava dovednosti",
-			"description": "Spravujte hierarchii a taxonomii dovednosti.",
+			"title": "Správa dovedností",
+			"description": "Spravujte hierarchii a taxonomii dovedností.",
 			"actions": {
-				"addSkill": "Pridat dovednost",
-				"createSkill": "Vytvorit dovednost",
+				"addSkill": "Přidat dovednost",
+				"createSkill": "Vytvořit dovednost",
 				"updateSkill": "Aktualizovat dovednost"
 			},
 			"form": {
-				"createTitle": "Vytvorit novou dovednost",
+				"createTitle": "Vytvořit novou dovednost",
 				"editTitle": "Upravit dovednost",
 				"fields": {
 					"name": {
-						"label": "Nazev dovednosti *",
-						"placeholder": "Napriklad: JavaScript, React, Machine Learning"
+						"label": "Název dovednosti *",
+						"placeholder": "Například: JavaScript, React, Machine Learning"
 					},
 					"slug": {
 						"label": "Slug *",
-						"placeholder": "automaticky-vygenerovano-z-nazvu"
+						"placeholder": "automaticky-vygenerováno-z-názvu"
 					},
 					"parent": {
-						"label": "Nadrzena dovednost",
-						"none": "Bez nadrzene dovednosti (korenova dovednost)"
+						"label": "Nadřazená dovednost",
+						"none": "Bez nadřazené dovednosti (kořenová dovednost)"
 					},
 					"description": {
 						"label": "Popis",
-						"placeholder": "Volitelny popis teto dovednosti..."
+						"placeholder": "Volitelný popis této dovednosti..."
 					}
 				}
 			},
 			"search": {
 				"label": "Hledat dovednosti",
-				"placeholder": "Hledat podle nazvu dovednosti..."
+				"placeholder": "Hledat podle názvu dovednosti..."
 			},
-			"loading": "Nacitani dovednosti...",
+			"loading": "Načítání dovedností...",
 			"errors": {
-				"load": "Dovednosti se nepodarilo nacist.",
-				"loadTitle": "Nacteni dovednosti se nezdarilo"
+				"load": "Dovednosti se nepodařilo načíst.",
+				"loadTitle": "Načtení dovedností se nezdařilo"
 			},
 			"tree": {
-				"title": "Hierarchie dovednosti",
-				"hasDescription": "Ma popis"
+				"title": "Hierarchie dovedností",
+				"hasDescription": "Má popis"
 			},
 			"empty": {
-				"title": "Nebyly nalezeny zadne dovednosti",
-				"description": "Zacnete vytvorenim prvni dovednosti.",
-				"filteredDescription": "Zkuste upravit kriteria vyhledavani.",
-				"addFirstSkill": "Pridat prvni dovednost"
+				"title": "Nebyly nalezeny žádné dovednosti",
+				"description": "Začněte vytvořením první dovednosti.",
+				"filteredDescription": "Zkuste upravit kritéria vyhledávání.",
+				"addFirstSkill": "Přidat první dovednost"
 			},
 			"alerts": {
-				"confirmDelete": "Opravdu chcete smazat dovednost \"{name}\"? Budou odstraneny i podrizene dovednosti.",
-				"createFailed": "Nepodarilo se vytvorit dovednost: {message}",
-				"updateFailed": "Nepodarilo se aktualizovat dovednost: {message}",
-				"deleteFailed": "Nepodarilo se smazat dovednost: {message}",
-				"unknownError": "Neznama chyba"
+				"confirmDelete": "Opravdu chcete smazat dovednost \"{name}\"? Budou odstraněny i podřízené dovednosti.",
+				"createFailed": "Nepodařilo se vytvořit dovednost: {message}",
+				"updateFailed": "Nepodařilo se aktualizovat dovednost: {message}",
+				"deleteFailed": "Nepodařilo se smazat dovednost: {message}",
+				"unknownError": "Neznámá chyba"
 			}
 		},
 		"coursesPage": {
-			"title": "Sprava kurzu",
-			"description": "Spravujte vsechny kurzy na sve platforme.",
+			"title": "Správa kurzů",
+			"description": "Spravujte všechny kurzy na své platformě.",
 			"actions": {
 				"youtubeImport": "Import z YouTube",
-				"addCourse": "Pridat kurz"
+				"addCourse": "Přidat kurz"
 			},
 			"filters": {
 				"searchPlaceholder": "Hledat kurzy...",
 				"sourceLabel": "Zdroj",
-				"difficultyLabel": "Obtiznost",
-				"allSources": "Vsechny zdroje",
-				"allLevels": "Vsechny urovne"
+				"difficultyLabel": "Obtížnost",
+				"allSources": "Všechny zdroje",
+				"allLevels": "Všechny úrovně"
 			},
-			"loading": "Nacitani kurzu...",
+			"loading": "Načítání kurzů...",
 			"errors": {
-				"loadTitle": "Nacteni kurzu se nezdarilo",
-				"loadDescription": "Pri nacitani kurzu se neco pokazilo."
+				"loadTitle": "Načtení kurzů se nezdařilo",
+				"loadDescription": "Při načítání kurzů se něco pokazilo."
 			},
 			"pagination": {
-				"summary": "Zobrazeno {from} az {to} z {total} kurzu",
+				"summary": "Zobrazeno {from} až {to} z {total} kurzů",
 				"page": "Strana {page} z {totalPages}"
 			},
 			"empty": {
-				"title": "Nebyly nalezeny zadne kurzy",
-				"description": "Zacnete vytvorenim prvniho kurzu.",
-				"filteredDescription": "Zkuste upravit kriteria vyhledavani.",
+				"title": "Nebyly nalezeny žádné kurzy",
+				"description": "Začněte vytvořením prvního kurzu.",
+				"filteredDescription": "Zkuste upravit kritéria vyhledávání.",
 				"importFromYoutube": "Importovat z YouTube"
 			},
 			"alerts": {
-				"confirmDelete": "Opravdu chcete smazat \"{courseName}\"? Tuto akci nelze vratit zpet.",
-				"deleteFailed": "Nepodarilo se smazat kurz: {message}",
-				"unknownError": "Neznama chyba"
+				"confirmDelete": "Opravdu chcete smazat \"{courseName}\"? Tuto akci nelze vrátit zpět.",
+				"deleteFailed": "Nepodařilo se smazat kurz: {message}",
+				"unknownError": "Neznámá chyba"
 			}
 		},
 		"newCoursePage": {
-			"back": "Zpet na kurzy",
-			"title": "Vytvorit novy kurz",
-			"description": "Pridejte na platformu novy kurz.",
+			"back": "Zpět na kurzy",
+			"title": "Vytvořit nový kurz",
+			"description": "Přidejte na platformu nový kurz.",
 			"sections": {
-				"basicInformation": "Zakladni informace",
+				"basicInformation": "Základní informace",
 				"courseDetails": "Detaily kurzu"
 			},
 			"fields": {
 				"title": {
-					"label": "Nazev *",
-					"placeholder": "Zadejte nazev kurzu"
+					"label": "Název *",
+					"placeholder": "Zadejte název kurzu"
 				},
 				"provider": {
 					"label": "Poskytovatel",
@@ -1533,44 +1549,44 @@
 					"label": "Zdroj"
 				},
 				"difficulty": {
-					"label": "Obtiznost"
+					"label": "Obtížnost"
 				},
 				"language": {
 					"label": "Jazyk",
-					"placeholder": "Kod jazyka (napriklad en, cs, de)"
+					"placeholder": "Kód jazyka (například en, cs, de)"
 				},
 				"externalId": {
-					"label": "Externi ID",
-					"placeholder": "Externi ID kurzu"
+					"label": "Externí ID",
+					"placeholder": "Externí ID kurzu"
 				},
 				"url": {
 					"label": "URL kurzu",
 					"placeholder": "https://example.com/course"
 				},
 				"duration": {
-					"label": "Delka (minuty)",
-					"placeholder": "Delka kurzu"
+					"label": "Délka (minuty)",
+					"placeholder": "Délka kurzu"
 				},
 				"rating": {
-					"label": "Hodnoceni (0-5)",
-					"placeholder": "Hodnoceni kurzu"
+					"label": "Hodnocení (0-5)",
+					"placeholder": "Hodnocení kurzu"
 				},
 				"isPaid": {
-					"label": "Plateny kurz"
+					"label": "Placený kurz"
 				},
 				"price": {
 					"label": "Cena (v centech)",
-					"placeholder": "Cena v centech (napr. 2999 pro 29,99 USD)"
+					"placeholder": "Cena v centech (např. 2999 pro 29,99 USD)"
 				}
 			},
 			"actions": {
-				"create": "Vytvorit kurz",
-				"creating": "Vytvareni..."
+				"create": "Vytvořit kurz",
+				"creating": "Vytváření..."
 			},
 			"alerts": {
-				"titleRequired": "Nazev je povinny.",
-				"createFailed": "Nepodarilo se vytvorit kurz: {message}",
-				"unknownError": "Neznama chyba"
+				"titleRequired": "Název je povinný.",
+				"createFailed": "Nepodařilo se vytvořit kurz: {message}",
+				"unknownError": "Neznámá chyba"
 			}
 		}
 	}
