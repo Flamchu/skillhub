@@ -1,6 +1,7 @@
 "use client";
 
 import { Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { GlassCard } from "./GlassCard";
 
 interface LoadingStateProps {
@@ -12,11 +13,14 @@ interface LoadingStateProps {
  * Standardized loading state component
  */
 export function LoadingState({ message = "Loading...", className = "" }: LoadingStateProps) {
+	const t = useTranslations("common");
+	const resolvedMessage = message === "Loading..." ? t("loading") : message;
+
 	return (
 		<div className={`flex items-center justify-center py-16 ${className}`}>
 			<GlassCard padding="lg" hover={false} className="text-center">
 				<Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
-				<span className="text-gray-600 dark:text-gray-400">{message}</span>
+				<span className="text-gray-600 dark:text-gray-400">{resolvedMessage}</span>
 			</GlassCard>
 		</div>
 	);

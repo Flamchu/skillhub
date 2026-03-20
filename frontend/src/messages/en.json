@@ -1,191 +1,1571 @@
 {
+	"metadata": {
+		"layout": {
+			"title": {
+				"default": "SkillHub | AI-powered learning platform",
+				"template": "%s | SkillHub"
+			},
+			"description": "Explore skills, courses, AI recommendations, and social learning progress in one place.",
+			"keywords": ["learning platform", "online courses", "skills", "AI recommendations", "professional development"],
+			"openGraph": {
+				"title": "SkillHub | AI-powered learning platform",
+				"description": "Explore skills, courses, AI recommendations, and social learning progress in one place.",
+				"imageAlt": "SkillHub platform preview"
+			},
+			"twitter": {
+				"title": "SkillHub | AI-powered learning platform",
+				"description": "Explore skills, courses, AI recommendations, and social learning progress in one place."
+			}
+		},
+		"manifest": {
+			"name": "SkillHub - AI-powered learning platform",
+			"description": "Discover skills, courses, and personalized AI learning recommendations.",
+			"categories": ["education", "productivity", "technology"]
+		},
+		"home": {
+			"title": "Learn. Grow. Succeed.",
+			"description": "Build practical skills with interactive courses, AI recommendations, and a social learning environment.",
+			"openGraph": {
+				"title": "Learn. Grow. Succeed.",
+				"description": "Build practical skills with interactive courses, AI recommendations, and a social learning environment.",
+				"imageAlt": "SkillHub home page"
+			}
+		},
+		"dashboard": {
+			"title": "Dashboard - Your learning hub",
+			"description": "Access your dashboard, track learning progress, manage skills, and get personalized recommendations."
+		},
+		"skills": {
+			"title": "Skills - Track your professional growth",
+			"description": "Manage your skills profile, add new skills, and verify your current level.",
+			"keywords": ["skill tracking", "professional skills", "skill profile", "skill verification", "career growth"],
+			"openGraph": {
+				"title": "Skills - Track your professional growth",
+				"description": "Manage your skills profile, add new skills, and verify your current level.",
+				"imageAlt": "SkillHub skills page"
+			}
+		},
+		"aiSkills": {
+			"title": "AI Skill Generator",
+			"description": "Describe your experience and let AI generate a personalized skill profile with recommended proficiency levels.",
+			"openGraph": {
+				"title": "AI Skill Generator",
+				"description": "Generate a personalized skill profile with AI and get better course recommendations."
+			}
+		},
+		"courses": {
+			"title": "Courses - Explore learning paths",
+			"description": "Browse courses, filter by level and source, and discover AI-powered recommendations tailored to your skills.",
+			"keywords": ["courses", "learning paths", "online learning", "course catalog", "professional development"],
+			"openGraph": {
+				"title": "Courses - Explore learning paths",
+				"description": "Browse courses, filter by level and source, and discover AI-powered recommendations tailored to your skills.",
+				"imageAlt": "SkillHub courses page"
+			}
+		}
+	},
 	"navigation": {
-		"home": "Home",
-		"skills": "Skills",
-		"courses": "Courses",
-		"dashboard": "Dashboard",
-		"login": "Login",
-		"register": "Register",
-		"logout": "Logout"
+		"login": "Log in",
+		"register": "Register"
 	},
 	"hero": {
-		"badge": "🎓 Join 50,000+ learners worldwide",
+		"badge": "Join 50,000+ learners worldwide",
 		"title": "Learn. Grow. Succeed.",
-		"subtitle": "Your Journey Starts Here! 🌟",
-		"description": "Unlock your potential with interactive courses, expert mentorship, and hands-on projects. Transform your career with skills that matter in today's digital world.",
+		"subtitle": "Your next skill starts here.",
+		"description": "Unlock your potential with interactive courses, practical learning paths, and recommendations that adapt to your goals.",
 		"cta": {
-			"start": "Start Learning Today",
-			"browse": "📚 Browse Courses"
+			"start": "Start learning today",
+			"browse": "Browse courses"
 		},
 		"features": {
-			"interactive": "Interactive Learning",
-			"goalOriented": "Goal-Oriented",
-			"community": "Community Support",
-			"certified": "Certified Results"
+			"interactive": "Interactive learning",
+			"goalOriented": "Goal-oriented",
+			"community": "Community support",
+			"certified": "Verified progress"
+		}
+	},
+	"features": {
+		"title": "Why choose SkillHub?",
+		"subtitle": "A practical learning experience built around growth, clarity, and momentum.",
+		"lightningFast": {
+			"title": "Fast skill discovery",
+			"description": "Use AI to identify your current strengths and turn them into a clear learning plan in minutes.",
+			"link": "Learn more"
+		},
+		"industryRecognized": {
+			"title": "Career-focused learning",
+			"description": "Build skills that matter for real projects, professional growth, and better opportunities.",
+			"link": "See how"
+		},
+		"globalCommunity": {
+			"title": "Social progress",
+			"description": "Track XP, complete quests, and stay motivated with a learning environment that feels active and visible.",
+			"link": "Explore the social zone"
+		}
+	},
+	"stats": {
+		"title": "Join the learning momentum",
+		"subtitle": "Learners use SkillHub to build practical skills, track progress, and stay consistent.",
+		"activeLearners": {
+			"label": "Active learners",
+			"description": "Growing every day"
+		},
+		"expertCourses": {
+			"label": "Expert courses",
+			"description": "Focused on real skills"
+		},
+		"successRate": {
+			"label": "Completion rate",
+			"description": "Built for progress"
+		}
+	},
+	"footer": {
+		"description": "SkillHub helps professionals and learners turn ambition into measurable progress with skills, courses, and AI guidance.",
+		"about": "About",
+		"contact": "Contact",
+		"privacy": "Privacy",
+		"madeWithCare": "Made with care for curious learners",
+		"copyright": "© {year} SkillHub. All rights reserved."
+	},
+	"home": {
+		"aiSection": {
+			"badge": "AI recommendations",
+			"title": "Smarter learning paths",
+			"description": "Let AI connect your current skills to the next best courses and growth opportunities.",
+			"cards": {
+				"matching": {
+					"title": "Skill-based matching",
+					"description": "Find courses that align with what you already know and where you want to go."
+				},
+				"progression": {
+					"title": "Clear progression",
+					"description": "See what to learn next without guessing which topic or level fits you best."
+				},
+				"generator": {
+					"title": "AI skill generator",
+					"description": "Describe your experience and generate a profile that improves recommendations instantly."
+				}
+			},
+			"cta": "See recommended courses"
 		}
 	},
 	"auth": {
 		"login": {
-			"title": "Login",
-			"subtitle": "Welcome back! Sign in to your account.",
+			"title": "Welcome back",
+			"subtitle": "Sign in to continue learning.",
 			"email": "Email",
 			"password": "Password",
-			"submit": "Sign In",
-			"noAccount": "Don't have an account?",
-			"signUp": "Sign up",
+			"submit": "Sign in",
+			"noAccount": "Don’t have an account?",
 			"or": "or",
 			"continueWithGoogle": "Continue with Google"
 		},
 		"register": {
-			"title": "Create Account",
-			"subtitle": "Join thousands of learners already growing their skills.",
-			"name": "Full Name",
+			"title": "Create account",
+			"subtitle": "Start building your skills with SkillHub.",
+			"name": "Full name",
 			"email": "Email",
 			"password": "Password",
-			"confirmPassword": "Confirm Password",
-			"submit": "Create Account",
 			"hasAccount": "Already have an account?",
-			"signIn": "Sign in"
+			"signIn": "Sign in",
+			"submit": "Create account"
 		},
-		"validation": {
-			"required": "This field is required",
-			"invalidEmail": "Please enter a valid email address",
-			"passwordTooShort": "Password must be at least 8 characters",
-			"passwordsNoMatch": "Passwords do not match"
+		"page": {
+			"backToHome": "Back to home",
+			"errors": {
+				"googleLogin": "Google sign-in could not be started. Please try again.",
+				"invalidCredentials": "Invalid email or password.",
+				"registrationFailed": "Registration failed. Please try again."
+			},
+			"placeholders": {
+				"name": "Enter your full name",
+				"email": "Enter your email",
+				"password": "Enter your password"
+			},
+			"passwordRules": {
+				"title": "Password must contain at least 8 characters, one uppercase letter, one lowercase letter, and one number.",
+				"placeholder": "Create a strong password",
+				"hint": "Use at least 8 characters, including an uppercase letter, a lowercase letter, and a number."
+			},
+			"submitting": {
+				"login": "Signing in...",
+				"register": "Creating account..."
+			}
 		},
-		"completing_login": "Completing Login",
+		"completing_login": "Completing sign-in",
 		"processing_authentication": "Processing your authentication...",
-		"login_successful": "Login Successful!",
+		"login_successful": "Sign-in successful",
 		"redirecting_to_dashboard": "Redirecting to your dashboard...",
-		"login_failed": "Login Failed",
-		"redirecting_to_login": "Redirecting back to login..."
-	},
-	"dashboard": {
-		"title": "Start Learning Today",
-		"welcome": "Welcome back!"
-	},
-	"profile": {
-		"title": "Profile Settings",
-		"subtitle": "Manage your account information and preferences",
-		"form": {
-			"name": "Full Name",
-			"headline": "Headline",
-			"bio": "Bio",
-			"region": "Region",
-			"namePlaceholder": "Enter your full name",
-			"headlinePlaceholder": "Enter a professional headline",
-			"bioPlaceholder": "Tell us about yourself...",
-			"regionPlaceholder": "Select your region",
-			"save": "Save Changes",
-			"cancel": "Cancel",
-			"saving": "Saving..."
-		},
-		"messages": {
-			"noChanges": "No changes to save",
-			"saveSuccess": "Profile updated successfully!",
-			"saveError": "Failed to update profile. Please try again."
-		},
-		"success": "Profile updated successfully!",
-		"error": "Failed to update profile. Please try again.",
-		"validation": {
-			"nameRequired": "Name is required",
-			"nameTooLong": "Name must be less than 100 characters",
-			"headlineTooLong": "Headline must be less than 200 characters",
-			"bioTooLong": "Bio must be less than 1000 characters"
-		}
-	},
-	"skills": {
-		"title": "Skills",
-		"browseSkills": "Browse Skills"
-	},
-	"courses": {
-		"title": "Courses",
-		"browseCourses": "Browse Courses"
-	},
-	"features": {
-		"title": "Why Choose SkillHub?",
-		"subtitle": "Experience learning like never before with our innovative approach",
-		"lightningFast": {
-			"title": "Lightning Fast Learning",
-			"description": "Master new skills in record time with our AI-powered adaptive learning paths and interactive challenges.",
-			"link": "Learn more"
-		},
-		"industryRecognized": {
-			"title": "Industry Recognized",
-			"description": "Earn certificates and credentials that are valued by top employers across industries worldwide.",
-			"link": "View certificates"
-		},
-		"globalCommunity": {
-			"title": "Global Community",
-			"description": "Connect with learners and experts worldwide. Share knowledge, get help, and build lasting professional relationships.",
-			"link": "Join community"
-		}
-	},
-	"stats": {
-		"title": "Join the Learning Revolution",
-		"subtitle": "Thousands of learners worldwide are already transforming their careers",
-		"activeLearners": {
-			"label": "Active Learners",
-			"description": "Growing every day"
-		},
-		"expertCourses": {
-			"label": "Expert Courses",
-			"description": "From industry leaders"
-		},
-		"successRate": {
-			"label": "Success Rate",
-			"description": "Proven results"
-		}
-	},
-	"footer": {
-		"description": "Empowering professionals worldwide with cutting-edge skills and knowledge. Join thousands of learners on their journey to success.",
-		"about": "About",
-		"contact": "Contact",
-		"madeWithCare": "Made with care for learners worldwide",
-		"copyright": "© 2025 SkillHub. All rights reserved. Keep learning, keep growing."
-	},
-	"pages": {
-		"skills": {
-			"signInPrompt": "Please sign in to view your skills.",
-			"searchPlaceholder": "Search skills...",
-			"addSkill": "Add Skill",
-			"noSkillsFound": "No skills found matching your search.",
-			"category": "Category"
-		},
-		"courses": {
-			"searchPlaceholder": "Search courses...",
-			"filterByDifficulty": "Filter by difficulty",
-			"filterBySource": "Filter by source",
-			"freeOnly": "Free only",
-			"allDifficulties": "All Difficulties",
-			"allSources": "All Sources",
-			"beginner": "Beginner",
-			"intermediate": "Intermediate",
-			"advanced": "Advanced",
-			"rating": "rating",
-			"students": "students",
-			"hours": "hours",
-			"free": "Free",
-			"bookmark": "Bookmark",
-			"viewCourse": "View Course",
-			"noCoursesFound": "No courses found",
-			"tryDifferentSearch": "Try adjusting your search or filters.",
-			"errorLoading": "Error loading courses",
-			"previousPage": "Previous",
-			"nextPage": "Next"
-		},
-		"dashboard": {
-			"signInPrompt": "Please sign in to access your dashboard."
-		}
+		"login_failed": "Sign-in failed",
+		"redirecting_to_login": "Redirecting back to sign-in...",
+		"oauth_authentication_failed": "OAuth authentication failed.",
+		"failed_to_get_user_profile": "Failed to load your user profile.",
+		"no_authentication_tokens_received": "No authentication tokens were received.",
+		"authentication_failed": "Authentication failed."
 	},
 	"common": {
 		"loading": "Loading...",
 		"error": "Error",
 		"success": "Success",
-		"cancel": "Cancel",
 		"save": "Save",
+		"cancel": "Cancel",
+		"close": "Close",
 		"edit": "Edit",
 		"delete": "Delete",
-		"search": "Search"
+		"search": "Search",
+		"tryAgain": "Try again",
+		"previous": "Previous",
+		"next": "Next",
+		"roles": {
+			"user": "User",
+			"member": "Member",
+			"instructor": "Instructor",
+			"admin": "Administrator"
+		},
+		"sources": {
+			"internal": "Internal",
+			"youtube": "YouTube",
+			"udemy": "Udemy",
+			"other": "Other",
+			"questCompletion": "Quest completion",
+			"courseCompletion": "Course completion",
+			"lessonCompletion": "Lesson completion",
+			"skillVerification": "Skill verification",
+			"dailyLogin": "Daily login",
+			"streakBonus": "Streak bonus"
+		},
+		"difficulties": {
+			"allLevels": "All levels",
+			"beginner": "Beginner",
+			"intermediate": "Intermediate",
+			"advanced": "Advanced"
+		},
+		"proficiency": {
+			"none": "None",
+			"basic": "Basic",
+			"intermediate": "Intermediate",
+			"advanced": "Advanced",
+			"expert": "Expert"
+		},
+		"units": {
+			"hourShort": "h",
+			"minuteShort": "min"
+		},
+		"time": {
+			"justNow": "just now"
+		},
+		"languageSwitcher": {
+			"label": "Select language",
+			"locales": {
+				"en": "English",
+				"cs": "Czech"
+			}
+		},
+		"theme": {
+			"light": "light",
+			"dark": "dark",
+			"switchTo": "Switch to {theme} mode"
+		},
+		"errorState": {
+			"title": "Something went wrong",
+			"retry": "Try again"
+		}
+	},
+	"layout": {
+		"authenticatedNavbar": {
+			"links": {
+				"dashboard": "Dashboard",
+				"skills": "Skills",
+				"courses": "Courses",
+				"social": "Social Zone"
+			},
+			"fallbackName": "Learner",
+			"adminAccess": "Admin access",
+			"menu": {
+				"profileSettings": "Profile settings",
+				"adminPanel": "Admin panel",
+				"signOut": "Sign out"
+			}
+		}
+	},
+	"dashboard": {
+		"page": {
+			"welcomeTitle": "Welcome back, {name}",
+			"learnerFallback": "Learner",
+			"welcomeDescription": "Pick up where you left off, update your skills, and keep your progress moving.",
+			"continueLearningTitle": "Continue learning",
+			"continueLearningDescription": "Your most relevant active courses in one place."
+		},
+		"learningStats": {
+			"skillsTracked": "Skills tracked",
+			"enrolledCourses": "Enrolled courses",
+			"hoursLearning": "Hours learning"
+		},
+		"quickActions": {
+			"skills": {
+				"title": "Manage skills",
+				"description": "Review your current skills and update your level."
+			},
+			"courses": {
+				"title": "Browse courses",
+				"description": "Explore new learning paths that match your goals."
+			},
+			"profile": {
+				"title": "Profile",
+				"description": "Update your profile and personal learning setup."
+			}
+		},
+		"aiWorkflow": {
+			"title": "AI skill workflow",
+			"subtitle": "Turn your experience into better recommendations.",
+			"description": "Describe your background once and let SkillHub generate a clearer skill profile and learning direction.",
+			"learnMore": "Learn more",
+			"showLess": "Show less",
+			"steps": {
+				"generate": {
+					"title": "Generate skills",
+					"description": "Describe your work, projects, or goals and let AI suggest relevant skills."
+				},
+				"recommend": {
+					"title": "Get recommendations",
+					"description": "Use your generated skill profile to unlock more relevant course suggestions."
+				},
+				"learn": {
+					"title": "Keep learning",
+					"description": "Build momentum by learning the right topic at the right level."
+				}
+			},
+			"howItWorks": {
+				"title": "How it works",
+				"items": {
+					"detection": {
+						"label": "Skill detection:",
+						"description": "AI reads your description and surfaces the skills hidden in your experience."
+					},
+					"matching": {
+						"label": "Recommendation matching:",
+						"description": "Your skill profile helps SkillHub prioritize more relevant courses."
+					},
+					"learning": {
+						"label": "Learning guidance:",
+						"description": "You get a clearer starting point and a stronger sense of what to learn next."
+					}
+				}
+			},
+			"cta": {
+				"generate": "Generate AI skills",
+				"browse": "Browse courses"
+			}
+		},
+		"enrolledCourses": {
+			"title": "Enrolled courses",
+			"loading": "Loading courses...",
+			"error": {
+				"title": "Failed to load enrolled courses",
+				"description": "Please try again in a moment."
+			},
+			"empty": {
+				"title": "No enrolled courses yet",
+				"description": "Start a course to see your progress here.",
+				"cta": "Browse courses"
+			},
+			"status": {
+				"completed": "Completed",
+				"inProgress": "In progress"
+			},
+			"enrolledOn": "Enrolled on {date}",
+			"continue": "Continue",
+			"viewAll": "View all",
+			"viewAllCount": "View all ({count})"
+		},
+		"socialZone": {
+			"title": "Social Zone",
+			"description": "Track XP, quests, leaderboard progress, and your learning streak.",
+			"tabs": {
+				"dashboard": "Dashboard",
+				"leaderboard": "Leaderboard",
+				"quests": "Quests",
+				"profile": "Profile"
+			},
+			"cta": "Open Social Zone"
+		}
+	},
+	"profile": {
+		"title": "Profile settings",
+		"form": {
+			"name": "Full name",
+			"namePlaceholder": "Enter your full name",
+			"headline": "Headline",
+			"headlinePlaceholder": "Add a short professional headline",
+			"region": "Region",
+			"regionPlaceholder": "Select a region",
+			"bio": "Bio",
+			"bioPlaceholder": "Tell others a bit about your background and goals",
+			"save": "Save changes",
+			"saving": "Saving...",
+			"cancel": "Cancel"
+		},
+		"messages": {
+			"noChanges": "There are no changes to save.",
+			"saveSuccess": "Profile updated successfully.",
+			"saveError": "Profile could not be updated. Please try again."
+		},
+		"errors": {
+			"userNotFound": "User profile could not be loaded."
+		},
+		"validation": {
+			"nameRequired": "Please enter your name.",
+			"bioTooLong": "Bio must be 500 characters or fewer."
+		},
+		"header": {
+			"fallbackName": "User",
+			"noName": "No name set"
+		},
+		"editModal": {
+			"title": "Edit profile",
+			"bioLength": "{count}/{max} characters",
+			"errors": {
+				"userNotAvailable": "User information is not available."
+			},
+			"image": {
+				"label": "Profile photo",
+				"previewAlt": "Profile photo preview",
+				"uploadPhoto": "Upload photo",
+				"changePhoto": "Change photo",
+				"remove": "Remove",
+				"recommendation": "Use a square image. PNG or JPG up to 5 MB works best.",
+				"errors": {
+					"invalidFile": "Please select a valid image file.",
+					"fileTooLarge": "The image must be smaller than 5 MB.",
+					"uploadFailed": "Profile photo upload failed."
+				}
+			},
+			"social": {
+				"title": "Social environment",
+				"description": "Enable the social layer to show XP, quests, leaderboard progress, and your social profile.",
+				"enabled": {
+					"title": "Social environment enabled",
+					"description": "XP, quests, and leaderboard features are currently visible."
+				},
+				"disabled": {
+					"title": "Social environment disabled",
+					"description": "Your XP and social features are currently hidden."
+				},
+				"toggleFailed": "The social environment setting could not be updated."
+			},
+			"danger": {
+				"title": "Danger zone",
+				"description": "These actions affect your stored progress and account data. Review them carefully before continuing.",
+				"freshStart": {
+					"title": "Fresh start",
+					"description": "Clear your skills, course progress, and related learning data while keeping your account.",
+					"button": "Start over",
+					"confirmTitle": "Confirm fresh start",
+					"confirmDescription": "This removes your learning progress, skill progress, and related activity. Your account will remain active.",
+					"confirmationToken": "RESET",
+					"confirmPlaceholder": "Type {token} to confirm",
+					"confirmationError": "Please type {token} to continue.",
+					"confirmButton": "Reset learning data",
+					"processing": "Resetting...",
+					"success": "Your learning data was cleared successfully.",
+					"failed": "Fresh start could not be completed."
+				},
+				"delete": {
+					"title": "Delete account",
+					"description": "Disable your account and sign out. This action should be treated as permanent.",
+					"button": "Delete account",
+					"confirmTitle": "Confirm account deletion",
+					"confirmDescription": "This will disable your account and remove your access. You will be signed out immediately after the request succeeds.",
+					"confirmationToken": "DELETE",
+					"confirmPlaceholder": "Type {token} to confirm",
+					"confirmationError": "Please type {token} to continue.",
+					"confirmButton": "Delete account",
+					"processing": "Deleting...",
+					"success": "Your account was deleted successfully.",
+					"failed": "Account deletion could not be completed."
+				}
+			}
+		},
+		"page": {
+			"editProfile": "Edit profile",
+			"upload": "Upload",
+			"profileImageAlt": "Profile picture",
+			"noName": "No name set",
+			"stats": {
+				"skills": "Skills",
+				"courses": "Courses",
+				"certificates": "Certificates"
+			},
+			"quickActions": {
+				"title": "Quick actions",
+				"skills": {
+					"title": "Manage skills",
+					"description": "Review your current skills and update your profile.",
+					"badge": "{count} skills"
+				},
+				"aiSkills": {
+					"title": "Generate skills with AI",
+					"description": "Turn your experience into a suggested skill profile.",
+					"badge": "AI powered"
+				},
+				"recommendations": {
+					"title": "Recommended courses",
+					"description": "See course suggestions tailored to your skill profile."
+				},
+				"browseCourses": {
+					"title": "Browse courses",
+					"description": "Explore the full course catalog and new learning paths."
+				},
+				"learning": {
+					"title": "Continue learning",
+					"description": "Jump back into your active learning flow.",
+					"badge": "{count} active courses"
+				},
+				"settings": {
+					"title": "Settings",
+					"description": "Adjust your account, preferences, and security settings."
+				}
+			},
+			"recentActivity": {
+				"title": "Recent activity",
+				"empty": {
+					"title": "No recent activity yet",
+					"description": "Start learning, add skills, or complete a course and your activity will show up here.",
+					"cta": "Browse courses"
+				}
+			}
+		},
+		"quickActionCard": {
+			"view": "View"
+		}
+	},
+	"settings": {
+		"page": {
+			"loading": "Loading settings...",
+			"backToProfile": "Back to profile",
+			"title": "Settings",
+			"description": "Manage your profile, preferences, notifications, and account security.",
+			"sections": {
+				"profile": "Profile",
+				"notifications": "Notifications",
+				"security": "Security",
+				"preferences": "Preferences"
+			},
+			"profile": {
+				"title": "Profile information"
+			},
+			"notifications": {
+				"title": "Notifications",
+				"items": {
+					"recommendations": {
+						"title": "Course recommendations",
+						"description": "Receive alerts when new courses match your skills."
+					},
+					"reminders": {
+						"title": "Learning reminders",
+						"description": "Stay on track with reminders to continue learning."
+					},
+					"summary": {
+						"title": "Weekly summary",
+						"description": "Get a summary of your progress and activity each week."
+					}
+				}
+			},
+			"security": {
+				"title": "Security",
+				"password": {
+					"title": "Password",
+					"description": "Update your password to keep your account secure.",
+					"action": "Change password"
+				},
+				"twoFactor": {
+					"title": "Two-factor authentication",
+					"description": "Add an extra layer of security to your account.",
+					"action": "Coming soon"
+				}
+			},
+			"preferences": {
+				"title": "Preferences",
+				"language": {
+					"title": "Language"
+				},
+				"timezone": {
+					"title": "Timezone",
+					"options": {
+						"utc": "UTC",
+						"est": "EST",
+						"pst": "PST",
+						"gmt": "GMT"
+					}
+				},
+				"theme": {
+					"title": "Theme"
+				}
+			}
+		}
+	},
+	"social": {
+		"page": {
+			"loading": "Loading social data...",
+			"title": "Social Zone",
+			"description": "Track XP, quests, leaderboard progress, and your social profile in one place.",
+			"tabs": {
+				"dashboard": "Dashboard",
+				"leaderboard": "Leaderboard",
+				"quests": "Quests",
+				"profile": "Profile"
+			}
+		},
+		"dashboard": {
+			"loadFailed": "Social dashboard data could not be loaded.",
+			"level": {
+				"title": "Level progress",
+				"badge": "Level {level}",
+				"progress": "Current level progress",
+				"progressDetail": "{current}/{total} XP"
+			},
+			"xp": {
+				"title": "Total XP",
+				"description": "XP earned across all social activity"
+			},
+			"streak": {
+				"title": "Streaks",
+				"current": "Current streak",
+				"longest": "Longest streak"
+			},
+			"quests": {
+				"title": "Active quests",
+				"completedCount": "{completed}/{total} completed",
+				"reward": "+{amount} XP",
+				"more": "+{count} more",
+				"allCompleted": "All available quests are completed."
+			}
+		},
+		"leaderboard": {
+			"filters": {
+				"weekly": "Weekly",
+				"global": "Global"
+			},
+			"weekly": {
+				"title": "Weekly leaderboard",
+				"description": "See who earned the most XP this week.",
+				"scoreLabel": "XP this week"
+			},
+			"global": {
+				"title": "Global leaderboard",
+				"description": "See the top learners across all recorded activity.",
+				"scoreLabel": "Total XP"
+			},
+			"levelBadge": "Lvl {level}",
+			"empty": "No leaderboard data is available yet."
+		},
+		"profile": {
+			"loadFailed": "Social profile data could not be loaded.",
+			"anonymous": "Anonymous learner",
+			"welcome": "Start learning to build your XP history.",
+			"lastActive": "Last active {time}",
+			"level": {
+				"badge": "Level {level}",
+				"progress": "Current level progress",
+				"progressDetail": "{current}/{total} XP • {percentage}%"
+			},
+			"stats": {
+				"level": "Level",
+				"totalXp": "Total XP",
+				"currentStreak": "Current streak",
+				"longestStreak": "Longest streak"
+			},
+			"history": {
+				"title": "XP history",
+				"description": "Your most recent XP transactions and social activity.",
+				"empty": "No XP history is available yet."
+			}
+		},
+		"quests": {
+			"title": "Quests",
+			"description": "Keep your streak alive and complete quests to earn more XP.",
+			"activeTitle": "Active quests",
+			"completedTitle": "Completed quests",
+			"progressLabel": "{current}/{total} completed",
+			"reward": "+{amount} XP",
+			"completed": "Completed",
+			"empty": "No quests are available right now."
+		}
+	},
+	"skills": {
+		"header": {
+			"title": "Your skills",
+			"description": "Track what you know, improve your current level, and discover what to learn next.",
+			"addSkill": "Add skill",
+			"aiSkills": "AI skill generator"
+		},
+		"search": {
+			"label": "Search skills",
+			"placeholder": "Search skills..."
+		},
+		"grid": {
+			"uncategorized": "Uncategorized",
+			"empty": {
+				"defaultTitle": "No skills yet",
+				"defaultDescription": "Start by adding a skill to build your profile.",
+				"defaultAction": "Add your first skill",
+				"searchTitle": "No matching skills",
+				"searchDescription": "Try a different search term or update your filters.",
+				"searchAction": "Clear search"
+			}
+		},
+		"card": {
+			"progress": "Progress",
+			"updateLevel": "Update level",
+			"learnMore": "Learn more"
+		},
+		"content": {
+			"aiModalTitle": "AI Skill Generator",
+			"closeAiModal": "Close AI skill generator",
+			"success": {
+				"updated": "Skill level updated successfully.",
+				"removed": "Skill removed successfully.",
+				"aiAdded": "{count} AI-generated skills were added."
+			},
+			"errors": {
+				"load": "Your skills could not be loaded.",
+				"loadTitle": "Failed to load skills",
+				"update": "Skill level could not be updated.",
+				"remove": "Skill could not be removed.",
+				"aiAdd": "AI-generated skills could not be added."
+			}
+		},
+		"addModal": {
+			"title": "Add skill",
+			"skillLabel": "Skill",
+			"skillPlaceholder": "Select a skill",
+			"proficiencyLabel": "Proficiency level",
+			"levels": {
+				"basic": "Basic",
+				"intermediate": "Intermediate",
+				"advanced": "Advanced",
+				"expert": "Expert"
+			},
+			"verification": {
+				"title": "Verification required",
+				"description": "A verification quiz is required before you can add this skill at {level} level."
+			},
+			"actions": {
+				"addSkill": "Add skill",
+				"startVerification": "Start verification",
+				"processing": "Processing..."
+			},
+			"errors": {
+				"add": "The skill could not be added."
+			}
+		},
+		"updateModal": {
+			"title": "Update skill",
+			"description": "Adjust the proficiency level for {skill}.",
+			"currentLevel": "Current level",
+			"selectLevel": "Choose a new level",
+			"noDescription": "No description available.",
+			"levels": {
+				"basic": "Foundational understanding and limited hands-on experience.",
+				"intermediate": "Comfortable working independently on regular tasks.",
+				"advanced": "Strong practical experience and confident decision-making.",
+				"expert": "Deep expertise with advanced judgment and leadership."
+			},
+			"actions": {
+				"update": "Update level",
+				"updateAndVerify": "Verify and update",
+				"updating": "Updating..."
+			},
+			"remove": {
+				"button": "Remove skill",
+				"confirmation": "Remove <strong>{skill}</strong> from your profile?",
+				"confirmButton": "Remove",
+				"removing": "Removing..."
+			}
+		},
+		"aiGenerator": {
+			"title": "AI skill generator",
+			"description": "Describe your experience and let AI suggest skills with recommended proficiency levels.",
+			"promptLabel": "Describe your background",
+			"promptPlaceholder": "Example: I work as a frontend developer, build React applications, collaborate with designers, and recently started working with testing and accessibility.",
+			"examplesTitle": "Try one of these examples",
+			"examples": {
+				"beginner": "I’m new to product design and want to understand UX research, wireframing, and prototyping.",
+				"dataScience": "I analyze data in Python, use pandas daily, and want to grow into machine learning.",
+				"fullStack": "I build full-stack web apps with React, Node.js, PostgreSQL, and REST APIs.",
+				"mobileUx": "I design mobile app interfaces, run usability testing, and work closely with product teams.",
+				"devOps": "I manage CI/CD pipelines, Dockerized services, cloud deployments, and infrastructure automation."
+			},
+			"actions": {
+				"generate": "Generate skills",
+				"generating": "Generating...",
+				"addSelected": "Add selected ({count})"
+			},
+			"results": {
+				"title": "Generated suggestions",
+				"subtitle": "Select the skills you want to add."
+			},
+			"errors": {
+				"promptTooShort": "Please enter a more detailed description before generating skills.",
+				"generate": "AI skills could not be generated."
+			}
+		},
+		"verificationQuiz": {
+			"title": "Skill verification quiz",
+			"loading": "Loading verification quiz...",
+			"timeElapsed": "Time elapsed",
+			"goBack": "Go back",
+			"incompleteWarning": "You have answered {answered} of {total} questions. Answer all questions before submitting.",
+			"resume": {
+				"title": "Resume previous attempt",
+				"description": "You already have an unfinished verification attempt for this skill. You can continue it or start over.",
+				"resume": "Resume attempt",
+				"startOver": "Start over"
+			},
+			"progress": {
+				"question": "Question {current} of {total}",
+				"answered": "{percentage}% answered"
+			},
+			"question": {
+				"points": "{count} pts",
+				"help": "Select all answers that apply."
+			},
+			"actions": {
+				"previous": "Previous",
+				"next": "Next",
+				"submit": "Submit quiz",
+				"submitting": "Submitting..."
+			},
+			"errors": {
+				"load": "The verification quiz could not be loaded.",
+				"noQuestions": "No verification questions are available for this skill yet.",
+				"invalidRequest": "The verification request is invalid.",
+				"authRequired": "You must be signed in to start verification.",
+				"incompleteAttempt": "An unfinished verification attempt already exists.",
+				"network": "Network error ({code}). Please try again.",
+				"submit": "The quiz could not be submitted.",
+				"startOver": "A new verification attempt could not be started."
+			}
+		},
+		"verificationResults": {
+			"passedTitle": "Verification passed",
+			"failedTitle": "Verification not passed",
+			"messages": {
+				"expert": "Excellent result. You demonstrated expert-level understanding.",
+				"advanced": "Strong result. You demonstrated advanced-level understanding.",
+				"intermediate": "Solid result. You reached an intermediate level.",
+				"keepLearning": "Keep going. A bit more practice should improve your result."
+			},
+			"summary": {
+				"score": "Score",
+				"points": "Points"
+			},
+			"stats": {
+				"questionsAnswered": "Questions answered",
+				"correctAnswers": "Correct answers",
+				"incorrectAnswers": "Incorrect answers"
+			},
+			"achievedLevel": {
+				"title": "Achieved level",
+				"passedDescription": "This level can now be applied to your skill profile.",
+				"failedDescription": "You did not reach the minimum threshold to apply this level."
+			},
+			"guide": {
+				"title": "Scoring guide",
+				"expert": "90% and above: Expert",
+				"advanced": "75% to 89%: Advanced",
+				"intermediate": "60% to 74%: Intermediate",
+				"none": "Below 60%: No verified level"
+			},
+			"actions": {
+				"retake": "Retake quiz",
+				"apply": "Apply verified level",
+				"applying": "Applying..."
+			},
+			"errors": {
+				"apply": "The verified level could not be applied."
+			}
+		}
+	},
+	"aiSkills": {
+		"page": {
+			"badge": "AI skill generator",
+			"title": "Generate your skill profile",
+			"description": "Describe your experience, goals, or recent work and let AI build a clearer picture of your current skills.",
+			"steps": {
+				"describe": {
+					"title": "Describe your background",
+					"description": "Share what you do, what you have built, and where you want to grow."
+				},
+				"analyze": {
+					"title": "AI analyzes your experience",
+					"description": "SkillHub identifies relevant skills and suggested proficiency levels."
+				},
+				"recommend": {
+					"title": "Review and save",
+					"description": "Select the skills you want to keep and improve your recommendations."
+				}
+			},
+			"form": {
+				"label": "What have you worked on recently?",
+				"placeholder": "Describe your role, projects, tools, and goals. The more context you provide, the better the suggestions will be."
+			},
+			"actions": {
+				"generate": "Generate skills"
+			},
+			"benefits": {
+				"title": "Why use it?",
+				"saveTime": {
+					"title": "Save time",
+					"description": "Skip manual skill entry and start from AI-generated suggestions."
+				},
+				"accurateProficiency": {
+					"title": "Review proficiency levels",
+					"description": "Check the suggested level before adding each skill to your profile."
+				},
+				"betterRecommendations": {
+					"title": "Get better recommendations",
+					"description": "A stronger skill profile leads to more relevant course suggestions."
+				},
+				"hiddenSkills": {
+					"title": "Spot hidden skills",
+					"description": "AI often identifies skills you use regularly but never thought to add."
+				}
+			},
+			"success": {
+				"title": "Skills added successfully",
+				"description": "Your profile has been updated, and future recommendations can use these skills right away.",
+				"actions": {
+					"recommendations": "View recommendations",
+					"skills": "Open skills",
+					"generateMore": "Generate more"
+				}
+			},
+			"errors": {
+				"promptTooShort": "Please provide a longer description before generating skills.",
+				"generate": "AI skills could not be generated right now.",
+				"selectSkills": "Select at least one skill before saving.",
+				"partialAdd": "{count} skills were added, but some items failed: {errors}",
+				"addSkills": "Selected skills could not be added."
+			}
+		},
+		"onboarding": {
+			"close": "Close onboarding",
+			"skip": "Skip",
+			"next": "Next",
+			"getStarted": "Get started",
+			"goToStep": "Go to step {step}",
+			"steps": {
+				"welcome": {
+					"title": "Meet the AI skill generator",
+					"description": "Describe your experience once and let SkillHub turn it into a clearer skill profile."
+				},
+				"describe": {
+					"title": "Give it context",
+					"description": "Include tools, projects, responsibilities, and the kind of work you want to grow into."
+				},
+				"review": {
+					"title": "Review before saving",
+					"description": "You stay in control. Pick only the skills and levels that match your real experience."
+				}
+			}
+		},
+		"progress": {
+			"title": "Generating your skills",
+			"stages": {
+				"analyzing": {
+					"label": "Analyzing your input",
+					"description": "Reading your background and identifying relevant experience."
+				},
+				"generating": {
+					"label": "Generating suggestions",
+					"description": "Building a list of skill suggestions and recommended levels."
+				},
+				"complete": {
+					"label": "Ready to review",
+					"description": "Your skill suggestions are ready for editing and selection."
+				}
+			}
+		},
+		"templates": {
+			"title": "Example prompts",
+			"description": "Use one of these as a starting point if you are unsure what to write.",
+			"refresh": "Refresh",
+			"items": {
+				"frontend": "I am a frontend developer working mainly with React, TypeScript, component libraries, accessibility, and performance optimization.",
+				"csGraduate": "I recently graduated in computer science and built projects in Java, algorithms, SQL, and cloud basics.",
+				"marketing": "I work in digital marketing, run paid campaigns, analyze funnel performance, and collaborate on landing pages and email automation.",
+				"businessAnalyst": "I work as a business analyst, gather requirements, write documentation, map processes, and work closely with delivery teams.",
+				"selfTaught": "I am self-taught, built several web apps, and learned JavaScript, APIs, databases, and deployment by shipping projects.",
+				"uxDesigner": "I design interfaces, run usability tests, create wireframes, and collaborate with product and engineering on user flows.",
+				"productManager": "I manage product discovery, roadmap planning, stakeholder alignment, and experiment design across cross-functional teams.",
+				"careerChange": "I am changing careers from operations into tech and have been learning spreadsheets, SQL, Python, dashboards, and business intelligence.",
+				"javaDeveloper": "I am a Java developer working with Spring Boot, REST APIs, SQL databases, testing, and backend architecture.",
+				"devops": "I work with CI/CD pipelines, Docker, cloud infrastructure, monitoring, and infrastructure as code.",
+				"mobile": "I build mobile apps, design responsive user flows, integrate APIs, and improve performance on iOS and Android.",
+				"dataAnalyst": "I analyze business data, create dashboards, write SQL queries, and use Python to clean and interpret datasets."
+			}
+		},
+		"editor": {
+			"title": "Review generated skills",
+			"description": "Select the skills you want to keep and adjust the suggested proficiency where needed.",
+			"selectedCount": "{selected} of {total} selected",
+			"proficiencyLabel": "Suggested proficiency",
+			"reasonPrefix": "Reason:",
+			"save": "Add selected ({count})"
+		}
+	},
+	"courses": {
+		"navigation": {
+			"dashboard": "Dashboard",
+			"recommendations": "Recommendations",
+			"getStarted": "Get started"
+		},
+		"courseNavigation": {
+			"backToCourses": "Back to courses",
+			"dashboard": "Dashboard",
+			"getStarted": "Get started"
+		},
+		"hero": {
+			"badge": "Course catalog",
+			"title": "Explore courses",
+			"subtitle": "Find the next skill to build",
+			"description": "Browse learning paths, compare levels, and find the course that fits your current experience."
+		},
+		"filters": {
+			"searchPlaceholder": "Search courses...",
+			"difficulty": "Difficulty",
+			"source": "Source",
+			"price": "Price",
+			"allSources": "All sources",
+			"allCourses": "All courses",
+			"freeOnly": "Free only"
+		},
+		"grid": {
+			"errors": {
+				"title": "Failed to load courses",
+				"description": "Courses could not be loaded right now."
+			},
+			"enrolled": "{count} enrolled",
+			"free": "Free",
+			"enrolling": "Enrolling...",
+			"enrollNow": "Enroll now",
+			"viewCourse": "View course",
+			"pagination": {
+				"summary": "Showing {from} to {to} of {total} courses",
+				"page": "Page {page} of {total}",
+				"previous": "Previous",
+				"next": "Next"
+			},
+			"empty": {
+				"title": "No courses found",
+				"defaultDescription": "No courses are available right now.",
+				"filteredDescription": "Try changing your search or filters.",
+				"clearFilters": "Clear filters"
+			}
+		},
+		"courseHeader": {
+			"actions": {
+				"save": "Save",
+				"share": "Share",
+				"original": "Original"
+			},
+			"aiSummary": "AI summary"
+		},
+		"lessons": {
+			"title": "Course content",
+			"tabs": {
+				"lessons": "Lessons ({count})",
+				"chapters": "Chapters ({count})"
+			},
+			"showingLessons": "Showing {visible} of {total} lessons",
+			"showAll": "Show all ({count})",
+			"showLess": "Show less",
+			"showingChapters": "Showing {visible} of {total} chapters",
+			"singleVideoCourse": "This is a single-video course.",
+			"noTimestamps": "No timestamps are available."
+		},
+		"videoPlayer": {
+			"empty": {
+				"title": "No video available",
+				"description": "This lesson does not have a valid video. Try another lesson or contact support."
+			},
+			"errors": {
+				"title": "Video playback error",
+				"tip": "Tip: Try disabling browser extensions or using an incognito/private window."
+			},
+			"codes": {
+				"invalidVideoId": "Invalid video identifier.",
+				"unplayable": "This video cannot be played in the current context.",
+				"html5": "The YouTube player reported an HTML5 playback error.",
+				"notFound": "The video could not be found or is private.",
+				"embeddingDisabled": "The video owner disabled embedding for this content.",
+				"missingReferrer": "A required referrer header is missing.",
+				"unknown": "An unknown YouTube error occurred."
+			},
+			"currentLesson": {
+				"startingAt": "Starting at {time}"
+			}
+		},
+		"coursePage": {
+			"errors": {
+				"notFoundTitle": "Course not found",
+				"notFoundDescription": "The requested course could not be loaded."
+			},
+			"emptyVideo": {
+				"title": "No video available",
+				"description": "This course does not have a video to display."
+			}
+		},
+		"recommendationsStrip": {
+			"loading": {
+				"title": "Recommended for you",
+				"description": "Loading personalized recommendations..."
+			},
+			"title": "Recommended for you",
+			"description": "Courses tailored to your skills and interests",
+			"viewAll": "View all",
+			"match": "{score}% match",
+			"free": "Free",
+			"actions": {
+				"enroll": "Enroll",
+				"enrolling": "Enrolling..."
+			}
+		},
+		"recommendedPage": {
+			"hero": {
+				"badge": "Personalized for you",
+				"title": "Recommended courses",
+				"subtitle": "Tailored to your skills",
+				"description": "Discover courses selected for your current level and goals using SkillHub’s recommendation system."
+			},
+			"algorithms": {
+				"actions": {
+					"semantic": "AI semantic",
+					"rules": "Smart match",
+					"community": "Community"
+				},
+				"badges": {
+					"semantic": "AI semantic",
+					"rules": "Smart match",
+					"contentBased": "Content based",
+					"community": "Community",
+					"aiPowered": "AI powered"
+				}
+			},
+			"actions": {
+				"refresh": "Refresh recommendations",
+				"generating": "Generating...",
+				"enrollNow": "Enroll now",
+				"enrolling": "Enrolling..."
+			},
+			"errors": {
+				"load": "Recommendations could not be loaded. Please try again.",
+				"generate": "Recommendations could not be generated. Please try again."
+			},
+			"loadingRecommendations": "Loading recommendations...",
+			"empty": {
+				"title": "No recommendations yet",
+				"description": "Add skills to your profile or generate new recommendations to get started.",
+				"actions": {
+					"generate": "Generate recommendations",
+					"addSkills": "Add skills"
+				}
+			},
+			"resultsTitle": "Recommended courses ({count})",
+			"score": "{score}%",
+			"whyRecommended": "Why recommended:",
+			"moreSkills": "+{count} more",
+			"free": "Free"
+		},
+		"udemySearch": {
+			"title": "Explore Udemy courses",
+			"description": "Search Udemy’s course catalog without leaving SkillHub.",
+			"searchPlaceholder": "Search Udemy courses...",
+			"byInstructor": "By {name}",
+			"free": "Free",
+			"viewCourse": "View course",
+			"errors": {
+				"search": "Udemy courses could not be searched. Please try again."
+			},
+			"empty": {
+				"title": "No courses found",
+				"description": "Try a different search term."
+			},
+			"duration": {
+				"hours": "{hours} h",
+				"minutes": "{minutes} min",
+				"hoursMinutes": "{hours} h {minutes} min"
+			}
+		}
+	},
+	"admin": {
+		"layout": {
+			"loading": "Loading admin panel...",
+			"badge": "Admin panel",
+			"backToDashboard": "Back to dashboard",
+			"adminUser": "Admin user",
+			"navigation": {
+				"dashboard": "Dashboard",
+				"users": "Users",
+				"courses": "Courses",
+				"allCourses": "All courses",
+				"addCourse": "Add course",
+				"skills": "Skills",
+				"allSkills": "All skills",
+				"addSkill": "Add skill",
+				"analytics": "Analytics",
+				"settings": "Settings"
+			}
+		},
+		"dashboard": {
+			"badge": "Admin panel",
+			"title": "Dashboard overview",
+			"fallbackAdmin": "Admin",
+			"welcome": "Welcome back, {name}. Here is what is happening on your platform.",
+			"loading": {
+				"title": "Loading dashboard",
+				"description": "Gathering the latest statistics..."
+			},
+			"errors": {
+				"title": "Failed to load dashboard",
+				"loadStats": "Dashboard statistics could not be loaded."
+			},
+			"stats": {
+				"totalUsers": "Total users",
+				"totalCourses": "Total courses",
+				"totalSkills": "Total skills",
+				"totalTests": "Total tests",
+				"thisWeek": "+{count} this week",
+				"testsDescription": "Assessment and verification coverage"
+			},
+			"quickActions": {
+				"title": "Quick actions",
+				"description": "Common administrative tasks.",
+				"cards": {
+					"createCourse": {
+						"title": "Create course",
+						"description": "Add a new course to the platform."
+					},
+					"createSkill": {
+						"title": "Create skill",
+						"description": "Add a new skill to the skill catalog."
+					},
+					"manageUsers": {
+						"title": "Manage users",
+						"description": "Review accounts, roles, and access."
+					}
+				}
+			},
+			"socialTools": {
+				"title": "Social Zone tools",
+				"description": "Manage XP and gamification features."
+			},
+			"recentActivity": {
+				"title": "Recent activity",
+				"description": "Latest platform updates.",
+				"empty": "No recent activity",
+				"types": {
+					"user": "User",
+					"course": "Course",
+					"skill": "Skill"
+				}
+			},
+			"testResults": {
+				"title": "Test results",
+				"description": "Assessment and verification system"
+			}
+		},
+		"xpManager": {
+			"title": "XP Manager",
+			"description": "Add or remove XP from users for testing purposes.",
+			"fields": {
+				"userId": {
+					"label": "User ID",
+					"placeholder": "Enter user UUID"
+				},
+				"amount": {
+					"label": "XP amount",
+					"placeholder": "Enter XP amount (for example 100)"
+				},
+				"description": {
+					"label": "Description",
+					"optional": "(optional)",
+					"placeholder": "Reason for the XP adjustment"
+				}
+			},
+			"validation": {
+				"userIdRequired": "Please enter a user ID.",
+				"amountRequired": "Please enter a valid positive amount."
+			},
+			"actions": {
+				"addXp": "Add XP",
+				"removeXp": "Remove XP"
+			},
+			"result": {
+				"summary": "New XP: {xp} | Level: {level}"
+			},
+			"errors": {
+				"award": "XP could not be updated."
+			},
+			"help": {
+				"text": "Tip: You can find user IDs in the Users section or in the database. Use this to test XP calculations, level progression, and the XP bar."
+			}
+		},
+		"youtubeImport": {
+			"title": "Import YouTube course",
+			"description": "Import a YouTube video or playlist as a course.",
+			"success": {
+				"title": "Imported successfully",
+				"details": {
+					"lessonsLabel": "Lessons:",
+					"durationLabel": "Duration:",
+					"difficultyLabel": "Difficulty:",
+					"aiSummaryLabel": "AI summary:"
+				}
+			},
+			"fields": {
+				"url": {
+					"label": "YouTube URL *",
+					"placeholder": "https://www.youtube.com/watch?v=... or https://www.youtube.com/playlist?list=...",
+					"help": "Supports both individual videos and playlists."
+				},
+				"difficulty": {
+					"label": "Difficulty level"
+				},
+				"skills": {
+					"label": "Skills (optional)",
+					"searchPlaceholder": "Search skills...",
+					"loading": "Loading skills...",
+					"limitNotice": "Showing 20 of {total} skills. Keep typing to narrow the results.",
+					"noMatch": "No skills found for “{query}”.",
+					"empty": "No skills available."
+				},
+				"overrides": {
+					"title": "Manual overrides (optional)",
+					"customTitleLabel": "Custom title",
+					"customTitlePlaceholder": "Leave empty to use the YouTube title",
+					"customDescriptionLabel": "Custom description",
+					"customDescriptionPlaceholder": "Leave empty to use the YouTube description"
+				}
+			},
+			"actions": {
+				"importCourse": "Import course",
+				"importing": "Importing...",
+				"importAnother": "Import another"
+			},
+			"validation": {
+				"urlRequired": "A YouTube URL is required.",
+				"urlInvalid": "Please enter a valid YouTube URL for a video or playlist.",
+				"importFailed": "The YouTube course could not be imported."
+			}
+		},
+		"userCard": {
+			"unnamedUser": "Unnamed user",
+			"unknownUser": "Unknown user",
+			"copyUuid": "Copy UUID",
+			"copiedUuid": "UUID copied",
+			"region": "Region: {region}"
+		},
+		"courseCard": {
+			"bookmarks": "Saved: {count}",
+			"moreSkills": "+{count} more",
+			"actions": {
+				"view": "View course",
+				"deleting": "Deleting..."
+			}
+		},
+		"usersPage": {
+			"title": "User management",
+			"description": "Manage user accounts and permissions across the platform.",
+			"filters": {
+				"searchLabel": "Search users",
+				"searchPlaceholder": "Search by name or email...",
+				"roleLabel": "Filter by role",
+				"roleOptions": {
+					"all": "All roles",
+					"user": "Users",
+					"instructor": "Instructors",
+					"admin": "Administrators"
+				}
+			},
+			"loading": "Loading users...",
+			"errors": {
+				"load": "Users could not be loaded.",
+				"loadTitle": "Failed to load users"
+			},
+			"pagination": {
+				"summary": "Showing {from} to {to} of {total} users",
+				"page": "Page {page} of {totalPages}"
+			},
+			"empty": {
+				"title": "No users found",
+				"description": "No users have registered yet.",
+				"filteredDescription": "Try adjusting your search or filters."
+			},
+			"alerts": {
+				"confirmDelete": "Are you sure you want to delete user “{userName}”? This action cannot be undone.",
+				"updateRoleFailed": "Failed to update user role: {message}",
+				"deleteFailed": "Failed to delete user: {message}",
+				"unknownError": "Unknown error"
+			}
+		},
+		"skillsPage": {
+			"title": "Skills management",
+			"description": "Manage the skill hierarchy and taxonomy.",
+			"actions": {
+				"addSkill": "Add skill",
+				"createSkill": "Create skill",
+				"updateSkill": "Update skill"
+			},
+			"form": {
+				"createTitle": "Create new skill",
+				"editTitle": "Edit skill",
+				"fields": {
+					"name": {
+						"label": "Skill name *",
+						"placeholder": "For example: JavaScript, React, Machine Learning"
+					},
+					"slug": {
+						"label": "Slug *",
+						"placeholder": "auto-generated-from-name"
+					},
+					"parent": {
+						"label": "Parent skill",
+						"none": "No parent (root skill)"
+					},
+					"description": {
+						"label": "Description",
+						"placeholder": "Optional description for this skill..."
+					}
+				}
+			},
+			"search": {
+				"label": "Search skills",
+				"placeholder": "Search by skill name..."
+			},
+			"loading": "Loading skills...",
+			"errors": {
+				"load": "Skills could not be loaded.",
+				"loadTitle": "Failed to load skills"
+			},
+			"tree": {
+				"title": "Skills hierarchy",
+				"hasDescription": "Has description"
+			},
+			"empty": {
+				"title": "No skills found",
+				"description": "Create your first skill to get started.",
+				"filteredDescription": "Try adjusting your search criteria.",
+				"addFirstSkill": "Add first skill"
+			},
+			"alerts": {
+				"confirmDelete": "Are you sure you want to delete the skill “{name}”? Child skills will also be removed.",
+				"createFailed": "Failed to create skill: {message}",
+				"updateFailed": "Failed to update skill: {message}",
+				"deleteFailed": "Failed to delete skill: {message}",
+				"unknownError": "Unknown error"
+			}
+		},
+		"coursesPage": {
+			"title": "Course management",
+			"description": "Manage all courses on your platform.",
+			"actions": {
+				"youtubeImport": "YouTube import",
+				"addCourse": "Add course"
+			},
+			"filters": {
+				"searchPlaceholder": "Search courses...",
+				"sourceLabel": "Source",
+				"difficultyLabel": "Difficulty",
+				"allSources": "All sources",
+				"allLevels": "All levels"
+			},
+			"loading": "Loading courses...",
+			"errors": {
+				"loadTitle": "Failed to load courses",
+				"loadDescription": "Something went wrong while loading courses."
+			},
+			"pagination": {
+				"summary": "Showing {from} to {to} of {total} courses",
+				"page": "Page {page} of {totalPages}"
+			},
+			"empty": {
+				"title": "No courses found",
+				"description": "Create your first course to get started.",
+				"filteredDescription": "Try adjusting your search criteria.",
+				"importFromYoutube": "Import from YouTube"
+			},
+			"alerts": {
+				"confirmDelete": "Are you sure you want to delete “{courseName}”? This action cannot be undone.",
+				"deleteFailed": "Failed to delete course: {message}",
+				"unknownError": "Unknown error"
+			}
+		},
+		"newCoursePage": {
+			"back": "Back to courses",
+			"title": "Create new course",
+			"description": "Add a new course to your platform.",
+			"sections": {
+				"basicInformation": "Basic information",
+				"courseDetails": "Course details"
+			},
+			"fields": {
+				"title": {
+					"label": "Title *",
+					"placeholder": "Enter course title"
+				},
+				"provider": {
+					"label": "Provider",
+					"placeholder": "Course provider"
+				},
+				"description": {
+					"label": "Description",
+					"placeholder": "Course description"
+				},
+				"source": {
+					"label": "Source"
+				},
+				"difficulty": {
+					"label": "Difficulty"
+				},
+				"language": {
+					"label": "Language",
+					"placeholder": "Language code (for example en, cs, de)"
+				},
+				"externalId": {
+					"label": "External ID",
+					"placeholder": "External course ID"
+				},
+				"url": {
+					"label": "Course URL",
+					"placeholder": "https://example.com/course"
+				},
+				"duration": {
+					"label": "Duration (minutes)",
+					"placeholder": "Course duration"
+				},
+				"rating": {
+					"label": "Rating (0-5)",
+					"placeholder": "Course rating"
+				},
+				"isPaid": {
+					"label": "Paid course"
+				},
+				"price": {
+					"label": "Price (cents)",
+					"placeholder": "Price in cents (for example 2999 for $29.99)"
+				}
+			},
+			"actions": {
+				"create": "Create course",
+				"creating": "Creating..."
+			},
+			"alerts": {
+				"titleRequired": "Title is required.",
+				"createFailed": "Failed to create course: {message}",
+				"unknownError": "Unknown error"
+			}
+		}
 	}
 }

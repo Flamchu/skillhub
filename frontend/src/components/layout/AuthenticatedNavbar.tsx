@@ -2,16 +2,20 @@
 
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useAuth } from "@/context/AuthProvider";
 import { LanguageSwitcher, ThemeToggle } from "@/components/ui";
 import XPBar from "@/components/social/XPBar";
 import { useState, useEffect } from "react";
 import { Menu, X, LayoutDashboard, Target, BookOpen, Users, User, LogOut, Crown, ChevronDown } from "lucide-react";
+import { getMemberRoleLabel } from "@/lib/i18n-utils";
 
 export function AuthenticatedNavbar() {
 	const { user, profile, logout } = useAuth();
 	const router = useRouter();
 	const pathname = usePathname();
+	const t = useTranslations("layout.authenticatedNavbar");
+	const tCommon = useTranslations("common");
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 	const [userDropdownOpen, setUserDropdownOpen] = useState(false);
 	const [scrolled, setScrolled] = useState(false);
@@ -39,10 +43,10 @@ export function AuthenticatedNavbar() {
 	if (!user) return null;
 
 	const navLinks = [
-		{ href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-		{ href: "/skills", label: "Skills", icon: Target },
-		{ href: "/courses", label: "Courses", icon: BookOpen },
-		...(user.socialEnabled ? [{ href: "/social", label: "Social", icon: Users }] : []),
+		{ href: "/dashboard", label: t("links.dashboard"), icon: LayoutDashboard },
+		{ href: "/skills", label: t("links.skills"), icon: Target },
+		{ href: "/courses", label: t("links.courses"), icon: BookOpen },
+		...(user.socialEnabled ? [{ href: "/social", label: t("links.social"), icon: Users }] : []),
 	];
 
 	const isActive = (href: string) => {
@@ -128,12 +132,10 @@ export function AuthenticatedNavbar() {
 									<UserAvatar />
 									<div className="hidden xl:flex flex-col items-start">
 										<span className="text-sm font-semibold text-gray-900 dark:text-white">
-											{profile?.name || "User"}
+											{profile?.name || t("fallbackName")}
 										</span>
 										<span className="text-xs text-gray-500 dark:text-gray-400">
-											{user.role === "ADMIN" && "Admin"}
-											{user.role === "INSTRUCTOR" && "Instructor"}
-											{user.role === "USER" && "Member"}
+											{getMemberRoleLabel(user.role, tCommon)}
 										</span>
 									</div>
 									<ChevronDown
@@ -150,7 +152,7 @@ export function AuthenticatedNavbar() {
 												<UserAvatar />
 												<div className="flex-1 min-w-0">
 													<p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
-														{profile?.name || "User"}
+														{profile?.name || t("fallbackName")}
 													</p>
 													<p className="text-xs text-gray-500 dark:text-gray-400 truncate">{user.email}</p>
 												</div>
@@ -159,7 +161,7 @@ export function AuthenticatedNavbar() {
 												<div className="flex items-center gap-1.5 px-2 py-1 bg-linear-to-br from-yellow-400/20 to-orange-400/20 dark:from-yellow-400/30 dark:to-orange-400/30 rounded-lg w-fit">
 													<Crown className="w-3 h-3 text-yellow-600 dark:text-yellow-400" />
 													<span className="text-xs font-semibold text-yellow-700 dark:text-yellow-300">
-														Admin Access
+														{t("adminAccess")}
 													</span>
 												</div>
 											)}
@@ -173,7 +175,7 @@ export function AuthenticatedNavbar() {
 												className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors duration-150"
 											>
 												<User className="w-4 h-4" />
-												<span className="text-sm font-medium">Profile Settings</span>
+												<span className="text-sm font-medium">{t("menu.profileSettings")}</span>
 											</Link>
 
 											{user.role === "ADMIN" && (
@@ -183,7 +185,7 @@ export function AuthenticatedNavbar() {
 													className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors duration-150"
 												>
 													<Crown className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />
-													<span className="text-sm font-medium">Admin Panel</span>
+													<span className="text-sm font-medium">{t("menu.adminPanel")}</span>
 												</Link>
 											)}
 
@@ -192,7 +194,7 @@ export function AuthenticatedNavbar() {
 												className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-150"
 											>
 												<LogOut className="w-4 h-4" />
-												<span className="text-sm font-medium">Sign Out</span>
+												<span className="text-sm font-medium">{t("menu.signOut")}</span>
 											</button>
 										</div>
 									</div>
@@ -218,13 +220,15 @@ export function AuthenticatedNavbar() {
 						<div className="flex flex-col h-full">
 							{/* Mobile Header */}
 							<div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-								<div className="flex items-center gap-3">
-									<UserAvatar />
-									<div>
-										<p className="text-sm font-semibold text-gray-900 dark:text-white">{profile?.name || "User"}</p>
-										<p className="text-xs text-gray-500 dark:text-gray-400">{user.email}</p>
-									</div>
+							<div className="flex items-center gap-3">
+								<UserAvatar />
+								<div>
+									<p className="text-sm font-semibold text-gray-900 dark:text-white">
+										{profile?.name || t("fallbackName")}
+									</p>
+									<p className="text-xs text-gray-500 dark:text-gray-400">{user.email}</p>
 								</div>
+							</div>
 								<button
 									onClick={() => setMobileMenuOpen(false)}
 									className="p-2 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
@@ -268,7 +272,7 @@ export function AuthenticatedNavbar() {
 									className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 font-medium transition-all duration-200"
 								>
 									<User className="w-5 h-5" />
-									<span>Profile Settings</span>
+									<span>{t("menu.profileSettings")}</span>
 								</Link>
 
 								{user.role === "ADMIN" && (
@@ -278,7 +282,7 @@ export function AuthenticatedNavbar() {
 										className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 font-medium transition-all duration-200"
 									>
 										<Crown className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
-										<span>Admin Panel</span>
+										<span>{t("menu.adminPanel")}</span>
 									</Link>
 								)}
 							</div>
@@ -293,7 +297,7 @@ export function AuthenticatedNavbar() {
 									className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-linear-to-br from-red-500 to-red-600 text-white font-medium shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-200"
 								>
 									<LogOut className="w-5 h-5" />
-									<span>Sign Out</span>
+									<span>{t("menu.signOut")}</span>
 								</button>
 							</div>
 						</div>

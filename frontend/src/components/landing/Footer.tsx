@@ -67,7 +67,7 @@ export function Footer() {
 						href="#"
 						className="group hover:text-info transition-all duration-300 rounded-2xl px-8 py-4 hover:bg-info/10 dark:hover:bg-info/20 hover:scale-105 font-bold text-lg"
 					>
-						Privacy
+						{t("privacy")}
 					</a>
 				</div>
 
@@ -84,7 +84,7 @@ export function Footer() {
 						<Heart className="w-5 h-5 text-red-500 animate-pulse" />
 					</div>
 					<p className="text-gray-500 dark:text-gray-400 font-semibold">
-						© {new Date().getFullYear()} SkillHub. All rights reserved.
+						{t("copyright", { year: new Date().getFullYear() })}
 					</p>
 				</div>
 			</div>
