@@ -4,6 +4,8 @@ import { http } from "@/lib/http";
 import { Button } from "@/components/ui/Button";
 import { Search, Star, Clock, ExternalLink, Loader, AlertCircle } from "lucide-react";
 import { CourseCardSkeleton } from "@/components/ui";
+import { useTranslations } from "next-intl";
+import { getDifficultyLabel } from "@/lib/i18n-utils";
 
 interface UdemyCourse {
 	id: number;
@@ -34,6 +36,8 @@ interface UdemySearchProps {
 }
 
 export function UdemySearch({ initialQuery = "", maxResults = 12, showTitle = true }: UdemySearchProps) {
+	const t = useTranslations("courses.udemySearch");
+	const tCommon = useTranslations("common");
 	const [query, setQuery] = useState(initialQuery);
 	const [searchQuery, setSearchQuery] = useState(initialQuery);
 	const [isLoading, setIsLoading] = useState(false);
@@ -60,11 +64,11 @@ export function UdemySearch({ initialQuery = "", maxResults = 12, showTitle = tr
 			setResults(response.data.results);
 		} catch (err) {
 			console.error("Udemy search error:", err);
-			setError("Failed to search Udemy courses. Please try again.");
+			setError(t("errors.search"));
 		} finally {
 			setIsLoading(false);
 		}
-	}, [maxResults]);
+	}, [maxResults, t]);
 
 	useEffect(() => {
 		if (initialQuery.trim()) {
@@ -76,15 +80,24 @@ export function UdemySearch({ initialQuery = "", maxResults = 12, showTitle = tr
 	const formatDuration = (seconds: number) => {
 		const hours = Math.floor(seconds / 3600);
 		const minutes = Math.floor((seconds % 3600) / 60);
-		return `${hours}h ${minutes}m`;
+
+		if (hours > 0 && minutes > 0) {
+			return t("duration.hoursMinutes", { hours, minutes });
+		}
+
+		if (hours > 0) {
+			return t("duration.hours", { hours });
+		}
+
+		return t("duration.minutes", { minutes });
 	};
 
-	const formatLevel = (level: string) => {
+	const mapLevel = (level: string) => {
 		const levelMap: Record<string, string> = {
-			"All Levels": "Beginner",
-			Beginner: "Beginner",
-			Intermediate: "Intermediate",
-			Expert: "Advanced",
+			"All Levels": "BEGINNER",
+			Beginner: "BEGINNER",
+			Intermediate: "INTERMEDIATE",
+			Expert: "ADVANCED",
 		};
 		return levelMap[level] || level;
 	};
@@ -93,8 +106,8 @@ export function UdemySearch({ initialQuery = "", maxResults = 12, showTitle = tr
 		<div className="space-y-6">
 			{showTitle && (
 				<div className="text-center">
-					<h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">Explore Udemy Courses</h2>
-					<p className="text-gray-600 dark:text-gray-300">Discover thousands of courses from Udemy&apos;s platform</p>
+					<h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">{t("title")}</h2>
+					<p className="text-gray-600 dark:text-gray-300">{t("description")}</p>
 				</div>
 			)}
 
@@ -111,7 +124,7 @@ export function UdemySearch({ initialQuery = "", maxResults = 12, showTitle = tr
 								void handleSearch(query);
 							}
 						}}
-						placeholder="Search Udemy courses..."
+						placeholder={t("searchPlaceholder")}
 						className="w-full pl-12 pr-4 py-3 bg-surface/80 dark:bg-gray-800/80 backdrop-blur-sm border border-border/20 rounded-xl text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
 					/>
 				</div>
@@ -122,7 +135,7 @@ export function UdemySearch({ initialQuery = "", maxResults = 12, showTitle = tr
 					disabled={isLoading || !query.trim()}
 					className="bg-linear-to-r from-info to-success hover:from-info-600 hover:to-success-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
 				>
-					{isLoading ? <Loader className="w-5 h-5 animate-spin" /> : "Search"}
+					{isLoading ? <Loader className="w-5 h-5 animate-spin" /> : tCommon("search")}
 				</Button>
 			</div>
 
@@ -162,7 +175,7 @@ export function UdemySearch({ initialQuery = "", maxResults = 12, showTitle = tr
 									className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
 								/>
 								<div className="absolute top-3 left-3 px-3 py-1 bg-linear-to-r from-info to-success text-white text-xs font-semibold rounded-full">
-									Udemy
+									{tCommon("sources.udemy")}
 								</div>
 							</div>
 
@@ -173,14 +186,14 @@ export function UdemySearch({ initialQuery = "", maxResults = 12, showTitle = tr
 
 								<div
 									className={`inline-block px-2 py-1 rounded-lg text-xs font-semibold mb-3 ${
-										formatLevel(course.instructional_level) === "Beginner"
+										mapLevel(course.instructional_level) === "BEGINNER"
 											? "bg-success/20 text-success"
-											: formatLevel(course.instructional_level) === "Intermediate"
+											: mapLevel(course.instructional_level) === "INTERMEDIATE"
 												? "bg-warning/20 text-warning"
 												: "bg-red-100 text-red-600 dark:bg-red-900/20 dark:text-red-400"
 									}`}
 								>
-									{formatLevel(course.instructional_level)}
+									{getDifficultyLabel(mapLevel(course.instructional_level), tCommon)}
 								</div>
 
 								<p className="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-2">{course.headline}</p>
@@ -198,19 +211,19 @@ export function UdemySearch({ initialQuery = "", maxResults = 12, showTitle = tr
 
 								{course.visible_instructors.length > 0 && (
 									<p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
-										By {course.visible_instructors[0].name}
+										{t("byInstructor", { name: course.visible_instructors[0].name })}
 									</p>
 								)}
 
 								<div className="flex justify-between items-center pt-4 border-t border-gray-100 dark:border-gray-700">
-									<span className="text-xl font-bold text-info">{course.is_paid ? course.price : "Free"}</span>
+									<span className="text-xl font-bold text-info">{course.is_paid ? course.price : t("free")}</span>
 									<a
 										href={course.url}
 										target="_blank"
 										rel="noopener noreferrer"
 										className="inline-flex items-center gap-2 px-4 py-2 bg-linear-to-r from-info to-success hover:from-info-600 hover:to-success-600 text-white text-sm font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
 									>
-										View Course
+										{t("viewCourse")}
 										<ExternalLink className="w-4 h-4" />
 									</a>
 								</div>
@@ -225,8 +238,8 @@ export function UdemySearch({ initialQuery = "", maxResults = 12, showTitle = tr
 				<div className="text-center py-12">
 					<div className="bg-surface/60 dark:bg-gray-800/60 backdrop-blur-sm border border-border/20 rounded-2xl p-8 max-w-md mx-auto">
 						<Search className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-						<h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">No courses found</h3>
-						<p className="text-gray-600 dark:text-gray-300">Try a different search term</p>
+						<h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">{t("empty.title")}</h3>
+						<p className="text-gray-600 dark:text-gray-300">{t("empty.description")}</p>
 					</div>
 				</div>
 			)}

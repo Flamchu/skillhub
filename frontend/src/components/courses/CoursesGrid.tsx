@@ -1,7 +1,11 @@
+"use client";
+
 import { Button } from "@/components/ui/Button";
 import { CourseCardSkeleton } from "@/components/ui";
 import { Search, Star, Clock, Users, Bookmark, AlertCircle, Loader, ExternalLink } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 import type { Course, CourseFilters } from "@/types";
+import { formatMinutesDuration, getCourseSourceLabel, getDifficultyLabel } from "@/lib/i18n-utils";
 
 interface CoursesGridProps {
 	courses: Course[];
@@ -45,6 +49,11 @@ export function CoursesGrid({
 	selectedSource,
 	freeOnly,
 }: CoursesGridProps) {
+	const locale = useLocale();
+	const t = useTranslations("courses.grid");
+	const tCommon = useTranslations("common");
+	const numberFormatter = new Intl.NumberFormat(locale);
+
 	// Loading State
 	if (isLoading) {
 		return (
@@ -64,14 +73,14 @@ export function CoursesGrid({
 					<div className="text-red-500 mb-4">
 						<AlertCircle className="w-16 h-16 mx-auto" />
 					</div>
-					<h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">Failed to load courses</h3>
-					<p className="text-gray-600 dark:text-gray-300 mb-6">Something went wrong while fetching the courses.</p>
+					<h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">{t("errors.title")}</h3>
+					<p className="text-gray-600 dark:text-gray-300 mb-6">{t("errors.description")}</p>
 					<Button
 						variant="outline"
 						onClick={() => refetch()}
 						className="bg-linear-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 border-0"
 					>
-						Try Again
+						{tCommon("tryAgain")}
 					</Button>
 				</div>
 			</div>
@@ -96,7 +105,7 @@ export function CoursesGrid({
 											: "bg-linear-to-r from-info to-success text-white"
 									}`}
 								>
-									{course.source === "INTERNAL" ? "SkillHub" : course.source.toLowerCase()}
+									{getCourseSourceLabel(course.source, tCommon)}
 								</div>
 								<Button
 									variant="ghost"
@@ -116,10 +125,10 @@ export function CoursesGrid({
 										? "bg-success/20 text-success"
 										: course.difficulty === "INTERMEDIATE"
 											? "bg-warning/20 text-warning"
-											: "bg-red-100 text-red-600 dark:bg-red-900/20 dark:text-red-400"
+										: "bg-red-100 text-red-600 dark:bg-red-900/20 dark:text-red-400"
 								}`}
 							>
-								{course.difficulty.toLowerCase()}
+								{getDifficultyLabel(course.difficulty, tCommon)}
 							</div>
 
 							<p className="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-2 leading-relaxed">
@@ -137,15 +146,13 @@ export function CoursesGrid({
 									{course.durationMinutes && (
 										<div className="flex items-center gap-1">
 											<Clock className="w-4 h-4" />
-											<span>
-												{Math.floor(course.durationMinutes / 60)}h {course.durationMinutes % 60}m
-											</span>
+											<span>{formatMinutesDuration(course.durationMinutes, tCommon)}</span>
 										</div>
 									)}
 									{course._count && course._count.enrollments !== undefined && (
 										<div className="flex items-center gap-1">
 											<Users className="w-4 h-4" />
-											<span>{course._count.enrollments} enrolled</span>
+											<span>{t("enrolled", { count: numberFormatter.format(course._count.enrollments) })}</span>
 										</div>
 									)}
 								</div>
@@ -166,7 +173,7 @@ export function CoursesGrid({
 
 							<div className="flex justify-between items-center mt-6 pt-4 border-t border-gray-100 dark:border-gray-700">
 								<span className="text-2xl font-bold text-primary">
-									{course.isPaid && course.priceCents ? `$${(course.priceCents / 100).toFixed(2)}` : "Free"}
+									{course.isPaid && course.priceCents ? `$${(course.priceCents / 100).toFixed(2)}` : t("free")}
 								</span>
 								{course.source === "INTERNAL" ? (
 									<Button
@@ -174,16 +181,16 @@ export function CoursesGrid({
 										onClick={() => handleEnrollClick(course.id)}
 										disabled={enrollingCourses.has(course.id)}
 										className="bg-linear-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-									>
-										{enrollingCourses.has(course.id) ? (
-											<>
-												<Loader className="w-4 h-4 animate-spin mr-2" />
-												Enrolling...
-											</>
-										) : (
-											"Enroll Now"
-										)}
-									</Button>
+										>
+											{enrollingCourses.has(course.id) ? (
+												<>
+													<Loader className="w-4 h-4 animate-spin mr-2" />
+													{t("enrolling")}
+												</>
+											) : (
+												t("enrollNow")
+											)}
+										</Button>
 								) : (
 									<a
 										href={course.url}
@@ -191,7 +198,7 @@ export function CoursesGrid({
 										rel="noopener noreferrer"
 										className="inline-flex items-center gap-2 px-4 py-2 bg-linear-to-r from-info to-success hover:from-info-600 hover:to-success-600 text-white text-sm font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
 									>
-										View Course
+										{t("viewCourse")}
 										<ExternalLink className="w-4 h-4" />
 									</a>
 								)}
@@ -205,8 +212,11 @@ export function CoursesGrid({
 			{pagination && pagination.totalPages > 1 && (
 				<div className="flex flex-col sm:flex-row items-center justify-between mt-12 bg-surface/60 dark:bg-gray-800/60 backdrop-blur-sm border border-border/20 rounded-2xl p-6">
 					<div className="text-sm text-gray-600 dark:text-gray-300 mb-4 sm:mb-0">
-						Showing {(pagination.page - 1) * pagination.limit + 1} to{" "}
-						{Math.min(pagination.page * pagination.limit, pagination.totalCount)} of {pagination.totalCount} courses
+						{t("pagination.summary", {
+							from: (pagination.page - 1) * pagination.limit + 1,
+							to: Math.min(pagination.page * pagination.limit, pagination.totalCount),
+							total: pagination.totalCount,
+						})}
 					</div>
 					<div className="flex items-center gap-3">
 						<Button
@@ -216,10 +226,10 @@ export function CoursesGrid({
 							disabled={!pagination.hasPrev}
 							className="transition-all duration-200 hover:scale-105"
 						>
-							← Previous
+							{t("pagination.previous")}
 						</Button>
 						<span className="px-4 py-2 text-sm font-semibold text-primary bg-primary/10 rounded-lg">
-							Page {pagination.page} of {pagination.totalPages}
+							{t("pagination.page", { page: pagination.page, total: pagination.totalPages })}
 						</span>
 						<Button
 							variant="outline"
@@ -228,7 +238,7 @@ export function CoursesGrid({
 							disabled={!pagination.hasNext}
 							className="transition-all duration-200 hover:scale-105"
 						>
-							Next →
+							{t("pagination.next")}
 						</Button>
 					</div>
 				</div>
@@ -241,18 +251,18 @@ export function CoursesGrid({
 						<div className="w-20 h-20 bg-linear-to-br from-primary to-purple rounded-2xl flex items-center justify-center mx-auto mb-6">
 							<Search className="w-10 h-10 text-white" />
 						</div>
-						<h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">No courses found</h3>
+						<h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">{t("empty.title")}</h3>
 						<p className="text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
 							{searchQuery || selectedDifficulty !== "all" || selectedSource !== "all" || freeOnly
-								? "Try adjusting your search or filter criteria to find more courses."
-								: "Check back later for new amazing courses!"}
+								? t("empty.filteredDescription")
+								: t("empty.defaultDescription")}
 						</p>
 						<Button
 							variant="outline"
 							onClick={resetFilters}
 							className="bg-linear-to-r from-primary to-purple text-white hover:from-primary-600 hover:to-purple-600 border-0 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
 						>
-							Clear All Filters
+							{t("empty.clearFilters")}
 						</Button>
 					</div>
 				</div>

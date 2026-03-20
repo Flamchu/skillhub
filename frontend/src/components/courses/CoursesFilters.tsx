@@ -1,7 +1,11 @@
+"use client";
+
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Search } from "lucide-react";
+import { useTranslations } from "next-intl";
 import type { CourseFilters } from "@/types";
+import { getCourseSourceLabel, getDifficultyLabel } from "@/lib/i18n-utils";
 
 interface CoursesFiltersProps {
 	searchQuery: string;
@@ -26,6 +30,8 @@ export function CoursesFilters({
 	setFreeOnly,
 	setCurrentPage,
 }: CoursesFiltersProps) {
+	const t = useTranslations("courses.filters");
+	const tCommon = useTranslations("common");
 	const difficulties = ["all", "BEGINNER", "INTERMEDIATE", "ADVANCED"] as const;
 	const sources = ["all", "INTERNAL", "YOUTUBE", "UDEMY", "OTHER"] as const;
 
@@ -34,7 +40,7 @@ export function CoursesFilters({
 			{/* Search */}
 			<div className="bg-surface/60 dark:bg-gray-800/60 backdrop-blur-sm border border-border/20 rounded-2xl p-6 shadow-xl mb-8">
 				<Input
-					placeholder="Search courses, skills, or topics..."
+					placeholder={t("searchPlaceholder")}
 					value={searchQuery}
 					onChange={e => setSearchQuery(e.target.value)}
 					leftIcon={<Search className="w-4 h-4 text-gray-500" />}
@@ -47,7 +53,7 @@ export function CoursesFilters({
 				<div className="flex flex-wrap gap-6">
 					{/* Difficulty Filter */}
 					<div className="flex flex-wrap gap-2 items-center">
-						<span className="text-sm font-semibold text-primary uppercase tracking-wide">Difficulty:</span>
+						<span className="text-sm font-semibold text-primary uppercase tracking-wide">{t("difficulty")}:</span>
 						{difficulties.map(difficulty => (
 							<Button
 								key={difficulty}
@@ -59,14 +65,14 @@ export function CoursesFilters({
 								}}
 								className="transition-all duration-200 hover:scale-105"
 							>
-								{difficulty === "all" ? "All Levels" : difficulty.toLowerCase()}
+								{difficulty === "all" ? tCommon("difficulties.allLevels") : getDifficultyLabel(difficulty, tCommon)}
 							</Button>
 						))}
 					</div>
 
 					{/* Source Filter */}
 					<div className="flex flex-wrap gap-2 items-center">
-						<span className="text-sm font-semibold text-success uppercase tracking-wide">Source:</span>
+						<span className="text-sm font-semibold text-success uppercase tracking-wide">{t("source")}:</span>
 						{sources.map(source => (
 							<Button
 								key={source}
@@ -78,14 +84,14 @@ export function CoursesFilters({
 								}}
 								className="transition-all duration-200 hover:scale-105"
 							>
-								{source === "all" ? "All Sources" : source === "INTERNAL" ? "SkillHub" : source.toLowerCase()}
+								{source === "all" ? t("allSources") : getCourseSourceLabel(source, tCommon)}
 							</Button>
 						))}
 					</div>
 
 					{/* Free Only Toggle */}
 					<div className="flex items-center gap-2">
-						<span className="text-sm font-semibold text-info uppercase tracking-wide">Price:</span>
+						<span className="text-sm font-semibold text-info uppercase tracking-wide">{t("price")}:</span>
 						<Button
 							variant={freeOnly ? "primary" : "outline"}
 							size="sm"
@@ -95,7 +101,7 @@ export function CoursesFilters({
 							}}
 							className="transition-all duration-200 hover:scale-105"
 						>
-							{freeOnly ? "Free Only" : "All Courses"}
+							{freeOnly ? t("freeOnly") : t("allCourses")}
 						</Button>
 					</div>
 				</div>

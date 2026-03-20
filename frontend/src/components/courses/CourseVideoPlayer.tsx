@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, forwardRef, useImperativeHandle } from "re
 import { Card } from "@/components/ui/Card";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Play } from "lucide-react";
+import { useTranslations } from "next-intl";
 import type { Lesson } from "@/types";
 
 interface VideoPlayerProps {
@@ -74,28 +75,30 @@ function formatDuration(seconds: number): string {
 	return `${minutes}:${String(secs).padStart(2, "0")}`;
 }
 
-function getYouTubeErrorDescription(errorCode: number): string {
+function getYouTubeErrorDescription(errorCode: number, t: (key: string) => string): string {
 	switch (errorCode) {
 		case 2:
-			return "Invalid video ID parameter";
+			return t("codes.invalidVideoId");
 		case 4:
-			return "Video cannot be played (wrong format or restricted)";
+			return t("codes.unplayable");
 		case 5:
-			return "HTML5 player error";
+			return t("codes.html5");
 		case 100:
-			return "Video not found or private";
+			return t("codes.notFound");
 		case 101:
 		case 150:
-			return "Video embedding disabled by owner";
+			return t("codes.embeddingDisabled");
 		case 153:
-			return "Missing HTTP Referer header";
+			return t("codes.missingReferrer");
 		default:
-			return "Unknown YouTube error. Try disabling browser extensions or using incognito mode.";
+			return t("codes.unknown");
 	}
 }
 
 export const VideoPlayer = forwardRef<VideoPlayerRef, VideoPlayerProps>(
 	({ videoId, playlistId, title: _title, startTime, selectedLesson, selectedTimestamp, onTimeUpdate }, ref) => {
+		const t = useTranslations("courses.videoPlayer");
+		const tErrors = useTranslations("courses.videoPlayer.errors");
 		const playerRef = useRef<YTPlayer | null>(null);
 		const containerRef = useRef<HTMLDivElement>(null);
 		const [isPlayerReady, setIsPlayerReady] = useState(false);
@@ -243,8 +246,8 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoPlayerProps>(
 				<div className="bg-surface/60 dark:bg-gray-800/60 backdrop-blur-sm border border-border/20 rounded-2xl p-8 shadow-lg">
 					<EmptyState
 						icon={<Play className="h-12 w-12" />}
-						title="No video available"
-						description="This lesson doesn't have a valid video. Please select another lesson or contact support."
+						title={t("empty.title")}
+						description={t("empty.description")}
 					/>
 				</div>
 			);
@@ -255,12 +258,10 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoPlayerProps>(
 				<div className="bg-surface/60 dark:bg-gray-800/60 backdrop-blur-sm border border-border/20 rounded-2xl p-8 shadow-lg">
 					<EmptyState
 						icon={<Play className="h-12 w-12" />}
-						title="Video playback error"
-						description={`${getYouTubeErrorDescription(playerError)} (Error ${playerError})`}
+						title={t("errors.title")}
+						description={`${getYouTubeErrorDescription(playerError, tErrors)} (Error ${playerError})`}
 					/>
-					<p className="text-sm text-muted-foreground text-center mt-4">
-						💡 Tip: Try disabling browser extensions or use incognito/private mode
-					</p>
+					<p className="text-sm text-muted-foreground text-center mt-4">{t("errors.tip")}</p>
 				</div>
 			);
 		}
@@ -286,7 +287,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoPlayerProps>(
 								{selectedTimestamp && (
 									<>
 										<span>•</span>
-										<span>Starting at {formatDuration(selectedTimestamp)}</span>
+										<span>{t("currentLesson.startingAt", { time: formatDuration(selectedTimestamp) })}</span>
 									</>
 								)}
 							</div>

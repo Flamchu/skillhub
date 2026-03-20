@@ -8,6 +8,7 @@ import { CourseNavigation, CourseHeader, VideoPlayer, CourseLessons } from "@/co
 import { ErrorState } from "@/components/ui/ErrorState";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Play } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 // types
 import type { Course } from "@/types";
@@ -18,6 +19,7 @@ interface CourseResponse {
 
 // main course page component
 export default function CoursePage({ courseId }: { courseId: string }) {
+	const t = useTranslations("courses.coursePage");
 	const [selectedLessonId, setSelectedLessonId] = useState<string | null>(null);
 	const [selectedTimestamp, setSelectedTimestamp] = useState<number | null>(null);
 	const [currentVideoTime, setCurrentVideoTime] = useState<number>(0);
@@ -109,8 +111,8 @@ export default function CoursePage({ courseId }: { courseId: string }) {
 			<div className="min-h-screen bg-surface">
 				<div className="container mx-auto px-4 py-8">
 					<ErrorState
-						title="Course not found"
-						message={error instanceof Error ? error.message : "The requested course could not be loaded."}
+						title={t("errors.notFoundTitle")}
+						message={error instanceof Error ? error.message : t("errors.notFoundDescription")}
 					/>
 				</div>
 			</div>
@@ -142,8 +144,8 @@ export default function CoursePage({ courseId }: { courseId: string }) {
 							<div className="bg-surface/60 dark:bg-gray-800/60 backdrop-blur-sm border border-border/20 rounded-2xl p-8 shadow-lg">
 								<EmptyState
 									icon={<Play className="h-12 w-12" />}
-									title="No video available"
-									description="This course doesn't have a video to display."
+									title={t("emptyVideo.title")}
+									description={t("emptyVideo.description")}
 								/>
 							</div>
 						)}

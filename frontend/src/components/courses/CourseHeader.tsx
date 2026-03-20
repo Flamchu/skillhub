@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { Bookmark, Share2, ExternalLink } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { formatMinutesDuration, getCourseSourceLabel, getDifficultyLabel } from "@/lib/i18n-utils";
 import type { Course } from "@/types";
 
 interface CourseHeaderProps {
@@ -10,6 +12,9 @@ interface CourseHeaderProps {
 }
 
 export function CourseHeader({ course, onBookmark, onShare }: CourseHeaderProps) {
+	const t = useTranslations("courses.courseHeader");
+	const tCommon = useTranslations("common");
+
 	return (
 		<div className="mb-8">
 			<div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 mb-6">
@@ -20,13 +25,13 @@ export function CourseHeader({ course, onBookmark, onShare }: CourseHeaderProps)
 					<div className="flex flex-wrap items-center gap-3 text-sm text-foreground-muted mb-4">
 						<span className="font-medium">{course.provider}</span>
 						<span>•</span>
-						<span>{course.durationMinutes} minutes</span>
+						<span>{formatMinutesDuration(course.durationMinutes ?? 0, tCommon)}</span>
 						<span>•</span>
-						<Badge variant="primary">{course.difficulty}</Badge>
+						<Badge variant="primary">{getDifficultyLabel(course.difficulty, tCommon)}</Badge>
 						{course.source === "YOUTUBE" && (
 							<>
 								<span>•</span>
-								<Badge variant="info">YouTube</Badge>
+								<Badge variant="info">{getCourseSourceLabel(course.source, tCommon)}</Badge>
 							</>
 						)}
 					</div>
@@ -52,7 +57,7 @@ export function CourseHeader({ course, onBookmark, onShare }: CourseHeaderProps)
 						className="transition-all duration-200 hover:scale-105"
 					>
 						<Bookmark className="h-4 w-4 mr-2" />
-						Save
+						{t("actions.save")}
 					</Button>
 					<Button
 						variant="ghost"
@@ -61,7 +66,7 @@ export function CourseHeader({ course, onBookmark, onShare }: CourseHeaderProps)
 						className="transition-all duration-200 hover:scale-105"
 					>
 						<Share2 className="h-4 w-4 mr-2" />
-						Share
+						{t("actions.share")}
 					</Button>
 					{course.url && (
 						<Button
@@ -71,7 +76,7 @@ export function CourseHeader({ course, onBookmark, onShare }: CourseHeaderProps)
 							className="transition-all duration-200 hover:scale-105"
 						>
 							<ExternalLink className="h-4 w-4 mr-2" />
-							Original
+							{t("actions.original")}
 						</Button>
 					)}
 				</div>
@@ -87,7 +92,7 @@ export function CourseHeader({ course, onBookmark, onShare }: CourseHeaderProps)
 									<div className="flex items-center gap-2 mb-2">
 										<div className="h-2 w-2 bg-linear-to-r from-primary to-purple rounded-full" />
 										<span className="text-xs font-medium text-foreground-muted uppercase tracking-wider">
-											AI Summary
+											{t("aiSummary")}
 										</span>
 									</div>
 									<p className="text-foreground-alt leading-relaxed">{course.aiSummary}</p>

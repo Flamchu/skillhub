@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { useAuth } from "@/context/AuthProvider";
 import { Footer } from "@/components/landing";
 import { CoursesNavigation } from "@/components/courses";
@@ -10,18 +11,21 @@ import { Button } from "@/components/ui/Button";
 import { getRecommendations, generateRecommendations } from "@/lib/recommendations";
 import { enrollInCourse } from "@/lib/courses";
 import { Star, Clock, BookOpen, RefreshCw, Sparkles, TrendingUp, Target } from "lucide-react";
+import { formatMinutesDuration, getDifficultyLabel } from "@/lib/i18n-utils";
 import type { Recommendation } from "@/types";
 
 export default function RecommendedCoursesPage() {
 	const { user, loading } = useAuth();
 	const router = useRouter();
+	const t = useTranslations("courses.recommendedPage");
+	const tCommon = useTranslations("common");
 	const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isGenerating, setIsGenerating] = useState(false);
 	const [enrollingCourses, setEnrollingCourses] = useState<Set<string>>(new Set());
 	const [error, setError] = useState<string | null>(null);
 
-	const loadRecommendations = async () => {
+	const loadRecommendations = useCallback(async () => {
 		try {
 			setIsLoading(true);
 			setError(null);
@@ -29,11 +33,11 @@ export default function RecommendedCoursesPage() {
 			setRecommendations(data.recommendations.filter(r => r.course));
 		} catch (error) {
 			console.error("Failed to load recommendations:", error);
-			setError("Failed to load recommendations. Please try again.");
+			setError(t("errors.load"));
 		} finally {
 			setIsLoading(false);
 		}
-	};
+	}, [t]);
 
 	useEffect(() => {
 		if (loading) return; // wait for auth to load
@@ -42,8 +46,8 @@ export default function RecommendedCoursesPage() {
 			router.push("/auth");
 			return;
 		}
-		loadRecommendations();
-	}, [user, loading, router]);
+		void loadRecommendations();
+	}, [user, loading, router, loadRecommendations]);
 
 	const handleGenerateRecommendations = async (algorithm: "RULES" | "SEMANTIC" | "COLLAB_FILTER" = "SEMANTIC") => {
 		try {
@@ -53,7 +57,7 @@ export default function RecommendedCoursesPage() {
 			loadRecommendations();
 		} catch (error) {
 			console.error("Failed to generate recommendations:", error);
-			setError("Failed to generate recommendations. Please try again.");
+			setError(t("errors.generate"));
 		} finally {
 			setIsGenerating(false);
 		}
@@ -86,11 +90,19 @@ export default function RecommendedCoursesPage() {
 
 	const getAlgorithmBadge = (algorithm: string) => {
 		const badges = {
-			RULES: { label: "Smart Match", color: "bg-primary/10 text-primary border-primary/20", icon: Target },
-			CONTENT_BASED: { label: "Content Based", color: "bg-success/10 text-success border-success/20", icon: BookOpen },
-			COLLAB_FILTER: { label: "Community", color: "bg-warning/10 text-warning border-warning/20", icon: Target },
-			HYBRID: { label: "AI Powered", color: "bg-purple/10 text-purple border-purple/20", icon: Sparkles },
-			SEMANTIC: { label: "AI Semantic", color: "bg-info/10 text-info border-info/20", icon: Sparkles },
+			RULES: { label: t("algorithms.badges.rules"), color: "bg-primary/10 text-primary border-primary/20", icon: Target },
+			CONTENT_BASED: {
+				label: t("algorithms.badges.contentBased"),
+				color: "bg-success/10 text-success border-success/20",
+				icon: BookOpen,
+			},
+			COLLAB_FILTER: {
+				label: t("algorithms.badges.community"),
+				color: "bg-warning/10 text-warning border-warning/20",
+				icon: Target,
+			},
+			HYBRID: { label: t("algorithms.badges.aiPowered"), color: "bg-purple/10 text-purple border-purple/20", icon: Sparkles },
+			SEMANTIC: { label: t("algorithms.badges.semantic"), color: "bg-info/10 text-info border-info/20", icon: Sparkles },
 		};
 		return badges[algorithm as keyof typeof badges] || badges.RULES;
 	};
@@ -100,7 +112,7 @@ export default function RecommendedCoursesPage() {
 			<div className="min-h-screen bg-linear-to-br from-primary-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
 				<div className="text-center">
 					<div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mb-4" />
-					<p className="text-gray-600 dark:text-gray-300">Loading...</p>
+					<p className="text-gray-600 dark:text-gray-300">{tCommon("loading")}</p>
 				</div>
 			</div>
 		);
@@ -118,19 +130,18 @@ export default function RecommendedCoursesPage() {
 						<div className="mb-6">
 							<span className="inline-flex items-center px-4 py-2 bg-linear-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 text-purple dark:text-purple-400 rounded-full text-sm font-semibold border border-purple/30 dark:border-purple-400/30">
 								<Sparkles className="w-4 h-4 mr-2" />
-								Personalized for You
+								{t("hero.badge")}
 							</span>
 						</div>
 						<h1 className="text-5xl md:text-6xl font-bold mb-6">
 							<span className="bg-linear-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
-								Recommended Courses
+								{t("hero.title")}
 							</span>
 							<br />
-							<span className="text-gray-900 dark:text-gray-100 text-3xl md:text-4xl">Tailored to Your Skills</span>
+							<span className="text-gray-900 dark:text-gray-100 text-3xl md:text-4xl">{t("hero.subtitle")}</span>
 						</h1>
 						<p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed mb-8">
-							Discover courses curated specifically for your skill level and learning goals using our intelligent
-							recommendation system.
+							{t("hero.description")}
 						</p>
 
 						{/* Algorithm Selection */}
@@ -141,7 +152,7 @@ export default function RecommendedCoursesPage() {
 								className="px-4 py-2 bg-linear-to-r from-info to-info-600 text-white rounded-lg hover:from-info-600 hover:to-info-700 shadow-md hover:shadow-lg transition-all duration-300"
 							>
 								<Sparkles className="w-4 h-4 mr-2" />
-								AI Semantic
+								{t("algorithms.actions.semantic")}
 							</Button>
 							<Button
 								onClick={handleGenerateClick("RULES")}
@@ -149,7 +160,7 @@ export default function RecommendedCoursesPage() {
 								className="px-4 py-2 bg-linear-to-r from-primary to-primary-600 text-white rounded-lg hover:from-primary-600 hover:to-primary-700 shadow-md hover:shadow-lg transition-all duration-300"
 							>
 								<Target className="w-4 h-4 mr-2" />
-								Smart Match
+								{t("algorithms.actions.rules")}
 							</Button>
 							<Button
 								onClick={handleGenerateClick("COLLAB_FILTER")}
@@ -157,7 +168,7 @@ export default function RecommendedCoursesPage() {
 								className="px-4 py-2 bg-linear-to-r from-warning to-warning-600 text-white rounded-lg hover:from-warning-600 hover:to-warning-700 shadow-md hover:shadow-lg transition-all duration-300"
 							>
 								<Target className="w-4 h-4 mr-2" />
-								Community
+								{t("algorithms.actions.community")}
 							</Button>
 						</div>
 
@@ -170,12 +181,12 @@ export default function RecommendedCoursesPage() {
 								{isGenerating ? (
 									<>
 										<RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-										Generating...
+										{t("actions.generating")}
 									</>
 								) : (
 									<>
 										<TrendingUp className="w-4 h-4 mr-2" />
-										Refresh Recommendations
+										{t("actions.refresh")}
 									</>
 								)}
 							</Button>
@@ -194,7 +205,7 @@ export default function RecommendedCoursesPage() {
 						<div className="flex items-center justify-center py-20">
 							<div className="flex items-center space-x-3">
 								<RefreshCw className="w-6 h-6 animate-spin text-primary" />
-								<span className="text-lg text-gray-600 dark:text-gray-300">Loading recommendations...</span>
+								<span className="text-lg text-gray-600 dark:text-gray-300">{t("loadingRecommendations")}</span>
 							</div>
 						</div>
 					) : recommendations.length === 0 ? (
@@ -203,10 +214,9 @@ export default function RecommendedCoursesPage() {
 							<div className="w-24 h-24 mx-auto mb-6 bg-linear-to-br from-primary/10 to-purple/10 rounded-full flex items-center justify-center">
 								<BookOpen className="w-12 h-12 text-primary" />
 							</div>
-							<h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">No Recommendations Yet</h3>
+							<h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">{t("empty.title")}</h3>
 							<p className="text-gray-600 dark:text-gray-300 mb-6 max-w-md mx-auto">
-								We need to learn about your skills first. Add some skills to your profile and we&apos;ll recommend
-								courses for you!
+								{t("empty.description")}
 							</p>
 							<div className="flex flex-col sm:flex-row gap-4 justify-center">
 								<Button
@@ -215,11 +225,11 @@ export default function RecommendedCoursesPage() {
 									className="px-6 py-3 bg-linear-to-r from-primary to-purple text-white rounded-lg"
 								>
 									<TrendingUp className="w-4 h-4 mr-2" />
-									Generate Recommendations
+									{t("empty.actions.generate")}
 								</Button>
 								<Button onClick={() => router.push("/skills")} variant="outline" className="px-6 py-3">
 									<Target className="w-4 h-4 mr-2" />
-									Add Skills
+									{t("empty.actions.addSkills")}
 								</Button>
 							</div>
 						</div>
@@ -227,9 +237,7 @@ export default function RecommendedCoursesPage() {
 						/* Recommendations Grid */
 						<div>
 							<div className="flex items-center justify-between mb-8">
-								<h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-									{recommendations.length} Courses Recommended for You
-								</h2>
+								<h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{t("resultsTitle", { count: recommendations.length })}</h2>
 							</div>
 
 							<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -273,7 +281,7 @@ export default function RecommendedCoursesPage() {
 												<div className="absolute top-3 right-3">
 													<span className="inline-flex items-center px-2 py-1 bg-black/20 backdrop-blur-sm text-white rounded-full text-xs font-medium">
 														<Star className="w-3 h-3 mr-1 fill-current" />
-														{Math.round(recommendation.score)}%
+														{t("score", { score: Math.round(recommendation.score) })}
 													</span>
 												</div>
 											</div>
@@ -289,7 +297,7 @@ export default function RecommendedCoursesPage() {
 															{course.durationMinutes && (
 																<span className="flex items-center">
 																	<Clock className="w-4 h-4 mr-1" />
-																	{Math.round(course.durationMinutes / 60)}h
+																	{formatMinutesDuration(course.durationMinutes, tCommon)}
 																</span>
 															)}
 															{course.rating && (
@@ -299,7 +307,7 @@ export default function RecommendedCoursesPage() {
 																</span>
 															)}
 															<span className="capitalize px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded text-xs">
-																{course.difficulty.toLowerCase()}
+																{getDifficultyLabel(course.difficulty, tCommon)}
 															</span>
 														</div>
 													</div>
@@ -314,7 +322,7 @@ export default function RecommendedCoursesPage() {
 												{/* Recommendation Reasons */}
 												{recommendation.meta?.reasons && recommendation.meta.reasons.length > 0 && (
 													<div className="mb-4">
-														<p className="text-xs text-gray-500 dark:text-gray-400 mb-2">Why recommended:</p>
+														<p className="text-xs text-gray-500 dark:text-gray-400 mb-2">{t("whyRecommended")}</p>
 														<div className="flex flex-wrap gap-1">
 															{recommendation.meta.reasons.slice(0, 2).map((reason, index) => (
 																<span key={index} className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
@@ -338,7 +346,7 @@ export default function RecommendedCoursesPage() {
 														))}
 														{course.skills.length > 3 && (
 															<span className="text-xs text-gray-500 dark:text-gray-400 px-2 py-1">
-																+{course.skills.length - 3} more
+																{t("moreSkills", { count: course.skills.length - 3 })}
 															</span>
 														)}
 													</div>
@@ -352,7 +360,7 @@ export default function RecommendedCoursesPage() {
 																${((course.priceCents || 0) / 100).toFixed(2)}
 															</span>
 														) : (
-															<span className="text-lg font-bold text-success">Free</span>
+															<span className="text-lg font-bold text-success">{t("free")}</span>
 														)}
 													</div>
 													<Button
@@ -360,7 +368,7 @@ export default function RecommendedCoursesPage() {
 														disabled={enrollingCourses.has(course.id)}
 														className="px-4 py-2 bg-linear-to-r from-primary to-purple text-white rounded-lg hover:from-primary-600 hover:to-purple-600 transition-all duration-300 text-sm"
 													>
-														{enrollingCourses.has(course.id) ? "Enrolling..." : "Enroll Now"}
+														{enrollingCourses.has(course.id) ? t("actions.enrolling") : t("actions.enrollNow")}
 													</Button>
 												</div>
 											</div>

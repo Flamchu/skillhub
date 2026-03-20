@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/Card";
 import { Play, Clock, List, CheckCircle, Circle } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 import type { Course, Lesson } from "@/types";
 
 interface CourseLessonsProps {
@@ -139,6 +140,9 @@ export function CourseLessons({
 	onLessonSelect,
 	onTimestampSelect,
 }: CourseLessonsProps) {
+	const locale = useLocale();
+	const t = useTranslations("courses.lessons");
+	const numberFormatter = new Intl.NumberFormat(locale);
 	const [activeTab, setActiveTab] = useState<"lessons" | "timestamps">("lessons");
 	const [showAllLessons, setShowAllLessons] = useState(false);
 
@@ -209,7 +213,7 @@ export function CourseLessons({
 	return (
 		<Card className="h-full flex flex-col bg-surface/60 dark:bg-gray-800/60 backdrop-blur-sm border border-border/20 shadow-lg">
 			<div className="p-6 border-b border-border">
-				<h2 className="font-bold text-lg mb-4 text-foreground">Course Content</h2>
+				<h2 className="font-bold text-lg mb-4 text-foreground">{t("title")}</h2>
 
 				{/* tab switcher */}
 				{isPlaylistCourse || timestamps.length > 0 ? (
@@ -225,7 +229,7 @@ export function CourseLessons({
 							>
 								<div className="flex items-center justify-center gap-2">
 									<List className="h-4 w-4" />
-									Lessons ({course.lessons?.length || 0})
+									{t("tabs.lessons", { count: numberFormatter.format(course.lessons?.length || 0) })}
 								</div>
 							</button>
 						)}
@@ -241,7 +245,7 @@ export function CourseLessons({
 							>
 								<div className="flex items-center justify-center gap-2">
 									<Clock className="h-4 w-4" />
-									Chapters ({timestamps.length})
+									{t("tabs.chapters", { count: numberFormatter.format(timestamps.length) })}
 								</div>
 							</button>
 						)}
@@ -255,7 +259,10 @@ export function CourseLessons({
 						{/* show a small indicator when we're not showing all lessons */}
 						{hasHiddenLessons && !showAllLessons && (
 							<div className="text-xs text-foreground-muted text-center py-2 border-b border-border">
-								Showing {visibleLessons.length} of {sortedLessons.length} lessons
+								{t("showingLessons", {
+									visible: numberFormatter.format(visibleLessons.length),
+									total: numberFormatter.format(sortedLessons.length),
+								})}
 							</div>
 						)}
 
@@ -274,7 +281,9 @@ export function CourseLessons({
 									onClick={() => setShowAllLessons(prev => !prev)}
 									className="text-sm text-foreground-muted hover:text-foreground"
 								>
-									{showAllLessons ? `Show less` : `Show all (${sortedLessons.length})`}
+									{showAllLessons
+										? t("showLess")
+										: t("showAll", { count: numberFormatter.format(sortedLessons.length) })}
 								</button>
 							</div>
 						)}
@@ -288,7 +297,10 @@ export function CourseLessons({
 								{/* Show navigation info if there are more timestamps */}
 								{timestamps.length > 7 && (
 									<div className="text-xs text-foreground-muted text-center py-2 border-b border-border">
-										Showing {visibleTimestamps.length} of {timestamps.length} chapters
+										{t("showingChapters", {
+											visible: numberFormatter.format(visibleTimestamps.length),
+											total: numberFormatter.format(timestamps.length),
+										})}
 									</div>
 								)}
 								{visibleTimestamps.map((timestamp, index) => {
@@ -326,14 +338,14 @@ export function CourseLessons({
 				{activeTab === "lessons" && !isPlaylistCourse && (
 					<div className="text-center py-8 text-foreground-muted">
 						<List className="h-8 w-8 mx-auto mb-2 opacity-50" />
-						<p className="text-sm">This is a single video course</p>
+						<p className="text-sm">{t("singleVideoCourse")}</p>
 					</div>
 				)}
 
 				{activeTab === "timestamps" && timestamps.length === 0 && (
 					<div className="text-center py-8 text-foreground-muted">
 						<Clock className="h-8 w-8 mx-auto mb-2 opacity-50" />
-						<p className="text-sm">No timestamps available</p>
+						<p className="text-sm">{t("noTimestamps")}</p>
 					</div>
 				)}
 			</div>

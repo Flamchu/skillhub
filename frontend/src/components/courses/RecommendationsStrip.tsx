@@ -3,17 +3,21 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { useAuth } from "@/context/AuthProvider";
 import { Button } from "@/components/ui/Button";
 import { SkeletonShimmer } from "@/components/ui";
 import { getTopRecommendedCourses } from "@/lib/recommendations";
 import { enrollInCourse } from "@/lib/courses";
 import { Star, Clock, BookOpen, ChevronRight, Sparkles, ArrowRight } from "lucide-react";
+import { formatMinutesDuration, getDifficultyLabel } from "@/lib/i18n-utils";
 import type { Recommendation } from "@/types";
 
 export function RecommendationsStrip() {
 	const { user } = useAuth();
 	const router = useRouter();
+	const t = useTranslations("courses.recommendationsStrip");
+	const tCommon = useTranslations("common");
 	const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [enrollingCourses, setEnrollingCourses] = useState<Set<string>>(new Set());
@@ -75,8 +79,8 @@ export function RecommendationsStrip() {
 							<Sparkles className="w-5 h-5 text-white" />
 						</div>
 						<div>
-							<h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Recommended for You</h2>
-							<p className="text-gray-600 dark:text-gray-300">Loading personalized recommendations...</p>
+							<h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{t("loading.title")}</h2>
+							<p className="text-gray-600 dark:text-gray-300">{t("loading.description")}</p>
 						</div>
 					</div>
 				</div>
@@ -137,8 +141,8 @@ export function RecommendationsStrip() {
 						<Sparkles className="w-5 h-5 text-white" />
 					</div>
 					<div>
-						<h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Recommended for You</h2>
-						<p className="text-gray-600 dark:text-gray-300">Courses tailored to your skills and interests</p>
+						<h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{t("title")}</h2>
+						<p className="text-gray-600 dark:text-gray-300">{t("description")}</p>
 					</div>
 				</div>
 				<Button
@@ -146,7 +150,7 @@ export function RecommendationsStrip() {
 					variant="outline"
 					className="flex items-center space-x-2 px-4 py-2"
 				>
-					<span>View All</span>
+					<span>{t("viewAll")}</span>
 					<ChevronRight className="w-4 h-4" />
 				</Button>
 			</div>
@@ -183,7 +187,7 @@ export function RecommendationsStrip() {
 									<div className="absolute top-3 right-3">
 										<span className="inline-flex items-center px-2 py-1 bg-black/20 backdrop-blur-sm text-white rounded-full text-xs font-medium">
 											<Star className="w-3 h-3 mr-1 fill-current" />
-											{Math.round(recommendation.score)}% Match
+											{t("match", { score: Math.round(recommendation.score) })}
 										</span>
 									</div>
 								</div>
@@ -198,7 +202,7 @@ export function RecommendationsStrip() {
 										{course.durationMinutes && (
 											<span className="flex items-center">
 												<Clock className="w-4 h-4 mr-1" />
-												{Math.round(course.durationMinutes / 60)}h
+												{formatMinutesDuration(course.durationMinutes, tCommon)}
 											</span>
 										)}
 										{course.rating && (
@@ -208,7 +212,7 @@ export function RecommendationsStrip() {
 											</span>
 										)}
 										<span className="capitalize px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded text-xs">
-											{course.difficulty.toLowerCase()}
+											{getDifficultyLabel(course.difficulty, tCommon)}
 										</span>
 									</div>
 
@@ -246,7 +250,7 @@ export function RecommendationsStrip() {
 													${((course.priceCents || 0) / 100).toFixed(2)}
 												</span>
 											) : (
-												<span className="text-lg font-bold text-success">Free</span>
+												<span className="text-lg font-bold text-success">{t("free")}</span>
 											)}
 										</div>
 										<Button
@@ -254,7 +258,7 @@ export function RecommendationsStrip() {
 											disabled={enrollingCourses.has(course.id)}
 											className="px-3 py-2 bg-linear-to-r from-primary to-purple text-white rounded-lg hover:from-primary-600 hover:to-purple-600 transition-all duration-300 text-sm flex items-center space-x-1"
 										>
-											<span>{enrollingCourses.has(course.id) ? "Enrolling..." : "Enroll"}</span>
+											<span>{enrollingCourses.has(course.id) ? t("actions.enrolling") : t("actions.enroll")}</span>
 											{!enrollingCourses.has(course.id) && <ArrowRight className="w-3 h-3" />}
 										</Button>
 									</div>
