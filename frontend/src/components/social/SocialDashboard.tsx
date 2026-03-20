@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { Zap, TrendingUp, Flame, Calendar, Trophy } from "lucide-react";
 
 interface SocialProfile {
@@ -30,6 +31,8 @@ interface Quest {
 }
 
 export default function SocialDashboard() {
+	const locale = useLocale();
+	const t = useTranslations("social.dashboard");
 	const [profile, setProfile] = useState<SocialProfile | null>(null);
 	const [quests, setQuests] = useState<Quest[]>([]);
 	const [loading, setLoading] = useState(true);
@@ -40,7 +43,6 @@ export default function SocialDashboard() {
 				const token = localStorage.getItem("auth_token");
 				if (!token) return;
 
-				// fetch profile and quests in parallel
 				const [profileRes, questsRes] = await Promise.all([
 					fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/social/profile`, {
 						headers: { Authorization: `Bearer ${token}` },
@@ -80,36 +82,33 @@ export default function SocialDashboard() {
 	if (!profile) {
 		return (
 			<div className="text-center py-12">
-				<p className="text-gray-600 dark:text-gray-400">failed to load profile data</p>
+				<p className="text-gray-600 dark:text-gray-400">{t("loadFailed")}</p>
 			</div>
 		);
 	}
 
 	const { level, xp, xpInCurrentLevel, xpNeededForNextLevel, progressPercentage, currentStreak, longestStreak } =
 		profile.user;
-
-	// filter active quests (not completed)
 	const activeQuests = quests.filter(q => !q.isCompleted);
 	const completedToday = quests.filter(q => q.isCompleted).length;
+	const numberFormatter = new Intl.NumberFormat(locale);
 
 	return (
 		<div className="space-y-6">
-			{/* stats grid */}
 			<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-				{/* level card */}
 				<div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
 					<div className="flex items-center justify-between mb-4">
 						<div className="flex items-center gap-2">
 							<Zap className="w-5 h-5 text-primary" />
-							<h3 className="font-semibold text-gray-900 dark:text-gray-100">Level</h3>
+							<h3 className="font-semibold text-gray-900 dark:text-gray-100">{t("level.title")}</h3>
 						</div>
 						<div className="px-3 py-1 bg-primary/10 rounded-full">
-							<span className="text-lg font-bold text-primary">Lv {level}</span>
+							<span className="text-lg font-bold text-primary">{t("level.badge", { level })}</span>
 						</div>
 					</div>
 					<div className="space-y-2">
 						<div className="flex items-center justify-between text-sm">
-							<span className="text-gray-600 dark:text-gray-400">Progress</span>
+							<span className="text-gray-600 dark:text-gray-400">{t("level.progress")}</span>
 							<span className="font-semibold text-gray-900 dark:text-gray-100">{progressPercentage}%</span>
 						</div>
 						<div className="h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
@@ -119,64 +118,64 @@ export default function SocialDashboard() {
 							/>
 						</div>
 						<p className="text-xs text-gray-500 dark:text-gray-400 text-center">
-							{xpInCurrentLevel} / {xpNeededForNextLevel} XP
+							{t("level.progressDetail", {
+								current: numberFormatter.format(xpInCurrentLevel),
+								total: numberFormatter.format(xpNeededForNextLevel),
+							})}
 						</p>
 					</div>
 				</div>
 
-				{/* total xp card */}
 				<div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
 					<div className="flex items-center justify-between mb-4">
 						<div className="flex items-center gap-2">
 							<TrendingUp className="w-5 h-5 text-purple" />
-							<h3 className="font-semibold text-gray-900 dark:text-gray-100">Total XP</h3>
+							<h3 className="font-semibold text-gray-900 dark:text-gray-100">{t("xp.title")}</h3>
 						</div>
 					</div>
 					<div className="text-center">
 						<div className="text-4xl font-bold bg-linear-to-r from-purple to-pink text-transparent bg-clip-text">
-							{xp.toLocaleString()}
+							{numberFormatter.format(xp)}
 						</div>
-						<p className="text-sm text-gray-500 dark:text-gray-400 mt-1">experience points earned</p>
+						<p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{t("xp.description")}</p>
 					</div>
 				</div>
 
-				{/* streak card */}
 				<div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
 					<div className="flex items-center justify-between mb-4">
 						<div className="flex items-center gap-2">
 							<Flame className="w-5 h-5 text-orange-500" />
-							<h3 className="font-semibold text-gray-900 dark:text-gray-100">Streak</h3>
+							<h3 className="font-semibold text-gray-900 dark:text-gray-100">{t("streak.title")}</h3>
 						</div>
 					</div>
 					<div className="grid grid-cols-2 gap-4">
 						<div className="text-center">
-							<div className="text-3xl font-bold text-orange-500">{currentStreak}</div>
-							<p className="text-xs text-gray-500 dark:text-gray-400 mt-1">current</p>
+							<div className="text-3xl font-bold text-orange-500">{numberFormatter.format(currentStreak)}</div>
+							<p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{t("streak.current")}</p>
 						</div>
 						<div className="text-center">
-							<div className="text-3xl font-bold text-gray-400">{longestStreak}</div>
-							<p className="text-xs text-gray-500 dark:text-gray-400 mt-1">longest</p>
+							<div className="text-3xl font-bold text-gray-400">{numberFormatter.format(longestStreak)}</div>
+							<p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{t("streak.longest")}</p>
 						</div>
 					</div>
 				</div>
 			</div>
 
-			{/* daily quests preview */}
 			<div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
 				<div className="flex items-center justify-between mb-4">
 					<div className="flex items-center gap-2">
 						<Calendar className="w-5 h-5 text-primary" />
-						<h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">Today&apos;s Quests</h3>
+						<h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">{t("quests.title")}</h3>
 					</div>
 					<span className="text-sm text-gray-500 dark:text-gray-400">
-						{completedToday} / {quests.length} completed
+						{t("quests.completedCount", { completed: completedToday, total: quests.length })}
 					</span>
 				</div>
 
 				{activeQuests.length === 0 ? (
 					<div className="text-center py-8">
 						<Trophy className="w-12 h-12 text-primary mx-auto mb-3 opacity-50" />
-						<p className="text-gray-600 dark:text-gray-400">all quests completed! 🎉</p>
+						<p className="text-gray-600 dark:text-gray-400">{t("quests.allCompleted")}</p>
 					</div>
 				) : (
 					<div className="space-y-3">
@@ -192,7 +191,9 @@ export default function SocialDashboard() {
 									</div>
 									<div className="flex items-center gap-1 px-2 py-1 bg-primary/10 rounded-md">
 										<Zap className="w-3 h-3 text-primary" />
-										<span className="text-xs font-bold text-primary">+{quest.xpReward}</span>
+										<span className="text-xs font-bold text-primary">
+											{t("quests.reward", { amount: numberFormatter.format(quest.xpReward) })}
+										</span>
 									</div>
 								</div>
 								<div className="flex items-center gap-2">
@@ -210,7 +211,7 @@ export default function SocialDashboard() {
 						))}
 						{activeQuests.length > 3 && (
 							<p className="text-sm text-center text-gray-500 dark:text-gray-400 pt-2">
-								+ {activeQuests.length - 3} more quests
+								{t("quests.more", { count: activeQuests.length - 3 })}
 							</p>
 						)}
 					</div>

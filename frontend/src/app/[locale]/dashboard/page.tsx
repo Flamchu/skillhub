@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useAuth } from "@/context/AuthProvider";
 import { PageLayout, StatsCardSkeleton } from "@/components/ui";
 import { AuthenticatedLayout } from "@/components/layout";
@@ -12,6 +13,7 @@ import type { UserSkill } from "@/types";
 export default function DashboardPage() {
 	const { user, profile, loading } = useAuth();
 	const router = useRouter();
+	const t = useTranslations("dashboard.page");
 	const [skillsCount, setSkillsCount] = useState(0);
 	const [loadingStats, setLoadingStats] = useState(true);
 
@@ -97,12 +99,10 @@ export default function DashboardPage() {
 					<div className="mb-8">
 						<h1 className="text-4xl md:text-5xl font-bold mb-3">
 							<span className="bg-linear-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
-								Welcome back, {profile?.name?.split(" ")[0] || "Learner"}! 👋
+								{t("welcomeTitle", { name: profile?.name?.split(" ")[0] || t("learnerFallback") })}
 							</span>
 						</h1>
-						<p className="text-lg text-gray-600 dark:text-gray-300">
-							Ready to continue your learning journey? Let&apos;s make today count.
-						</p>
+						<p className="text-lg text-gray-600 dark:text-gray-300">{t("welcomeDescription")}</p>
 					</div>
 
 					{/* AI Workflow Prompt - Primary Focus */}
@@ -137,8 +137,8 @@ export default function DashboardPage() {
 					<div className="mb-8">
 						<div className="flex items-center justify-between mb-4">
 							<div>
-								<h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Continue Learning</h2>
-								<p className="text-gray-600 dark:text-gray-300">Pick up where you left off</p>
+								<h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{t("continueLearningTitle")}</h2>
+								<p className="text-gray-600 dark:text-gray-300">{t("continueLearningDescription")}</p>
 							</div>
 						</div>
 						<EnrolledCourses limit={3} />

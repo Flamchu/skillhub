@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useAuth } from "@/context/AuthProvider";
 import { AuthenticatedLayout } from "@/components/layout";
 import { LoadingState } from "@/components/ui";
@@ -17,6 +18,8 @@ type GenerationStage = "input" | "analyzing" | "generating" | "complete" | "edit
 export default function AISkillsPage() {
 	const { user, loading } = useAuth();
 	const router = useRouter();
+	const t = useTranslations("aiSkills.page");
+	const tCommon = useTranslations("common");
 
 	// onboarding state
 	const [showOnboarding, setShowOnboarding] = useState(true);
@@ -56,7 +59,7 @@ export default function AISkillsPage() {
 	const handleGenerate = async () => {
 		if (!user) return;
 		if (prompt.trim().length < 10) {
-			setError("Please provide a more detailed description (at least 10 characters)");
+			setError(t("errors.promptTooShort"));
 			return;
 		}
 
@@ -94,7 +97,7 @@ export default function AISkillsPage() {
 				(error && typeof error === "object" && "details" in error
 					? String((error as { details: unknown }).details)
 					: null) ||
-				(typeof error === "string" ? error : "Failed to generate skill suggestions. Please try again.");
+				(typeof error === "string" ? error : t("errors.generate"));
 
 			console.error("[AI Skills] Extracted error message:", errorMessage);
 
@@ -108,7 +111,7 @@ export default function AISkillsPage() {
 
 		// check if any skills are selected
 		if (skills.length === 0) {
-			setError("Please select at least one skill to add to your profile");
+			setError(t("errors.selectSkills"));
 			return;
 		}
 
@@ -175,7 +178,7 @@ export default function AISkillsPage() {
 			} else if (errors.length > 0 && successCount > 0) {
 				// partial success
 				console.warn("[AI Skills] Some skills failed to add:", errors);
-				setError(`Added ${successCount} skills. Failed: ${errors.join(", ")}`);
+				setError(t("errors.partialAdd", { count: successCount, errors: errors.join(", ") }));
 			} else if (errors.length > 0 && successCount === 0) {
 				// all failed
 				throw new Error(`All skills failed to add: ${errors.join(", ")}`);
@@ -187,7 +190,7 @@ export default function AISkillsPage() {
 			console.error("[AI Skills] Error processing generated skills:", error);
 			const errorMessage =
 				(error && typeof error === "object" && "message" in error ? String(error.message) : null) ||
-				"Failed to add skills. Please try again.";
+				t("errors.addSkills");
 			setError(errorMessage);
 		}
 	};
@@ -206,7 +209,7 @@ export default function AISkillsPage() {
 	};
 
 	if (loading) {
-		return <LoadingState message="Loading..." />;
+		return <LoadingState message={tCommon("loading")} />;
 	}
 
 	if (!user) {
@@ -235,18 +238,17 @@ export default function AISkillsPage() {
 						<div className="text-center mb-12 pt-8">
 							<div className="inline-flex items-center gap-2 px-4 py-2 bg-linear-to-r from-primary/10 to-purple/10 rounded-full border border-primary/20 mb-6">
 								<Sparkles className="w-5 h-5 text-primary" />
-								<span className="text-sm font-semibold text-primary">AI-Powered Skill Generation</span>
+								<span className="text-sm font-semibold text-primary">{t("badge")}</span>
 							</div>
 
 							<h1 className="text-5xl md:text-6xl font-bold mb-6">
 								<span className="bg-linear-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
-									Discover Your Skills
+									{t("title")}
 								</span>
 							</h1>
 
 							<p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed mb-8">
-								Let our AI analyze your experience, goals, and interests to generate a personalized skill profile. Get
-								tailored course recommendations instantly.
+								{t("description")}
 							</p>
 
 							{/* how it works - only show on input stage */}
@@ -258,9 +260,9 @@ export default function AISkillsPage() {
 											<div className="w-12 h-12 bg-linear-to-br from-primary to-purple rounded-xl flex items-center justify-center mb-4 mx-auto">
 												<Target className="w-6 h-6 text-white" />
 											</div>
-											<h3 className="font-bold text-gray-900 dark:text-gray-100 mb-2">1. Describe Yourself</h3>
+											<h3 className="font-bold text-gray-900 dark:text-gray-100 mb-2">{t("steps.describe.title")}</h3>
 											<p className="text-sm text-gray-600 dark:text-gray-300">
-												Tell us about your background, experience, and what you want to learn
+												{t("steps.describe.description")}
 											</p>
 										</div>
 									</div>
@@ -271,9 +273,9 @@ export default function AISkillsPage() {
 											<div className="w-12 h-12 bg-linear-to-br from-purple to-pink rounded-xl flex items-center justify-center mb-4 mx-auto">
 												<Sparkles className="w-6 h-6 text-white" />
 											</div>
-											<h3 className="font-bold text-gray-900 dark:text-gray-100 mb-2">2. AI Analyzes</h3>
+											<h3 className="font-bold text-gray-900 dark:text-gray-100 mb-2">{t("steps.analyze.title")}</h3>
 											<p className="text-sm text-gray-600 dark:text-gray-300">
-												Our AI identifies relevant skills and suggests proficiency levels
+												{t("steps.analyze.description")}
 											</p>
 										</div>
 									</div>
@@ -284,9 +286,9 @@ export default function AISkillsPage() {
 											<div className="w-12 h-12 bg-linear-to-br from-pink to-success rounded-xl flex items-center justify-center mb-4 mx-auto">
 												<TrendingUp className="w-6 h-6 text-white" />
 											</div>
-											<h3 className="font-bold text-gray-900 dark:text-gray-100 mb-2">3. Get Recommendations</h3>
+											<h3 className="font-bold text-gray-900 dark:text-gray-100 mb-2">{t("steps.recommend.title")}</h3>
 											<p className="text-sm text-gray-600 dark:text-gray-300">
-												Receive personalized course recommendations based on your skills
+												{t("steps.recommend.description")}
 											</p>
 										</div>
 									</div>
@@ -304,12 +306,12 @@ export default function AISkillsPage() {
 										<div className="space-y-6">
 											<div>
 												<label className="block text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">
-													Describe your background and goals
+													{t("form.label")}
 												</label>
 												<textarea
 													value={prompt}
 													onChange={e => setPrompt(e.target.value)}
-													placeholder="Example: I'm a frontend developer with 3 years of React experience, looking to transition into full-stack development..."
+													placeholder={t("form.placeholder")}
 													className="w-full h-32 px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary focus:border-primary resize-none"
 												/>
 												{error && <p className="text-sm text-red-500 mt-2">{error}</p>}
@@ -324,7 +326,7 @@ export default function AISkillsPage() {
 												className="w-full bg-linear-to-r from-primary to-purple text-white text-lg font-semibold py-6"
 											>
 												<Sparkles className="w-5 h-5 mr-2" />
-												Generate My Skills
+												{t("actions.generate")}
 												<ArrowRight className="w-5 h-5 ml-2" />
 											</Button>
 										</div>
@@ -349,27 +351,27 @@ export default function AISkillsPage() {
 												<Zap className="w-10 h-10 text-white" />
 											</div>
 											<h3 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-												🎉 Skills Added Successfully!
+												{t("success.title")}
 											</h3>
 											<p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-												Your skills have been added to your profile. Ready to see personalized course recommendations?
+												{t("success.description")}
 											</p>
 											<div className="flex flex-wrap justify-center gap-4 pt-4">
 												<Link href="/courses/recommended">
 													<Button variant="primary" size="lg" className="bg-linear-to-r from-primary to-purple">
-														View Recommendations
+														{t("success.actions.recommendations")}
 														<ArrowRight className="w-5 h-5 ml-2" />
 													</Button>
 												</Link>
 												<Link href="/skills">
 													<Button variant="outline" size="lg">
 														<Target className="w-5 h-5 mr-2" />
-														View My Skills
+														{t("success.actions.skills")}
 													</Button>
 												</Link>
 												<Button variant="outline" size="lg" onClick={handleStartOver}>
 													<Sparkles className="w-5 h-5 mr-2" />
-													Generate More Skills
+													{t("success.actions.generateMore")}
 												</Button>
 											</div>
 										</div>
@@ -383,7 +385,7 @@ export default function AISkillsPage() {
 							<div className="max-w-4xl mx-auto mb-12">
 								<div className="bg-linear-to-r from-primary/10 via-purple/10 to-pink/10 rounded-2xl p-8 border border-primary/20">
 									<h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6 text-center">
-										Why Use AI Skill Generation?
+										{t("benefits.title")}
 									</h2>
 									<div className="grid md:grid-cols-2 gap-6">
 										<div className="flex items-start gap-3">
@@ -391,9 +393,9 @@ export default function AISkillsPage() {
 												<Sparkles className="w-5 h-5 text-primary" />
 											</div>
 											<div>
-												<h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">Save Time</h3>
+												<h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">{t("benefits.saveTime.title")}</h3>
 												<p className="text-sm text-gray-600 dark:text-gray-300">
-													No need to manually browse and add skills one by one
+													{t("benefits.saveTime.description")}
 												</p>
 											</div>
 										</div>
@@ -402,9 +404,11 @@ export default function AISkillsPage() {
 												<Target className="w-5 h-5 text-purple" />
 											</div>
 											<div>
-												<h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">Accurate Proficiency</h3>
+												<h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">
+													{t("benefits.accurateProficiency.title")}
+												</h3>
 												<p className="text-sm text-gray-600 dark:text-gray-300">
-													AI suggests appropriate skill levels based on your description
+													{t("benefits.accurateProficiency.description")}
 												</p>
 											</div>
 										</div>
@@ -413,9 +417,11 @@ export default function AISkillsPage() {
 												<TrendingUp className="w-5 h-5 text-pink" />
 											</div>
 											<div>
-												<h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">Better Recommendations</h3>
+												<h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">
+													{t("benefits.betterRecommendations.title")}
+												</h3>
 												<p className="text-sm text-gray-600 dark:text-gray-300">
-													More accurate skill profiles lead to better course matches
+													{t("benefits.betterRecommendations.description")}
 												</p>
 											</div>
 										</div>
@@ -424,9 +430,11 @@ export default function AISkillsPage() {
 												<Zap className="w-5 h-5 text-success" />
 											</div>
 											<div>
-												<h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">Discover Hidden Skills</h3>
+												<h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">
+													{t("benefits.hiddenSkills.title")}
+												</h3>
 												<p className="text-sm text-gray-600 dark:text-gray-300">
-													Find skills you didn&apos;t realize you had or needed
+													{t("benefits.hiddenSkills.description")}
 												</p>
 											</div>
 										</div>

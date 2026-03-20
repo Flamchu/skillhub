@@ -3,10 +3,12 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Sparkles, ArrowRight, Zap } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
 
 export function AIWorkflowPrompt() {
 	const [isExpanded, setIsExpanded] = useState(false);
+	const t = useTranslations("dashboard.aiWorkflow");
 
 	return (
 		<div className="relative overflow-hidden rounded-2xl border-2 border-primary/30 dark:border-primary/40 bg-linear-to-br from-primary/5 via-purple/5 to-pink/5 dark:from-primary/10 dark:via-purple/10 dark:to-pink/10 hover:shadow-xl transition-all duration-300">
@@ -25,24 +27,21 @@ export function AIWorkflowPrompt() {
 							<Sparkles className="w-7 h-7 text-white" />
 						</div>
 						<div>
-							<h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">AI-Powered Learning Journey</h2>
-							<p className="text-sm text-gray-600 dark:text-gray-300">Your personalized path to success starts here</p>
+							<h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{t("title")}</h2>
+							<p className="text-sm text-gray-600 dark:text-gray-300">{t("subtitle")}</p>
 						</div>
 					</div>
 					<button
 						onClick={() => setIsExpanded(!isExpanded)}
 						className="text-sm text-primary hover:text-primary-600 font-bold hover:scale-105 active:scale-95 transition-all duration-300 px-4 py-2 rounded-lg hover:bg-primary/10"
 					>
-						{isExpanded ? "Show less" : "Learn more"}
+						{isExpanded ? t("showLess") : t("learnMore")}
 					</button>
 				</div>
 
 				{/* Main content */}
 				<div className="space-y-4">
-					<p className="text-gray-700 dark:text-gray-200 text-lg font-medium">
-						Generate your skill profile with a single prompt and instantly discover courses perfectly matched to your
-						goals. Our AI does the heavy lifting for you.
-					</p>
+					<p className="text-gray-700 dark:text-gray-200 text-lg font-medium">{t("description")}</p>
 
 					{/* Workflow steps - always visible */}
 					<div className="grid md:grid-cols-3 gap-4 mt-6">
@@ -52,11 +51,9 @@ export function AIWorkflowPrompt() {
 							</div>
 							<div className="flex items-center space-x-2 mb-2">
 								<Sparkles className="w-5 h-5 text-primary group-hover:rotate-12 transition-transform" />
-								<h3 className="font-bold text-gray-900 dark:text-gray-100">Generate Skills</h3>
+								<h3 className="font-bold text-gray-900 dark:text-gray-100">{t("steps.generate.title")}</h3>
 							</div>
-							<p className="text-sm text-gray-600 dark:text-gray-300">
-								Describe your career goals in one sentence and let AI build your skill profile
-							</p>
+							<p className="text-sm text-gray-600 dark:text-gray-300">{t("steps.generate.description")}</p>
 						</div>
 
 						<div className="group relative bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl p-5 border-2 border-gray-200/50 dark:border-gray-700/50 hover:border-purple/40 dark:hover:border-purple/50 hover:shadow-lg hover:scale-[1.02] transition-all duration-300">
@@ -65,11 +62,9 @@ export function AIWorkflowPrompt() {
 							</div>
 							<div className="flex items-center space-x-2 mb-2">
 								<Zap className="w-5 h-5 text-purple group-hover:scale-110 transition-transform" />
-								<h3 className="font-bold text-gray-900 dark:text-gray-100">Get Recommendations</h3>
+								<h3 className="font-bold text-gray-900 dark:text-gray-100">{t("steps.recommend.title")}</h3>
 							</div>
-							<p className="text-sm text-gray-600 dark:text-gray-300">
-								AI analyzes your skills and instantly suggests the most relevant courses
-							</p>
+							<p className="text-sm text-gray-600 dark:text-gray-300">{t("steps.recommend.description")}</p>
 						</div>
 
 						<div className="group relative bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl p-5 border-2 border-gray-200/50 dark:border-gray-700/50 hover:border-success/40 dark:hover:border-success/50 hover:shadow-lg hover:scale-[1.02] transition-all duration-300">
@@ -78,38 +73,33 @@ export function AIWorkflowPrompt() {
 							</div>
 							<div className="flex items-center space-x-2 mb-2">
 								<ArrowRight className="w-5 h-5 text-success group-hover:translate-x-1 transition-transform" />
-								<h3 className="font-bold text-gray-900 dark:text-gray-100">Start Learning</h3>
+								<h3 className="font-bold text-gray-900 dark:text-gray-100">{t("steps.learn.title")}</h3>
 							</div>
-							<p className="text-sm text-gray-600 dark:text-gray-300">
-								Enroll and begin your personalized learning journey immediately
-							</p>
+							<p className="text-sm text-gray-600 dark:text-gray-300">{t("steps.learn.description")}</p>
 						</div>
 					</div>
 
 					{/* Expanded content */}
 					{isExpanded && (
 						<div className="mt-6 p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl border-2 border-gray-200 dark:border-gray-700 animate-in fade-in slide-in-from-top-4 duration-300">
-							<h4 className="font-bold text-gray-900 dark:text-gray-100 mb-3">How It Works:</h4>
+							<h4 className="font-bold text-gray-900 dark:text-gray-100 mb-3">{t("howItWorks.title")}</h4>
 							<ul className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
 								<li className="flex items-start">
 									<span className="text-primary mr-2 font-bold">•</span>
 									<span>
-										<strong>Smart Skill Detection:</strong> Our AI understands your career goals and generates a
-										comprehensive skill list tailored to your ambitions
+										<strong>{t("howItWorks.items.detection.label")}</strong> {t("howItWorks.items.detection.description")}
 									</span>
 								</li>
 								<li className="flex items-start">
 									<span className="text-primary mr-2 font-bold">•</span>
 									<span>
-										<strong>Instant Course Matching:</strong> Advanced algorithms analyze thousands of courses to find
-										the perfect matches for your skill gaps
+										<strong>{t("howItWorks.items.matching.label")}</strong> {t("howItWorks.items.matching.description")}
 									</span>
 								</li>
 								<li className="flex items-start">
 									<span className="text-primary mr-2">•</span>
 									<span>
-										<strong>Continuous Learning:</strong> As you progress, our recommendations adapt to keep you on the
-										fastest path to your goals
+										<strong>{t("howItWorks.items.learning.label")}</strong> {t("howItWorks.items.learning.description")}
 									</span>
 								</li>
 							</ul>
@@ -124,7 +114,7 @@ export function AIWorkflowPrompt() {
 								size="lg"
 							>
 								<Sparkles className="w-5 h-5 mr-2" />
-								Generate My Skills Now
+								{t("cta.generate")}
 								<ArrowRight className="w-5 h-5 ml-2" />
 							</Button>
 						</Link>
@@ -134,7 +124,7 @@ export function AIWorkflowPrompt() {
 								className="w-full sm:w-auto border-2 border-primary text-primary hover:bg-primary/10 py-6 px-8 text-lg font-semibold"
 								size="lg"
 							>
-								Browse All Courses
+								{t("cta.browse")}
 							</Button>
 						</Link>
 					</div>

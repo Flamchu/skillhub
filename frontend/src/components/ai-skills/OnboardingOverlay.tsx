@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { X, Sparkles, Target, TrendingUp, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
@@ -10,6 +11,7 @@ interface OnboardingOverlayProps {
 }
 
 export function OnboardingOverlay({ onComplete, className = "" }: OnboardingOverlayProps) {
+	const t = useTranslations("aiSkills.onboarding");
 	const [currentStep, setCurrentStep] = useState(0);
 	const [isVisible, setIsVisible] = useState(false);
 
@@ -44,23 +46,20 @@ export function OnboardingOverlay({ onComplete, className = "" }: OnboardingOver
 	const steps = [
 		{
 			icon: Sparkles,
-			title: "Welcome to AI Skill Generation! 🎉",
-			description:
-				"Let our AI analyze your experience and goals to create a personalized skill profile in seconds. No manual browsing needed!",
+			title: t("steps.welcome.title"),
+			description: t("steps.welcome.description"),
 			color: "from-primary to-purple",
 		},
 		{
 			icon: Target,
-			title: "Describe Yourself",
-			description:
-				"Just tell us about your background, experience, and what you want to learn. The more specific you are, the better your results will be.",
+			title: t("steps.describe.title"),
+			description: t("steps.describe.description"),
 			color: "from-purple to-pink",
 		},
 		{
 			icon: TrendingUp,
-			title: "Review & Customize",
-			description:
-				"We'll suggest skills with proficiency levels. You can adjust the levels or remove skills before adding them to your profile.",
+			title: t("steps.review.title"),
+			description: t("steps.review.description"),
 			color: "from-pink to-success",
 		},
 	];
@@ -79,7 +78,7 @@ export function OnboardingOverlay({ onComplete, className = "" }: OnboardingOver
 				<button
 					onClick={handleSkip}
 					className="absolute top-4 right-4 w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 flex items-center justify-center transition-colors"
-					aria-label="Close onboarding"
+					aria-label={t("close")}
 				>
 					<X className="w-5 h-5 text-gray-600 dark:text-gray-300" />
 				</button>
@@ -118,7 +117,7 @@ export function OnboardingOverlay({ onComplete, className = "" }: OnboardingOver
 											? "bg-success"
 											: "bg-gray-300 dark:bg-gray-600"
 								}`}
-								aria-label={`Go to step ${index + 1}`}
+								aria-label={t("goToStep", { step: index + 1 })}
 							/>
 						))}
 					</div>
@@ -126,17 +125,17 @@ export function OnboardingOverlay({ onComplete, className = "" }: OnboardingOver
 					{/* actions */}
 					<div className="flex justify-between items-center">
 						<Button variant="ghost" onClick={handleSkip} className="text-gray-600 dark:text-gray-300">
-							Skip Tutorial
+							{t("skip")}
 						</Button>
 						<Button variant="primary" onClick={handleNext} size="lg" className="bg-linear-to-r from-primary to-purple">
 							{currentStep < steps.length - 1 ? (
 								<>
-									Next
+									{t("next")}
 									<ArrowRight className="w-5 h-5 ml-2" />
 								</>
 							) : (
 								<>
-									Get Started
+									{t("getStarted")}
 									<Sparkles className="w-5 h-5 ml-2" />
 								</>
 							)}

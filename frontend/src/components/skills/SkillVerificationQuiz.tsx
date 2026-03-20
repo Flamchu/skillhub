@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { http } from "@/lib/http";
 import type {
 	SkillVerificationQuestionsResponse,
 	SkillVerificationAnswer,
 	SkillVerificationSubmitResponse,
 } from "@/types";
+import { getDifficultyLabel } from "@/lib/i18n-utils";
 
 interface SkillVerificationQuizProps {
 	skillId: string;
@@ -21,6 +23,8 @@ export default function SkillVerificationQuiz({
 	onComplete,
 	onCancel,
 }: SkillVerificationQuizProps) {
+	const t = useTranslations("skills.verificationQuiz");
+	const tCommon = useTranslations("common");
 	const [loading, setLoading] = useState(true);
 	const [submitting, setSubmitting] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -75,7 +79,7 @@ export default function SkillVerificationQuiz({
 				}
 			} catch (err) {
 				// handle errors from http interceptor
-				let errorMessage = "Failed to load verification quiz";
+				let errorMessage = t("errors.load");
 
 				if (err && typeof err === "object") {
 					// transformed error from http interceptor
@@ -102,13 +106,13 @@ export default function SkillVerificationQuiz({
 						errorMessage =
 							errorData?.message ||
 							errorData?.error ||
-							"No verification questions found for this skill. Please contact an administrator.";
+							t("errors.noQuestions");
 					} else if (status === 400) {
-						errorMessage = errorData?.error || errorData?.message || "Invalid request";
+						errorMessage = errorData?.error || errorData?.message || t("errors.invalidRequest");
 					} else if (status === 401 || status === 403) {
-						errorMessage = "Authentication required. Please log in again.";
+						errorMessage = t("errors.authRequired");
 					} else if (status === 409) {
-						errorMessage = errorData?.error || "You already have an incomplete attempt";
+						errorMessage = errorData?.error || t("errors.incompleteAttempt");
 					} else if (errorData?.error) {
 						errorMessage = errorData.error;
 					} else if (errorData?.message) {
@@ -118,7 +122,7 @@ export default function SkillVerificationQuiz({
 					} else if (axiosError.message) {
 						errorMessage = axiosError.message;
 					} else if (axiosError.code) {
-						errorMessage = `Network error: ${axiosError.code}`;
+						errorMessage = t("errors.network", { code: axiosError.code });
 					}
 				} else if (typeof err === "string") {
 					errorMessage = err;
@@ -131,7 +135,7 @@ export default function SkillVerificationQuiz({
 		}
 
 		initialize();
-	}, [skillId, attemptId]);
+	}, [skillId, attemptId, t]);
 
 	// track elapsed time
 	useEffect(() => {
@@ -201,7 +205,7 @@ export default function SkillVerificationQuiz({
 		} catch (err) {
 			console.error("Failed to submit verification quiz:", err);
 			const error = err as { response?: { data?: { error?: string } } };
-			setError(error.response?.data?.error || "Failed to submit quiz");
+			setError(error.response?.data?.error || t("errors.submit"));
 			setSubmitting(false);
 		}
 	};
@@ -241,7 +245,7 @@ export default function SkillVerificationQuiz({
 		} catch (err) {
 			console.error("Failed to start new attempt:", err);
 			const error = err as { response?: { data?: { error?: string } } };
-			setError(error.response?.data?.error || "Failed to start new quiz");
+			setError(error.response?.data?.error || t("errors.startOver"));
 			setShowResumeDialog(false);
 			setLoading(false);
 		}
@@ -250,30 +254,29 @@ export default function SkillVerificationQuiz({
 	if (showResumeDialog) {
 		return (
 			<div className="p-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-				<h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-2">Incomplete Attempt Found</h3>
+				<h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-2">{t("resume.title")}</h3>
 				<p className="text-blue-700 dark:text-blue-200 mb-6">
-					You have an incomplete verification attempt for this skill. Would you like to resume where you left off or
-					start a fresh quiz?
+					{t("resume.description")}
 				</p>
 				<div className="flex gap-3">
 					<button
 						onClick={handleResumeAttempt}
 						className="flex-1 px-4 py-2 bg-linear-to-r from-primary to-purple text-primary-foreground rounded-lg hover:from-primary-600 hover:to-purple-600 dark:hover:from-primary-500 dark:hover:to-purple-500 transition-colors font-medium shadow-lg hover:shadow-xl"
 					>
-						Resume Attempt
+						{t("resume.resume")}
 					</button>
 					<button
 						onClick={handleStartOver}
 						className="flex-1 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors font-medium"
 					>
-						Start Over
+						{t("resume.startOver")}
 					</button>
 					{onCancel && (
 						<button
 							onClick={onCancel}
 							className="px-4 py-2 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
 						>
-							Cancel
+							{tCommon("cancel")}
 						</button>
 					)}
 				</div>
@@ -286,7 +289,7 @@ export default function SkillVerificationQuiz({
 			<div className="flex items-center justify-center p-8">
 				<div className="text-center">
 					<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4" />
-					<p className="text-gray-600 dark:text-gray-300">Loading verification quiz...</p>
+					<p className="text-gray-600 dark:text-gray-300">{t("loading")}</p>
 				</div>
 			</div>
 		);
@@ -295,14 +298,14 @@ export default function SkillVerificationQuiz({
 	if (error) {
 		return (
 			<div className="p-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-				<h3 className="text-lg font-semibold text-red-800 dark:text-red-200 mb-2">Error</h3>
+				<h3 className="text-lg font-semibold text-red-800 dark:text-red-200 mb-2">{tCommon("error")}</h3>
 				<p className="text-red-600 dark:text-red-300 mb-4">{error}</p>
 				{onCancel && (
 					<button
 						onClick={onCancel}
 						className="px-4 py-2 bg-gray-600 dark:bg-gray-700 text-white rounded-lg hover:bg-gray-700 dark:hover:bg-gray-600 transition-colors"
 					>
-						Go Back
+						{t("goBack")}
 					</button>
 				)}
 			</div>
@@ -325,11 +328,11 @@ export default function SkillVerificationQuiz({
 				<div className="flex items-center justify-between mb-4">
 					<div>
 						<h2 className="text-2xl font-bold text-gray-900 dark:text-white">{questionsData.skill.name}</h2>
-						<p className="text-sm text-gray-600 dark:text-gray-300 mt-1">Skill Verification Quiz</p>
+						<p className="text-sm text-gray-600 dark:text-gray-300 mt-1">{t("title")}</p>
 					</div>
 					<div className="text-right">
 						<div className="text-2xl font-mono font-bold text-gray-900 dark:text-white">{formatTime(timeElapsed)}</div>
-						<div className="text-xs text-gray-500 dark:text-gray-400">Time Elapsed</div>
+						<div className="text-xs text-gray-500 dark:text-gray-400">{t("timeElapsed")}</div>
 					</div>
 				</div>
 
@@ -337,9 +340,9 @@ export default function SkillVerificationQuiz({
 				<div className="space-y-2">
 					<div className="flex items-center justify-between text-sm">
 						<span className="text-gray-600 dark:text-gray-300">
-							Question {currentQuestionIndex + 1} of {questionsData.questions.length}
+							{t("progress.question", { current: currentQuestionIndex + 1, total: questionsData.questions.length })}
 						</span>
-						<span className="text-gray-600 dark:text-gray-300">{getProgressPercentage()}% Answered</span>
+						<span className="text-gray-600 dark:text-gray-300">{t("progress.answered", { percentage: getProgressPercentage() })}</span>
 					</div>
 					<div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
 						<div
@@ -361,13 +364,15 @@ export default function SkillVerificationQuiz({
 					<div className="flex-1">
 						<div className="flex items-center gap-2 mb-2">
 							<span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-								{currentQuestion.difficultyLevel}
+								{getDifficultyLabel(currentQuestion.difficultyLevel, tCommon)}
 							</span>
 							<span className="text-xs text-gray-400 dark:text-gray-500">•</span>
-							<span className="text-xs text-gray-500 dark:text-gray-400">{currentQuestion.points} point(s)</span>
+							<span className="text-xs text-gray-500 dark:text-gray-400">
+								{t("question.points", { count: currentQuestion.points })}
+							</span>
 						</div>
 						<p className="text-lg text-gray-900 dark:text-white leading-relaxed">{currentQuestion.questionText}</p>
-						<p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Select all correct answers (A, B, C, or D)</p>
+						<p className="text-sm text-gray-500 dark:text-gray-400 mt-2">{t("question.help")}</p>
 					</div>
 				</div>
 
@@ -410,7 +415,7 @@ export default function SkillVerificationQuiz({
 					disabled={currentQuestionIndex === 0}
 					className="px-6 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
 				>
-					Previous
+					{t("actions.previous")}
 				</button>
 
 				<div className="flex items-center gap-4">
@@ -420,7 +425,7 @@ export default function SkillVerificationQuiz({
 							disabled={submitting}
 							className="px-6 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 transition-colors"
 						>
-							Cancel
+							{tCommon("cancel")}
 						</button>
 					)}
 
@@ -430,14 +435,14 @@ export default function SkillVerificationQuiz({
 							disabled={!allAnswered || submitting}
 							className="px-8 py-2 bg-linear-to-r from-success to-green-600 text-white rounded-lg hover:from-success-600 hover:to-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 font-medium shadow-lg hover:shadow-xl"
 						>
-							{submitting ? "Submitting..." : "Submit Quiz"}
+							{submitting ? t("actions.submitting") : t("actions.submit")}
 						</button>
 					) : (
 						<button
 							onClick={handleNext}
 							className="px-6 py-2 bg-linear-to-r from-primary to-purple text-primary-foreground rounded-lg hover:from-primary-600 hover:to-purple-600 dark:hover:from-primary-500 dark:hover:to-purple-500 transition-all duration-300 shadow-lg hover:shadow-xl"
 						>
-							Next
+							{t("actions.next")}
 						</button>
 					)}
 				</div>
@@ -447,8 +452,7 @@ export default function SkillVerificationQuiz({
 			{isLastQuestion && !allAnswered && (
 				<div className="mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
 					<p className="text-sm text-yellow-800 dark:text-yellow-200">
-						⚠️ You have answered {answers.size} of {questionsData.questions.length} questions. Please answer all
-						questions before submitting.
+						{t("incompleteWarning", { answered: answers.size, total: questionsData.questions.length })}
 					</p>
 				</div>
 			)}

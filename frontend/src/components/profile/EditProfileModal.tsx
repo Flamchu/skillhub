@@ -25,9 +25,13 @@ interface EditProfileModalProps {
 
 export function EditProfileModal({ isOpen, onClose, user }: EditProfileModalProps) {
 	const t = useTranslations("profile");
+	const tEdit = useTranslations("profile.editModal");
+	const tCommon = useTranslations("common");
 	const router = useRouter();
 	const { refresh, logout } = useAuth();
 	const fileInputRef = useRef<HTMLInputElement>(null);
+	const freshStartConfirmationToken = tEdit("danger.freshStart.confirmationToken");
+	const deleteAccountConfirmationToken = tEdit("danger.delete.confirmationToken");
 
 	// form data state
 	const [formData, setFormData] = useState<UpdateUserData>({
@@ -120,13 +124,13 @@ export function EditProfileModal({ isOpen, onClose, user }: EditProfileModalProp
 
 		// validate file type
 		if (!file.type.startsWith("image/")) {
-			setError("Please select a valid image file");
+			setError(tEdit("image.errors.invalidFile"));
 			return;
 		}
 
 		// validate file size (max 5MB)
 		if (file.size > 5 * 1024 * 1024) {
-			setError("Image size must be less than 5MB");
+			setError(tEdit("image.errors.fileTooLarge"));
 			return;
 		}
 
@@ -154,7 +158,7 @@ export function EditProfileModal({ isOpen, onClose, user }: EditProfileModalProp
 
 		try {
 			if (!user?.id) {
-				throw new Error("no user id available");
+				throw new Error(tEdit("errors.userNotAvailable"));
 			}
 
 			// handle profile picture upload first if there's a new file
@@ -164,7 +168,7 @@ export function EditProfileModal({ isOpen, onClose, user }: EditProfileModalProp
 					// profile picture URL is now stored in database
 				} catch (uploadErr) {
 					console.error("profile picture upload error:", uploadErr);
-					setError("Failed to upload profile picture. Please try again.");
+					setError(tEdit("image.errors.uploadFailed"));
 					setSaving(false);
 					return;
 				}
@@ -199,7 +203,7 @@ export function EditProfileModal({ isOpen, onClose, user }: EditProfileModalProp
 			setTimeout(() => onClose(), 1500);
 		} catch (err) {
 			console.error("save profile error:", err);
-			setError(err instanceof Error ? err.message : t("messages.saveError"));
+			setError(t("messages.saveError"));
 		} finally {
 			setSaving(false);
 		}
@@ -207,8 +211,8 @@ export function EditProfileModal({ isOpen, onClose, user }: EditProfileModalProp
 
 	// handle fresh start - clear all user data except profile
 	const handleFreshStart = async () => {
-		if (confirmText !== "FRESH START") {
-			setError("Please type FRESH START to confirm");
+		if (confirmText !== freshStartConfirmationToken) {
+			setError(tEdit("danger.freshStart.confirmationError", { token: freshStartConfirmationToken }));
 			return;
 		}
 
@@ -219,7 +223,7 @@ export function EditProfileModal({ isOpen, onClose, user }: EditProfileModalProp
 			// call backend to clear user's skills, courses, progress, etc.
 			await api.clearUserData(user.id);
 
-			setSuccess("All learning data cleared. Starting fresh!");
+			setSuccess(tEdit("danger.freshStart.success"));
 			setShowFreshStartConfirm(false);
 			setConfirmText("");
 
@@ -230,7 +234,7 @@ export function EditProfileModal({ isOpen, onClose, user }: EditProfileModalProp
 			}, 2000);
 		} catch (err) {
 			console.error("fresh start error:", err);
-			setError(err instanceof Error ? err.message : "Failed to clear data. Please try again.");
+			setError(tEdit("danger.freshStart.failed"));
 		} finally {
 			setProcessingDanger(false);
 		}
@@ -238,8 +242,8 @@ export function EditProfileModal({ isOpen, onClose, user }: EditProfileModalProp
 
 	// handle account deletion - soft delete (disable account)
 	const handleDeleteAccount = async () => {
-		if (confirmText !== "DELETE ACCOUNT") {
-			setError("Please type DELETE ACCOUNT to confirm");
+		if (confirmText !== deleteAccountConfirmationToken) {
+			setError(tEdit("danger.delete.confirmationError", { token: deleteAccountConfirmationToken }));
 			return;
 		}
 
@@ -250,7 +254,7 @@ export function EditProfileModal({ isOpen, onClose, user }: EditProfileModalProp
 			// call backend to soft delete account
 			await api.deleteAccount(user.id);
 
-			setSuccess("Account deleted. Redirecting...");
+			setSuccess(tEdit("danger.delete.success"));
 			setShowDeleteConfirm(false);
 			setConfirmText("");
 
@@ -261,7 +265,7 @@ export function EditProfileModal({ isOpen, onClose, user }: EditProfileModalProp
 			}, 2000);
 		} catch (err) {
 			console.error("delete account error:", err);
-			setError(err instanceof Error ? err.message : "Failed to delete account. Please try again.");
+			setError(tEdit("danger.delete.failed"));
 		} finally {
 			setProcessingDanger(false);
 		}
@@ -274,11 +278,12 @@ export function EditProfileModal({ isOpen, onClose, user }: EditProfileModalProp
 			<div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
 				{/* header */}
 				<div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-6 flex items-center justify-between z-10">
-					<h2 className="text-2xl font-bold text-foreground">Edit Profile</h2>
+					<h2 className="text-2xl font-bold text-foreground">{tEdit("title")}</h2>
 					<button
 						onClick={onClose}
 						disabled={saving}
 						className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+						aria-label={tCommon("close")}
 					>
 						<X className="w-5 h-5 text-foreground-muted" />
 					</button>
@@ -302,14 +307,14 @@ export function EditProfileModal({ isOpen, onClose, user }: EditProfileModalProp
 					<form onSubmit={handleSubmit} className="space-y-6">
 						{/* Profile Picture Upload Section */}
 						<div className="space-y-2">
-							<label className="block text-sm font-semibold text-foreground mb-3">Profile Picture</label>
+							<label className="block text-sm font-semibold text-foreground mb-3">{tEdit("image.label")}</label>
 							<div className="flex items-center gap-6">
 								{/* Avatar Preview */}
 								<div className="relative group">
 									<div className="w-24 h-24 rounded-xl bg-linear-to-br from-primary via-purple to-pink p-1 shadow-lg ring-2 ring-primary/20">
 										<div className="w-full h-full rounded-lg bg-white dark:bg-gray-800 flex items-center justify-center overflow-hidden relative">
 											{profilePicturePreview ? (
-												<Image src={profilePicturePreview} alt="Profile preview" fill className="object-cover" />
+												<Image src={profilePicturePreview} alt={tEdit("image.previewAlt")} fill className="object-cover" />
 											) : (
 												<span className="text-3xl font-bold bg-linear-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
 													{user?.name?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase() || "U"}
@@ -330,7 +335,7 @@ export function EditProfileModal({ isOpen, onClose, user }: EditProfileModalProp
 										>
 											<div className="text-center text-white">
 												<X className="w-5 h-5 mx-auto mb-1" />
-												<span className="text-xs font-semibold">Remove</span>
+												<span className="text-xs font-semibold">{tEdit("image.remove")}</span>
 											</div>
 										</button>
 									)}
@@ -351,10 +356,10 @@ export function EditProfileModal({ isOpen, onClose, user }: EditProfileModalProp
 										className="inline-flex items-center gap-2 px-6 py-3 bg-linear-to-r from-primary to-purple text-white rounded-xl font-bold cursor-pointer hover:shadow-xl hover:scale-105 transition-all duration-300 active:scale-[0.98]"
 									>
 										<Camera className="w-5 h-5" />
-										<span>{profilePictureFile ? "Change Photo" : "Upload Photo"}</span>
+										<span>{profilePictureFile ? tEdit("image.changePhoto") : tEdit("image.uploadPhoto")}</span>
 									</label>
 									<p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-										Recommended: Square image, at least 256x256px
+										{tEdit("image.recommendation")}
 									</p>
 									{profilePictureFile && (
 										<p className="text-sm text-green-600 dark:text-green-400 mt-2 flex items-center gap-1">
@@ -416,7 +421,9 @@ export function EditProfileModal({ isOpen, onClose, user }: EditProfileModalProp
 							{validationErrors.bio && (
 								<p className="text-sm text-red-600 dark:text-red-400 font-medium">{validationErrors.bio}</p>
 							)}
-							<p className="text-xs text-foreground-subtle">{formData.bio?.length || 0} / 500 characters</p>
+							<p className="text-xs text-foreground-subtle">
+								{tEdit("bioLength", { count: formData.bio?.length || 0, max: 500 })}
+							</p>
 						</div>
 
 						{/* actions */}
@@ -438,22 +445,21 @@ export function EditProfileModal({ isOpen, onClose, user }: EditProfileModalProp
 					<div className="mt-8 pt-8 border-t border-border">
 						<div className="flex items-center gap-2 mb-4">
 							<Users className="w-5 h-5 text-primary" />
-							<h3 className="text-xl font-bold text-foreground">Social Environment</h3>
+							<h3 className="text-xl font-bold text-foreground">{tEdit("social.title")}</h3>
 						</div>
 						<p className="text-sm text-foreground-muted mb-6">
-							Enable the social environment to compete on leaderboards, complete daily quests, earn XP, track your
-							learning streak, and level up! You can disable this at any time.
+							{tEdit("social.description")}
 						</p>
 
 						<div className="flex items-center justify-between p-4 bg-primary/5 border border-primary/20 rounded-lg">
 							<div>
 								<h4 className="font-semibold text-foreground">
-									{user?.socialEnabled ? "Social Environment Enabled" : "Enable Social Environment"}
+									{user?.socialEnabled ? tEdit("social.enabled.title") : tEdit("social.disabled.title")}
 								</h4>
 								<p className="text-sm text-foreground-muted">
 									{user?.socialEnabled
-										? "You're participating in the social features. Disable to hide XP, quests, and leaderboards."
-										: "Join the community! Track your progress and compete with other learners."}
+										? tEdit("social.enabled.description")
+										: tEdit("social.disabled.description")}
 								</p>
 							</div>
 							<label className="relative inline-flex items-center cursor-pointer">
@@ -481,9 +487,12 @@ export function EditProfileModal({ isOpen, onClose, user }: EditProfileModalProp
 												updatedUser.socialEnabled = enabled;
 												localStorage.setItem("user", JSON.stringify(updatedUser));
 												window.location.reload(); // reload to show/hide XP bar
+											} else {
+												setError(tEdit("social.toggleFailed"));
 											}
 										} catch (error) {
 											console.error("Failed to toggle social environment:", error);
+											setError(tEdit("social.toggleFailed"));
 										}
 									}}
 									className="sr-only peer"
@@ -491,15 +500,15 @@ export function EditProfileModal({ isOpen, onClose, user }: EditProfileModalProp
 								<div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 dark:peer-focus:ring-primary/40 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary" />
 							</label>
 						</div>
-					</div>{" "}
+					</div>
 					{/* danger zone */}
 					<div className="mt-12 pt-8 border-t-2 border-red-200 dark:border-red-900">
 						<div className="flex items-center gap-2 mb-4">
 							<AlertTriangle className="w-5 h-5 text-red-600 dark:text-red-400" />
-							<h3 className="text-xl font-bold text-red-600 dark:text-red-400">Danger Zone</h3>
+							<h3 className="text-xl font-bold text-red-600 dark:text-red-400">{tEdit("danger.title")}</h3>
 						</div>
 						<p className="text-sm text-foreground-muted mb-6">
-							These actions are irreversible. Please be certain before proceeding.
+							{tEdit("danger.description")}
 						</p>
 
 						<div className="space-y-4">
@@ -507,10 +516,8 @@ export function EditProfileModal({ isOpen, onClose, user }: EditProfileModalProp
 							{!showFreshStartConfirm ? (
 								<div className="flex items-center justify-between p-4 bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-900 rounded-lg">
 									<div>
-										<h4 className="font-semibold text-foreground">Fresh Start</h4>
-										<p className="text-sm text-foreground-muted">
-											Clear all your skills, courses, progress, and enrollments
-										</p>
+										<h4 className="font-semibold text-foreground">{tEdit("danger.freshStart.title")}</h4>
+										<p className="text-sm text-foreground-muted">{tEdit("danger.freshStart.description")}</p>
 									</div>
 									<Button
 										variant="outline"
@@ -518,32 +525,32 @@ export function EditProfileModal({ isOpen, onClose, user }: EditProfileModalProp
 										disabled={processingDanger}
 										className="border-red-300 dark:border-red-800 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/20"
 									>
-										Clear Data
+										{tEdit("danger.freshStart.button")}
 									</Button>
 								</div>
 							) : (
 								<div className="p-4 bg-red-50 dark:bg-red-900/10 border-2 border-red-300 dark:border-red-800 rounded-lg space-y-4">
 									<div>
-										<h4 className="font-semibold text-red-700 dark:text-red-300 mb-2">Confirm Fresh Start</h4>
-										<p className="text-sm text-foreground-muted mb-4">
-											This will permanently delete all your learning data. Your profile information will be kept.
-										</p>
+										<h4 className="font-semibold text-red-700 dark:text-red-300 mb-2">
+											{tEdit("danger.freshStart.confirmTitle")}
+										</h4>
+										<p className="text-sm text-foreground-muted mb-4">{tEdit("danger.freshStart.confirmDescription")}</p>
 										<input
 											type="text"
 											value={confirmText}
 											onChange={e => setConfirmText(e.target.value)}
-											placeholder='Type "FRESH START" to confirm'
+											placeholder={tEdit("danger.freshStart.confirmPlaceholder", { token: freshStartConfirmationToken })}
 											className="w-full px-4 py-2 border border-red-300 dark:border-red-700 rounded-lg bg-white dark:bg-gray-800 text-foreground focus:ring-2 focus:ring-red-500 outline-none"
 										/>
 									</div>
 									<div className="flex gap-2">
 										<Button
 											onClick={handleFreshStart}
-											disabled={confirmText !== "FRESH START" || processingDanger}
+											disabled={confirmText !== freshStartConfirmationToken || processingDanger}
 											loading={processingDanger}
 											className="flex-1 bg-red-600 hover:bg-red-700 text-white"
 										>
-											{processingDanger ? "Clearing..." : "Confirm Clear Data"}
+											{processingDanger ? tEdit("danger.freshStart.processing") : tEdit("danger.freshStart.confirmButton")}
 										</Button>
 										<Button
 											variant="outline"
@@ -554,7 +561,7 @@ export function EditProfileModal({ isOpen, onClose, user }: EditProfileModalProp
 											disabled={processingDanger}
 											className="flex-1"
 										>
-											Cancel
+											{tCommon("cancel")}
 										</Button>
 									</div>
 								</div>
@@ -564,10 +571,8 @@ export function EditProfileModal({ isOpen, onClose, user }: EditProfileModalProp
 							{!showDeleteConfirm ? (
 								<div className="flex items-center justify-between p-4 bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-900 rounded-lg">
 									<div>
-										<h4 className="font-semibold text-foreground">Delete Account</h4>
-										<p className="text-sm text-foreground-muted">
-											Permanently delete your account and all associated data
-										</p>
+										<h4 className="font-semibold text-foreground">{tEdit("danger.delete.title")}</h4>
+										<p className="text-sm text-foreground-muted">{tEdit("danger.delete.description")}</p>
 									</div>
 									<Button
 										variant="outline"
@@ -575,33 +580,32 @@ export function EditProfileModal({ isOpen, onClose, user }: EditProfileModalProp
 										disabled={processingDanger}
 										className="border-red-300 dark:border-red-800 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/20"
 									>
-										Delete Account
+										{tEdit("danger.delete.button")}
 									</Button>
 								</div>
 							) : (
 								<div className="p-4 bg-red-50 dark:bg-red-900/10 border-2 border-red-300 dark:border-red-800 rounded-lg space-y-4">
 									<div>
-										<h4 className="font-semibold text-red-700 dark:text-red-300 mb-2">Confirm Account Deletion</h4>
-										<p className="text-sm text-foreground-muted mb-4">
-											This will permanently delete your account. You will be logged out and won&apos;t be able to access
-											your data anymore.
-										</p>
+										<h4 className="font-semibold text-red-700 dark:text-red-300 mb-2">
+											{tEdit("danger.delete.confirmTitle")}
+										</h4>
+										<p className="text-sm text-foreground-muted mb-4">{tEdit("danger.delete.confirmDescription")}</p>
 										<input
 											type="text"
 											value={confirmText}
 											onChange={e => setConfirmText(e.target.value)}
-											placeholder='Type "DELETE ACCOUNT" to confirm'
+											placeholder={tEdit("danger.delete.confirmPlaceholder", { token: deleteAccountConfirmationToken })}
 											className="w-full px-4 py-2 border border-red-300 dark:border-red-700 rounded-lg bg-white dark:bg-gray-800 text-foreground focus:ring-2 focus:ring-red-500 outline-none"
 										/>
 									</div>
 									<div className="flex gap-2">
 										<Button
 											onClick={handleDeleteAccount}
-											disabled={confirmText !== "DELETE ACCOUNT" || processingDanger}
+											disabled={confirmText !== deleteAccountConfirmationToken || processingDanger}
 											loading={processingDanger}
 											className="flex-1 bg-red-600 hover:bg-red-700 text-white"
 										>
-											{processingDanger ? "Deleting..." : "Confirm Delete Account"}
+											{processingDanger ? tEdit("danger.delete.processing") : tEdit("danger.delete.confirmButton")}
 										</Button>
 										<Button
 											variant="outline"
@@ -612,7 +616,7 @@ export function EditProfileModal({ isOpen, onClose, user }: EditProfileModalProp
 											disabled={processingDanger}
 											className="flex-1"
 										>
-											Cancel
+											{tCommon("cancel")}
 										</Button>
 									</div>
 								</div>

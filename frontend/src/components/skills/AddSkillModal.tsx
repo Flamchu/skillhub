@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
 import { GlassCard } from "@/components/ui";
 import { X, AlertCircle } from "lucide-react";
 import SkillVerificationQuiz from "./SkillVerificationQuiz";
 import SkillVerificationResults from "./SkillVerificationResults";
 import type { SkillVerificationSubmitResponse, ProficiencyLevel } from "@/types";
+import { getProficiencyLabel } from "@/lib/i18n-utils";
 
 interface Skill {
 	id: string;
@@ -25,6 +27,8 @@ interface AddSkillModalProps {
 type ModalView = "form" | "verification" | "results";
 
 export function AddSkillModal({ isOpen, onClose, availableSkills, onAddSkill }: AddSkillModalProps) {
+	const t = useTranslations("skills.addModal");
+	const tCommon = useTranslations("common");
 	const [selectedSkill, setSelectedSkill] = useState<string>("");
 	const [selectedProficiency, setSelectedProficiency] = useState<ProficiencyLevel>("BASIC");
 	const [submitting, setSubmitting] = useState(false);
@@ -54,7 +58,7 @@ export function AddSkillModal({ isOpen, onClose, availableSkills, onAddSkill }: 
 		} catch (err) {
 			console.error("Failed to add skill:", err);
 			const error = err as { response?: { data?: { error?: string; message?: string } } };
-			setError(error.response?.data?.error || error.response?.data?.message || "Failed to add skill");
+			setError(error.response?.data?.error || error.response?.data?.message || t("errors.add"));
 			setSubmitting(false);
 		}
 	};
@@ -92,7 +96,7 @@ export function AddSkillModal({ isOpen, onClose, availableSkills, onAddSkill }: 
 				{view === "form" && (
 					<GlassCard className="w-full max-w-md mx-auto">
 						<div className="flex items-center justify-between mb-6">
-							<h3 className="text-xl font-semibold text-gray-900 dark:text-white">Add New Skill</h3>
+							<h3 className="text-xl font-semibold text-gray-900 dark:text-white">{t("title")}</h3>
 							<button
 								onClick={handleClose}
 								className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
@@ -104,14 +108,14 @@ export function AddSkillModal({ isOpen, onClose, availableSkills, onAddSkill }: 
 
 						<div className="space-y-4">
 							<div>
-								<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Select Skill</label>
+								<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t("skillLabel")}</label>
 								<select
 									value={selectedSkill}
 									onChange={e => setSelectedSkill(e.target.value)}
 									disabled={submitting}
 									className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-all duration-200"
 								>
-									<option value="">Choose a skill...</option>
+									<option value="">{t("skillPlaceholder")}</option>
 									{availableSkills.map(skill => (
 										<option key={skill.id} value={skill.id}>
 											{skill.name}
@@ -122,7 +126,7 @@ export function AddSkillModal({ isOpen, onClose, availableSkills, onAddSkill }: 
 
 							<div>
 								<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-									Current Proficiency
+									{t("proficiencyLabel")}
 								</label>
 								<select
 									value={selectedProficiency}
@@ -130,18 +134,18 @@ export function AddSkillModal({ isOpen, onClose, availableSkills, onAddSkill }: 
 									disabled={submitting}
 									className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-all duration-200"
 								>
-									<option value="BASIC">Basic (25%)</option>
-									<option value="INTERMEDIATE">Intermediate (50%)</option>
-									<option value="ADVANCED">Advanced (75%)</option>
-									<option value="EXPERT">Expert (90%)</option>
+									<option value="BASIC">{t("levels.basic")}</option>
+									<option value="INTERMEDIATE">{t("levels.intermediate")}</option>
+									<option value="ADVANCED">{t("levels.advanced")}</option>
+									<option value="EXPERT">{t("levels.expert")}</option>
 								</select>
 
 								{requiresVerification && (
 									<div className="mt-3 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg flex items-start gap-2">
 										<AlertCircle className="w-5 h-5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
 										<div className="text-sm text-blue-800 dark:text-blue-200">
-											<p className="font-medium mb-1">Verification Required</p>
-											<p>You&apos;ll need to complete a verification quiz to prove your proficiency at this level.</p>
+											<p className="font-medium mb-1">{t("verification.title")}</p>
+											<p>{t("verification.description", { level: getProficiencyLabel(selectedProficiency, tCommon) })}</p>
 										</div>
 									</div>
 								)}
@@ -156,14 +160,14 @@ export function AddSkillModal({ isOpen, onClose, availableSkills, onAddSkill }: 
 
 						<div className="flex gap-3 mt-6">
 							<Button variant="outline" onClick={handleClose} className="flex-1" disabled={submitting}>
-								Cancel
+								{tCommon("cancel")}
 							</Button>
 							<Button
 								onClick={handleSubmit}
 								disabled={!selectedSkill || submitting}
 								className="flex-1 bg-linear-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600"
 							>
-								{submitting ? "Processing..." : requiresVerification ? "Start Verification" : "Add Skill"}
+								{submitting ? t("actions.processing") : requiresVerification ? t("actions.startVerification") : t("actions.addSkill")}
 							</Button>
 						</div>
 					</GlassCard>

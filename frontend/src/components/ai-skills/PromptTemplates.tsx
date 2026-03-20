@@ -1,24 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { Sparkles, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-
-// prompt template suggestions
-const PROMPT_TEMPLATES = [
-	"I'm a frontend developer with 3 years of React experience, looking to transition into full-stack development",
-	"Recent computer science graduate interested in machine learning and data science",
-	"Marketing professional wanting to learn web development and digital analytics",
-	"Business analyst with Excel skills, aiming to become a data analyst",
-	"Self-taught programmer with Python basics, interested in backend development",
-	"UX designer looking to add frontend development skills to my toolkit",
-	"Product manager wanting to understand technical concepts and cloud computing",
-	"Career changer from teaching, interested in software engineering",
-	"Experienced Java developer exploring modern JavaScript frameworks",
-	"DevOps engineer wanting to improve security and cloud architecture skills",
-	"Mobile app developer looking to learn cross-platform development",
-	"Data analyst wanting to transition into machine learning engineering",
-];
 
 interface PromptTemplatesProps {
 	onSelectTemplate: (template: string) => void;
@@ -26,15 +11,43 @@ interface PromptTemplatesProps {
 }
 
 export function PromptTemplates({ onSelectTemplate, className = "" }: PromptTemplatesProps) {
+	const t = useTranslations("aiSkills.templates");
 	const [templates, setTemplates] = useState<string[]>([]);
 
 	// pick 3 random templates on mount
 	useEffect(() => {
-		selectRandomTemplates();
-	}, []);
+		const shuffled = [
+			t("items.frontend"),
+			t("items.csGraduate"),
+			t("items.marketing"),
+			t("items.businessAnalyst"),
+			t("items.selfTaught"),
+			t("items.uxDesigner"),
+			t("items.productManager"),
+			t("items.careerChange"),
+			t("items.javaDeveloper"),
+			t("items.devops"),
+			t("items.mobile"),
+			t("items.dataAnalyst"),
+		].sort(() => 0.5 - Math.random());
+		setTemplates(shuffled.slice(0, 3));
+	}, [t]);
 
 	const selectRandomTemplates = () => {
-		const shuffled = [...PROMPT_TEMPLATES].sort(() => 0.5 - Math.random());
+		const shuffled = [
+			t("items.frontend"),
+			t("items.csGraduate"),
+			t("items.marketing"),
+			t("items.businessAnalyst"),
+			t("items.selfTaught"),
+			t("items.uxDesigner"),
+			t("items.productManager"),
+			t("items.careerChange"),
+			t("items.javaDeveloper"),
+			t("items.devops"),
+			t("items.mobile"),
+			t("items.dataAnalyst"),
+		].sort(() => 0.5 - Math.random());
 		setTemplates(shuffled.slice(0, 3));
 	};
 
@@ -43,7 +56,7 @@ export function PromptTemplates({ onSelectTemplate, className = "" }: PromptTemp
 			<div className="flex items-center justify-between">
 				<div className="flex items-center gap-2">
 					<Sparkles className="w-5 h-5 text-primary" />
-					<h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Need inspiration?</h3>
+					<h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{t("title")}</h3>
 				</div>
 				<Button
 					variant="ghost"
@@ -52,11 +65,11 @@ export function PromptTemplates({ onSelectTemplate, className = "" }: PromptTemp
 					className="text-primary hover:text-primary-600"
 				>
 					<RefreshCw className="w-4 h-4 mr-1" />
-					Refresh
+					{t("refresh")}
 				</Button>
 			</div>
 
-			<p className="text-sm text-gray-600 dark:text-gray-300">Try one of these examples to get started:</p>
+			<p className="text-sm text-gray-600 dark:text-gray-300">{t("description")}</p>
 
 			<div className="space-y-3">
 				{templates.map((template, index) => (

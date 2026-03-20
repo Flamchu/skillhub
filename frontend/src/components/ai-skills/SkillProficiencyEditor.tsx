@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { CheckCircle, Edit3, Save, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import type { AISkillSuggestion } from "@/types";
+import { getProficiencyLabel } from "@/lib/i18n-utils";
 
 interface SkillProficiencyEditorProps {
 	suggestions: AISkillSuggestion[];
@@ -20,6 +22,8 @@ const PROFICIENCY_LEVELS = [
 ];
 
 export function SkillProficiencyEditor({ suggestions, onSave, onCancel, className = "" }: SkillProficiencyEditorProps) {
+	const t = useTranslations("aiSkills.editor");
+	const tCommon = useTranslations("common");
 	const [editedSkills, setEditedSkills] = useState<AISkillSuggestion[]>(suggestions);
 	// start with all skills deselected - user must opt-in
 	const [selectedSkills, setSelectedSkills] = useState<Set<string>>(new Set());
@@ -58,14 +62,14 @@ export function SkillProficiencyEditor({ suggestions, onSave, onCancel, classNam
 				<div>
 					<h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
 						<Edit3 className="w-5 h-5 text-primary" />
-						Review & Select Your Skills
+						{t("title")}
 					</h3>
 					<p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
-						Check the skills you want to add, then adjust proficiency levels
+						{t("description")}
 					</p>
 				</div>
 				<div className="text-sm font-medium text-gray-600 dark:text-gray-300">
-					{selectedSkills.size} of {editedSkills.length} selected
+					{t("selectedCount", { selected: selectedSkills.size, total: editedSkills.length })}
 				</div>
 			</div>
 
@@ -103,7 +107,7 @@ export function SkillProficiencyEditor({ suggestions, onSave, onCancel, classNam
 									{/* proficiency selector */}
 									<div className="space-y-2 mt-3">
 										<label className="text-xs font-medium text-gray-600 dark:text-gray-300 block">
-											Proficiency Level
+											{t("proficiencyLabel")}
 										</label>
 										<div className="grid grid-cols-2 md:grid-cols-4 gap-2">
 											{PROFICIENCY_LEVELS.map(level => (
@@ -119,7 +123,7 @@ export function SkillProficiencyEditor({ suggestions, onSave, onCancel, classNam
 																: "bg-gray-50 dark:bg-gray-800 text-gray-400 dark:text-gray-500 cursor-not-allowed"
 													}`}
 												>
-													{level.label}
+													{getProficiencyLabel(level.value, tCommon)}
 												</button>
 											))}
 										</div>
@@ -128,7 +132,7 @@ export function SkillProficiencyEditor({ suggestions, onSave, onCancel, classNam
 									{/* reasoning */}
 									{suggestion.reason && (
 										<p className="text-xs text-gray-600 dark:text-gray-400 mt-3 italic">
-											AI suggestion: {suggestion.reason}
+											{t("reasonPrefix")} {suggestion.reason}
 										</p>
 									)}
 								</div>
@@ -142,7 +146,7 @@ export function SkillProficiencyEditor({ suggestions, onSave, onCancel, classNam
 			<div className="flex justify-between items-center pt-4 border-t border-gray-200 dark:border-gray-700">
 				<Button variant="outline" onClick={onCancel} size="lg">
 					<X className="w-4 h-4 mr-2" />
-					Cancel
+					{tCommon("cancel")}
 				</Button>
 				<Button
 					variant="primary"
@@ -152,7 +156,7 @@ export function SkillProficiencyEditor({ suggestions, onSave, onCancel, classNam
 					className="bg-linear-to-r from-primary to-purple"
 				>
 					<Save className="w-4 h-4 mr-2" />
-					Add {selectedSkills.size} Skill{selectedSkills.size !== 1 ? "s" : ""} to Profile
+					{t("save", { count: selectedSkills.size })}
 				</Button>
 			</div>
 		</div>

@@ -128,7 +128,7 @@ export function ProfileForm({ user, className = "" }: ProfileFormProps) {
 			setTimeout(() => router.back(), 1500);
 		} catch (err) {
 			console.error("save profile error:", err);
-			setError(err instanceof Error ? err.message : t("messages.saveError"));
+			setError(t("messages.saveError"));
 		} finally {
 			setSaving(false);
 		}

@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { BookOpen, TrendingUp, Award } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { getProficiencyLabel } from "@/lib/i18n-utils";
 
 interface SkillCardProps {
 	skill: {
@@ -20,6 +22,9 @@ interface SkillCardProps {
  * individual skill card component with proficiency tracking
  */
 export function SkillCard({ skill, onUpdate, onLearnMore }: SkillCardProps) {
+	const t = useTranslations("skills.card");
+	const tCommon = useTranslations("common");
+
 	const getProficiencyData = (level: string) => {
 		switch (level) {
 			case "NONE":
@@ -86,14 +91,14 @@ export function SkillCard({ skill, onUpdate, onLearnMore }: SkillCardProps) {
 						</div>
 					</div>
 					<Badge variant={proficiencyData.variant} size="sm" className="flex items-center space-x-1">
-						<span>{skill.proficiency}</span>
+						<span>{getProficiencyLabel(skill.proficiency, tCommon)}</span>
 					</Badge>
 				</div>
 
 				{/* Progress Section */}
 				<div className="space-y-2">
 					<div className="flex justify-between text-sm">
-						<span className="text-gray-600 dark:text-gray-400">Progress</span>
+						<span className="text-gray-600 dark:text-gray-400">{t("progress")}</span>
 						<span className="font-medium text-gray-900 dark:text-white">{proficiencyData.percentage}%</span>
 					</div>
 					<div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
@@ -107,14 +112,14 @@ export function SkillCard({ skill, onUpdate, onLearnMore }: SkillCardProps) {
 				{/* Actions */}
 				<div className="flex items-center space-x-3 pt-2">
 					<Button variant="outline" size="sm" onClick={() => onUpdate?.(skill.id)} className="flex-1">
-						Update Level
+						{t("updateLevel")}
 					</Button>
 					<Button
 						size="sm"
 						onClick={() => onLearnMore?.(skill.id)}
 						className="flex-1 bg-linear-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200"
 					>
-						Learn More
+						{t("learnMore")}
 					</Button>
 				</div>
 			</div>

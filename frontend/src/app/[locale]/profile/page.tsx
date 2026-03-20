@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthProvider";
 import { AuthenticatedLayout } from "@/components/layout";
@@ -10,11 +11,14 @@ import { QuickActionCard, RecentActivityCard, EditProfileModal } from "@/compone
 import { BookOpen, Target, Star, Award, TrendingUp, Settings, Sparkles, GraduationCap, Edit3 } from "lucide-react";
 import type { UserActivity, UserActivityResponse } from "@/types";
 import { fetchUserActivity } from "@/lib/auth";
+import { getRoleLabel } from "@/lib/i18n-utils";
 import Link from "next/link";
 
 export default function ProfilePage() {
 	const { user, profile, loading } = useAuth();
 	const router = useRouter();
+	const t = useTranslations("profile.page");
+	const tCommon = useTranslations("common");
 	const [userActivity, setUserActivity] = useState<UserActivity[]>([]);
 	const [loadingActivity, setLoadingActivity] = useState(false);
 	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -102,46 +106,46 @@ export default function ProfilePage() {
 
 	const quickActions = [
 		{
-			title: "My Skills",
-			description: "View and manage your skills, track proficiency levels",
+			title: t("quickActions.skills.title"),
+			description: t("quickActions.skills.description"),
 			icon: Target,
 			href: "/skills",
-			badge: `${stats.skillsCount} skills`,
+			badge: t("quickActions.skills.badge", { count: stats.skillsCount }),
 			gradient: "from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20",
 		},
 		{
-			title: "AI Skill Generator",
-			description: "Let AI recommend skills based on your goals and interests",
+			title: t("quickActions.aiSkills.title"),
+			description: t("quickActions.aiSkills.description"),
 			icon: Sparkles,
 			href: "/ai-skills",
-			badge: "New",
+			badge: t("quickActions.aiSkills.badge"),
 			gradient: "from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20",
 		},
 		{
-			title: "Course Recommendations",
-			description: "Personalized course suggestions based on your skills",
+			title: t("quickActions.recommendations.title"),
+			description: t("quickActions.recommendations.description"),
 			icon: Star,
 			href: "/courses/recommended",
 			gradient: "from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20",
 		},
 		{
-			title: "Browse Courses",
-			description: "Explore our full catalog of courses and learning paths",
+			title: t("quickActions.browseCourses.title"),
+			description: t("quickActions.browseCourses.description"),
 			icon: BookOpen,
 			href: "/courses",
 			gradient: "from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20",
 		},
 		{
-			title: "My Learning",
-			description: "View enrolled courses, track progress, and continue learning",
+			title: t("quickActions.learning.title"),
+			description: t("quickActions.learning.description"),
 			icon: GraduationCap,
 			href: "/dashboard",
-			badge: `${stats.coursesCount} active`,
+			badge: t("quickActions.learning.badge", { count: stats.coursesCount }),
 			gradient: "from-indigo-50 to-violet-50 dark:from-indigo-900/20 dark:to-violet-900/20",
 		},
 		{
-			title: "Account Settings",
-			description: "Update profile information, preferences, and security",
+			title: t("quickActions.settings.title"),
+			description: t("quickActions.settings.description"),
 			icon: Settings,
 			href: "/settings",
 			gradient: "from-gray-50 to-slate-50 dark:from-gray-900/20 dark:to-slate-900/20",
@@ -165,7 +169,7 @@ export default function ProfilePage() {
 								className="absolute top-4 right-4 flex items-center gap-2 px-4 py-2 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm text-gray-900 dark:text-gray-100 rounded-xl hover:bg-white dark:hover:bg-gray-800 hover:shadow-xl hover:scale-105 transition-all duration-300 font-semibold border-2 border-white/20 dark:border-gray-700/50"
 							>
 								<Edit3 className="w-4 h-4" />
-								<span>Edit Profile</span>
+								<span>{t("editProfile")}</span>
 							</button>
 						</div>
 
@@ -178,7 +182,7 @@ export default function ProfilePage() {
 											{profile?.profilePicture ? (
 												<Image
 													src={profile.profilePicture}
-													alt={profile.name || "Profile"}
+													alt={profile.name || t("profileImageAlt")}
 													fill
 													className="object-cover"
 													sizes="128px"
@@ -197,14 +201,14 @@ export default function ProfilePage() {
 									>
 										<div className="text-center text-white">
 											<Edit3 className="w-6 h-6 mx-auto mb-1" />
-											<span className="text-xs font-semibold">Upload</span>
+											<span className="text-xs font-semibold">{t("upload")}</span>
 										</div>
 									</button>
 								</div>
 
 								<div className="flex-1 min-w-0 sm:pt-16">
 									<h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-										{profile?.name || "No name set"}
+										{profile?.name || t("noName")}
 									</h1>
 									{profile?.headline && (
 										<p className="text-xl text-gray-600 dark:text-gray-300 font-medium mb-3">{profile.headline}</p>
@@ -217,7 +221,7 @@ export default function ProfilePage() {
 										{user.role && (
 											<span className="flex items-center gap-2 px-3 py-1.5 bg-linear-to-r from-primary/10 to-purple/10 text-primary dark:text-primary-400 rounded-lg text-sm font-bold capitalize border-2 border-primary/20">
 												<span>👤</span>
-												{user.role.toLowerCase()}
+												{getRoleLabel(user.role, tCommon)}
 											</span>
 										)}
 									</div>
@@ -238,7 +242,7 @@ export default function ProfilePage() {
 										<div className="text-4xl font-bold bg-linear-to-br from-blue-600 to-cyan-600 dark:from-blue-400 dark:to-cyan-400 text-transparent bg-clip-text">
 											{stats.skillsCount}
 										</div>
-										<div className="text-sm font-bold text-blue-600 dark:text-blue-400 mt-1">Skills</div>
+										<div className="text-sm font-bold text-blue-600 dark:text-blue-400 mt-1">{t("stats.skills")}</div>
 									</div>
 								</div>
 								<div className="group relative p-5 bg-linear-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl border-2 border-green-200/50 dark:border-green-700/50 hover:shadow-lg hover:scale-[1.02] transition-all duration-300">
@@ -246,7 +250,7 @@ export default function ProfilePage() {
 										<div className="text-4xl font-bold bg-linear-to-br from-green-600 to-emerald-600 dark:from-green-400 dark:to-emerald-400 text-transparent bg-clip-text">
 											{stats.coursesCount}
 										</div>
-										<div className="text-sm font-bold text-green-600 dark:text-green-400 mt-1">Courses</div>
+										<div className="text-sm font-bold text-green-600 dark:text-green-400 mt-1">{t("stats.courses")}</div>
 									</div>
 								</div>
 								<div className="group relative p-5 bg-linear-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-xl border-2 border-purple-200/50 dark:border-purple-700/50 hover:shadow-lg hover:scale-[1.02] transition-all duration-300">
@@ -254,7 +258,9 @@ export default function ProfilePage() {
 										<div className="text-4xl font-bold bg-linear-to-br from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 text-transparent bg-clip-text">
 											{stats.certificatesCount}
 										</div>
-										<div className="text-sm font-bold text-purple-600 dark:text-purple-400 mt-1">Certificates</div>
+										<div className="text-sm font-bold text-purple-600 dark:text-purple-400 mt-1">
+											{t("stats.certificates")}
+										</div>
 									</div>
 								</div>
 							</div>
@@ -265,7 +271,7 @@ export default function ProfilePage() {
 					<div className="mb-8">
 						<h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
 							<span className="text-4xl">⚡</span>
-							Quick Actions
+							{t("quickActions.title")}
 						</h2>
 						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 							{quickActions.map(action => (
@@ -279,7 +285,7 @@ export default function ProfilePage() {
 						<div className="flex items-center justify-between mb-6">
 							<h2 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
 								<TrendingUp className="w-8 h-8 text-primary" />
-								Recent Activity
+								{t("recentActivity.title")}
 							</h2>
 						</div>
 
@@ -300,16 +306,18 @@ export default function ProfilePage() {
 								<div className="w-20 h-20 mx-auto mb-4 bg-linear-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 rounded-2xl flex items-center justify-center">
 									<Award className="w-10 h-10 text-gray-400" />
 								</div>
-								<h4 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No Activity Yet</h4>
+								<h4 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+									{t("recentActivity.empty.title")}
+								</h4>
 								<p className="text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto">
-									Start learning to see your progress here! Enroll in courses and track your journey.
+									{t("recentActivity.empty.description")}
 								</p>
 								<Link
 									href="/courses"
 									className="inline-flex items-center gap-2 px-8 py-3 bg-linear-to-r from-primary to-purple text-white rounded-xl font-bold hover:shadow-xl hover:scale-105 transition-all duration-300"
 								>
 									<BookOpen className="w-5 h-5" />
-									Browse Courses
+									{t("recentActivity.empty.cta")}
 								</Link>
 							</div>
 						)}

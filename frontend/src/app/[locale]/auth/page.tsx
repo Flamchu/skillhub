@@ -22,6 +22,7 @@ export default function AuthPage() {
 
 	const tLogin = useTranslations("auth.login");
 	const tRegister = useTranslations("auth.register");
+	const tPage = useTranslations("auth.page");
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -66,8 +67,8 @@ export default function AuthPage() {
 				err instanceof Error
 					? err.message
 					: mode === "login"
-						? "Invalid credentials. Please try again."
-						: "Registration failed. Please try again.";
+						? tPage("errors.invalidCredentials")
+						: tPage("errors.registrationFailed");
 			setError(errorMessage);
 		} finally {
 			setLoading(false);
@@ -84,7 +85,7 @@ export default function AuthPage() {
 			window.location.href = oauthUrl;
 		} catch (err) {
 			console.error("Google login error:", err);
-			setError("Failed to initiate Google login. Please try again.");
+			setError(tPage("errors.googleLogin"));
 		} finally {
 			setLoading(false);
 		}
@@ -134,13 +135,13 @@ export default function AuthPage() {
 											type="text"
 											id="name"
 											value={name}
-											onChange={e => setName(e.target.value)}
-											required={!isLogin}
-											className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary dark:focus:border-primary bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 transition-all"
-											placeholder="Enter your full name"
-										/>
-									</div>
-								)}
+									onChange={e => setName(e.target.value)}
+									required={!isLogin}
+									className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary dark:focus:border-primary bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 transition-all"
+									placeholder={tPage("placeholders.name")}
+								/>
+							</div>
+						)}
 
 								<div>
 									<label htmlFor="email" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
@@ -153,7 +154,7 @@ export default function AuthPage() {
 										onChange={e => setEmail(e.target.value)}
 										required
 										className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary dark:focus:border-primary bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 transition-all"
-										placeholder="Enter your email address"
+										placeholder={tPage("placeholders.email")}
 									/>
 								</div>
 
@@ -174,17 +175,17 @@ export default function AuthPage() {
 										pattern={!isLogin ? "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$" : undefined}
 										title={
 											!isLogin
-												? "Password must be at least 8 characters and contain at least one uppercase letter, one lowercase letter, and one number"
+												? tPage("passwordRules.title")
 												: undefined
 										}
 										className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary dark:focus:border-primary bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 transition-all"
 										placeholder={
-											!isLogin ? "At least 8 characters, 1 uppercase, 1 lowercase, 1 number" : "Enter your password"
+											!isLogin ? tPage("passwordRules.placeholder") : tPage("placeholders.password")
 										}
 									/>
 									{!isLogin && (
 										<p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-											Password must be at least 8 characters and include uppercase, lowercase, and a number
+											{tPage("passwordRules.hint")}
 										</p>
 									)}
 								</div>
@@ -203,7 +204,7 @@ export default function AuthPage() {
 									{loading ? (
 										<div className="flex items-center justify-center">
 											<div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2" />
-											{isLogin ? "Signing In..." : "Creating Account..."}
+											{isLogin ? tPage("submitting.login") : tPage("submitting.register")}
 										</div>
 									) : (
 										<span className="flex items-center justify-center gap-2">
@@ -272,7 +273,7 @@ export default function AuthPage() {
 							href="/"
 							className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-primary font-medium transition-colors"
 						>
-							← Back to Home
+							← {tPage("backToHome")}
 						</Link>
 					</div>
 				</div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { Sparkles, Zap, CheckCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface GenerationProgressProps {
 	stage: "analyzing" | "generating" | "complete";
@@ -8,24 +9,25 @@ interface GenerationProgressProps {
 }
 
 export function GenerationProgress({ stage, className = "" }: GenerationProgressProps) {
+	const t = useTranslations("aiSkills.progress");
 	const stages = [
 		{
 			id: "analyzing",
-			label: "Analyzing your input",
+			label: t("stages.analyzing.label"),
 			icon: Sparkles,
-			description: "Understanding your goals and experience",
+			description: t("stages.analyzing.description"),
 		},
 		{
 			id: "generating",
-			label: "Generating skills",
+			label: t("stages.generating.label"),
 			icon: Zap,
-			description: "Matching you with relevant skills",
+			description: t("stages.generating.description"),
 		},
 		{
 			id: "complete",
-			label: "Ready to review",
+			label: t("stages.complete.label"),
 			icon: CheckCircle,
-			description: "Your personalized skill profile is ready",
+			description: t("stages.complete.description"),
 		},
 	];
 
@@ -37,7 +39,7 @@ export function GenerationProgress({ stage, className = "" }: GenerationProgress
 				<div className="w-8 h-8 bg-linear-to-br from-primary to-purple rounded-full flex items-center justify-center animate-pulse">
 					<Sparkles className="w-5 h-5 text-white" />
 				</div>
-				<h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">Generating Your Skills...</h3>
+				<h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">{t("title")}</h3>
 			</div>
 
 			<div className="space-y-4">

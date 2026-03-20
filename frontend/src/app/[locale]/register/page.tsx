@@ -8,6 +8,7 @@ import { http } from "@/lib/http";
 
 export default function RegisterPage() {
 	const t = useTranslations("auth.register");
+	const tPage = useTranslations("auth.page");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [name, setName] = useState("");
@@ -31,11 +32,11 @@ export default function RegisterPage() {
 
 			if (user) {
 				// redirect to auth after successful registration
-				router.push("/auth?message=Registration successful! Please sign in.");
+				router.push("/auth?registered=1");
 			}
 		} catch (err) {
 			console.error("Registration error:", err);
-			const errorMessage = err instanceof Error ? err.message : "Registration failed. Please try again.";
+			const errorMessage = err instanceof Error ? err.message : tPage("errors.registrationFailed");
 			setError(errorMessage);
 		} finally {
 			setLoading(false);
@@ -114,7 +115,7 @@ export default function RegisterPage() {
 							disabled={loading}
 							className="w-full px-4 py-2 bg-primary text-primary-foreground rounded-sm hover:bg-primary-600 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-base"
 						>
-							{loading ? "..." : t("submit")}
+							{loading ? tPage("submitting.register") : t("submit")}
 						</button>
 					</form>
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { BookOpen, Clock, Zap } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface Stat {
 	label: string;
@@ -16,21 +17,23 @@ interface LearningStatsProps {
 }
 
 export function LearningStats({ enrolledCount = 0, skillsCount = 0, completedCount = 0 }: LearningStatsProps) {
+	const t = useTranslations("dashboard.learningStats");
+
 	const stats: Stat[] = [
 		{
-			label: "Skills Tracked",
+			label: t("skillsTracked"),
 			value: skillsCount,
 			icon: <Zap className="w-5 h-5" />,
 			color: "success",
 		},
 		{
-			label: "Enrolled Courses",
+			label: t("enrolledCourses"),
 			value: enrolledCount,
 			icon: <BookOpen className="w-5 h-5" />,
 			color: "primary",
 		},
 		{
-			label: "Hours Learning",
+			label: t("hoursLearning"),
 			value: completedCount * 2, // rough estimate
 			icon: <Clock className="w-5 h-5" />,
 			color: "info",

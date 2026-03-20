@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface QuickActionCardProps {
 	title: string;
@@ -14,6 +15,8 @@ interface QuickActionCardProps {
 }
 
 export function QuickActionCard({ title, description, icon: Icon, href, badge, gradient }: QuickActionCardProps) {
+	const t = useTranslations("profile.quickActionCard");
+
 	// default gradient if none provided
 	const bgGradient = gradient || "from-primary-50 to-purple-50 dark:from-primary-900/20 dark:to-purple-900/20";
 
@@ -42,7 +45,7 @@ export function QuickActionCard({ title, description, icon: Icon, href, badge, g
 
 				{/* arrow indicator */}
 				<div className="flex items-center text-primary text-sm font-bold mt-auto">
-					<span className="group-hover:mr-2 transition-all">View</span>
+					<span className="group-hover:mr-2 transition-all">{t("view")}</span>
 					<ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-all" />
 				</div>
 

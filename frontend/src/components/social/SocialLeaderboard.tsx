@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { Trophy, Medal, Flame, Zap } from "lucide-react";
 
 interface LeaderboardEntry {
@@ -23,6 +24,8 @@ interface LeaderboardEntry {
 type LeaderboardType = "weekly" | "global";
 
 export default function SocialLeaderboard() {
+	const locale = useLocale();
+	const t = useTranslations("social.leaderboard");
 	const [type, setType] = useState<LeaderboardType>("weekly");
 	const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
 	const [loading, setLoading] = useState(true);
@@ -55,9 +58,10 @@ export default function SocialLeaderboard() {
 		return <span className="text-sm font-bold text-gray-500 dark:text-gray-400">#{rank}</span>;
 	};
 
+	const numberFormatter = new Intl.NumberFormat(locale);
+
 	return (
 		<div className="space-y-6">
-			{/* type selector */}
 			<div className="flex gap-2 p-2 bg-gray-100 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
 				<button
 					onClick={() => setType("weekly")}
@@ -67,7 +71,7 @@ export default function SocialLeaderboard() {
 							: "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
 					}`}
 				>
-					Weekly Leaderboard
+					{t("filters.weekly")}
 				</button>
 				<button
 					onClick={() => setType("global")}
@@ -77,21 +81,20 @@ export default function SocialLeaderboard() {
 							: "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
 					}`}
 				>
-					All-Time Leaderboard
+					{t("filters.global")}
 				</button>
 			</div>
 
-			{/* leaderboard */}
 			<div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
 				<div className="p-6 border-b border-gray-200 dark:border-gray-700">
 					<div className="flex items-center gap-2">
 						<Trophy className="w-6 h-6 text-primary" />
 						<h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-							{type === "weekly" ? "Weekly Top Performers" : "All-Time Champions"}
+							{type === "weekly" ? t("weekly.title") : t("global.title")}
 						</h2>
 					</div>
 					<p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-						{type === "weekly" ? "most xp earned this week" : "total xp of all time"}
+						{type === "weekly" ? t("weekly.description") : t("global.description")}
 					</p>
 				</div>
 
@@ -102,7 +105,7 @@ export default function SocialLeaderboard() {
 				) : leaderboard.length === 0 ? (
 					<div className="text-center py-12">
 						<Trophy className="w-12 h-12 text-gray-400 mx-auto mb-3 opacity-50" />
-						<p className="text-gray-600 dark:text-gray-400">no entries yet</p>
+						<p className="text-gray-600 dark:text-gray-400">{t("empty")}</p>
 					</div>
 				) : (
 					<div className="divide-y divide-gray-200 dark:divide-gray-700">
@@ -114,16 +117,16 @@ export default function SocialLeaderboard() {
 								}`}
 							>
 								<div className="flex items-center gap-4">
-									{/* rank */}
 									<div className="w-12 flex items-center justify-center">{getRankBadge(entry.rank)}</div>
 
-									{/* user info */}
 									<div className="flex-1 min-w-0">
 										<div className="flex items-center gap-2">
 											<h3 className="font-semibold text-gray-900 dark:text-gray-100 truncate">{entry.user.name}</h3>
 											<div className="flex items-center gap-1 px-2 py-0.5 bg-primary/10 rounded-md">
 												<Zap className="w-3 h-3 text-primary" />
-												<span className="text-xs font-bold text-primary">Lv {entry.user.level}</span>
+												<span className="text-xs font-bold text-primary">
+													{t("levelBadge", { level: entry.user.level })}
+												</span>
 											</div>
 										</div>
 										{entry.user.region && (
@@ -133,13 +136,12 @@ export default function SocialLeaderboard() {
 										)}
 									</div>
 
-									{/* stats */}
 									<div className="flex items-center gap-6">
 										{entry.user.currentStreak > 0 && (
 											<div className="flex items-center gap-1">
 												<Flame className="w-4 h-4 text-orange-500" />
 												<span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-													{entry.user.currentStreak}
+													{numberFormatter.format(entry.user.currentStreak)}
 												</span>
 											</div>
 										)}
@@ -147,11 +149,11 @@ export default function SocialLeaderboard() {
 										<div className="text-right min-w-[100px]">
 											<div className="text-lg font-bold text-primary">
 												{type === "weekly" && entry.weeklyXP
-													? entry.weeklyXP.toLocaleString()
-													: entry.user.xp.toLocaleString()}
+													? numberFormatter.format(entry.weeklyXP)
+													: numberFormatter.format(entry.user.xp)}
 											</div>
 											<div className="text-xs text-gray-500 dark:text-gray-400">
-												{type === "weekly" ? "weekly xp" : "total xp"}
+												{type === "weekly" ? t("weekly.scoreLabel") : t("global.scoreLabel")}
 											</div>
 										</div>
 									</div>

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Target, TrendingUp, Award, ArrowRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface QuickAction {
 	icon: React.ReactNode;
@@ -11,31 +12,33 @@ interface QuickAction {
 	color: "primary" | "success" | "info";
 }
 
-const quickActions: QuickAction[] = [
-	{
-		icon: <Target className="w-6 h-6" />,
-		title: "My Skills",
-		description: "Manage and track your skills",
-		href: "/skills",
-		color: "primary",
-	},
-	{
-		icon: <TrendingUp className="w-6 h-6" />,
-		title: "Browse Courses",
-		description: "Explore our full catalog",
-		href: "/courses",
-		color: "success",
-	},
-	{
-		icon: <Award className="w-6 h-6" />,
-		title: "My Profile",
-		description: "Update your information",
-		href: "/profile",
-		color: "info",
-	},
-];
-
 export function QuickActions() {
+	const t = useTranslations("dashboard.quickActions");
+
+	const quickActions: QuickAction[] = [
+		{
+			icon: <Target className="w-6 h-6" />,
+			title: t("skills.title"),
+			description: t("skills.description"),
+			href: "/skills",
+			color: "primary",
+		},
+		{
+			icon: <TrendingUp className="w-6 h-6" />,
+			title: t("courses.title"),
+			description: t("courses.description"),
+			href: "/courses",
+			color: "success",
+		},
+		{
+			icon: <Award className="w-6 h-6" />,
+			title: t("profile.title"),
+			description: t("profile.description"),
+			href: "/profile",
+			color: "info",
+		},
+	];
+
 	const colorClasses = {
 		primary: {
 			bg: "bg-linear-to-br from-primary/10 to-purple/10 dark:from-primary/20 dark:to-purple/20",

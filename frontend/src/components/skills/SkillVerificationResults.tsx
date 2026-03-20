@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { http } from "@/lib/http";
 import type { SkillVerificationSubmitResponse, ProficiencyLevel } from "@/types";
+import { getProficiencyLabel } from "@/lib/i18n-utils";
 
 interface SkillVerificationResultsProps {
 	results: SkillVerificationSubmitResponse;
@@ -33,6 +35,8 @@ export default function SkillVerificationResults({
 	onRetake,
 	onCancel,
 }: SkillVerificationResultsProps) {
+	const t = useTranslations("skills.verificationResults");
+	const tCommon = useTranslations("common");
 	const [applying, setApplying] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
@@ -53,17 +57,17 @@ export default function SkillVerificationResults({
 		} catch (err) {
 			console.error("Failed to apply verification:", err);
 			const error = err as { response?: { data?: { error?: string } } };
-			setError(error.response?.data?.error || "Failed to apply verification");
+			setError(error.response?.data?.error || t("errors.apply"));
 			setApplying(false);
 		}
 	};
 
 	const getScoreMessage = () => {
 		const percentage = testResults.scorePercentage;
-		if (percentage >= 90) return "Outstanding! You're an expert!";
-		if (percentage >= 75) return "Excellent work! Advanced level achieved!";
-		if (percentage >= 60) return "Good job! Intermediate level achieved!";
-		return "Keep learning! You'll get there!";
+		if (percentage >= 90) return t("messages.expert");
+		if (percentage >= 75) return t("messages.advanced");
+		if (percentage >= 60) return t("messages.intermediate");
+		return t("messages.keepLearning");
 	};
 
 	const getScoreColor = () => {
@@ -82,7 +86,7 @@ export default function SkillVerificationResults({
 					<div className="text-center">
 						<div className="text-6xl mb-4">{passed ? "🎉" : "📚"}</div>
 						<h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-							{passed ? "Verification Passed!" : "Keep Learning!"}
+							{passed ? t("passedTitle") : t("failedTitle")}
 						</h2>
 						<p className={`text-lg font-medium ${getScoreColor()}`}>{getScoreMessage()}</p>
 					</div>
@@ -96,30 +100,30 @@ export default function SkillVerificationResults({
 							<div className="text-3xl font-bold bg-linear-to-br from-primary to-purple text-transparent bg-clip-text">
 								{testResults.scorePercentage}%
 							</div>
-							<div className="text-sm text-gray-600 dark:text-gray-300 mt-1">Score</div>
+							<div className="text-sm text-gray-600 dark:text-gray-300 mt-1">{t("summary.score")}</div>
 						</div>
 						<div className="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg text-center border border-gray-200 dark:border-gray-600">
 							<div className="text-3xl font-bold text-gray-900 dark:text-white">
 								{testResults.earnedPoints}/{testResults.totalPoints}
 							</div>
-							<div className="text-sm text-gray-600 dark:text-gray-300 mt-1">Points</div>
+							<div className="text-sm text-gray-600 dark:text-gray-300 mt-1">{t("summary.points")}</div>
 						</div>
 					</div>
 
 					{/* detailed stats */}
 					<div className="border-t border-gray-200 dark:border-gray-700 pt-4 space-y-3">
 						<div className="flex items-center justify-between">
-							<span className="text-gray-600 dark:text-gray-300">Questions Answered</span>
+							<span className="text-gray-600 dark:text-gray-300">{t("stats.questionsAnswered")}</span>
 							<span className="font-semibold text-gray-900 dark:text-white">{testResults.answersCount}</span>
 						</div>
 						<div className="flex items-center justify-between">
-							<span className="text-gray-600 dark:text-gray-300">Correct Answers</span>
+							<span className="text-gray-600 dark:text-gray-300">{t("stats.correctAnswers")}</span>
 							<span className="font-semibold text-green-600 dark:text-green-400">
 								{testResults.correctAnswersCount}
 							</span>
 						</div>
 						<div className="flex items-center justify-between">
-							<span className="text-gray-600 dark:text-gray-300">Incorrect Answers</span>
+							<span className="text-gray-600 dark:text-gray-300">{t("stats.incorrectAnswers")}</span>
 							<span className="font-semibold text-red-600 dark:text-red-400">
 								{testResults.answersCount - testResults.correctAnswersCount}
 							</span>
@@ -128,7 +132,7 @@ export default function SkillVerificationResults({
 
 					{/* achieved level */}
 					<div className="border-t border-gray-200 dark:border-gray-700 pt-4">
-						<h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Achieved Proficiency Level</h3>
+						<h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">{t("achievedLevel.title")}</h3>
 						<div className="flex items-center gap-3">
 							<div className="text-4xl">{proficiencyIcons[testResults.achievedLevel]}</div>
 							<div className="flex-1">
@@ -137,12 +141,10 @@ export default function SkillVerificationResults({
 										proficiencyColors[testResults.achievedLevel]
 									}`}
 								>
-									{testResults.achievedLevel}
+									{getProficiencyLabel(testResults.achievedLevel, tCommon)}
 								</div>
 								<p className="text-sm text-gray-600 dark:text-gray-300 mt-2">
-									{passed
-										? "This proficiency level will be added to your profile."
-										: "You need to score at least 60% to verify your skill proficiency."}
+									{passed ? t("achievedLevel.passedDescription") : t("achievedLevel.failedDescription")}
 								</p>
 							</div>
 						</div>
@@ -150,12 +152,12 @@ export default function SkillVerificationResults({
 
 					{/* scoring guide */}
 					<div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-						<h4 className="text-sm font-semibold text-blue-900 dark:text-blue-100 mb-2">Scoring Guide</h4>
+						<h4 className="text-sm font-semibold text-blue-900 dark:text-blue-100 mb-2">{t("guide.title")}</h4>
 						<div className="space-y-1 text-sm text-blue-800 dark:text-blue-200">
-							<div>• 90%+ = Expert Level</div>
-							<div>• 75-89% = Advanced Level</div>
-							<div>• 60-74% = Intermediate Level</div>
-							<div>• Below 60% = Not Verified</div>
+							<div>{t("guide.expert")}</div>
+							<div>{t("guide.advanced")}</div>
+							<div>{t("guide.intermediate")}</div>
+							<div>{t("guide.none")}</div>
 						</div>
 					</div>
 
@@ -171,21 +173,21 @@ export default function SkillVerificationResults({
 					<div className="flex gap-3">
 						{onCancel && (
 							<button
-								onClick={onCancel}
-								disabled={applying}
-								className="px-6 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 transition-colors"
-							>
-								Close
-							</button>
-						)}
-						<button
-							onClick={onRetake}
+							onClick={onCancel}
 							disabled={applying}
-							className="px-6 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+							className="px-6 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 transition-colors"
 						>
-							Retake Quiz
+							{tCommon("close")}
 						</button>
-					</div>
+					)}
+					<button
+						onClick={onRetake}
+						disabled={applying}
+						className="px-6 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+					>
+						{t("actions.retake")}
+					</button>
+				</div>
 
 					{passed && (
 						<button
@@ -193,7 +195,7 @@ export default function SkillVerificationResults({
 							disabled={applying}
 							className="px-8 py-2 bg-linear-to-r from-success to-green-600 text-white rounded-lg hover:from-success-600 hover:to-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 font-medium shadow-lg hover:shadow-xl"
 						>
-							{applying ? "Applying..." : "Apply to Profile"}
+							{applying ? t("actions.applying") : t("actions.apply")}
 						</button>
 					)}
 				</div>

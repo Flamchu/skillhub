@@ -27,7 +27,7 @@ export default function AuthCallbackPage() {
 				const errorDescription = searchParams.get("error_description");
 
 				if (error) {
-					throw new Error(errorDescription || "OAuth authentication failed");
+					throw new Error(errorDescription || t("oauth_authentication_failed"));
 				}
 
 				if (accessToken && refreshToken) {
@@ -39,7 +39,7 @@ export default function AuthCallbackPage() {
 					});
 
 					if (!response.ok) {
-						throw new Error("Failed to get user profile");
+						throw new Error(t("failed_to_get_user_profile"));
 					}
 
 					const { user } = await response.json();
@@ -57,12 +57,12 @@ export default function AuthCallbackPage() {
 						router.push("/dashboard");
 					}, 1500);
 				} else {
-					throw new Error("No authentication tokens received");
+					throw new Error(t("no_authentication_tokens_received"));
 				}
 			} catch (err) {
 				console.error("OAuth callback error:", err);
 				setStatus("error");
-				setError(err instanceof Error ? err.message : "Authentication failed");
+				setError(err instanceof Error ? err.message : t("authentication_failed"));
 
 				// redirect to auth after showing error
 				setTimeout(() => {
@@ -72,7 +72,7 @@ export default function AuthCallbackPage() {
 		};
 
 		processCallback();
-	}, [searchParams, router]);
+	}, [searchParams, router, t]);
 
 	return (
 		<div className="min-h-screen bg-background-alt flex items-center justify-center px-6">

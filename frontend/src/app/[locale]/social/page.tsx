@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useAuth } from "@/context/AuthProvider";
 import { AuthenticatedLayout } from "@/components/layout";
 import { PageLayout, LoadingState } from "@/components/ui";
@@ -17,6 +18,7 @@ export default function SocialPage() {
 	const { user, loading } = useAuth();
 	const router = useRouter();
 	const searchParams = useSearchParams();
+	const t = useTranslations("social.page");
 	const [activeTab, setActiveTab] = useState<Tab>("dashboard");
 
 	useEffect(() => {
@@ -38,7 +40,7 @@ export default function SocialPage() {
 	};
 
 	if (loading) {
-		return <LoadingState message="loading social zone..." />;
+		return <LoadingState message={t("loading")} />;
 	}
 
 	if (!user || !user.socialEnabled) {
@@ -46,10 +48,10 @@ export default function SocialPage() {
 	}
 
 	const tabs = [
-		{ id: "dashboard" as Tab, label: "Dashboard", icon: BarChart3 },
-		{ id: "leaderboard" as Tab, label: "Leaderboard", icon: Trophy },
-		{ id: "quests" as Tab, label: "Quests", icon: Target },
-		{ id: "profile" as Tab, label: "Profile", icon: User },
+		{ id: "dashboard" as Tab, label: t("tabs.dashboard"), icon: BarChart3 },
+		{ id: "leaderboard" as Tab, label: t("tabs.leaderboard"), icon: Trophy },
+		{ id: "quests" as Tab, label: t("tabs.quests"), icon: Target },
+		{ id: "profile" as Tab, label: t("tabs.profile"), icon: User },
 	];
 
 	return (
@@ -62,11 +64,11 @@ export default function SocialPage() {
 						<div className="flex items-center gap-3 mb-3">
 							<Sparkles className="w-10 h-10 text-primary" />
 							<h1 className="text-4xl md:text-5xl font-bold bg-linear-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
-								Social Zone
+								{t("title")}
 							</h1>
 						</div>
 						<p className="text-lg text-gray-600 dark:text-gray-300">
-							compete with others, complete quests, and level up your skills
+							{t("description")}
 						</p>
 					</div>
 

@@ -1,11 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useAuth } from "@/context/AuthProvider";
 import { Button } from "@/components/ui/Button";
 import { generateAISkills } from "@/lib/recommendations";
 import { Sparkles, RefreshCw, User, Target, CheckCircle } from "lucide-react";
 import type { AISkillSuggestion } from "@/types";
+import { getProficiencyLabel } from "@/lib/i18n-utils";
 
 interface AISkillGeneratorProps {
 	onSkillsGenerated?: (skills: AISkillSuggestion[]) => void;
@@ -14,6 +16,8 @@ interface AISkillGeneratorProps {
 
 export function AISkillGenerator({ onSkillsGenerated, className = "" }: AISkillGeneratorProps) {
 	const { user } = useAuth();
+	const t = useTranslations("skills.aiGenerator");
+	const tCommon = useTranslations("common");
 	const [prompt, setPrompt] = useState("");
 	const [suggestions, setSuggestions] = useState<AISkillSuggestion[]>([]);
 	const [isGenerating, setIsGenerating] = useState(false);
@@ -23,7 +27,7 @@ export function AISkillGenerator({ onSkillsGenerated, className = "" }: AISkillG
 	const handleGenerate = async () => {
 		if (!user) return;
 		if (prompt.trim().length < 10) {
-			setError("Please provide a more detailed description (at least 10 characters)");
+			setError(t("errors.promptTooShort"));
 			return;
 		}
 
@@ -35,7 +39,7 @@ export function AISkillGenerator({ onSkillsGenerated, className = "" }: AISkillG
 			setSelectedSkills(new Set()); // Reset selection
 		} catch (error) {
 			console.error("Failed to generate AI skills:", error);
-			setError("Failed to generate skill suggestions. Please try again.");
+			setError(t("errors.generate"));
 		} finally {
 			setIsGenerating(false);
 		}
@@ -75,11 +79,11 @@ export function AISkillGenerator({ onSkillsGenerated, className = "" }: AISkillG
 	};
 
 	const examplePrompts = [
-		"I'm a complete beginner wanting to learn web development from scratch",
-		"I'm a Python developer looking to transition into data science and machine learning",
-		"I want to become a full-stack developer with modern technologies",
-		"I'm interested in mobile app development and UI/UX design",
-		"I'm a backend developer wanting to learn DevOps and cloud technologies",
+		t("examples.beginner"),
+		t("examples.dataScience"),
+		t("examples.fullStack"),
+		t("examples.mobileUx"),
+		t("examples.devOps"),
 	];
 
 	return (
@@ -92,9 +96,9 @@ export function AISkillGenerator({ onSkillsGenerated, className = "" }: AISkillG
 					<Sparkles className="w-6 h-6 text-white" />
 				</div>
 				<div>
-					<h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">AI Skill Generator</h3>
+					<h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">{t("title")}</h3>
 					<p className="text-gray-600 dark:text-gray-300">
-						Describe your background or goals to get personalized skill recommendations
+						{t("description")}
 					</p>
 				</div>
 			</div>
@@ -102,13 +106,13 @@ export function AISkillGenerator({ onSkillsGenerated, className = "" }: AISkillG
 			{/* Prompt Input */}
 			<div className="mb-6">
 				<label htmlFor="ai-prompt" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-					Tell us about your background or learning goals:
+					{t("promptLabel")}
 				</label>
 				<textarea
 					id="ai-prompt"
 					value={prompt}
 					onChange={e => setPrompt(e.target.value)}
-					placeholder="e.g., I'm a marketing professional who wants to learn web development to build better landing pages..."
+					placeholder={t("promptPlaceholder")}
 					className="w-full h-24 p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
 					disabled={isGenerating}
 				/>
@@ -118,7 +122,7 @@ export function AISkillGenerator({ onSkillsGenerated, className = "" }: AISkillG
 			{/* Example Prompts */}
 			{prompt.length === 0 && (
 				<div className="mb-6">
-					<p className="text-sm text-gray-600 dark:text-gray-400 mb-3">Try these examples:</p>
+					<p className="text-sm text-gray-600 dark:text-gray-400 mb-3">{t("examplesTitle")}</p>
 					<div className="grid gap-2">
 						{examplePrompts.slice(0, 3).map((example, index) => (
 							<button
@@ -144,12 +148,12 @@ export function AISkillGenerator({ onSkillsGenerated, className = "" }: AISkillG
 					{isGenerating ? (
 						<>
 							<RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-							Generating Skills...
+							{t("actions.generating")}
 						</>
 					) : (
 						<>
 							<Sparkles className="w-4 h-4 mr-2" />
-							Generate Skill Recommendations
+							{t("actions.generate")}
 						</>
 					)}
 				</Button>
@@ -159,8 +163,8 @@ export function AISkillGenerator({ onSkillsGenerated, className = "" }: AISkillG
 			{suggestions.length > 0 && (
 				<div>
 					<div className="flex items-center justify-between mb-4">
-						<h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Recommended Skills</h4>
-						<span className="text-sm text-gray-500 dark:text-gray-400">Select skills to add to your profile</span>
+						<h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{t("results.title")}</h4>
+						<span className="text-sm text-gray-500 dark:text-gray-400">{t("results.subtitle")}</span>
 					</div>
 
 					<div className="grid gap-3 mb-6">
@@ -190,7 +194,7 @@ export function AISkillGenerator({ onSkillsGenerated, className = "" }: AISkillG
 											<span
 												className={`px-2 py-1 rounded-full text-xs font-medium ${getProficiencyColor(suggestion.suggestedProficiency)}`}
 											>
-												{suggestion.suggestedProficiency.toLowerCase()}
+												{getProficiencyLabel(suggestion.suggestedProficiency, tCommon)}
 											</span>
 										</div>
 										<p className="text-sm text-gray-600 dark:text-gray-300 mb-2">{suggestion.reason}</p>
@@ -214,7 +218,7 @@ export function AISkillGenerator({ onSkillsGenerated, className = "" }: AISkillG
 								className="px-6 py-3 bg-linear-to-r from-primary to-purple text-white rounded-lg hover:from-primary-600 hover:to-purple-600 shadow-lg hover:shadow-xl transition-all duration-300"
 							>
 								<CheckCircle className="w-4 h-4 mr-2" />
-								Add {selectedSkills.size} Selected Skills
+								{t("actions.addSelected", { count: selectedSkills.size })}
 							</Button>
 						</div>
 					)}

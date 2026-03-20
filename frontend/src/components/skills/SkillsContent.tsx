@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import { useAuth } from "@/context/AuthProvider";
 import { ErrorState, CardSkeleton } from "@/components/ui";
@@ -32,6 +33,7 @@ interface Skill {
 export function SkillsContent() {
 	const { user } = useAuth();
 	const router = useRouter();
+	const t = useTranslations("skills.content");
 	const [searchQuery, setSearchQuery] = useState("");
 	const [userSkills, setUserSkills] = useState<UserSkill[]>([]);
 	const [availableSkills, setAvailableSkills] = useState<Skill[]>([]);
@@ -67,11 +69,12 @@ export function SkillsContent() {
 			const response = await http.get(`/users/${user.id}/skills`);
 			setUserSkills(response.data.skills || []);
 		} catch (err) {
-			setError(err instanceof Error ? err.message : "failed to load skills");
+			console.error("failed to load user skills:", err);
+			setError(t("errors.load"));
 		} finally {
 			setLoading(false);
 		}
-	}, [user?.id]);
+	}, [user?.id, t]);
 
 	// add new skill to user profile
 	const handleAddSkill = async (skillId: string, proficiency: Exclude<ProficiencyLevel, "NONE">) => {
@@ -115,7 +118,7 @@ export function SkillsContent() {
 			await loadUserSkills();
 			setShowUpdateModal(false);
 			setSelectedSkill(null);
-			setSuccessMessage("Skill level updated successfully!");
+			setSuccessMessage(t("success.updated"));
 			setShowSuccess(true);
 		} catch (error: unknown) {
 			// check if verification is required
@@ -131,10 +134,7 @@ export function SkillsContent() {
 			}
 
 			console.error("Failed to update skill:", error);
-			const errorMessage =
-				(error && typeof error === "object" && "message" in error ? String(error.message) : null) ||
-				"Failed to update skill. Please try again.";
-			setSuccessMessage(errorMessage);
+			setSuccessMessage(t("errors.update"));
 			setShowSuccess(true);
 		}
 	};
@@ -151,11 +151,11 @@ export function SkillsContent() {
 			await loadUserSkills();
 			setShowUpdateModal(false);
 			setSelectedSkill(null);
-			setSuccessMessage("Skill removed from your profile");
+			setSuccessMessage(t("success.removed"));
 			setShowSuccess(true);
 		} catch (error) {
 			console.error("Failed to remove skill:", error);
-			setSuccessMessage("Failed to remove skill. Please try again.");
+			setSuccessMessage(t("errors.remove"));
 			setShowSuccess(true);
 		}
 	};
@@ -186,11 +186,11 @@ export function SkillsContent() {
 
 			// close AI modal and show success message
 			setShowAIModal(false);
-			setSuccessMessage(`Successfully added ${skills.length} skills to your profile!`);
+			setSuccessMessage(t("success.aiAdded", { count: skills.length }));
 			setShowSuccess(true);
 		} catch (error) {
 			console.error("Failed to add AI generated skills:", error);
-			setSuccessMessage("Failed to add some skills. Please try again.");
+			setSuccessMessage(t("errors.aiAdd"));
 			setShowSuccess(true);
 		}
 	};
@@ -237,7 +237,7 @@ export function SkillsContent() {
 	}
 
 	if (error) {
-		return <ErrorState title="Failed to load skills" message={error} onRetry={loadUserSkills} />;
+		return <ErrorState title={t("errors.loadTitle")} message={error} onRetry={loadUserSkills} />;
 	}
 
 	return (
@@ -280,10 +280,11 @@ export function SkillsContent() {
 					<div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
 						<div className="p-6">
 							<div className="flex justify-between items-center mb-6">
-								<h3 className="text-2xl font-bold text-gray-900 dark:text-white">AI Skill Generator</h3>
+								<h3 className="text-2xl font-bold text-gray-900 dark:text-white">{t("aiModalTitle")}</h3>
 								<button
 									onClick={() => setShowAIModal(false)}
 									className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-2xl"
+									aria-label={t("closeAiModal")}
 								>
 									×
 								</button>

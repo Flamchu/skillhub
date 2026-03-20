@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { Target, Zap, CheckCircle2, Circle } from "lucide-react";
 
 interface Quest {
@@ -15,6 +16,8 @@ interface Quest {
 }
 
 export default function SocialQuests() {
+	const locale = useLocale();
+	const t = useTranslations("social.quests");
 	const [quests, setQuests] = useState<Quest[]>([]);
 	const [loading, setLoading] = useState(true);
 
@@ -41,7 +44,6 @@ export default function SocialQuests() {
 
 		fetchQuests();
 
-		// refresh every minute to update progress
 		const interval = setInterval(fetchQuests, 60000);
 		return () => clearInterval(interval);
 	}, []);
@@ -56,28 +58,27 @@ export default function SocialQuests() {
 
 	const completedQuests = quests.filter(q => q.isCompleted);
 	const activeQuests = quests.filter(q => !q.isCompleted);
+	const numberFormatter = new Intl.NumberFormat(locale);
 
 	return (
 		<div className="space-y-6">
-			{/* progress header */}
 			<div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
 				<div className="flex items-center justify-between">
 					<div className="flex items-center gap-3">
 						<Target className="w-8 h-8 text-primary" />
 						<div>
-							<h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Daily Quests</h2>
-							<p className="text-sm text-gray-600 dark:text-gray-400">complete quests to earn bonus xp</p>
+							<h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{t("title")}</h2>
+							<p className="text-sm text-gray-600 dark:text-gray-400">{t("description")}</p>
 						</div>
 					</div>
 					<div className="text-right">
 						<div className="text-3xl font-bold text-primary">
 							{completedQuests.length}/{quests.length}
 						</div>
-						<p className="text-xs text-gray-500 dark:text-gray-400">completed</p>
+						<p className="text-xs text-gray-500 dark:text-gray-400">{t("completed")}</p>
 					</div>
 				</div>
 
-				{/* progress bar */}
 				<div className="mt-4">
 					<div className="h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
 						<div
@@ -88,10 +89,9 @@ export default function SocialQuests() {
 				</div>
 			</div>
 
-			{/* active quests */}
 			{activeQuests.length > 0 && (
 				<div>
-					<h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">Active Quests</h3>
+					<h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">{t("activeTitle")}</h3>
 					<div className="space-y-3">
 						{activeQuests.map(quest => {
 							const progressPercent = (quest.progress / quest.targetCount) * 100;
@@ -112,15 +112,19 @@ export default function SocialQuests() {
 												</div>
 												<div className="flex items-center gap-1 px-3 py-1 bg-primary/10 rounded-lg ml-3">
 													<Zap className="w-4 h-4 text-primary" />
-													<span className="text-sm font-bold text-primary">+{quest.xpReward} XP</span>
+													<span className="text-sm font-bold text-primary">
+														{t("reward", { amount: numberFormatter.format(quest.xpReward) })}
+													</span>
 												</div>
 											</div>
 
-											{/* progress */}
 											<div className="mt-3 space-y-1">
 												<div className="flex items-center justify-between text-sm">
 													<span className="text-gray-600 dark:text-gray-400">
-														Progress: {quest.progress} / {quest.targetCount}
+														{t("progressLabel", {
+															current: quest.progress,
+															total: quest.targetCount,
+														})}
 													</span>
 													<span className="font-semibold text-primary">{Math.floor(progressPercent)}%</span>
 												</div>
@@ -140,10 +144,9 @@ export default function SocialQuests() {
 				</div>
 			)}
 
-			{/* completed quests */}
 			{completedQuests.length > 0 && (
 				<div>
-					<h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">Completed Today</h3>
+					<h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">{t("completedTitle")}</h3>
 					<div className="space-y-3">
 						{completedQuests.map(quest => (
 							<div
@@ -163,7 +166,7 @@ export default function SocialQuests() {
 											<div className="flex items-center gap-1 px-3 py-1 bg-green-500/20 rounded-lg ml-3">
 												<Zap className="w-4 h-4 text-green-600 dark:text-green-400" />
 												<span className="text-sm font-bold text-green-600 dark:text-green-400">
-													+{quest.xpReward} XP
+													{t("reward", { amount: numberFormatter.format(quest.xpReward) })}
 												</span>
 											</div>
 										</div>
@@ -175,11 +178,10 @@ export default function SocialQuests() {
 				</div>
 			)}
 
-			{/* empty state */}
 			{quests.length === 0 && (
 				<div className="text-center py-12">
 					<Target className="w-12 h-12 text-gray-400 mx-auto mb-3 opacity-50" />
-					<p className="text-gray-600 dark:text-gray-400">no quests available today</p>
+					<p className="text-gray-600 dark:text-gray-400">{t("empty")}</p>
 				</div>
 			)}
 		</div>

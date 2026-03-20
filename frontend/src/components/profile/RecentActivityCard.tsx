@@ -1,6 +1,8 @@
 "use client";
 
 import { Clock } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
+import { formatRelativeTime } from "@/lib/i18n-utils";
 
 interface RecentActivityCardProps {
 	activity: {
@@ -11,20 +13,8 @@ interface RecentActivityCardProps {
 }
 
 export function RecentActivityCard({ activity }: RecentActivityCardProps) {
-	// format timestamp to relative time
-	const getRelativeTime = (timestamp: string) => {
-		const date = new Date(timestamp);
-		const now = new Date();
-		const diffMs = now.getTime() - date.getTime();
-		const diffMins = Math.floor(diffMs / 60000);
-		const diffHours = Math.floor(diffMs / 3600000);
-		const diffDays = Math.floor(diffMs / 86400000);
-
-		if (diffMins < 60) return `${diffMins}m ago`;
-		if (diffHours < 24) return `${diffHours}h ago`;
-		if (diffDays < 7) return `${diffDays}d ago`;
-		return date.toLocaleDateString();
-	};
+	const locale = useLocale();
+	const tCommon = useTranslations("common");
 
 	// icon based on activity type
 	const getActivityIcon = (type: string) => {
@@ -51,7 +41,7 @@ export function RecentActivityCard({ activity }: RecentActivityCardProps) {
 				<p className="text-sm font-medium text-gray-900 dark:text-white leading-relaxed">{activity.description}</p>
 				<div className="flex items-center gap-1.5 mt-2 text-xs text-gray-500 dark:text-gray-400 font-medium">
 					<Clock className="w-3.5 h-3.5" />
-					<span>{getRelativeTime(activity.timestamp)}</span>
+					<span>{formatRelativeTime(activity.timestamp, locale, tCommon)}</span>
 				</div>
 			</div>
 		</div>
