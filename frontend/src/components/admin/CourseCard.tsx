@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Edit2, Trash2, Eye, Star, Clock, Users, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { formatMinutesDuration, getCourseSourceLabel, getDifficultyLabel } from "@/lib/i18n-utils";
 import type { Course } from "@/types";
 
 interface CourseCardProps {
@@ -17,6 +19,9 @@ interface CourseCardProps {
  * Admin course management card component
  */
 export function CourseCard({ course, onDelete, deletingId }: CourseCardProps) {
+	const t = useTranslations("admin.courseCard");
+	const tCommon = useTranslations("common");
+
 	return (
 		<GlassCard>
 			<div className="flex items-start justify-between">
@@ -24,10 +29,10 @@ export function CourseCard({ course, onDelete, deletingId }: CourseCardProps) {
 					<div className="flex items-center space-x-3 mb-3">
 						<h3 className="text-lg font-semibold text-gray-900 dark:text-white">{course.title}</h3>
 						<Badge variant={course.source === "INTERNAL" ? "primary" : "default"} size="sm">
-							{course.source}
+							{getCourseSourceLabel(course.source, tCommon)}
 						</Badge>
 						<Badge variant="default" size="sm">
-							{course.difficulty}
+							{getDifficultyLabel(course.difficulty, tCommon)}
 						</Badge>
 						{course.isPaid && (
 							<Badge variant="info" size="sm">
@@ -48,15 +53,13 @@ export function CourseCard({ course, onDelete, deletingId }: CourseCardProps) {
 						{course.durationMinutes && (
 							<div className="flex items-center space-x-1">
 								<Clock className="w-4 h-4" />
-								<span>
-									{Math.floor(course.durationMinutes / 60)}h {course.durationMinutes % 60}m
-								</span>
+								<span>{formatMinutesDuration(course.durationMinutes, tCommon)}</span>
 							</div>
 						)}
 						{course._count && (
 							<div className="flex items-center space-x-1">
 								<Users className="w-4 h-4" />
-								<span>{course._count.Bookmark} bookmarks</span>
+								<span>{t("bookmarks", { count: course._count.Bookmark })}</span>
 							</div>
 						)}
 					</div>
@@ -71,7 +74,7 @@ export function CourseCard({ course, onDelete, deletingId }: CourseCardProps) {
 							))}
 							{course.skills.length > 3 && (
 								<Badge variant="default" size="sm">
-									+{course.skills.length - 3} more
+									{t("moreSkills", { count: course.skills.length - 3 })}
 								</Badge>
 							)}
 						</div>
@@ -86,13 +89,21 @@ export function CourseCard({ course, onDelete, deletingId }: CourseCardProps) {
 							size="sm"
 							onClick={() => window.open(course.url, "_blank")}
 							className="hover:bg-blue-50 dark:hover:bg-blue-900/20"
+							aria-label={t("actions.view")}
+							title={t("actions.view")}
 						>
 							<Eye className="h-4 w-4" />
 						</Button>
 					)}
 
 					<Link href={`/admin/courses/${course.id}/edit`}>
-						<Button variant="ghost" size="sm" className="hover:bg-green-50 dark:hover:bg-green-900/20">
+						<Button
+							variant="ghost"
+							size="sm"
+							className="hover:bg-green-50 dark:hover:bg-green-900/20"
+							aria-label={tCommon("edit")}
+							title={tCommon("edit")}
+						>
 							<Edit2 className="h-4 w-4" />
 						</Button>
 					</Link>
@@ -103,6 +114,8 @@ export function CourseCard({ course, onDelete, deletingId }: CourseCardProps) {
 						onClick={() => onDelete(course.id, course.title)}
 						disabled={deletingId === course.id}
 						className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
+						aria-label={deletingId === course.id ? t("actions.deleting") : tCommon("delete")}
+						title={deletingId === course.id ? t("actions.deleting") : tCommon("delete")}
 					>
 						{deletingId === course.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
 					</Button>

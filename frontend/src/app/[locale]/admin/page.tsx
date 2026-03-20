@@ -9,12 +9,17 @@ import { Users, BookOpen, Target, BarChart3, Plus, TrendingUp, Loader2, AlertCir
 import Link from "next/link";
 import { api } from "@/lib/http";
 import type { DashboardStats, DashboardStatsResponse } from "@/types";
+import { useLocale, useTranslations } from "next-intl";
 
 export default function AdminDashboard() {
 	const { user } = useAuth();
+	const locale = useLocale();
+	const t = useTranslations("admin.dashboard");
+	const tCommon = useTranslations("common");
 	const [stats, setStats] = useState<DashboardStats | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
+	const numberFormatter = new Intl.NumberFormat(locale);
 
 	useEffect(() => {
 		const loadStats = async () => {
@@ -24,13 +29,26 @@ export default function AdminDashboard() {
 				const response = (await api.getDashboardStats()) as DashboardStatsResponse;
 				setStats(response.stats);
 			} catch (err) {
-				setError(err instanceof Error ? err.message : "Failed to load dashboard statistics");
+				setError(err instanceof Error ? err.message : t("errors.loadStats"));
 			} finally {
 				setLoading(false);
 			}
 		};
 		loadStats();
-	}, []);
+	}, [t]);
+
+	const getActivityTypeLabel = (type: string) => {
+		switch (type) {
+			case "user":
+				return t("recentActivity.types.user");
+			case "course":
+				return t("recentActivity.types.course");
+			case "skill":
+				return t("recentActivity.types.skill");
+			default:
+				return type;
+		}
+	};
 
 	if (loading) {
 		return (
@@ -39,8 +57,8 @@ export default function AdminDashboard() {
 					<div className="w-20 h-20 bg-linear-to-br from-primary to-purple rounded-2xl flex items-center justify-center mx-auto mb-6">
 						<Loader2 className="w-10 h-10 animate-spin text-white" />
 					</div>
-					<h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Loading Dashboard</h2>
-					<p className="text-gray-600 dark:text-gray-300">Gathering the latest statistics...</p>
+					<h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">{t("loading.title")}</h2>
+					<p className="text-gray-600 dark:text-gray-300">{t("loading.description")}</p>
 				</div>
 			</div>
 		);
@@ -53,14 +71,14 @@ export default function AdminDashboard() {
 					<div className="w-20 h-20 bg-linear-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
 						<AlertCircle className="w-10 h-10 text-white" />
 					</div>
-					<h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Failed to load dashboard</h2>
+					<h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">{t("errors.title")}</h2>
 					<p className="text-gray-600 dark:text-gray-300 mb-8">{error}</p>
 					<Button
 						variant="outline"
 						onClick={() => window.location.reload()}
 						className="bg-linear-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 border-0"
 					>
-						Try Again
+						{tCommon("tryAgain")}
 					</Button>
 				</div>
 			</div>
@@ -75,17 +93,16 @@ export default function AdminDashboard() {
 			<div className="text-center mb-12">
 				<div className="mb-6">
 					<span className="inline-flex items-center px-4 py-2 bg-linear-to-r from-success-50 to-info-50 dark:from-success-900/20 dark:to-info-900/20 text-success dark:text-success-400 rounded-full text-sm font-semibold border border-success/30 dark:border-success-400/30">
-						🛠️ Admin Panel
+						🛠️ {t("badge")}
 					</span>
 				</div>
 				<h1 className="text-4xl md:text-5xl font-bold mb-4">
 					<span className="bg-linear-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
-						Dashboard Overview
+						{t("title")}
 					</span>
 				</h1>
 				<p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
-					Welcome back, <span className="font-semibold text-primary">{user?.name || "Admin"}</span>! Here&apos;s
-					what&apos;s happening with your platform.
+					{t("welcome", { name: user?.name || t("fallbackAdmin") })}
 				</p>
 			</div>
 
@@ -98,11 +115,11 @@ export default function AdminDashboard() {
 						</div>
 					</div>
 					<div className="space-y-2">
-						<p className="text-sm font-semibold text-primary uppercase tracking-wide">Total Users</p>
-						<p className="text-3xl font-bold text-gray-900 dark:text-gray-100">{stats.totals.users.toLocaleString()}</p>
+						<p className="text-sm font-semibold text-primary uppercase tracking-wide">{t("stats.totalUsers")}</p>
+						<p className="text-3xl font-bold text-gray-900 dark:text-gray-100">{numberFormatter.format(stats.totals.users)}</p>
 						<div className="flex items-center text-sm text-success">
 							<TrendingUp className="h-4 w-4 mr-1" />
-							<span>+{stats.growth.usersThisWeek} this week</span>
+							<span>{t("stats.thisWeek", { count: numberFormatter.format(stats.growth.usersThisWeek) })}</span>
 						</div>
 					</div>
 				</div>
@@ -114,13 +131,13 @@ export default function AdminDashboard() {
 						</div>
 					</div>
 					<div className="space-y-2">
-						<p className="text-sm font-semibold text-success uppercase tracking-wide">Total Courses</p>
+						<p className="text-sm font-semibold text-success uppercase tracking-wide">{t("stats.totalCourses")}</p>
 						<p className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-							{stats.totals.courses.toLocaleString()}
+							{numberFormatter.format(stats.totals.courses)}
 						</p>
 						<div className="flex items-center text-sm text-success">
 							<TrendingUp className="h-4 w-4 mr-1" />
-							<span>+{stats.growth.coursesThisWeek} this week</span>
+							<span>{t("stats.thisWeek", { count: numberFormatter.format(stats.growth.coursesThisWeek) })}</span>
 						</div>
 					</div>
 				</div>
@@ -132,13 +149,13 @@ export default function AdminDashboard() {
 						</div>
 					</div>
 					<div className="space-y-2">
-						<p className="text-sm font-semibold text-info uppercase tracking-wide">Total Skills</p>
+						<p className="text-sm font-semibold text-info uppercase tracking-wide">{t("stats.totalSkills")}</p>
 						<p className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-							{stats.totals.skills.toLocaleString()}
+							{numberFormatter.format(stats.totals.skills)}
 						</p>
 						<div className="flex items-center text-sm text-success">
 							<TrendingUp className="h-4 w-4 mr-1" />
-							<span>+{stats.growth.skillsThisWeek} this week</span>
+							<span>{t("stats.thisWeek", { count: numberFormatter.format(stats.growth.skillsThisWeek) })}</span>
 						</div>
 					</div>
 				</div>
@@ -147,14 +164,14 @@ export default function AdminDashboard() {
 					<div className="flex items-center mb-4">
 						<BarChart3 className="h-8 w-8 text-warning-600 dark:text-warning-400 mr-3" />
 						<div>
-							<p className="text-sm text-warning-700 dark:text-warning-300">Total Tests</p>
+							<p className="text-sm text-warning-700 dark:text-warning-300">{t("stats.totalTests")}</p>
 							<p className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-								{stats.totals.tests.toLocaleString()}
+								{numberFormatter.format(stats.totals.tests)}
 							</p>
 						</div>
 					</div>
 					<div className="text-sm text-warning-600 dark:text-warning-400">
-						<span>Assessment & evaluation system</span>
+						<span>{t("stats.testsDescription")}</span>
 					</div>
 				</div>
 			</div>
@@ -164,10 +181,10 @@ export default function AdminDashboard() {
 				<div className="text-center mb-8">
 					<h2 className="text-3xl font-bold mb-2">
 						<span className="bg-linear-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
-							Quick Actions
+							{t("quickActions.title")}
 						</span>
 					</h2>
-					<p className="text-gray-600 dark:text-gray-300">Common administrative tasks</p>
+					<p className="text-gray-600 dark:text-gray-300">{t("quickActions.description")}</p>
 				</div>
 
 				<div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -177,9 +194,9 @@ export default function AdminDashboard() {
 								<Plus className="h-6 w-6 text-white" />
 							</div>
 							<h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-2 group-hover:text-primary transition-colors">
-								Create Course
+								{t("quickActions.cards.createCourse.title")}
 							</h3>
-							<p className="text-gray-600 dark:text-gray-300 text-sm">Add a new course to the platform</p>
+							<p className="text-gray-600 dark:text-gray-300 text-sm">{t("quickActions.cards.createCourse.description")}</p>
 						</div>
 					</Link>
 
@@ -189,9 +206,9 @@ export default function AdminDashboard() {
 								<Target className="h-6 w-6 text-white" />
 							</div>
 							<h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-2 group-hover:text-success transition-colors">
-								Create Skill
+								{t("quickActions.cards.createSkill.title")}
 							</h3>
-							<p className="text-gray-600 dark:text-gray-300 text-sm">Add a new skill to the catalog</p>
+							<p className="text-gray-600 dark:text-gray-300 text-sm">{t("quickActions.cards.createSkill.description")}</p>
 						</div>
 					</Link>
 
@@ -201,9 +218,9 @@ export default function AdminDashboard() {
 								<Users className="h-6 w-6 text-white" />
 							</div>
 							<h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-2 group-hover:text-warning transition-colors">
-								Manage Users
+								{t("quickActions.cards.manageUsers.title")}
 							</h3>
-							<p className="text-gray-600 dark:text-gray-300 text-sm">View and manage user accounts</p>
+							<p className="text-gray-600 dark:text-gray-300 text-sm">{t("quickActions.cards.manageUsers.description")}</p>
 						</div>
 					</Link>
 				</div>
@@ -214,10 +231,10 @@ export default function AdminDashboard() {
 				<div className="text-center mb-8">
 					<h2 className="text-3xl font-bold mb-2">
 						<span className="bg-linear-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
-							Social Zone Tools
+							{t("socialTools.title")}
 						</span>
 					</h2>
-					<p className="text-gray-600 dark:text-gray-300">Manage XP and gamification features</p>
+					<p className="text-gray-600 dark:text-gray-300">{t("socialTools.description")}</p>
 				</div>
 				<XPManager />
 			</div>
@@ -227,10 +244,10 @@ export default function AdminDashboard() {
 				<div className="text-center mb-8">
 					<h2 className="text-3xl font-bold mb-2">
 						<span className="bg-linear-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
-							Recent Activity
+							{t("recentActivity.title")}
 						</span>
 					</h2>
-					<p className="text-gray-600 dark:text-gray-300">Latest platform updates</p>
+					<p className="text-gray-600 dark:text-gray-300">{t("recentActivity.description")}</p>
 				</div>
 
 				<div className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm border border-primary/20 dark:border-gray-700 rounded-2xl p-8">
@@ -269,7 +286,7 @@ export default function AdminDashboard() {
 													: "bg-warning/20 text-warning"
 										}`}
 									>
-										{activity.type}
+										{getActivityTypeLabel(activity.type)}
 									</Badge>
 								</div>
 							))
@@ -278,7 +295,7 @@ export default function AdminDashboard() {
 								<div className="w-16 h-16 bg-linear-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
 									<BarChart3 className="w-8 h-8 text-gray-400" />
 								</div>
-								<p className="text-gray-500 dark:text-gray-400 font-medium">No recent activity</p>
+								<p className="text-gray-500 dark:text-gray-400 font-medium">{t("recentActivity.empty")}</p>
 							</div>
 						)}
 					</div>
@@ -293,10 +310,10 @@ export default function AdminDashboard() {
 					</div>
 				</div>
 				<div className="space-y-2">
-					<p className="text-sm font-semibold text-warning uppercase tracking-wide">Test Results</p>
-					<p className="text-3xl font-bold text-gray-900 dark:text-gray-100">{stats.totals.tests.toLocaleString()}</p>
+					<p className="text-sm font-semibold text-warning uppercase tracking-wide">{t("testResults.title")}</p>
+					<p className="text-3xl font-bold text-gray-900 dark:text-gray-100">{numberFormatter.format(stats.totals.tests)}</p>
 					<div className="text-sm text-gray-500 dark:text-gray-400">
-						<span>Assessment & evaluation system</span>
+						<span>{t("testResults.description")}</span>
 					</div>
 				</div>
 			</div>

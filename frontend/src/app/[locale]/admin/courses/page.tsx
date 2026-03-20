@@ -10,8 +10,12 @@ import { CourseCard, YouTubeImportModal } from "@/components/admin";
 import { Plus, Search, BookOpen, Youtube } from "lucide-react";
 import Link from "next/link";
 import type { CourseFilters } from "@/types";
+import { useTranslations } from "next-intl";
+import { getCourseSourceLabel, getDifficultyLabel } from "@/lib/i18n-utils";
 
 export default function AdminCoursesPage() {
+	const t = useTranslations("admin.coursesPage");
+	const tCommon = useTranslations("common");
 	const [searchQuery, setSearchQuery] = useState("");
 	const [selectedSource, setSelectedSource] = useState<CourseFilters["source"] | "all">("all");
 	const [selectedDifficulty, setSelectedDifficulty] = useState<CourseFilters["difficulty"] | "all">("all");
@@ -35,7 +39,7 @@ export default function AdminCoursesPage() {
 	const pagination = data?.pagination;
 
 	const handleDelete = async (courseId: string, courseName: string) => {
-		if (!confirm(`Are you sure you want to delete "${courseName}"? This action cannot be undone.`)) {
+		if (!confirm(t("alerts.confirmDelete", { courseName }))) {
 			return;
 		}
 
@@ -44,7 +48,7 @@ export default function AdminCoursesPage() {
 			await api.deleteCourse(courseId);
 			refetch();
 		} catch (error) {
-			alert(`Failed to delete course: ${error instanceof Error ? error.message : "Unknown error"}`);
+			alert(t("alerts.deleteFailed", { message: error instanceof Error ? error.message : t("alerts.unknownError") }));
 		} finally {
 			setDeletingId(null);
 		}
@@ -61,8 +65,8 @@ export default function AdminCoursesPage() {
 	return (
 		<PageLayout>
 			<PageHeader
-				title="Course Management"
-				description="Manage all courses on your platform"
+				title={t("title")}
+				description={t("description")}
 				action={
 					<div className="flex gap-3">
 						<Button
@@ -72,12 +76,12 @@ export default function AdminCoursesPage() {
 							className="bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 shadow-sm hover:shadow-md transition-all duration-200"
 						>
 							<Youtube className="h-4 w-4 mr-2" />
-							YouTube Import
+							{t("actions.youtubeImport")}
 						</Button>
 						<Link href="/admin/courses/new">
 							<Button className="bg-linear-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200">
 								<Plus className="h-4 w-4 mr-2" />
-								Add Course
+								{t("actions.addCourse")}
 							</Button>
 						</Link>
 					</div>
@@ -88,9 +92,9 @@ export default function AdminCoursesPage() {
 			<GlassCard className="p-6 mb-8">
 				<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 					<div>
-						<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Search</label>
+						<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{tCommon("search")}</label>
 						<Input
-							placeholder="Search courses..."
+							placeholder={t("filters.searchPlaceholder")}
 							value={searchQuery}
 							onChange={e => setSearchQuery(e.target.value)}
 							leftIcon={<Search className="h-4 w-4" />}
@@ -98,7 +102,7 @@ export default function AdminCoursesPage() {
 					</div>
 
 					<div>
-						<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Source</label>
+						<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t("filters.sourceLabel")}</label>
 						<select
 							value={selectedSource}
 							onChange={e => setSelectedSource(e.target.value as CourseFilters["source"] | "all")}
@@ -106,14 +110,14 @@ export default function AdminCoursesPage() {
 						>
 							{sources.map(source => (
 								<option key={source} value={source}>
-									{source === "all" ? "All Sources" : source}
+									{source === "all" ? t("filters.allSources") : getCourseSourceLabel(source, tCommon)}
 								</option>
 							))}
 						</select>
 					</div>
 
 					<div>
-						<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Difficulty</label>
+						<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t("filters.difficultyLabel")}</label>
 						<select
 							value={selectedDifficulty}
 							onChange={e => setSelectedDifficulty(e.target.value as CourseFilters["difficulty"] | "all")}
@@ -121,7 +125,7 @@ export default function AdminCoursesPage() {
 						>
 							{difficulties.map(difficulty => (
 								<option key={difficulty} value={difficulty}>
-									{difficulty === "all" ? "All Levels" : difficulty}
+									{difficulty === "all" ? t("filters.allLevels") : getDifficultyLabel(difficulty, tCommon)}
 								</option>
 							))}
 						</select>
@@ -130,13 +134,13 @@ export default function AdminCoursesPage() {
 			</GlassCard>
 
 			{/* Loading State */}
-			{isLoading && <LoadingState message="Loading courses..." />}
+			{isLoading && <LoadingState message={t("loading")} />}
 
 			{/* Error State */}
 			{error && (
 				<ErrorState
-					title="Failed to load courses"
-					message="Something went wrong while fetching the courses."
+					title={t("errors.loadTitle")}
+					message={t("errors.loadDescription")}
 					onRetry={() => refetch()}
 				/>
 			)}
@@ -153,9 +157,11 @@ export default function AdminCoursesPage() {
 						<GlassCard className="p-6">
 							<div className="flex items-center justify-between">
 								<div className="text-sm text-gray-600 dark:text-gray-400">
-									Showing {(pagination.page - 1) * pagination.limit + 1} to{" "}
-									{Math.min(pagination.page * pagination.limit, pagination.totalCount)} of {pagination.totalCount}{" "}
-									courses
+									{t("pagination.summary", {
+										from: (pagination.page - 1) * pagination.limit + 1,
+										to: Math.min(pagination.page * pagination.limit, pagination.totalCount),
+										total: pagination.totalCount,
+									})}
 								</div>
 								<div className="flex space-x-2">
 									<Button
@@ -164,10 +170,10 @@ export default function AdminCoursesPage() {
 										onClick={() => setCurrentPage(currentPage - 1)}
 										disabled={!pagination.hasPrev}
 									>
-										Previous
+										{tCommon("previous")}
 									</Button>
 									<span className="py-2 px-3 text-sm text-gray-700 dark:text-gray-300">
-										Page {pagination.page} of {pagination.totalPages}
+										{t("pagination.page", { page: pagination.page, totalPages: pagination.totalPages })}
 									</span>
 									<Button
 										variant="outline"
@@ -175,7 +181,7 @@ export default function AdminCoursesPage() {
 										onClick={() => setCurrentPage(currentPage + 1)}
 										disabled={!pagination.hasNext}
 									>
-										Next
+										{tCommon("next")}
 									</Button>
 								</div>
 							</div>
@@ -186,11 +192,11 @@ export default function AdminCoursesPage() {
 					{courses.length === 0 && (
 						<GlassCard className="p-12 text-center">
 							<BookOpen className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-							<h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No courses found</h3>
+							<h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">{t("empty.title")}</h3>
 							<p className="text-gray-600 dark:text-gray-400 mb-6">
 								{searchQuery || selectedSource !== "all" || selectedDifficulty !== "all"
-									? "Try adjusting your search criteria."
-									: "Get started by creating your first course."}
+									? t("empty.filteredDescription")
+									: t("empty.description")}
 							</p>
 							<div className="flex gap-3 justify-center">
 								<Button
@@ -199,12 +205,12 @@ export default function AdminCoursesPage() {
 									className="bg-red-50 hover:bg-red-100 text-red-600 border border-red-200"
 								>
 									<Youtube className="h-4 w-4 mr-2" />
-									Import from YouTube
+									{t("empty.importFromYoutube")}
 								</Button>
 								<Link href="/admin/courses/new">
 									<Button className="bg-linear-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200">
 										<Plus className="h-4 w-4 mr-2" />
-										Add Course
+										{t("actions.addCourse")}
 									</Button>
 								</Link>
 							</div>

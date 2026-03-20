@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/Badge";
 import { Alert } from "@/components/ui/Alert";
 import { api } from "@/lib/http";
 import { Youtube, X, Loader2, CheckCircle, AlertCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { formatMinutesDuration, getDifficultyLabel } from "@/lib/i18n-utils";
 import type { YouTubeImportData, YouTubeImportResponse, Skill } from "@/types";
 
 interface YouTubeImportModalProps {
@@ -15,6 +17,8 @@ interface YouTubeImportModalProps {
 }
 
 export function YouTubeImportModal({ isOpen, onClose, onSuccess }: YouTubeImportModalProps) {
+	const t = useTranslations("admin.youtubeImport");
+	const tCommon = useTranslations("common");
 	const [formData, setFormData] = useState<YouTubeImportData>({
 		url: "",
 		skillIds: [],
@@ -78,14 +82,14 @@ export function YouTubeImportModal({ isOpen, onClose, onSuccess }: YouTubeImport
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		if (!formData.url.trim()) {
-			setError("YouTube URL is required");
+			setError(t("validation.urlRequired"));
 			return;
 		}
 
 		// validate YouTube URL
 		const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com\/(watch\?v=|playlist\?list=)|youtu\.be\/)/;
 		if (!youtubeRegex.test(formData.url)) {
-			setError("Please enter a valid YouTube URL (video or playlist)");
+			setError(t("validation.urlInvalid"));
 			return;
 		}
 
@@ -97,7 +101,7 @@ export function YouTubeImportModal({ isOpen, onClose, onSuccess }: YouTubeImport
 			setResult(response);
 			onSuccess(response);
 		} catch (err) {
-			setError(err instanceof Error ? err.message : "Failed to import YouTube course");
+			setError(err instanceof Error ? err.message : t("validation.importFailed"));
 		} finally {
 			setLoading(false);
 		}
@@ -114,11 +118,11 @@ export function YouTubeImportModal({ isOpen, onClose, onSuccess }: YouTubeImport
 							<Youtube className="h-5 w-5 text-red-600 dark:text-red-400" />
 						</div>
 						<div>
-							<h2 className="text-xl font-bold text-gray-900 dark:text-white">Import YouTube Course</h2>
-							<p className="text-sm text-gray-600 dark:text-gray-400">Import a YouTube video or playlist as a course</p>
+							<h2 className="text-xl font-bold text-gray-900 dark:text-white">{t("title")}</h2>
+							<p className="text-sm text-gray-600 dark:text-gray-400">{t("description")}</p>
 						</div>
 					</div>
-					<Button variant="ghost" size="sm" onClick={handleClose}>
+					<Button variant="ghost" size="sm" onClick={handleClose} aria-label={tCommon("close")}>
 						<X className="h-5 w-5" />
 					</Button>
 				</div>
@@ -129,7 +133,7 @@ export function YouTubeImportModal({ isOpen, onClose, onSuccess }: YouTubeImport
 							<Alert className="border-green-200 bg-green-50 dark:bg-green-900/20">
 								<CheckCircle className="h-4 w-4 text-green-600" />
 								<div>
-									<h4 className="font-medium text-green-800 dark:text-green-200">Successfully Imported!</h4>
+									<h4 className="font-medium text-green-800 dark:text-green-200">{t("success.title")}</h4>
 									<p className="text-green-700 dark:text-green-300 mt-1">{result.message}</p>
 								</div>
 							</Alert>
@@ -144,17 +148,19 @@ export function YouTubeImportModal({ isOpen, onClose, onSuccess }: YouTubeImport
 								<CardContent>
 									<div className="space-y-2 text-sm">
 										<p>
-											<span className="font-medium">Lessons:</span> {result.lessonsCount}
+											<span className="font-medium">{t("success.details.lessonsLabel")}</span> {result.lessonsCount}
 										</p>
 										<p>
-											<span className="font-medium">Duration:</span> {result.course.durationMinutes} minutes
+											<span className="font-medium">{t("success.details.durationLabel")}</span>{" "}
+											{formatMinutesDuration(result.course.durationMinutes ?? 0, tCommon)}
 										</p>
 										<p>
-											<span className="font-medium">Difficulty:</span> {result.course.difficulty}
+											<span className="font-medium">{t("success.details.difficultyLabel")}</span>{" "}
+											{getDifficultyLabel(result.course.difficulty, tCommon)}
 										</p>
 										{result.course.aiSummary && (
 											<div>
-												<span className="font-medium">AI Summary:</span>
+												<span className="font-medium">{t("success.details.aiSummaryLabel")}</span>
 												<p className="text-gray-600 dark:text-gray-400 mt-1">{result.course.aiSummary}</p>
 											</div>
 										)}
@@ -164,7 +170,7 @@ export function YouTubeImportModal({ isOpen, onClose, onSuccess }: YouTubeImport
 
 							<div className="flex gap-3">
 								<Button onClick={handleClose} className="flex-1">
-									Close
+									{tCommon("close")}
 								</Button>
 								<Button
 									variant="ghost"
@@ -173,7 +179,7 @@ export function YouTubeImportModal({ isOpen, onClose, onSuccess }: YouTubeImport
 										setFormData(prev => ({ ...prev, url: "" }));
 									}}
 								>
-									Import Another
+									{t("actions.importAnother")}
 								</Button>
 							</div>
 						</div>
@@ -183,7 +189,7 @@ export function YouTubeImportModal({ isOpen, onClose, onSuccess }: YouTubeImport
 								<Alert className="border-red-200 bg-red-50 dark:bg-red-900/20">
 									<AlertCircle className="h-4 w-4 text-red-600" />
 									<div>
-										<h4 className="font-medium text-red-800 dark:text-red-200">Error</h4>
+										<h4 className="font-medium text-red-800 dark:text-red-200">{tCommon("error")}</h4>
 										<p className="text-red-700 dark:text-red-300 mt-1">{error}</p>
 									</div>
 								</Alert>
@@ -191,24 +197,22 @@ export function YouTubeImportModal({ isOpen, onClose, onSuccess }: YouTubeImport
 
 							{/* URL Input */}
 							<div>
-								<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">YouTube URL *</label>
+								<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t("fields.url.label")}</label>
 								<Input
-									placeholder="https://www.youtube.com/watch?v=... or https://www.youtube.com/playlist?list=..."
+									placeholder={t("fields.url.placeholder")}
 									value={formData.url}
 									onChange={e => setFormData(prev => ({ ...prev, url: e.target.value }))}
 									leftIcon={<Youtube className="h-4 w-4 text-red-500" />}
 									required
 								/>
 								<p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-									Supports both individual videos and playlists
+									{t("fields.url.help")}
 								</p>
 							</div>
 
 							{/* Difficulty */}
 							<div>
-								<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-									Difficulty Level
-								</label>
+								<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t("fields.difficulty.label")}</label>
 								<select
 									value={formData.difficulty}
 									onChange={e =>
@@ -219,20 +223,18 @@ export function YouTubeImportModal({ isOpen, onClose, onSuccess }: YouTubeImport
 									}
 									className="block w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white backdrop-blur-sm transition-all duration-200"
 								>
-									<option value="BEGINNER">Beginner</option>
-									<option value="INTERMEDIATE">Intermediate</option>
-									<option value="ADVANCED">Advanced</option>
+									<option value="BEGINNER">{tCommon("difficulties.beginner")}</option>
+									<option value="INTERMEDIATE">{tCommon("difficulties.intermediate")}</option>
+									<option value="ADVANCED">{tCommon("difficulties.advanced")}</option>
 								</select>
 							</div>
 
 							{/* Skills */}
 							<div>
-								<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-									Skills (Optional)
-								</label>
+								<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t("fields.skills.label")}</label>
 								<div className="mb-2">
 									<Input
-										placeholder="Search skills..."
+										placeholder={t("fields.skills.searchPlaceholder")}
 										value={skillSearch}
 										onChange={e => setSkillSearch(e.target.value)}
 									/>
@@ -258,7 +260,7 @@ export function YouTubeImportModal({ isOpen, onClose, onSuccess }: YouTubeImport
 								{/* Available Skills */}
 								<div className="border border-gray-200 dark:border-gray-600 rounded-lg max-h-40 overflow-y-auto">
 									{skillsLoading ? (
-										<div className="p-4 text-center text-gray-500">Loading skills...</div>
+										<div className="p-4 text-center text-gray-500">{t("fields.skills.loading")}</div>
 									) : filteredSkills.length > 0 ? (
 										<div className="p-2 space-y-1">
 											{filteredSkills.slice(0, 20).map(skill => (
@@ -276,14 +278,12 @@ export function YouTubeImportModal({ isOpen, onClose, onSuccess }: YouTubeImport
 												</button>
 											))}
 											{filteredSkills.length > 20 && (
-												<div className="text-xs text-gray-500 p-2 text-center">
-													Showing 20 of {filteredSkills.length} skills. Keep typing to narrow down results.
-												</div>
+												<div className="text-xs text-gray-500 p-2 text-center">{t("fields.skills.limitNotice", { total: filteredSkills.length })}</div>
 											)}
 										</div>
 									) : (
 										<div className="p-4 text-center text-gray-500">
-											{skillSearch ? `No skills found matching "${skillSearch}"` : "No skills available"}
+											{skillSearch ? t("fields.skills.noMatch", { query: skillSearch }) : t("fields.skills.empty")}
 										</div>
 									)}
 								</div>
@@ -291,12 +291,12 @@ export function YouTubeImportModal({ isOpen, onClose, onSuccess }: YouTubeImport
 
 							{/* Overrides */}
 							<div className="space-y-4">
-								<h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">Manual Overrides (Optional)</h3>
+								<h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">{t("fields.overrides.title")}</h3>
 								<div className="grid grid-cols-1 gap-4">
 									<div>
-										<label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">Custom Title</label>
+										<label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">{t("fields.overrides.customTitleLabel")}</label>
 										<Input
-											placeholder="Leave empty to use YouTube title"
+											placeholder={t("fields.overrides.customTitlePlaceholder")}
 											value={formData.overrides?.title || ""}
 											onChange={e =>
 												setFormData(prev => ({
@@ -307,9 +307,9 @@ export function YouTubeImportModal({ isOpen, onClose, onSuccess }: YouTubeImport
 										/>
 									</div>
 									<div>
-										<label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">Custom Description</label>
+										<label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">{t("fields.overrides.customDescriptionLabel")}</label>
 										<textarea
-											placeholder="Leave empty to use YouTube description"
+											placeholder={t("fields.overrides.customDescriptionPlaceholder")}
 											value={formData.overrides?.description || ""}
 											onChange={e =>
 												setFormData(prev => ({
@@ -327,7 +327,7 @@ export function YouTubeImportModal({ isOpen, onClose, onSuccess }: YouTubeImport
 							{/* Actions */}
 							<div className="flex gap-3 pt-4">
 								<Button type="button" variant="ghost" onClick={handleClose} className="flex-1">
-									Cancel
+									{tCommon("cancel")}
 								</Button>
 								<Button
 									type="submit"
@@ -337,12 +337,12 @@ export function YouTubeImportModal({ isOpen, onClose, onSuccess }: YouTubeImport
 									{loading ? (
 										<>
 											<Loader2 className="h-4 w-4 mr-2 animate-spin" />
-											Importing...
+											{t("actions.importing")}
 										</>
 									) : (
 										<>
 											<Youtube className="h-4 w-4 mr-2" />
-											Import Course
+											{t("actions.importCourse")}
 										</>
 									)}
 								</Button>

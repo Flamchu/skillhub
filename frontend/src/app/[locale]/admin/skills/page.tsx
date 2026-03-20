@@ -19,6 +19,7 @@ import {
 	FileText,
 } from "lucide-react";
 import type { Skill, CreateSkillData, UpdateSkillData } from "@/types";
+import { useTranslations } from "next-intl";
 
 interface SkillTreeNode extends Skill {
 	children: SkillTreeNode[];
@@ -26,6 +27,8 @@ interface SkillTreeNode extends Skill {
 }
 
 export default function AdminSkillsPage() {
+	const t = useTranslations("admin.skillsPage");
+	const tCommon = useTranslations("common");
 	const [skills, setSkills] = useState<Skill[]>([]);
 	const [skillTree, setSkillTree] = useState<SkillTreeNode[]>([]);
 	const [loading, setLoading] = useState(true);
@@ -56,11 +59,11 @@ export default function AdminSkillsPage() {
 			setSkills(response.skills);
 			buildSkillTree(response.skills);
 		} catch (err) {
-			setError(err instanceof Error ? err.message : "Failed to load skills");
+			setError(err instanceof Error ? err.message : t("errors.load"));
 		} finally {
 			setLoading(false);
 		}
-	}, [searchQuery]);
+	}, [searchQuery, t]);
 
 	useEffect(() => {
 		loadSkills();
@@ -146,7 +149,9 @@ export default function AdminSkillsPage() {
 			loadSkills();
 		} catch (err) {
 			alert(
-				`Failed to ${editingSkill ? "update" : "create"} skill: ${err instanceof Error ? err.message : "Unknown error"}`
+				editingSkill
+					? t("alerts.updateFailed", { message: err instanceof Error ? err.message : t("alerts.unknownError") })
+					: t("alerts.createFailed", { message: err instanceof Error ? err.message : t("alerts.unknownError") })
 			);
 		}
 	};
@@ -163,7 +168,7 @@ export default function AdminSkillsPage() {
 	};
 
 	const handleDelete = async (skill: Skill) => {
-		if (!confirm(`Are you sure you want to delete skill "${skill.name}"? This will also delete all child skills.`)) {
+		if (!confirm(t("alerts.confirmDelete", { name: skill.name }))) {
 			return;
 		}
 
@@ -171,7 +176,7 @@ export default function AdminSkillsPage() {
 			await api.deleteSkill(skill.id);
 			loadSkills();
 		} catch (err) {
-			alert(`Failed to delete skill: ${err instanceof Error ? err.message : "Unknown error"}`);
+			alert(t("alerts.deleteFailed", { message: err instanceof Error ? err.message : t("alerts.unknownError") }));
 		}
 	};
 
@@ -217,7 +222,7 @@ export default function AdminSkillsPage() {
 
 					{node.description && (
 						<Badge variant="info" size="sm">
-							Has description
+							{t("tree.hasDescription")}
 						</Badge>
 					)}
 
@@ -227,6 +232,8 @@ export default function AdminSkillsPage() {
 							size="sm"
 							onClick={() => handleEdit(node)}
 							className="text-green-600 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-900/20 transition-all duration-200"
+							aria-label={tCommon("edit")}
+							title={tCommon("edit")}
 						>
 							<Edit2 className="h-4 w-4" />
 						</Button>
@@ -235,6 +242,8 @@ export default function AdminSkillsPage() {
 							size="sm"
 							onClick={() => handleDelete(node)}
 							className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-200"
+							aria-label={tCommon("delete")}
+							title={tCommon("delete")}
 						>
 							<Trash2 className="h-4 w-4" />
 						</Button>
@@ -258,17 +267,17 @@ export default function AdminSkillsPage() {
 					<div className="text-center sm:text-left">
 						<h1 className="text-4xl md:text-5xl font-bold mb-4">
 							<span className="bg-linear-to-br from-primary via-purple to-pink text-transparent bg-clip-text">
-								Skills Management
+								{t("title")}
 							</span>
 						</h1>
-						<p className="text-lg text-gray-600 dark:text-gray-300">Manage the skills hierarchy and taxonomy</p>
+						<p className="text-lg text-gray-600 dark:text-gray-300">{t("description")}</p>
 					</div>
 					<Button
 						onClick={() => setShowCreateForm(true)}
 						className="bg-linear-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200"
 					>
 						<Plus className="h-4 w-4 mr-2" />
-						Add Skill
+						{t("actions.addSkill")}
 					</Button>
 				</div>
 
@@ -276,17 +285,17 @@ export default function AdminSkillsPage() {
 				{showCreateForm && (
 					<div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-2xl border border-gray-200/50 dark:border-gray-700/50 p-6 hover:bg-white/80 dark:hover:bg-gray-800/80 transition-all duration-200">
 						<h3 className="text-xl font-semibold mb-6 text-gray-900 dark:text-white">
-							{editingSkill ? "Edit Skill" : "Create New Skill"}
+							{editingSkill ? t("form.editTitle") : t("form.createTitle")}
 						</h3>
 
 						<form onSubmit={handleSubmit} className="space-y-6">
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 								<div>
 									<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-										Skill Name *
+										{t("form.fields.name.label")}
 									</label>
 									<Input
-										placeholder="e.g., JavaScript, React, Machine Learning"
+										placeholder={t("form.fields.name.placeholder")}
 										value={formData.name}
 										onChange={e => {
 											const name = e.target.value;
@@ -301,9 +310,9 @@ export default function AdminSkillsPage() {
 								</div>
 
 								<div>
-									<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Slug *</label>
+									<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t("form.fields.slug.label")}</label>
 									<Input
-										placeholder="auto-generated-from-name"
+										placeholder={t("form.fields.slug.placeholder")}
 										value={formData.slug}
 										onChange={e => setFormData({ ...formData, slug: e.target.value })}
 										required
@@ -312,13 +321,13 @@ export default function AdminSkillsPage() {
 							</div>
 
 							<div>
-								<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Parent Skill</label>
+								<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t("form.fields.parent.label")}</label>
 								<select
 									value={formData.parentId}
 									onChange={e => setFormData({ ...formData, parentId: e.target.value })}
 									className="block w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white/80 dark:bg-gray-700/80 text-gray-900 dark:text-white backdrop-blur-sm transition-all duration-200"
 								>
-									<option value="">No parent (root skill)</option>
+									<option value="">{t("form.fields.parent.none")}</option>
 									{getSkillOptions(editingSkill?.id).map(skill => (
 										<option key={skill.id} value={skill.id}>
 											{skill.name}
@@ -328,9 +337,9 @@ export default function AdminSkillsPage() {
 							</div>
 
 							<div>
-								<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Description</label>
+								<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t("form.fields.description.label")}</label>
 								<textarea
-									placeholder="Optional description of this skill..."
+									placeholder={t("form.fields.description.placeholder")}
 									value={formData.description}
 									onChange={e => setFormData({ ...formData, description: e.target.value })}
 									rows={4}
@@ -343,10 +352,10 @@ export default function AdminSkillsPage() {
 									type="submit"
 									className="bg-linear-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0"
 								>
-									{editingSkill ? "Update Skill" : "Create Skill"}
+									{editingSkill ? t("actions.updateSkill") : t("actions.createSkill")}
 								</Button>
 								<Button type="button" variant="outline" onClick={cancelForm}>
-									Cancel
+									{tCommon("cancel")}
 								</Button>
 							</div>
 						</form>
@@ -356,9 +365,9 @@ export default function AdminSkillsPage() {
 				{/* Search */}
 				<div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-2xl border border-gray-200/50 dark:border-gray-700/50 p-6 hover:bg-white/80 dark:hover:bg-gray-800/80 transition-all duration-200">
 					<div className="max-w-md">
-						<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Search Skills</label>
+						<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t("search.label")}</label>
 						<Input
-							placeholder="Search by skill name..."
+							placeholder={t("search.placeholder")}
 							value={searchQuery}
 							onChange={e => setSearchQuery(e.target.value)}
 							leftIcon={<Search className="h-4 w-4" />}
@@ -371,7 +380,7 @@ export default function AdminSkillsPage() {
 					<div className="flex items-center justify-center py-16">
 						<div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-2xl border border-gray-200/50 dark:border-gray-700/50 p-8">
 							<Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
-							<span className="text-gray-600 dark:text-gray-400">Loading skills...</span>
+							<span className="text-gray-600 dark:text-gray-400">{t("loading")}</span>
 						</div>
 					</div>
 				)}
@@ -380,10 +389,10 @@ export default function AdminSkillsPage() {
 				{error && (
 					<div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-2xl border border-red-200/50 dark:border-red-700/50 p-8 text-center">
 						<AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-						<h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">Failed to load skills</h3>
+						<h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">{t("errors.loadTitle")}</h3>
 						<p className="text-gray-600 dark:text-gray-400 mb-4">{error}</p>
 						<Button variant="outline" onClick={loadSkills}>
-							Try Again
+							{tCommon("tryAgain")}
 						</Button>
 					</div>
 				)}
@@ -391,16 +400,16 @@ export default function AdminSkillsPage() {
 				{/* Skills Tree */}
 				{!loading && !error && (
 					<div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-2xl border border-gray-200/50 dark:border-gray-700/50 p-6 hover:bg-white/80 dark:hover:bg-gray-800/80 transition-all duration-200">
-						<h3 className="text-xl font-semibold mb-6 text-gray-900 dark:text-white">Skills Hierarchy</h3>
+						<h3 className="text-xl font-semibold mb-6 text-gray-900 dark:text-white">{t("tree.title")}</h3>
 
 						{skillTree.length > 0 ? (
 							<div className="space-y-1">{skillTree.map(node => renderSkillNode(node))}</div>
 						) : (
 							<div className="text-center py-12">
 								<BookOpen className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-								<h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No skills found</h3>
+								<h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">{t("empty.title")}</h3>
 								<p className="text-gray-600 dark:text-gray-400 mb-6">
-									{searchQuery ? "Try adjusting your search criteria." : "Create your first skill to get started."}
+									{searchQuery ? t("empty.filteredDescription") : t("empty.description")}
 								</p>
 								{!searchQuery && (
 									<Button
@@ -408,7 +417,7 @@ export default function AdminSkillsPage() {
 										className="bg-linear-to-r from-primary to-purple hover:from-primary-600 hover:to-purple-600 text-white border-0 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200"
 									>
 										<Plus className="h-4 w-4 mr-2" />
-										Add First Skill
+										{t("empty.addFirstSkill")}
 									</Button>
 								)}
 							</div>

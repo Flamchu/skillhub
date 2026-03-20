@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Zap, Plus, Minus, Search, Loader2, CheckCircle, AlertCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface XPAwardResult {
 	message: string;
@@ -16,6 +17,7 @@ interface XPAwardResult {
 }
 
 export function XPManager() {
+	const t = useTranslations("admin.xpManager");
 	const [userId, setUserId] = useState("");
 	const [amount, setAmount] = useState("");
 	const [description, setDescription] = useState("");
@@ -26,12 +28,12 @@ export function XPManager() {
 	const handleAwardXP = async (isNegative: boolean) => {
 		// validate inputs
 		if (!userId.trim()) {
-			setError("Please enter a user ID");
+			setError(t("validation.userIdRequired"));
 			return;
 		}
 
 		if (!amount || parseInt(amount) <= 0) {
-			setError("Please enter a valid positive amount");
+			setError(t("validation.amountRequired"));
 			return;
 		}
 
@@ -58,7 +60,7 @@ export function XPManager() {
 			setDescription("");
 		} catch (err: unknown) {
 			const error = err as { response?: { data?: { error?: string } }; message?: string };
-			setError(error?.response?.data?.error || error?.message || "Failed to award XP");
+			setError(error?.response?.data?.error || error?.message || t("errors.award"));
 		} finally {
 			setLoading(false);
 		}
@@ -71,8 +73,8 @@ export function XPManager() {
 					<Zap className="h-6 w-6 text-white" />
 				</div>
 				<div>
-					<h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100">XP Manager</h3>
-					<p className="text-sm text-gray-600 dark:text-gray-300">Add or remove XP from users for testing</p>
+					<h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{t("title")}</h3>
+					<p className="text-sm text-gray-600 dark:text-gray-300">{t("description")}</p>
 				</div>
 			</div>
 
@@ -80,14 +82,14 @@ export function XPManager() {
 				{/* user id input */}
 				<div>
 					<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-						User ID <span className="text-red-500">*</span>
+						{t("fields.userId.label")} <span className="text-red-500">*</span>
 					</label>
 					<div className="relative">
 						<input
 							type="text"
 							value={userId}
 							onChange={e => setUserId(e.target.value)}
-							placeholder="Enter user UUID"
+							placeholder={t("fields.userId.placeholder")}
 							className="w-full px-4 py-3 pl-10 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
 						/>
 						<Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -97,13 +99,13 @@ export function XPManager() {
 				{/* amount input */}
 				<div>
 					<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-						XP Amount <span className="text-red-500">*</span>
+						{t("fields.amount.label")} <span className="text-red-500">*</span>
 					</label>
 					<input
 						type="number"
 						value={amount}
 						onChange={e => setAmount(e.target.value)}
-						placeholder="Enter XP amount (e.g., 100)"
+						placeholder={t("fields.amount.placeholder")}
 						min="1"
 						className="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
 					/>
@@ -112,13 +114,13 @@ export function XPManager() {
 				{/* description input */}
 				<div>
 					<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-						Description <span className="text-gray-500 text-xs">(optional)</span>
+						{t("fields.description.label")} <span className="text-gray-500 text-xs">{t("fields.description.optional")}</span>
 					</label>
 					<input
 						type="text"
 						value={description}
 						onChange={e => setDescription(e.target.value)}
-						placeholder="Reason for XP adjustment"
+						placeholder={t("fields.description.placeholder")}
 						className="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
 					/>
 				</div>
@@ -135,7 +137,7 @@ export function XPManager() {
 						) : (
 							<>
 								<Plus className="h-5 w-5 mr-2" />
-								Add XP
+								{t("actions.addXp")}
 							</>
 						)}
 					</Button>
@@ -150,7 +152,7 @@ export function XPManager() {
 						) : (
 							<>
 								<Minus className="h-5 w-5 mr-2" />
-								Remove XP
+								{t("actions.removeXp")}
 							</>
 						)}
 					</Button>
@@ -164,8 +166,7 @@ export function XPManager() {
 							<div className="flex-1">
 								<p className="text-sm font-semibold text-success mb-1">{result.message}</p>
 								<p className="text-xs text-gray-600 dark:text-gray-400">
-									New XP: <span className="font-bold">{result.newXP}</span> | Level:{" "}
-									<span className="font-bold">{result.newLevel}</span>
+									{t("result.summary", { xp: result.newXP, level: result.newLevel })}
 								</p>
 							</div>
 						</div>
@@ -185,8 +186,7 @@ export function XPManager() {
 				{/* help text */}
 				<div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
 					<p className="text-xs text-blue-600 dark:text-blue-400">
-						💡 <span className="font-semibold">Tip:</span> You can find user IDs in the Users section or from the
-						database. Use this to test XP calculations, level progression, and the XP bar display.
+						{t("help.text")}
 					</p>
 				</div>
 			</div>

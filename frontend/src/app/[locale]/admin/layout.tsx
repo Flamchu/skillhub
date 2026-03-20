@@ -8,52 +8,54 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Users, BookOpen, Target, BarChart3, Settings, Home } from "lucide-react";
 import { LanguageSwitcher } from "@/components/ui";
-
-const navigation = [
-	{
-		name: "Dashboard",
-		href: "/admin",
-		icon: Home,
-	},
-	{
-		name: "Users",
-		href: "/admin/users",
-		icon: Users,
-	},
-	{
-		name: "Courses",
-		href: "/admin/courses",
-		icon: BookOpen,
-		children: [
-			{ name: "All Courses", href: "/admin/courses" },
-			{ name: "Add Course", href: "/admin/courses/new" },
-		],
-	},
-	{
-		name: "Skills",
-		href: "/admin/skills",
-		icon: Target,
-		children: [
-			{ name: "All Skills", href: "/admin/skills" },
-			{ name: "Add Skill", href: "/admin/skills" },
-		],
-	},
-	{
-		name: "Analytics",
-		href: "/admin/analytics",
-		icon: BarChart3,
-	},
-	{
-		name: "Settings",
-		href: "/admin/settings",
-		icon: Settings,
-	},
-];
+import { useTranslations } from "next-intl";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
 	const { user, loading } = useAuth();
 	const router = useRouter();
 	const pathname = usePathname();
+	const t = useTranslations("admin.layout");
+
+	const navigation = [
+		{
+			name: t("navigation.dashboard"),
+			href: "/admin",
+			icon: Home,
+		},
+		{
+			name: t("navigation.users"),
+			href: "/admin/users",
+			icon: Users,
+		},
+		{
+			name: t("navigation.courses"),
+			href: "/admin/courses",
+			icon: BookOpen,
+			children: [
+				{ name: t("navigation.allCourses"), href: "/admin/courses" },
+				{ name: t("navigation.addCourse"), href: "/admin/courses/new" },
+			],
+		},
+		{
+			name: t("navigation.skills"),
+			href: "/admin/skills",
+			icon: Target,
+			children: [
+				{ name: t("navigation.allSkills"), href: "/admin/skills" },
+				{ name: t("navigation.addSkill"), href: "/admin/skills" },
+			],
+		},
+		{
+			name: t("navigation.analytics"),
+			href: "/admin/analytics",
+			icon: BarChart3,
+		},
+		{
+			name: t("navigation.settings"),
+			href: "/admin/settings",
+			icon: Settings,
+		},
+	];
 
 	useEffect(() => {
 		if (!loading && (!user || user.role !== "ADMIN")) {
@@ -67,7 +69,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 			<div className="min-h-screen bg-linear-to-br from-primary-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
 				<div className="text-center">
 					<div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-6" />
-					<p className="text-gray-600 dark:text-gray-300 text-lg font-medium">Loading Admin Panel...</p>
+					<p className="text-gray-600 dark:text-gray-300 text-lg font-medium">{t("loading")}</p>
 				</div>
 			</div>
 		);
@@ -91,14 +93,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 					</Link>
 					<div className="flex items-center gap-6">
 						<span className="text-sm font-medium text-gray-600 dark:text-gray-300 bg-linear-to-r from-warning/20 to-pink/20 px-3 py-1 rounded-full border border-warning/30">
-							Admin Panel
+							{t("badge")}
 						</span>
 						<LanguageSwitcher />
 						<Link
 							href="/dashboard"
 							className="px-6 py-3 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 font-medium transition-colors rounded-lg hover:bg-gray-100/70 dark:hover:bg-gray-800"
 						>
-							Back to Dashboard
+							{t("backToDashboard")}
 						</Link>
 					</div>
 				</div>
@@ -159,7 +161,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 								</div>
 								<div className="flex-1 min-w-0">
 									<p className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">
-										{user.name || "Admin User"}
+										{user.name || t("adminUser")}
 									</p>
 									<p className="text-xs text-gray-500 dark:text-gray-400 truncate">{user.email}</p>
 								</div>
