@@ -21,7 +21,7 @@ import { performanceMonitoring, performanceEndpoint, healthCheck } from "./middl
 import { connectDatabase } from "./config/database";
 import "./config/redis"; // initialize redis connection
 
-dotenv.config();
+dotenv.config({ quiet: true });
 const app = express();
 
 app.use(performanceMonitoring);

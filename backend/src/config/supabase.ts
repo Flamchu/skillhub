@@ -2,7 +2,7 @@ import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import dotenv from "dotenv";
 
 // load .env (idempotent)
-dotenv.config();
+dotenv.config({ quiet: true });
 
 // supabase client container
 interface SupabaseClients {
