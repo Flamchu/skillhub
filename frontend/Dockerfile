@@ -1,28 +1,37 @@
 # multi-stage dockerfile for frontend (next.js)
+ARG DEBIAN_FRONTEND=noninteractive
 
 # stage 1: dependencies
-FROM node:25.8.1-bookworm-slim AS deps
+FROM node:24-bookworm-slim AS deps
+ENV DEBIAN_FRONTEND=noninteractive
+ENV npm_config_update_notifier=false
+ENV npm_config_fund=false
+ENV npm_config_loglevel=error
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
 # install pnpm
-RUN npm install -g pnpm@10.30.3
+RUN npm install -g pnpm@10.32.1 --loglevel=error
 
 # copy package files
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 COPY frontend/package.json ./frontend/
 
 # install dependencies (including dev dependencies for build)
-RUN pnpm install --frozen-lockfile --filter frontend...
+RUN pnpm install --frozen-lockfile --filter frontend... --reporter=silent
 
 # stage 2: builder
-FROM node:25.8.1-bookworm-slim AS builder
+FROM node:24-bookworm-slim AS builder
+ENV DEBIAN_FRONTEND=noninteractive
+ENV npm_config_update_notifier=false
+ENV npm_config_fund=false
+ENV npm_config_loglevel=error
 WORKDIR /app
 
 # install pnpm
-RUN npm install -g pnpm@10.30.3
+RUN npm install -g pnpm@10.32.1 --loglevel=error
 
 # copy source code first (excluding node_modules)
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
@@ -38,21 +47,28 @@ WORKDIR /app/frontend
 
 # set build-time environment variables
 ARG NEXT_PUBLIC_BACKEND_URL
+ARG INTERNAL_BACKEND_URL
 ARG NEXT_PUBLIC_SITE_URL
 ARG NEXT_PUBLIC_MEDIA_URL
 ARG NEXT_PUBLIC_DEFAULT_THEME
 ARG NEXT_PUBLIC_ENABLE_ANALYTICS
 ENV NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL
+ENV INTERNAL_BACKEND_URL=$INTERNAL_BACKEND_URL
 ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
 ENV NEXT_PUBLIC_MEDIA_URL=$NEXT_PUBLIC_MEDIA_URL
 ENV NEXT_PUBLIC_DEFAULT_THEME=$NEXT_PUBLIC_DEFAULT_THEME
 ENV NEXT_PUBLIC_ENABLE_ANALYTICS=$NEXT_PUBLIC_ENABLE_ANALYTICS
+ENV NEXT_TELEMETRY_DISABLED=1
 
 # build next.js app
 RUN pnpm build
 
 # stage 3: runner
-FROM node:25.8.1-bookworm-slim AS runner
+FROM node:24-bookworm-slim AS runner
+ENV DEBIAN_FRONTEND=noninteractive
+ENV npm_config_update_notifier=false
+ENV npm_config_fund=false
+ENV npm_config_loglevel=error
 RUN apt-get update && apt-get install -y --no-install-recommends \
     wget \
     ca-certificates \
@@ -60,11 +76,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /app
 
 # install pnpm BEFORE creating user
-RUN npm install -g pnpm@10.30.3
+RUN npm install -g pnpm@10.32.1 --loglevel=error
 
 # create non-root user
-RUN groupadd --system --gid 1001 nodejs && \
-    useradd --system --uid 1001 --gid nodejs nextjs --create-home
+RUN groupadd --gid 1001 nodejs && \
+    useradd --uid 1001 --gid nodejs nextjs --create-home
 
 # create corepack cache directory with proper permissions
 RUN mkdir -p /home/nextjs/.cache/node/corepack && \

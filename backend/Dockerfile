@@ -1,7 +1,12 @@
 # multi-stage dockerfile for backend (node.js + express + prisma)
+ARG DEBIAN_FRONTEND=noninteractive
 
 # stage 1: dependencies
-FROM node:25.8.1-bookworm-slim AS deps
+FROM node:24-bookworm-slim AS deps
+ENV DEBIAN_FRONTEND=noninteractive
+ENV npm_config_update_notifier=false
+ENV npm_config_fund=false
+ENV npm_config_loglevel=error
 RUN apt-get update && apt-get install -y --no-install-recommends \
     openssl \
     ca-certificates \
@@ -9,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /app
 
 # install pnpm
-RUN npm install -g pnpm@10.30.3
+RUN npm install -g pnpm@10.32.1 --loglevel=error
 
 # copy package files
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
@@ -18,10 +23,14 @@ COPY backend/prisma ./backend/prisma
 COPY backend/prisma.config.ts ./backend/
 
 # install dependencies (including dev dependencies for build)
-RUN pnpm install --frozen-lockfile --filter backend...
+RUN pnpm install --frozen-lockfile --filter backend... --reporter=silent
 
 # stage 2: builder
-FROM node:25.8.1-bookworm-slim AS builder
+FROM node:24-bookworm-slim AS builder
+ENV DEBIAN_FRONTEND=noninteractive
+ENV npm_config_update_notifier=false
+ENV npm_config_fund=false
+ENV npm_config_loglevel=error
 RUN apt-get update && apt-get install -y --no-install-recommends \
     openssl \
     ca-certificates \
@@ -29,7 +38,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /app
 
 # install pnpm
-RUN npm install -g pnpm@10.30.3
+RUN npm install -g pnpm@10.32.1 --loglevel=error
 
 # copy source code first (excluding node_modules)
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
@@ -49,7 +58,11 @@ RUN pnpm prisma generate
 RUN pnpm build
 
 # stage 3: runner
-FROM node:25.8.1-bookworm-slim AS runner
+FROM node:24-bookworm-slim AS runner
+ENV DEBIAN_FRONTEND=noninteractive
+ENV npm_config_update_notifier=false
+ENV npm_config_fund=false
+ENV npm_config_loglevel=error
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     openssl \
@@ -58,11 +71,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /app
 
 # install pnpm BEFORE creating user
-RUN npm install -g pnpm@10.30.3
+RUN npm install -g pnpm@10.32.1 --loglevel=error
 
 # create non-root user
-RUN groupadd --system --gid 1001 nodejs && \
-    useradd --system --uid 1001 --gid nodejs backend --create-home
+RUN groupadd --gid 1001 nodejs && \
+    useradd --uid 1001 --gid nodejs backend --create-home
 
 # copy package files
 COPY --from=builder --chown=backend:nodejs /app/package.json /app/pnpm-lock.yaml /app/pnpm-workspace.yaml /app/.npmrc ./
@@ -73,7 +86,7 @@ COPY --from=builder --chown=backend:nodejs /app/backend/prisma.config.ts ./backe
 COPY --from=builder --chown=backend:nodejs /app/backend/prisma ./backend/prisma
 
 # install production dependencies only (as root to avoid permission issues)
-RUN pnpm install --frozen-lockfile --prod --filter backend...
+RUN pnpm install --frozen-lockfile --prod --filter backend... --reporter=silent
 
 # generate prisma client for production
 WORKDIR /app/backend
