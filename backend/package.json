@@ -5,6 +5,7 @@
 		"dev": "tsx watch ./src/express.ts",
 		"prebuild": "prisma generate",
 		"build": "tsc",
+		"type-check": "prisma generate && tsc --noEmit",
 		"start": "node ./dist/express.js",
 		"seed": "ts-node ./src/seed.ts",
 		"generate-ai-summaries": "ts-node ./src/scripts/generateAiSummaries.ts",

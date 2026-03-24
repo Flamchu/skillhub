@@ -61,7 +61,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Type check backend
-        run: pnpm --filter backend exec tsc --noEmit
+        run: pnpm --filter backend type-check
 
       - name: Type check frontend
         run: pnpm --filter frontend type-check
