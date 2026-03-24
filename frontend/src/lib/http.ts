@@ -2,6 +2,7 @@ import axios, { type InternalAxiosRequestConfig, type AxiosError, AxiosHeaders }
 import axiosRetry from "axios-retry";
 import { nanoid } from "nanoid";
 import { getAccessToken } from "./tokens";
+import { getRuntimeBackendUrl } from "./backend-url";
 import type { CreateCourseData, UpdateCourseData, CreateSkillData, UpdateSkillData, UpdateUserData } from "@/types";
 
 interface RetryableConfig extends InternalAxiosRequestConfig {
@@ -19,7 +20,7 @@ interface ApiErrorPayload {
 }
 
 export const http = axios.create({
-	baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
+	baseURL: getRuntimeBackendUrl(),
 	timeout: 15000,
 });
 

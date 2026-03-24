@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { locales } from "@/i18n";
+import { getServerBackendUrl } from "@/lib/backend-url";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
@@ -36,10 +37,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
 	// optionally fetch dynamic routes from api
 	// example: courses and skills
-	const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-	if (!backendUrl) {
-		return routes;
-	}
+	const backendUrl = getServerBackendUrl();
 
 	try {
 		// fetch courses

@@ -1,4 +1,5 @@
 import type { Course } from "@/types";
+import { getServerBackendUrl } from "./backend-url";
 
 interface Chapter {
 	time: number;
@@ -15,7 +16,7 @@ export async function fetchVideoChaptersServer(videoId: string): Promise<Chapter
 	}
 
 	try {
-		const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:4000/api";
+		const backendUrl = getServerBackendUrl();
 		const response = await fetch(`${backendUrl}/chapters/video/${videoId}`, {
 			next: { revalidate: 60 * 60 * 24 }, // cache for 24 hours (Next.js)
 			headers: {
