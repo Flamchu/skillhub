@@ -1,5 +1,5 @@
 // script to generate verification questions for all major skills
-// run with: yarn ts-node src/scripts/generateVerificationQuestions.ts
+// run with: pnpm --filter backend exec ts-node src/scripts/generateVerificationQuestions.ts
 
 import { prisma } from "../config/database";
 

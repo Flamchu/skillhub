@@ -1,6 +1,6 @@
 /**
  * script to fetch and store youtube chapters for all single-video courses
- * run with: npx tsx src/scripts/updateVideoChapters.ts
+ * run with: pnpm --filter backend exec tsx src/scripts/updateVideoChapters.ts
  */
 
 import { batchUpdateChapters } from "../services/youtubeChaptersService";

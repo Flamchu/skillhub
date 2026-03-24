@@ -4,17 +4,15 @@ ARG DEBIAN_FRONTEND=noninteractive
 # stage 1: dependencies
 FROM node:24-bookworm-slim AS deps
 ENV DEBIAN_FRONTEND=noninteractive
-ENV npm_config_update_notifier=false
-ENV npm_config_fund=false
-ENV npm_config_loglevel=error
+ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 RUN apt-get update && apt-get install -y --no-install-recommends \
     openssl \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
-# install pnpm
-RUN npm install -g pnpm@10.32.1 --loglevel=error
+# enable pnpm via corepack
+RUN corepack enable
 
 # copy package files
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
@@ -28,17 +26,15 @@ RUN pnpm install --frozen-lockfile --filter backend... --reporter=silent
 # stage 2: builder
 FROM node:24-bookworm-slim AS builder
 ENV DEBIAN_FRONTEND=noninteractive
-ENV npm_config_update_notifier=false
-ENV npm_config_fund=false
-ENV npm_config_loglevel=error
+ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 RUN apt-get update && apt-get install -y --no-install-recommends \
     openssl \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
-# install pnpm
-RUN npm install -g pnpm@10.32.1 --loglevel=error
+# enable pnpm via corepack
+RUN corepack enable
 
 # copy source code first (excluding node_modules)
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
@@ -60,9 +56,7 @@ RUN pnpm build
 # stage 3: runner
 FROM node:24-bookworm-slim AS runner
 ENV DEBIAN_FRONTEND=noninteractive
-ENV npm_config_update_notifier=false
-ENV npm_config_fund=false
-ENV npm_config_loglevel=error
+ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     openssl \
@@ -70,8 +64,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
-# install pnpm BEFORE creating user
-RUN npm install -g pnpm@10.32.1 --loglevel=error
+# enable pnpm via corepack
+RUN corepack enable
 
 # create non-root user
 RUN groupadd --gid 1001 nodejs && \

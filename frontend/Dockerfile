@@ -4,16 +4,14 @@ ARG DEBIAN_FRONTEND=noninteractive
 # stage 1: dependencies
 FROM node:24-bookworm-slim AS deps
 ENV DEBIAN_FRONTEND=noninteractive
-ENV npm_config_update_notifier=false
-ENV npm_config_fund=false
-ENV npm_config_loglevel=error
+ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
-# install pnpm
-RUN npm install -g pnpm@10.32.1 --loglevel=error
+# enable pnpm via corepack
+RUN corepack enable
 
 # copy package files
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
@@ -25,13 +23,11 @@ RUN pnpm install --frozen-lockfile --filter frontend... --reporter=silent
 # stage 2: builder
 FROM node:24-bookworm-slim AS builder
 ENV DEBIAN_FRONTEND=noninteractive
-ENV npm_config_update_notifier=false
-ENV npm_config_fund=false
-ENV npm_config_loglevel=error
+ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 WORKDIR /app
 
-# install pnpm
-RUN npm install -g pnpm@10.32.1 --loglevel=error
+# enable pnpm via corepack
+RUN corepack enable
 
 # copy source code first (excluding node_modules)
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
@@ -66,25 +62,16 @@ RUN pnpm build
 # stage 3: runner
 FROM node:24-bookworm-slim AS runner
 ENV DEBIAN_FRONTEND=noninteractive
-ENV npm_config_update_notifier=false
-ENV npm_config_fund=false
-ENV npm_config_loglevel=error
+ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 RUN apt-get update && apt-get install -y --no-install-recommends \
     wget \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
-# install pnpm BEFORE creating user
-RUN npm install -g pnpm@10.32.1 --loglevel=error
-
 # create non-root user
 RUN groupadd --gid 1001 nodejs && \
     useradd --uid 1001 --gid nodejs nextjs --create-home
-
-# create corepack cache directory with proper permissions
-RUN mkdir -p /home/nextjs/.cache/node/corepack && \
-    chown -R nextjs:nodejs /home/nextjs/.cache
 
 # copy next.js standalone build output (includes server and dependencies)
 COPY --from=builder --chown=nextjs:nodejs /app/frontend/.next/standalone ./

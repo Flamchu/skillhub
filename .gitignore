@@ -1,7 +1,17 @@
 # Dependencies
 node_modules/
+
+# Package managers
+.pnpm-store/
+.pnpm-debug.log*
+package-lock.json
+npm-shrinkwrap.json
+yarn.lock
+.yarn/
 .pnp
 .pnp.*
+bun.lockb
+bun.lock
 
 # Github
 .github/*
@@ -11,10 +21,6 @@ AGENTS.md
 
 # Next.js
 .next/*
-
-# pnpm
-.pnpm-store/
-.pnpm-debug.log*
 
 # Environment variables
 .env
@@ -34,7 +40,6 @@ logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.pnpm-debug.log*
 
 # Runtime data
 pids
