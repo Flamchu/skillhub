@@ -7,10 +7,7 @@ node_modules/
 .github/*
 !.github/workflows/
 !.github/workflows/*.yml
-WARP.md
 AGENTS.md
-how-to_docs/
-docs/
 
 # Next.js
 .next/*
