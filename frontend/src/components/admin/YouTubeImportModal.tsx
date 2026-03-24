@@ -5,7 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Alert } from "@/components/ui/Alert";
 import { api } from "@/lib/http";
-import { Youtube, X, Loader2, CheckCircle, AlertCircle } from "lucide-react";
+import { CirclePlay, X, Loader2, CheckCircle, AlertCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { formatMinutesDuration, getDifficultyLabel } from "@/lib/i18n-utils";
 import type { YouTubeImportData, YouTubeImportResponse, Skill } from "@/types";
@@ -115,7 +115,7 @@ export function YouTubeImportModal({ isOpen, onClose, onSuccess }: YouTubeImport
 				<div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
 					<div className="flex items-center gap-3">
 						<div className="p-2 bg-red-100 dark:bg-red-900/20 rounded-lg">
-							<Youtube className="h-5 w-5 text-red-600 dark:text-red-400" />
+							<CirclePlay className="h-5 w-5 text-red-600 dark:text-red-400" />
 						</div>
 						<div>
 							<h2 className="text-xl font-bold text-gray-900 dark:text-white">{t("title")}</h2>
@@ -202,7 +202,7 @@ export function YouTubeImportModal({ isOpen, onClose, onSuccess }: YouTubeImport
 									placeholder={t("fields.url.placeholder")}
 									value={formData.url}
 									onChange={e => setFormData(prev => ({ ...prev, url: e.target.value }))}
-									leftIcon={<Youtube className="h-4 w-4 text-red-500" />}
+									leftIcon={<CirclePlay className="h-4 w-4 text-red-500" />}
 									required
 								/>
 								<p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
@@ -341,7 +341,7 @@ export function YouTubeImportModal({ isOpen, onClose, onSuccess }: YouTubeImport
 										</>
 									) : (
 										<>
-											<Youtube className="h-4 w-4 mr-2" />
+											<CirclePlay className="h-4 w-4 mr-2" />
 											{t("actions.importCourse")}
 										</>
 									)}

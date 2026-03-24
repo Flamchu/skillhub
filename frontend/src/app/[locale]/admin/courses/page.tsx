@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { PageLayout, PageHeader, GlassCard, LoadingState, ErrorState } from "@/components/ui";
 import { CourseCard, YouTubeImportModal } from "@/components/admin";
-import { Plus, Search, BookOpen, Youtube } from "lucide-react";
+import { Plus, Search, BookOpen, CirclePlay } from "lucide-react";
 import Link from "next/link";
 import type { CourseFilters } from "@/types";
 import { useTranslations } from "next-intl";
@@ -75,7 +75,7 @@ export default function AdminCoursesPage() {
 							size="sm"
 							className="bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 shadow-sm hover:shadow-md transition-all duration-200"
 						>
-							<Youtube className="h-4 w-4 mr-2" />
+							<CirclePlay className="h-4 w-4 mr-2" />
 							{t("actions.youtubeImport")}
 						</Button>
 						<Link href="/admin/courses/new">
@@ -204,7 +204,7 @@ export default function AdminCoursesPage() {
 									variant="ghost"
 									className="bg-red-50 hover:bg-red-100 text-red-600 border border-red-200"
 								>
-									<Youtube className="h-4 w-4 mr-2" />
+									<CirclePlay className="h-4 w-4 mr-2" />
 									{t("empty.importFromYoutube")}
 								</Button>
 								<Link href="/admin/courses/new">

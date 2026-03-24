@@ -1,5 +1,5 @@
 import { useTranslations } from "next-intl";
-import { Twitter, Linkedin, Instagram, Heart, Sparkles } from "lucide-react";
+import { Send, BriefcaseBusiness, Camera, Heart, Sparkles } from "lucide-react";
 
 interface SocialLinkProps {
 	href: string;
@@ -73,9 +73,9 @@ export function Footer() {
 
 				{/* Social Links */}
 				<div className="flex justify-center gap-6 mb-16">
-					<SocialLink href="#" colorScheme="primary" icon={<Twitter className="w-full h-full" />} />
-					<SocialLink href="#" colorScheme="success" icon={<Linkedin className="w-full h-full" />} />
-					<SocialLink href="#" colorScheme="warning" icon={<Instagram className="w-full h-full" />} />
+					<SocialLink href="#" colorScheme="primary" icon={<Send className="w-full h-full" />} />
+					<SocialLink href="#" colorScheme="success" icon={<BriefcaseBusiness className="w-full h-full" />} />
+					<SocialLink href="#" colorScheme="warning" icon={<Camera className="w-full h-full" />} />
 				</div>
 
 				<div className="border-t border-primary/20 dark:border-gray-700 pt-12">
