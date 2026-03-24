@@ -2,7 +2,7 @@
 
 ## Česky
 
-SkillHub je výuková platforma zaměřená na dovednosti, postavená jako pnpm workspace. Kombinuje Next.js frontend, Express + Prisma backend a lokální FastAPI AI službu pro autentizaci, objevování kurzů, testování, doporučování a gamifikovaný progres.
+SkillHub je výuková platforma zaměřená na dovednosti, postavená jako pnpm workspace. Kombinuje Next.js frontend, Express + Prisma backend a lokální FastAPI AI službu pro autentizaci, katalog kurzů, testování, doporučování a gamifikaci.
 
 ### Služby
 
